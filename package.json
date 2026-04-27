@@ -1,9 +1,5 @@
 {
-  "name": "roadora-app",
+  "name": "roadora-route-fix",
   "version": "1.0.0",
-  "private": true,
-  "description": "Roadora app with Vercel backend for SerpApi Google Maps search",
-  "scripts": {
-    "dev": "vercel dev"
-  }
+  "private": true
 }

@@ -1,60 +1,28 @@
-# Roadora GitHub + Vercel pakket
+# Roadora route fix pakket
+
+Dit pakket fixt eerst de backend voor route-stops.
 
 ## Bestanden
-
-- `index.html` = je Roadora app
-- `api/maps-search.js` = veilige backend voor SerpApi
-- `package.json` = minimale Vercel-config
+- index.html
+- api/maps-search.js
+- package.json
 
 ## Upload naar GitHub
+Upload de inhoud van deze map naar je repository.
 
-Upload alle bestanden en mappen naar je GitHub repository.
+Belangrijk:
+api/maps-search.js moet echt in de map api staan.
 
-Belangrijk: de map `api` moet in de hoofdmap staan:
+## Vercel
+Zorg dat Environment Variable bestaat:
 
-```text
-roadora-app/
-├─ index.html
-├─ package.json
-└─ api/
-   └─ maps-search.js
-```
+SERPAPI_KEY = jouw SerpApi key
 
-## Koppelen aan Vercel
+Daarna Redeploy.
 
-1. Ga naar Vercel
-2. Kies **Add New Project**
-3. Import je GitHub repository
-4. Deploy
-5. Ga naar **Settings → Environment Variables**
-6. Voeg toe:
+## Test
+Open na deploy:
 
-```text
-SERPAPI_KEY = jouw_serpapi_sleutel
-```
+/api/maps-search?q=tankstation&lat=52.3676&lng=4.9041
 
-7. Deploy opnieuw
-
-## Backend test
-
-Na deploy werkt je backend op:
-
-```text
-https://jouw-project.vercel.app/api/maps-search?q=tankstation&lat=52.3676&lng=4.9041
-```
-
-## Frontend backend URL
-
-In `index.html` staat:
-
-```js
-const SERPAPI_BACKEND_URL = "/api/maps-search";
-```
-
-Dat werkt automatisch als je frontend ook via Vercel draait.
-
-Gebruik je GitHub Pages voor frontend en Vercel alleen voor backend? Vervang dit dan door:
-
-```js
-const SERPAPI_BACKEND_URL = "https://jouw-project.vercel.app/api/maps-search";
-```
+Als je JSON ziet met ok:true, werkt de backend.

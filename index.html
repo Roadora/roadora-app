@@ -183,6 +183,11 @@ const SERPAPI_BACKEND_URL = "/api/maps-search";
 </script>
 </head>
 <body>
+<div style="position:fixed;top:0;left:0;right:0;background:#166534;color:white;z-index:99999;text-align:center;padding:8px;font-weight:800">
+  Testversie — gebruikt Vercel backend voor Google Maps resultaten
+</div>
+<style>body{padding-top:42px}</style>
+
 <main id="mainPage" class="wrap">
 
 <div id="topLangBar" style="display:flex;justify-content:flex-end;gap:10px;align-items:center;margin-bottom:12px">
@@ -315,7 +320,7 @@ const SERPAPI_BACKEND_URL = "/api/maps-search";
 
     <div class="card">
       <h2>Route & stops</h2><div id="serpapiNotice" class="smart-notice" style="display:none">
-  Google Maps zoekresultaten via SerpApi zijn nog niet gekoppeld. Vul later je veilige backend URL in bij <b>SERPAPI_BACKEND_URL</b>.
+  Roadora gebruikt nu extra Google Maps resultaten via je Vercel backend als de standaard routezoeker niets vindt.
 </div>
       <div id="smartLoading" class="smart-loading">Route en stops worden gezocht...</div>
 
@@ -1830,8 +1835,11 @@ window.addEventListener('DOMContentLoaded', function(){
 </script>
 
 
-<script id="serpApiRoadora">
-async function searchSerpApiBackend(query, lat, lng){
+
+
+
+<script id="serpApiRoadoraUpgrade">
+async function searchSerpApiBackend(query, lat, lng, zoom = 14){
   if(!SERPAPI_BACKEND_URL){
     const notice = document.getElementById('serpapiNotice');
     if(notice) notice.style.display = 'block';
@@ -1841,16 +1849,15 @@ async function searchSerpApiBackend(query, lat, lng){
   const url = SERPAPI_BACKEND_URL
     + '?q=' + encodeURIComponent(query)
     + '&lat=' + encodeURIComponent(lat)
-    + '&lng=' + encodeURIComponent(lng);
+    + '&lng=' + encodeURIComponent(lng)
+    + '&zoom=' + encodeURIComponent(zoom);
 
   try{
     const res = await fetch(url);
     if(!res.ok) throw new Error('Backend gaf foutmelding');
     const data = await res.json();
-
-    // Verwacht formaat:
-    // [{name, lat, lng, address, rating, type}]
-    return Array.isArray(data) ? data : (data.results || []);
+    const list = Array.isArray(data) ? data : (data.results || []);
+    return list.filter(x => x.lat && x.lng);
   }catch(e){
     console.warn('SerpApi backend niet bereikbaar', e);
     const notice = document.getElementById('serpapiNotice');
@@ -1862,21 +1869,189 @@ async function searchSerpApiBackend(query, lat, lng){
   }
 }
 
-async function getGoogleMapsStopsForPoint(lat, lng){
-  const queries = [
-    {type:'fuel', q:'tankstation'},
-    {type:'charging_station', q:'laadpaal'},
-    {type:'hotel', q:'hotel'},
-    {type:'restaurant', q:'restaurant'},
-    {type:'parking', q:'parking'}
-  ];
+function roadoraDistanceKm(a,b){
+  const R = 6371;
+  const dLat = (b.lat-a.lat) * Math.PI / 180;
+  const dLng = (b.lng-a.lng) * Math.PI / 180;
+  const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
 
-  const all = [];
-  for(const item of queries){
-    const results = await searchSerpApiBackend(item.q, lat, lng);
-    results.forEach(r => all.push({...r, type:item.type}));
+function roadoraRouteSamplePoints(){
+  // Works with current Leaflet/OSRM routeCoords: [[lat,lng], ...]
+  if(typeof routeCoords === 'undefined' || !Array.isArray(routeCoords) || !routeCoords.length) return [];
+  const points = [];
+  const max = Math.min(9, routeCoords.length);
+  for(let i=0;i<max;i++){
+    const idx = Math.floor((i/(max-1 || 1))*(routeCoords.length-1));
+    points.push({lat: routeCoords[idx][0], lng: routeCoords[idx][1]});
   }
-  return all;
+  return points;
+}
+
+function roadoraTypeToQuery(type){
+  return {
+    fuel: 'tankstation',
+    charging_station: 'laadpaal',
+    hotel: 'hotel',
+    attraction: 'bezienswaardigheid',
+    parking: 'parking',
+    restaurant: 'restaurant',
+    supermarket: 'supermarkt',
+    toilets: 'toilet'
+  }[type] || type;
+}
+
+function roadoraNormalizeStop(item, type, point){
+  return {
+    type,
+    name: item.name || item.title || roadoraTypeToQuery(type),
+    lat: Number(item.lat),
+    lng: Number(item.lng),
+    rating: item.rating,
+    address: item.address || '',
+    routeDistance: roadoraDistanceKm(point, {lat:Number(item.lat), lng:Number(item.lng)})
+  };
+}
+
+async function getGoogleMapsStopsAlongRoute(types, maxKm){
+  const samplePoints = roadoraRouteSamplePoints();
+  if(!samplePoints.length) return [];
+
+  const zoomByRadius = maxKm <= 10 ? 14 : maxKm <= 25 ? 12 : 11;
+  const seen = new Set();
+  const all = [];
+
+  for(const point of samplePoints){
+    for(const type of types){
+      const query = roadoraTypeToQuery(type);
+      const results = await searchSerpApiBackend(query, point.lat, point.lng, zoomByRadius);
+
+      results.forEach(item => {
+        const stop = roadoraNormalizeStop(item, type, point);
+        if(!stop.lat || !stop.lng) return;
+        const key = (stop.name + '_' + stop.lat + '_' + stop.lng).toLowerCase();
+        if(seen.has(key)) return;
+        seen.add(key);
+        if(stop.routeDistance <= maxKm) all.push(stop);
+      });
+    }
+  }
+
+  return all.sort((a,b) => a.routeDistance - b.routeDistance).slice(0,120);
+}
+
+/*
+  Upgrade hook:
+  Als de bestaande app 0 stops vindt met OpenStreetMap/Overpass,
+  haalt deze functie extra Google Maps resultaten via jouw Vercel backend.
+*/
+async function upgradeStopsWithSerpApiIfNeeded(){
+  const stopsContainer = document.getElementById('stops') || document.getElementById('smartStops');
+  const countEl = document.getElementById('count') || document.getElementById('smartCount');
+  if(!stopsContainer) return;
+
+  const currentChecks = document.querySelectorAll('.stopCheck,.smartStopCheck');
+  if(currentChecks.length > 0) return;
+
+  const filterSelector = document.querySelectorAll('.filter input:checked,.smart-filter input:checked');
+  const types = Array.from(filterSelector).map(x => x.value);
+  if(!types.length) return;
+
+  const radiusEl = document.getElementById('smartRadius') || document.getElementById('radius');
+  let radius = parseFloat(radiusEl?.value || '10');
+
+  // Slimme fallback: probeer 10, 25, 50 km
+  const tries = Array.from(new Set([radius, 25, 50])).filter(x => x >= radius);
+
+  let found = [];
+  for(const km of tries){
+    found = await getGoogleMapsStopsAlongRoute(types, km);
+    if(found.length){
+      if(radiusEl && Number(radiusEl.value) < km){
+        radiusEl.value = String(km);
+      }
+      break;
+    }
+  }
+
+  if(!found.length) return;
+
+  if(typeof allStops !== 'undefined' && Array.isArray(allStops)){
+    allStops = found;
+  }
+  if(typeof smartAllStops !== 'undefined' && Array.isArray(smartAllStops)){
+    smartAllStops = found;
+  }
+
+  if(countEl) countEl.textContent = found.length;
+
+  const checkClass = document.getElementById('smartStops') ? 'smartStopCheck' : 'stopCheck';
+  const stopClass = document.getElementById('smartStops') ? 'smart-stop' : 'stop';
+  const badgeClass = document.getElementById('smartStops') ? 'smart-badge' : 'badge';
+
+  const iconMap = {fuel:'⛽',charging_station:'⚡',hotel:'🏨',attraction:'🎢',parking:'🅿️',restaurant:'🍽️',supermarket:'🛒',toilets:'🚻'};
+  const labelMap = {fuel:'tankstation',charging_station:'laadpaal',hotel:'hotel',attraction:'uitje',parking:'parkeren',restaurant:'restaurant',supermarket:'supermarkt',toilets:'toilet'};
+
+  stopsContainer.innerHTML = found.map(s => `
+    <label class="${stopClass}">
+      <input type="checkbox" class="${checkClass}" data-lat="${s.lat}" data-lng="${s.lng}" data-name="${String(s.name).replace(/"/g,'')}" onchange="updateSelected && updateSelected()">
+      <div>
+        <h3>${iconMap[s.type] || '📍'} ${s.name}</h3>
+        <p>${Math.round(s.routeDistance*10)/10} km van je route${s.rating ? ' • ⭐ ' + s.rating : ''}</p>
+        <span class="${badgeClass}">${labelMap[s.type] || 'stop'}</span>
+      </div>
+    </label>
+  `).join('');
+
+  if(typeof updateSelected === 'function') updateSelected();
+  if(typeof updateSmartSelected === 'function') updateSmartSelected();
+
+  const notice = document.getElementById('serpapiNotice');
+  if(notice){
+    notice.style.display = 'block';
+    notice.textContent = 'Google Maps resultaten gevonden via Roadora backend.';
+  }
+}
+
+// Wrap bestaande renderStops als die bestaat
+window.addEventListener('load', () => {
+  if(typeof renderStops === 'function' && !renderStops.__serpWrapped){
+    const originalRenderStops = renderStops;
+    window.renderStops = function(){
+      originalRenderStops();
+      setTimeout(upgradeStopsWithSerpApiIfNeeded, 400);
+    };
+    window.renderStops.__serpWrapped = true;
+  }
+
+  if(typeof renderSmartStops === 'function' && !renderSmartStops.__serpWrapped){
+    const originalRenderSmartStops = renderSmartStops;
+    window.renderSmartStops = function(){
+      originalRenderSmartStops();
+      setTimeout(upgradeStopsWithSerpApiIfNeeded, 400);
+    };
+    window.renderSmartStops.__serpWrapped = true;
+  }
+});
+</script>
+
+
+<div id="routeBackendStatus" style="display:none;background:#ecfeff;border-left:5px solid #0f766e;border-radius:16px;padding:13px;margin:12px;color:#115e59;font-weight:800"></div>
+<script>
+async function testRouteBackend(){
+  const box = document.getElementById('routeBackendStatus');
+  if(box){ box.style.display='block'; box.textContent='Backend testen...'; }
+  try{
+    const res = await fetch('/api/maps-search?q=tankstation&lat=52.3676&lng=4.9041');
+    const data = await res.json();
+    const count = data.results ? data.results.length : 0;
+    if(box) box.textContent = 'Backend werkt: ' + count + ' resultaten gevonden.';
+    return data;
+  }catch(e){
+    if(box) box.textContent = 'Backend fout: ' + e.message;
+    return null;
+  }
 }
 </script>
 
