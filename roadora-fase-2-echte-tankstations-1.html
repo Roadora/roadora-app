@@ -1,0 +1,4221 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadora</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#f7f3ec;--card:#fff;--text:#1f2937;--muted:#6b7280;--line:#e7dfd3;--accent:#166534;--soft:#efe8dc;--dark:#111827;--teal:#0f766e}
+*{box-sizing:border-box}
+body{margin:0;padding-bottom:112px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:1160px;margin:auto;padding:18px}
+.hero{min-height:330px;border-radius:32px;padding:28px;background:linear-gradient(135deg,rgba(17,24,39,.72),rgba(15,118,110,.45)),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80');background-size:cover;background-position:center;color:#fff;display:flex;align-items:flex-end;box-shadow:0 16px 42px rgba(0,0,0,.12)}
+.pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:8px 12px;font-size:13px}
+h1{font-size:clamp(38px,7vw,68px);line-height:.95;margin:12px 0}
+h2{margin:0 0 14px;font-size:24px}
+h3{margin:0 0 6px}
+p{color:var(--muted)}
+.hero p{color:#f3f4f6;font-size:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.04)}
+.section{margin-top:18px}
+input,select{width:100%;border:1px solid var(--line);border-radius:15px;padding:13px;font:inherit;background:#fff}
+button,.btn{border:0;border-radius:15px;padding:13px 16px;background:var(--dark);color:#fff;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+button.secondary,.btn.secondary{background:var(--soft);color:var(--text);border:1px solid var(--line)}
+button.accent,.btn.accent{background:var(--accent)}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.hotel{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;border:1px solid var(--line);border-radius:24px;padding:14px;background:#fff}
+.hotel-img{height:115px;border-radius:18px;background-size:cover;background-position:center}
+.tag,.badge{display:inline-block;background:#f3f4f6;border-radius:999px;padding:6px 10px;font-size:12px;margin-right:5px;margin-top:8px;font-weight:800}
+.muted{color:var(--muted)}
+.price{font-size:24px;font-weight:900}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.page{display:none}
+.page.active{display:block}
+.route-search{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.smart-options{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.summary{grid-column:1/-1;background:#f8f5ef;color:var(--accent);border:1px solid var(--line);border-radius:16px;padding:12px;font-weight:800;display:none}
+.layout{display:grid;grid-template-columns:1.45fr .9fr;gap:16px}
+#map{height:580px;border-radius:26px;overflow:hidden;border:1px solid var(--line);background:#e5e7eb}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#f8f5ef;color:var(--accent);padding:12px;border-radius:16px;font-weight:900;border:1px solid var(--line)}
+.filters{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.filter{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 13px;font-weight:800;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,.04);cursor:pointer}
+.filter input{width:18px;height:18px;accent-color:var(--accent)}
+.filter:has(input:checked){border-color:var(--accent);background:#f0fdf4;color:var(--accent)}
+.stop{background:#fff;border:1px solid var(--line);padding:12px;border-radius:18px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+.stop input{width:auto;margin-top:4px}
+.stop h3{margin:0 0 4px;font-size:15px}
+.stop p{margin:0;color:var(--muted);font-size:13px}
+.notice{background:#fff7ed;border-left:5px solid #f97316;border-radius:16px;padding:13px;color:#7c2d12;margin-top:14px}
+.loading{display:none;background:#ecfeff;border-left:5px solid #0f766e;border-radius:16px;padding:13px;color:#115e59;margin-bottom:12px;font-weight:800}
+.feature{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;cursor:pointer}
+.feature .icon{font-size:30px}
+.compare-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:20px;padding:14px;background:#fff;margin-bottom:10px}
+.bottom{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(1120px,calc(100% - 24px));background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:24px;box-shadow:0 12px 34px rgba(0,0,0,.14);display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:10px;z-index:9999}
+.bottom button{background:transparent;color:var(--text);border:0;border-radius:16px;padding:8px 6px;font-size:13px}
+.bottom button.active{background:var(--accent);color:white}
+.nav-icon{display:block;font-size:22px;margin-bottom:4px}
+@media(max-width:900px){.grid-4,.grid-3,.grid-2,.route-search,.layout{grid-template-columns:1fr}.smart-options{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.filters{grid-template-columns:repeat(2,1fr)}#map{height:430px}.hotel{grid-template-columns:1fr}.hotel-img{height:170px}.actions{justify-content:flex-start}}
+@media(max-width:430px){.filters{grid-template-columns:1fr}.bottom{gap:4px;padding:8px}.bottom button{font-size:10px;padding:8px 1px}}
+
+.accordion{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;margin:12px 0}
+.acc-head{width:100%;background:#fff;color:var(--text);border:0;padding:14px 16px;font-weight:900;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left}
+.acc-head .chev{transition:.2s ease;font-size:18px;color:var(--muted)}
+.acc-body{display:none;padding:14px;border-top:1px solid var(--line)}
+.accordion.open .acc-body{display:block}
+.accordion.open .chev{transform:rotate(180deg)}
+
+
+.route-card,.card{box-shadow:0 8px 24px rgba(0,0,0,.06)!important}
+.muted{opacity:.8}
+button{transition:all .2s ease}
+button:hover{transform:translateY(-1px)}
+
+.route-v4-summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+.route-chip{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  color:var(--accent);
+  font-weight:900;
+  line-height:1.2;
+}
+.route-chip small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:3px;
+}
+.map-toggle{
+  width:100%;
+  margin-bottom:10px;
+  background:var(--soft)!important;
+  color:var(--text)!important;
+  border:1px solid var(--line)!important;
+}
+.map-card-compact #map{
+  height:330px!important;
+}
+@media(max-width:700px){
+  .route-v4-summary{grid-template-columns:repeat(3,1fr)}
+  .route-chip{font-size:14px;padding:9px}
+  .map-card-compact #map{height:300px!important}
+}
+
+
+.route-top-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:12px 0;
+}
+@media(max-width:520px){
+  .route-top-actions{grid-template-columns:1fr 1fr}
+  .route-top-actions button{padding:13px 8px;font-size:14px}
+}
+
+.stop-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 8px 22px rgba(0,0,0,.05)}
+.stop-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.stop-title{font-weight:900;font-size:15px}
+.stop-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.meta-pill{background:#f8f5ef;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800;color:var(--text)}
+.stop-actions{display:flex;gap:8px;margin-top:12px}
+.stop-actions>*{flex:1}
+
+/* Route v8 definitief: mobile-first stop layout */
+.route-results-wrap{
+  width:100%!important;
+  display:block!important;
+}
+.stops-title-card{
+  width:100%!important;
+  display:block!important;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:18px 20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.04);
+  margin:16px 0 14px;
+}
+.stops-title-card h2{
+  margin:0!important;
+  font-size:28px!important;
+  line-height:1.1!important;
+}
+#stops{
+  width:100%!important;
+  max-width:100%!important;
+  display:block!important;
+}
+.stop-card{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  display:block!important;
+  margin:0 0 14px 0!important;
+  padding:16px!important;
+  border-radius:22px!important;
+}
+.stop-top{
+  display:flex!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  align-items:flex-start!important;
+}
+.stop-title{
+  font-size:17px!important;
+  line-height:1.15!important;
+}
+.stop-meta{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+}
+.stop-actions{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin-top:14px!important;
+}
+.stop-actions label.secondary,
+.stop-actions button{
+  width:100%!important;
+  min-height:52px!important;
+  border-radius:16px!important;
+  padding:12px!important;
+}
+#stops::before{content:none!important;display:none!important}
+.layout.section{
+  display:block!important;
+}
+.layout.section > .card{
+  width:100%!important;
+  max-width:100%!important;
+  margin-bottom:16px!important;
+}
+@media(max-width:900px){
+  #stops,.stop-card,.stops-title-card{width:100%!important;max-width:100%!important}
+}
+
+
+/* Route v8.1 full width final */
+.route-results-wrap,
+.stops-title-card,
+#stops,
+.stop-card{
+  width:calc(100vw - 32px)!important;
+  max-width:calc(100vw - 32px)!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.route-results-wrap{
+  overflow:visible!important;
+}
+.stops-title-card{
+  box-sizing:border-box!important;
+}
+.stop-card{
+  box-sizing:border-box!important;
+}
+@media(min-width:768px){
+  .route-results-wrap,
+  .stops-title-card,
+  #stops,
+  .stop-card{
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
+
+
+.selected-route-bar{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:14px 16px;
+  margin:12px 0;
+  box-shadow:0 8px 22px rgba(0,0,0,.04);
+}
+.selected-route-title{
+  font-weight:900;
+  margin-bottom:8px;
+}
+.selected-route-flow{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  color:var(--text);
+  font-weight:800;
+}
+.route-point{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:13px;
+}
+.route-arrow{
+  color:var(--muted);
+  font-weight:900;
+}
+
+
+.inline-route-bar{
+  grid-column:1/-1;
+  margin:4px 0 4px!important;
+  padding:12px 14px!important;
+  border-radius:16px!important;
+  box-shadow:none!important;
+  background:#f8f5ef!important;
+}
+.inline-route-bar .selected-route-title{
+  font-size:13px!important;
+  color:var(--muted)!important;
+  margin-bottom:6px!important;
+}
+.inline-route-bar .selected-route-flow{
+  gap:6px!important;
+}
+.inline-route-bar .route-point{
+  font-size:13px!important;
+  padding:6px 9px!important;
+}
+
+
+#scrollTopBtn{
+  position:fixed;
+  right:16px;
+  bottom:92px;
+  width:56px;
+  height:56px;
+  border:none;
+  border-radius:50%;
+  background:#166534;
+  color:#fff;
+  font-size:24px;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  z-index:9999;
+  display:none;
+  cursor:pointer;
+}
+#scrollTopBtn.show{display:flex;align-items:center;justify-content:center;}
+
+
+.top-language-bar{max-width:1160px;margin:0 auto;padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand-mini{font-weight:900;color:var(--accent);font-size:18px}
+.lang-select-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 10px;box-shadow:0 6px 18px rgba(0,0,0,.04)}
+.lang-select-wrap select{border:0;padding:4px 6px;background:transparent;font-weight:800;width:auto}
+@media(max-width:520px){.top-language-bar{padding:10px 12px 0}.brand-mini{font-size:16px}.lang-select-wrap select{max-width:170px}}
+
+
+/* Premium-ready Roadora header */
+.top-language-bar{
+  max-width:1160px;
+  margin:0 auto;
+  padding:16px 18px 8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.brand-mini{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:900;
+  color:var(--accent);
+  font-size:24px;
+  line-height:1;
+}
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.lang-select-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:10px 14px;
+  box-shadow:0 8px 22px rgba(0,0,0,.06);
+}
+.lang-select-wrap span{
+  font-size:22px;
+}
+.lang-select-wrap select{
+  border:0;
+  padding:4px 4px;
+  background:transparent;
+  font-weight:900;
+  font-size:16px;
+  width:auto;
+  outline:none;
+}
+.premium-placeholder{
+  display:none;
+  background:#166534;
+  color:#fff;
+  border:0;
+  border-radius:22px;
+  padding:12px 16px;
+  font-weight:900;
+  box-shadow:0 8px 22px rgba(22,101,52,.18);
+}
+body.premium-ready .premium-placeholder{
+  display:inline-flex;
+}
+@media(max-width:520px){
+  .top-language-bar{padding:14px 14px 6px}
+  .brand-mini{font-size:22px}
+  .lang-select-wrap{padding:9px 11px;border-radius:20px}
+  .lang-select-wrap select{max-width:170px;font-size:15px}
+}
+
+</style>
+
+<style id="premium-hotel-cards-style">
+.hotel-card-premium{
+  background:#fff;border:1px solid #e7dfd3;border-radius:18px;padding:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);display:grid;grid-template-columns:110px 1fr;gap:12px;margin:12px 0
+}
+.hotel-card-premium img{
+  width:110px;height:110px;object-fit:cover;border-radius:14px
+}
+.hotel-meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.hotel-badge{background:#f3f4f6;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.hotel-price{font-size:22px;font-weight:900;color:#166534}
+.hotel-cta{
+  display:inline-block;margin-top:8px;background:#166534;color:#fff;text-decoration:none;
+  padding:10px 14px;border-radius:12px;font-weight:800
+}
+.hotel-sub{color:#6b7280;font-size:14px}
+</style>
+
+
+
+<style id="hotel-filter-accordion-style">
+.hotel-filter-accordion{
+ background:#fff;border:1px solid #e7dfd3;border-radius:18px;margin:12px 0;
+ box-shadow:0 8px 24px rgba(0,0,0,.06);overflow:hidden
+}
+.hotel-filter-head{
+ width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+ background:#fff;color:#1f2937;border:0;padding:14px 16px;font-weight:900;cursor:pointer
+}
+.hotel-filter-body{display:none;padding:14px;border-top:1px solid #e7dfd3}
+.hotel-filter-accordion.open .hotel-filter-body{display:block}
+.hotel-filter-accordion .chev{transition:.2s ease;color:#6b7280}
+.hotel-filter-accordion.open .chev{transform:rotate(180deg)}
+</style>
+
+
+<style id="hotel-filter-chip-style">
+.hotel-filter-row{display:flex;flex-direction:column;gap:8px}
+.hotel-chip{
+ border:1px solid #d6d3d1;background:#f9fafb;padding:10px 12px;border-radius:12px;
+ font-size:14px;font-weight:800;cursor:pointer;color:#111827;text-align:left
+}
+.hotel-chip.active{background:#166534;color:#fff;border-color:#166534}
+.hotel-cta-secondary{
+ display:inline-block;margin-left:8px;background:#111827;color:#fff;text-decoration:none;
+ padding:10px 14px;border-radius:12px;font-weight:800
+}
+</style>
+
+
+<style id="vehicle-style">
+.vehicle-box{
+ background:#fff;border:1px solid #e7dfd3;border-radius:18px;padding:12px;margin:12px 0;
+ box-shadow:0 8px 24px rgba(0,0,0,.06)
+}
+.vehicle-row{display:flex;gap:8px;flex-wrap:wrap}
+.vehicle-chip{
+ border:1px solid #d6d3d1;background:#f9fafb;padding:10px 12px;border-radius:12px;
+ font-size:14px;font-weight:800;cursor:pointer;color:#111827
+}
+.vehicle-chip.active{background:#166534;color:#fff;border-color:#166534}
+.vehicle-note{font-size:13px;color:#6b7280;margin-top:8px}
+</style>
+
+
+<style id="vehicle-hotel-note-style">
+.hotel-vehicle-info{
+  margin-top:12px;
+  background:#f8f5ef;
+  border:1px solid #e7dfd3;
+  border-radius:14px;
+  padding:10px 12px;
+  font-weight:800;
+  color:#374151;
+}
+#hotelVehicleBox{display:none!important}
+</style>
+
+
+
+<style id="hotel-empty-fields-style">
+.date-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.date-field label{
+  font-size:13px;
+  font-weight:900;
+  color:#6b7280;
+  padding-left:2px;
+}
+</style>
+
+
+<style id="gps-inside-field-style">
+.dest-wrap{position:relative}
+.dest-wrap .gps-inline{
+ position:absolute; right:10px; top:50%; transform:translateY(-50%);
+ border:0; background:#fff; cursor:pointer; font-size:18px;
+ width:36px; height:36px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.08)
+}
+.dest-wrap input{padding-right:52px!important}
+.gps-inline-note{font-size:12px;color:#6b7280;margin-top:6px;font-weight:700}
+</style>
+
+
+<style id="hotel-button-balance-style">
+.dest-wrap .gps-inline{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ line-height:1!important;
+ padding:0!important;
+}
+.hotel-action-row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+ margin-top:12px;
+}
+.hotel-action-row button,
+.hotel-action-row a{
+ width:100%;
+ height:48px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:800;
+}
+</style>
+
+
+<style id="home-v1-style">
+.home-quick-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+.home-action{
+  border-radius:22px;
+  padding:18px;
+  min-height:82px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:900;
+  text-decoration:none;
+  border:1px solid var(--line);
+}
+.home-action.primary{
+  background:var(--accent);
+  color:white;
+  font-size:20px;
+}
+.home-action.secondary{
+  background:white;
+  color:var(--text);
+}
+.home-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:18px;
+}
+.home-mini-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.home-mini-card .icon{font-size:28px;margin-bottom:8px}
+@media(max-width:760px){
+  .home-quick-grid,.home-mini-grid{grid-template-columns:1fr}
+  .home-action{min-height:64px}
+}
+</style>
+
+
+<style id="home-v2-style">
+.home-v2-hero{
+  min-height:420px;
+  border-radius:32px;
+  padding:28px;
+  background:
+    linear-gradient(135deg,rgba(17,24,39,.76),rgba(22,101,52,.46)),
+    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80');
+  background-size:cover;
+  background-position:center;
+  color:#fff;
+  display:flex;
+  align-items:flex-end;
+  box-shadow:0 16px 42px rgba(0,0,0,.14);
+}
+.home-v2-hero p{color:#f3f4f6}
+.home-v2-actions{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:12px;
+  margin-top:18px;
+}
+.home-v2-btn{
+  min-height:76px;
+  border-radius:22px;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:900;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.28);
+}
+.home-v2-btn.primary{
+  background:#166534;
+  color:#fff;
+  font-size:20px;
+}
+.home-v2-btn.light{
+  background:rgba(255,255,255,.96);
+  color:#111827;
+}
+.home-v2-section-title{
+  margin:22px 0 12px;
+  font-size:24px;
+}
+.home-v2-how{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.home-v2-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.home-v2-card .icon{font-size:30px;margin-bottom:8px}
+.home-v2-routes{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.route-suggestion{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.route-suggestion b{display:block;margin-bottom:5px}
+.route-suggestion button{
+  margin-top:12px;
+  width:100%;
+  background:var(--soft);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+.home-v2-note{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:16px;
+  margin-top:18px;
+  color:#374151;
+  font-weight:800;
+}
+@media(max-width:760px){
+  .home-v2-actions,.home-v2-how,.home-v2-routes{grid-template-columns:1fr}
+  .home-v2-hero{min-height:380px;padding:22px}
+  .home-v2-btn{min-height:62px}
+}
+</style>
+
+
+<style id="hotels-v2-style">
+.hotels-v2-intro{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  margin-top:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.hotels-v2-intro h2{margin-bottom:6px}
+.hotels-v2-intro p{margin:0}
+.hotel-card-v2{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  display:grid;
+  grid-template-columns:150px 1fr;
+  gap:16px;
+  align-items:stretch;
+  margin-bottom:14px;
+}
+.hotel-card-v2-img{
+  min-height:150px;
+  border-radius:20px;
+  background-size:cover;
+  background-position:center;
+}
+.hotel-card-v2-body{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.hotel-card-v2-title{
+  font-size:20px;
+  font-weight:950;
+  line-height:1.1;
+}
+.hotel-card-v2-sub{
+  color:var(--muted);
+  font-size:14px;
+  font-weight:700;
+}
+.hotel-card-v2-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.hotel-card-v2-badge{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:900;
+  color:#374151;
+}
+.hotel-card-v2-bottom{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:end;
+  margin-top:auto;
+}
+.hotel-card-v2-price{
+  color:var(--accent);
+  font-size:24px;
+  font-weight:950;
+}
+.hotel-card-v2-price small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.hotel-card-v2-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.hotel-card-v2-actions .btn,
+.hotel-card-v2-actions button{
+  border-radius:14px;
+  padding:11px 13px;
+  min-width:118px;
+}
+.affiliate-note{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+.hotel-filter-accordion{
+  border-radius:22px!important;
+}
+.hotel-chip{
+  width:100%;
+  text-align:left!important;
+  color:#111827!important;
+}
+.hotel-chip.active{
+  color:#fff!important;
+}
+@media(max-width:720px){
+  .hotel-card-v2{grid-template-columns:1fr}
+  .hotel-card-v2-img{min-height:180px}
+  .hotel-card-v2-bottom{grid-template-columns:1fr}
+  .hotel-card-v2-actions{justify-content:stretch}
+  .hotel-card-v2-actions .btn,
+  .hotel-card-v2-actions button{width:100%;min-width:0}
+}
+</style>
+
+
+<style id="hotel-route-actions-safe-style">
+.hotel-route-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  width:100%;
+  margin-top:8px;
+}
+.hotel-route-actions button{
+  width:100%;
+  min-height:44px;
+  border-radius:14px;
+  font-weight:900;
+  padding:10px 8px;
+  font-size:14px;
+}
+.hotel-route-note{
+  margin:12px 0;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  color:#166534;
+  border-radius:16px;
+  padding:12px;
+  font-weight:900;
+}
+</style>
+
+
+<style id="route-remove-chip-style">
+.route-point{
+  position:relative;
+  padding-right:28px!important;
+}
+.route-remove{
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  border:0;
+  background:rgba(0,0,0,.08);
+  color:#111827;
+  font-size:12px;
+  line-height:18px;
+  cursor:pointer;
+  font-weight:900;
+}
+.route-remove:hover{
+  background:#ef4444;
+  color:#fff;
+}
+</style>
+
+
+<style id="route-remove-pretty-style">
+#selectedRouteFlow .route-point{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:8px 42px 8px 14px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.05)!important;
+  margin:4px 6px 4px 0!important;
+  position:relative!important;
+  min-height:42px!important;
+}
+#selectedRouteFlow .route-remove{
+  position:absolute!important;
+  right:6px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:28px!important;
+  height:28px!important;
+  border-radius:999px!important;
+  border:1px solid #bbf7d0!important;
+  background:#fff!important;
+  color:#111827!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:14px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06)!important;
+}
+#selectedRouteFlow .route-remove:hover{
+  background:#166534!important;
+  color:#fff!important;
+  border-color:#166534!important;
+}
+#selectedRouteFlow .route-arrow{
+  margin:0 4px!important;
+}
+</style>
+
+
+<style id="route-stop-single-chip-style">
+#selectedRouteFlow .route-point{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:8px 42px 8px 14px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.05)!important;
+  margin:4px 6px 4px 0!important;
+  position:relative!important;
+  min-height:42px!important;
+}
+#selectedRouteFlow .route-remove{
+  position:absolute!important;
+  right:6px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:28px!important;
+  height:28px!important;
+  border-radius:999px!important;
+  border:1px solid #bbf7d0!important;
+  background:#fff!important;
+  color:#111827!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:14px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06)!important;
+  cursor:pointer!important;
+}
+#selectedRouteFlow .route-remove:active,
+#selectedRouteFlow .route-remove:hover{
+  background:#166534!important;
+  color:#fff!important;
+  border-color:#166534!important;
+}
+#selectedRouteFlow .route-arrow{
+  display:inline-flex;
+  align-items:center;
+  margin:0 6px!important;
+  color:#6b7280;
+  font-weight:900;
+}
+</style>
+
+
+
+<style id="hotels-along-route-v1b-style">
+#hotelsAlongRouteBox{
+  width:100%;
+  display:block;
+  clear:both;
+  grid-column:1 / -1;
+}
+.hotels-route-box{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  margin:18px 0;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.hotels-route-head h2{
+  margin:0 0 6px;
+  font-size:28px;
+  line-height:1.1;
+}
+.hotel-route-note{
+  color:var(--muted);
+  font-size:15px;
+  font-weight:750;
+  margin-bottom:14px;
+}
+.hotels-route-btn{
+  width:100%;
+  min-height:54px;
+  border-radius:18px;
+  background:#166534!important;
+  color:#fff!important;
+  font-weight:900;
+  margin:4px 0 16px;
+}
+.hotels-route-results{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.hotel-route-card{
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:14px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.04);
+  display:grid;
+  grid-template-columns:110px 1fr;
+  gap:14px;
+  align-items:stretch;
+}
+.hotel-route-img{
+  width:110px;
+  min-height:110px;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+}
+.hotel-route-title{
+  font-weight:950;
+  font-size:18px;
+  line-height:1.15;
+}
+.hotel-route-place{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  margin-top:3px;
+}
+.hotel-route-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin:9px 0;
+}
+.hotel-route-pill{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:12px;
+  font-weight:850;
+  color:#374151;
+}
+.hotel-route-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.hotel-route-actions a,
+.hotel-route-actions button{
+  min-height:40px;
+  padding:9px 8px;
+  border-radius:13px;
+  font-size:13px;
+  font-weight:900;
+}
+@media(max-width:620px){
+  .hotel-route-card{grid-template-columns:1fr}
+  .hotel-route-img{width:100%;height:150px}
+  .hotel-route-actions{grid-template-columns:1fr}
+}
+</style>
+
+
+<style id="onderweg-v2-style">
+.onderweg-v2-hero{background:linear-gradient(135deg,rgba(17,24,39,.74),rgba(22,101,52,.42)),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80');background-size:cover;background-position:center;color:#fff;border-radius:28px;padding:24px;margin-bottom:18px;box-shadow:0 14px 36px rgba(0,0,0,.12)}
+.onderweg-v2-hero p{color:#f3f4f6;margin-bottom:0}.onderweg-tools{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+.onderweg-filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.onderweg-filter{border:1px solid var(--line);background:#f8f5ef;color:#111827;border-radius:16px;padding:13px 10px;font-weight:900;text-align:left;cursor:pointer}.onderweg-filter.active{background:#166534;color:#fff;border-color:#166534}
+.onderweg-results{display:grid;gap:14px;margin-top:16px}.onderweg-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+.onderweg-card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.onderweg-title{font-size:18px;font-weight:950}.onderweg-sub{color:var(--muted);font-size:13px;font-weight:750;margin-top:3px}
+.onderweg-badges{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.onderweg-badge{background:#f8f5ef;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:12px;font-weight:850;color:#374151}
+.onderweg-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.onderweg-actions a,.onderweg-actions button{border-radius:14px;min-height:42px;font-weight:900}
+.onderweg-affiliate-note{margin-top:12px;padding:12px;background:#f8f5ef;border:1px solid var(--line);border-radius:18px;color:#374151;font-size:13px;font-weight:800}
+@media(max-width:700px){.onderweg-filter-grid{grid-template-columns:1fr 1fr}.onderweg-actions{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+
+
+<div class="top-language-bar">
+  <div class="brand-mini"><span>🚗</span><span>Roadora</span></div>
+  <div class="header-actions">
+    <div class="lang-select-wrap">
+      <span>🌍</span>
+      <select id="languageSelect" onchange="setLanguage(this.value)">
+      <option value="nl">Nederlands</option>
+      <option value="en">English</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+    </select>
+    </div>
+    <button class="premium-placeholder" type="button" onclick="alert('Premium komt later beschikbaar')">⭐ Premium</button>
+  </div>
+</div>
+
+
+<main class="wrap">
+
+
+
+<section id="homePage" class="page active">
+  <section class="home-v2-hero">
+    <div>
+      <span class="pill">🚗 Roadora Europa</span>
+      <h1>Plan jouw roadtrip slim door Europa</h1>
+      <p>Maak je route, vind hotels onderweg en ontdek handige stops voor je reis.</p>
+      <div class="home-v2-actions">
+        <a class="home-v2-btn primary" href="#" onclick="showPage('route');return false;">🚗 Start route</a>
+        <a class="home-v2-btn light" href="#" onclick="showPage('hotels');return false;">🏨 Hotels zoeken</a>
+        <a class="home-v2-btn light" href="#" onclick="showPage('trips');return false;">🎡 Uitjes vinden</a>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="home-v2-section-title">Zo werkt Roadora</h2>
+  <section class="home-v2-how">
+    <div class="home-v2-card">
+      <div class="icon">🗺️</div>
+      <h3>1. Plan je route</h3>
+      <p>Kies vertrekpunt, bestemming en voertuigtype.</p>
+    </div>
+    <div class="home-v2-card">
+      <div class="icon">🛰️</div>
+      <h3>2. Kies stops</h3>
+      <p>Vind tankstations, laadpalen, restaurants, hotels en uitjes langs je route.</p>
+    </div>
+    <div class="home-v2-card">
+      <div class="icon">🧭</div>
+      <h3>3. Navigeer</h3>
+      <p>Sla je route op of open hem direct in Google Maps.</p>
+    </div>
+  </section>
+
+  <h2 class="home-v2-section-title">Populaire roadtrip ideeën</h2>
+  <section class="home-v2-routes">
+    <div class="route-suggestion">
+      <b>🇳🇱 Rotterdam → Amsterdam</b>
+      <span class="muted">Korte rit met hotels en stops onderweg.</span>
+      <button onclick="showPage('route');document.getElementById('from').value='Rotterdam';document.getElementById('to').value='Amsterdam';">Gebruik route</button>
+    </div>
+    <div class="route-suggestion">
+      <b>🇩🇪 Rotterdam → Hamburg</b>
+      <span class="muted">Perfect voor een eerste overnachting richting Scandinavië.</span>
+      <button onclick="showPage('route');document.getElementById('from').value='Rotterdam';document.getElementById('to').value='Hamburg';">Gebruik route</button>
+    </div>
+    <div class="route-suggestion">
+      <b>🇩🇰 Hamburg → Kopenhagen</b>
+      <span class="muted">Mooie route met hotels, laadstops en uitjes.</span>
+      <button onclick="showPage('route');document.getElementById('from').value='Hamburg';document.getElementById('to').value='Kopenhagen';">Gebruik route</button>
+    </div>
+  </section>
+
+  <div class="home-v2-note">
+    💡 Roadora helpt je niet alleen navigeren, maar ook slim kiezen waar je stopt, slaapt en pauzeert.
+  </div>
+</section>
+
+
+<section id="hotelsPage" class="page">
+  <section class="hero">
+    <div>
+      <span class="pill">🚗 Europe Roadtrip Hotels</span>
+      <h1>Plan je perfecte roadtrip door Europa</h1>
+      <p>Vind hotels, vergelijk verblijfplaatsen en bewaar de beste stops voor onderweg.</p>
+    </div>
+  </section>
+
+  <section class="card section">
+    <h2>🔎 Zoek hotels voor je roadtrip</h2>
+    <div class="grid grid-4">
+      <input id="city" value="" placeholder="Bestemming">
+      <div class="date-field"><label>Check-in</label><input id="checkin" type="date"></div>
+      <div class="date-field"><label>Check-out</label><input id="checkout" type="date"></div>
+      <input id="maxPrice" type="number" value="" placeholder="Max prijs">
+    </div>
+    <div class="section">
+      <button class="accent" onclick="searchHotels()">Zoek hotels</button>
+      <button class="secondary" onclick="showAllHotels()">Bekijk populaire hotels</button>
+    </div>
+  </section>
+
+  <section class="card section">
+    <h2>🏨 Hotels voor jouw roadtrip</h2>
+    <div id="hotelResults" class="grid"></div>
+  </section>
+</section>
+
+
+<section id="routePage" class="page">
+  <section class="hero">
+    <div>
+      <span class="pill">🧭 Route</span>
+      <h1>Plan jouw route</h1>
+      <p>Vul je vertrekpunt en bestemming in. Daarna opent Roadora je routekaart.</p>
+    </div>
+  </section>
+
+  <section class="card section route-phase1-card">
+    <h2>🛰️ Route plannen</h2>
+
+    <div class="route-phase1-form">
+      <div class="route-phase1-from">
+        <input id="from" value="" placeholder="Vertrekpunt">
+        <button type="button" class="route-phase1-gps" onclick="useGpsStart()" aria-label="Gebruik GPS">🛰️</button>
+      </div>
+
+      <input id="to" value="" placeholder="Bestemming">
+
+      <input type="hidden" id="fromCoords" value="">
+
+      <button class="accent route-phase1-plan" onclick="planRoute()">🚗 Plan route</button>
+
+      <div id="gpsStatus" class="muted route-phase1-help">Gebruik GPS of typ zelf je vertrekpunt.</div>
+      <div id="loading" class="loading">Route wordt berekend...</div>
+    </div>
+  </section>
+</section>
+
+<section id="routeMapPage" class="page">
+  <section class="hero">
+    <div>
+      <span class="pill">🗺️ Routekaart</span>
+      <h1>Jouw geplande route</h1>
+      <p id="routeMapSubtitle">Bekijk je route, afstand en reistijd.</p>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="route-phase1-stats">
+      <div class="route-phase1-stat"><small>Afstand</small><span id="distance">-</span></div>
+      <div class="route-phase1-stat"><small>Reistijd</small><span id="duration">-</span></div>
+      <div class="route-phase1-stat"><small>Stops</small><span id="count">0</span></div>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div id="map"></div>
+    <div class="route-phase1-actions">
+      
+      <button class="accent" type="button" onclick="startNavigationInMaps()">Navigeren</button>
+    </div>
+  </section>
+
+  <div id="resolvedRoute" style="display:none"></div>
+  <div id="summary" style="display:none!important"></div>
+  <div id="stops" style="display:none"></div>
+</section>
+
+<section id="comparePage" class="page">
+  <section class="hero"><div><span class="pill">💶 Vergelijk</span><h1>Vergelijk hotels en stops</h1><p>Bekijk snel prijs, rating en type verblijf.</p></div></section>
+  <section class="card section"><h2>Hotel vergelijking</h2><div id="compareResults"></div></section>
+</section>
+
+<section id="roadPage" class="page">
+  <section class="hero"><div><span class="pill">⛽ Onderweg</span><h1>Handige stops onderweg</h1><p>Tankstations, laadpalen, parkeren, restaurants en supermarkten.</p></div></section>
+  <section class="grid grid-3 section">
+    <div class="feature"><div class="icon">⛽</div><h3>Tankstations</h3><p>Vind tankstations langs je route via de routeplanner.</p></div>
+    <div class="feature"><div class="icon">⚡</div><h3>Laadpalen</h3><p>Zoek laadpunten onderweg.</p></div>
+    <div class="feature"><div class="icon">🅿️</div><h3>Parkeren</h3><p>Vind parkeerplekken bij stops.</p></div>
+  </section>
+</section>
+
+<section id="tripsPage" class="page">
+  <section class="hero"><div><span class="pill">🎡 Uitjes</span><h1>Uitjes voor onderweg</h1><p>Vind bezienswaardigheden, parken en leuke tussenstops.</p></div></section>
+  <section class="grid grid-3 section">
+    <div class="feature"><div class="icon">🎢</div><h3>Attracties</h3><p>Zoek attracties via de routeplanner.</p></div>
+    <div class="feature"><div class="icon">🏛️</div><h3>Musea</h3><p>Culturele stops voor onderweg.</p></div>
+    <div class="feature"><div class="icon">🌲</div><h3>Natuur</h3><p>Mooie pauzeplekken op de route.</p></div>
+  </section>
+</section>
+
+<section id="savedPage" class="page">
+  <section class="hero">
+    <div>
+      <span class="pill">💾 Mijn Routes</span>
+      <h1>Opgeslagen routes</h1>
+      <p>Bewaar je roadtrips, open ze opnieuw en navigeer direct in Google Maps.</p>
+    </div>
+  </section>
+
+  <section class="card section">
+    <h2>💾 Mijn opgeslagen routes</h2>
+    <p class="muted">Routes worden lokaal opgeslagen op dit apparaat. Later kunnen we dit koppelen aan accounts.</p>
+    <div id="savedRoutesList"></div>
+  </section>
+</section>
+
+</main>
+
+
+
+
+
+
+<nav class="bottom">
+  <button id="nav-home" class="active" type="button" onclick="showPage('home')"><span class="nav-icon">🏠</span>Home</button>
+  <button id="nav-route" type="button" onclick="showPage('route')"><span class="nav-icon">🚗</span>Route</button>
+  <button id="nav-hotels" type="button" onclick="showPage('hotels')"><span class="nav-icon">🏨</span>Hotels</button>
+  <button id="nav-saved" type="button" onclick="showPage('saved')"><span class="nav-icon">💾</span>Mijn Routes</button>
+  <button id="nav-road" type="button" onclick="showPage('road')"><span class="nav-icon">⛽</span>Onderweg</button>
+  <button id="nav-trips" type="button" onclick="showPage('trips')"><span class="nav-icon">🎡</span>Uitjes</button>
+</nav>
+
+
+
+
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const BACKEND_URL=location.hostname.includes("vercel.app")?"/api/maps-search":"https://project-uxgks.vercel.app/api/maps-search";
+
+const hotels=[
+{name:"Alsik Hotel & Spa",city:"Sønderborg",country:"Denemarken",rating:4.7,price:165,type:"Spa & wellness",image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"},
+{name:"Hotel Sønderborg Strand",city:"Sønderborg",country:"Denemarken",rating:4.2,price:139,type:"Aan het water",image:"https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80"},
+{name:"Hotel Bella Italia",city:"Sønderborg",country:"Denemarken",rating:4.5,price:125,type:"Boutique",image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80"},
+{name:"Scandic Sønderborg",city:"Sønderborg",country:"Denemarken",rating:4.0,price:118,type:"Familie",image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=800&q=80"},
+{name:"25hours Hotel HafenCity",city:"Hamburg",country:"Duitsland",rating:4.5,price:145,type:"City stop",image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"}
+];
+
+function euro(n){return "€"+Number(n).toFixed(0)}
+function showPage(key){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(key+"Page")?.classList.add("active");
+  document.getElementById("nav-"+key)?.classList.add("active");
+  if(key==="route"){setTimeout(()=>{initMap();map.invalidateSize()},150)}
+  if(key==="compare") renderCompare();
+  if(key==="saved") renderSavedRoutes();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderHotels(data){
+  document.getElementById("hotelResults").innerHTML=data.map(h=>`<article class="hotel"><div class="hotel-img" style="background-image:url('${h.image}')"></div><div><h3>${h.name}</h3><div class="muted">${h.city}, ${h.country} • ⭐ ${h.rating}</div><span class="tag">${h.type}</span><span class="tag">${euro(h.price)} / nacht</span></div><div class="actions"><button class="accent" onclick="showPage('route');document.getElementById('to').value='${h.city}';">Route</button><a class="btn secondary" target="_blank" href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(h.name)}">Bekijk</a></div></article>`).join("");
+}
+function searchHotels(){let city=document.getElementById("city").value.toLowerCase(),max=Number(document.getElementById("maxPrice").value||9999);let data=hotels.filter(h=>(!city||h.city.toLowerCase().includes(city)||h.country.toLowerCase().includes(city)||h.name.toLowerCase().includes(city))&&h.price<=max);renderHotels(data.length?data:hotels)}
+function showAllHotels(){document.getElementById("city").value="";renderHotels(hotels)}
+function renderCompare(){document.getElementById("compareResults").innerHTML=hotels.map(h=>`<div class="compare-row"><div><b>${h.name}</b><div class="muted">${h.city} • ⭐ ${h.rating} • ${h.type}</div></div><div class="price">${euro(h.price)}</div></div>`).join("")}
+
+let map,routeLine,startMarker,endMarker,routeCoords=[],stopMarkers=[],allStops=[];
+function initMap(){if(map)return;map=L.map("map").setView([52.1,5.1],7);L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap © CARTO"}).addTo(map)}
+function setLoading(on){document.getElementById("loading").style.display=on?"block":"none"}function selectedTypes(){return Array.from(document.querySelectorAll(".filter input:checked")).map(x=>x.value)}
+function typeToQuery(t){return{fuel:"tankstation",charging_station:"laadpaal",hotel:"hotel",attraction:"bezienswaardigheid",parking:"parking",restaurant:"restaurant",supermarket:"supermarkt",toilets:"toilet"}[t]||t}
+function typeIcon(t){return{fuel:"⛽",charging_station:"⚡",hotel:"🏨",attraction:"🎢",parking:"🅿️",restaurant:"🍽️",supermarket:"🛒",toilets:"🚻"}[t]||"🛰️"}
+function typeLabel(t){return{fuel:"tankstation",charging_station:"laadpaal",hotel:"hotel",attraction:"uitje",parking:"parkeren",restaurant:"restaurant",supermarket:"supermarkt",toilets:"toilet"}[t]||"stop"}
+function distanceKm(a,b){const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180,x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function sampleRoutePoints(){if(!routeCoords.length)return[];let pts=[],max=Math.min(7,routeCoords.length);for(let i=0;i<max;i++){let idx=Math.floor((i/(max-1||1))*(routeCoords.length-1));pts.push({lat:routeCoords[idx][0],lng:routeCoords[idx][1]})}return pts}
+function nearestDistanceToRoute(stop){let min=999999;sampleRoutePoints().forEach(p=>{let d=distanceKm(stop,p);if(d<min)min=d});return min}
+async function geocodePlace(place){let o=(place||"").trim(),m=o.match(/^\\s*(-?\\d+(?:\\.\\d+)?)\\s*,\\s*(-?\\d+(?:\\.\\d+)?)\\s*$/);if(m)return{lat:+m[1],lng:+m[2],label:"Huidige locatie"};let q=o,nl=["rotterdam","amsterdam","utrecht","den haag","eindhoven","breda","tilburg","groningen","maastricht","arnhem","nijmegen","haarlem","leiden","delft","zwolle","leeuwarden","alkmaar"];if(nl.includes(q.toLowerCase())&&!q.includes(","))q+=", Nederland";let res=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q)),data=await res.json();if(!data.length)throw Error("Plaats niet gevonden: "+o);return{lat:+data[0].lat,lng:+data[0].lon,label:data[0].display_name}}
+async function reverseGeocode(lat,lng){try{let res=await fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat="+lat+"&lon="+lng+"&zoom=10&addressdetails=1"),data=await res.json(),a=data.address||{};return a.city||a.town||a.village||a.municipality||a.county||"Huidige locatie"}catch(e){return"Huidige locatie"}}
+
+async function planRoute(){
+  initMap();
+
+  const fromInput = document.getElementById("from");
+  const toInput = document.getElementById("to");
+  const fromCoordsInput = document.getElementById("fromCoords");
+
+  const fromText = (fromInput?.value || "").trim();
+  const fromCoords = (fromCoordsInput?.value || "").trim();
+  const toText = (toInput?.value || "").trim();
+
+  if(!fromText && !fromCoords){
+    alert("Vul eerst een vertrekpunt in of gebruik GPS.");
+    return;
+  }
+
+  if(!toText){
+    alert("Vul eerst een bestemming in.");
+    return;
+  }
+
+  setLoading(true);
+
+  const stopsBox = document.getElementById("stops");
+  if(stopsBox) stopsBox.innerHTML = "";
+
+  const countEl = document.getElementById("count");
+  if(countEl) countEl.textContent = "0";
+
+  allStops = [];
+
+  try{
+    clearStops();
+
+    if(routeLine) map.removeLayer(routeLine);
+    if(startMarker) map.removeLayer(startMarker);
+    if(endMarker) map.removeLayer(endMarker);
+
+    const from = await geocodePlace(fromCoords || fromText);
+    const to = await geocodePlace(toText);
+
+    const url =
+      "https://router.project-osrm.org/route/v1/driving/" +
+      from.lng + "," + from.lat + ";" +
+      to.lng + "," + to.lat +
+      "?overview=full&geometries=geojson";
+
+    const response = await fetch(url);
+    const rd = await response.json();
+
+    if(!rd.routes || !rd.routes.length){
+      throw Error("Geen route gevonden");
+    }
+
+    const route = rd.routes[0];
+
+    routeCoords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+
+    routeLine = L.polyline(routeCoords,{
+      color:"#166534",
+      weight:6,
+      opacity:.9
+    }).addTo(map);
+
+    startMarker = L.marker([from.lat,from.lng])
+      .addTo(map)
+      .bindPopup("<b>Vertrekpunt</b><br>" + (fromText || "GPS locatie"));
+
+    endMarker = L.marker([to.lat,to.lng])
+      .addTo(map)
+      .bindPopup("<b>Bestemming</b><br>" + toText);
+
+    map.fitBounds(routeLine.getBounds(),{padding:[35,35]});
+
+    document.getElementById("distance").textContent = Math.round(route.distance / 1000) + " km";
+
+    const h = Math.floor(route.duration / 3600);
+    const m = Math.round((route.duration % 3600) / 60);
+    document.getElementById("duration").textContent = h + "u " + m + "m";
+
+    const resolved = document.getElementById("resolvedRoute");
+    if(resolved) resolved.textContent = "Route: " + (fromText || "GPS locatie") + " → " + toText;
+
+    routeAdvice();
+    updateSelectedRouteBar();
+
+    try{
+      await findStopsAlongRoute();
+    }catch(stopErr){
+      console.warn("Stops konden niet worden geladen, route blijft zichtbaar.", stopErr);
+    }
+
+    if(typeof renderHotelStops === "function"){
+      setTimeout(renderHotelStops,150);
+    }
+
+  }catch(e){
+    console.error(e);
+    if(stopsBox){
+      stopsBox.innerHTML = '<div class="notice">Route kon niet worden geladen: ' + e.message + '</div>';
+    }
+  }finally{
+    setLoading(false);
+  }
+}
+
+async function searchBackend(query,point,zoom){let url=BACKEND_URL+"?q="+encodeURIComponent(query)+"&lat="+encodeURIComponent(point.lat)+"&lng="+encodeURIComponent(point.lng)+"&zoom="+encodeURIComponent(zoom||14);let res=await fetch(url);if(!res.ok)throw Error("Backend fout: "+res.status);let data=await res.json();return data.results||[]}
+async function findStopsAlongRoute(){if(!routeCoords.length)return;setLoading(true);clearStops();let types=selectedTypes(),base=+document.getElementById("radius").value||10,tries=[...new Set([base,25,50])].filter(x=>x>=base),points=sampleRoutePoints();try{let found=[];for(let radius of tries){found=[];let zoom=radius<=10?14:radius<=25?12:11,seen=new Set();for(let point of points){for(let type of types){let results=await searchBackend(typeToQuery(type),point,zoom);results.forEach(item=>{let lat=+item.lat,lng=+item.lng;if(!lat||!lng)return;let stop={type,name:item.name||typeToQuery(type),address:item.address||"",rating:item.rating,lat,lng,routeDistance:nearestDistanceToRoute({lat,lng}),link:item.link||null};let key=(stop.name+"_"+stop.lat+"_"+stop.lng).toLowerCase();if(seen.has(key))return;seen.add(key);if(stop.routeDistance<=radius)found.push(stop)})}}if(found.length){if(radius!==base)document.getElementById("radius").value=String(radius);break}}allStops=found.sort((a,b)=>a.routeDistance-b.routeDistance).slice(0,120);renderStops();autoSelectStops()}catch(e){document.getElementById("stops").innerHTML='<div class="notice">Stops konden niet worden geladen: '+e.message+"</div>";console.error(e)}finally{setLoading(false)}}
+
+
+function openStopInMaps(lat,lng){
+  if(!lat || !lng){
+    alert("Locatie van deze stop ontbreekt.");
+    return;
+  }
+  const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(lat + "," + lng);
+  window.open(url, "_blank");
+}
+
+
+function openStopInMapsSafe(btn){
+  const name = btn.dataset.name || "";
+  const address = btn.dataset.address || "";
+  const lat = btn.dataset.lat || "";
+  const lng = btn.dataset.lng || "";
+  const q = [name,address].filter(Boolean).join(", ") || (lat && lng ? lat + "," + lng : "");
+  if(!q){ alert("Locatie ontbreekt."); return; }
+  window.open("https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q), "_blank");
+}
+
+
+function stopKey(lat,lng){
+  return String(lat) + "," + String(lng);
+}
+
+function chooseStopFromMap(lat,lng){
+  const cb = Array.from(document.querySelectorAll(".stopCheck")).find(x =>
+    String(x.dataset.lat) === String(lat) && String(x.dataset.lng) === String(lng)
+  );
+
+  if(cb){
+    cb.checked = true;
+    updateSelected();
+    cb.closest(".stop-card")?.scrollIntoView({behavior:"smooth", block:"center"});
+  } else {
+    alert("Deze stop staat nog niet in de lijst.");
+  }
+}
+
+function renderStops(){
+clearStops();
+let radius=+document.getElementById("radius").value||10,visible=allStops.filter(s=>s.routeDistance<=radius);
+document.getElementById("count").textContent=visible.length;
+if(!visible.length){document.getElementById("stops").innerHTML='<div class="notice">Geen stops gevonden. Kies filters en plan je route opnieuw.</div>';return;}
+document.getElementById("stops").innerHTML=visible.map(s=>{
+const detour=Math.max(2,Math.round(s.routeDistance*2.2));
+return `<div class="stop-card">
+<div class="stop-top"><div><div class="stop-title">${typeIcon(s.type)} ${s.name}</div><div class="muted" style="font-size:13px">${s.address||typeLabel(s.type)}</div></div>${s.rating?`<div class="meta-pill">⭐ ${s.rating}</div>`:''}</div>
+<div class="stop-meta">
+<span class="meta-pill">🛰️ ${Math.round(s.routeDistance*10)/10} km</span>
+<span class="meta-pill">⏱️ +${detour} min</span>
+<span class="meta-pill">${typeIcon(s.type)} ${typeLabel(s.type)}</span>
+</div>
+<div class="stop-actions">
+<label class="secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><input type="checkbox" class="stopCheck" data-lat="${s.lat}" data-lng="${s.lng}" data-name="${String(s.name).replace(/"/g,'')}" onchange="updateSelected()"> Kies</label>
+<button class="accent" data-name="${String(s.name).replace(/"/g,'&quot;')}" data-address="${String(s.address||'').replace(/"/g,'&quot;')}" data-lat="${s.lat}" data-lng="${s.lng}" onclick="openStopInMapsSafe(this)">Navigeer</button>
+</div></div>`;}).join("");
+visible.slice(0,70).forEach(s=>{let marker=L.marker([s.lat,s.lng]).addTo(map);marker.bindPopup(`
+      <div style="min-width:190px">
+        <b>${typeIcon(s.type)} ${s.name}</b><br>
+        <span style="color:#6b7280">${s.address || typeLabel(s.type)}</span><br>
+        <span>🛰️ ${Math.round(s.routeDistance*10)/10} km van route</span><br>
+        ${s.rating ? `<span>⭐ ${s.rating}</span><br>` : ""}
+        <button onclick="chooseStopFromMap(${s.lat},${s.lng})" style="margin-top:8px;width:100%;border:0;border-radius:12px;padding:9px 10px;background:#166534;color:white;font-weight:800;cursor:pointer">Zet in route</button>
+      </div>
+    `);stopMarkers.push(marker);});
+updateSelected();
+}
+
+function clearStops(){if(!map)return;stopMarkers.forEach(m=>map.removeLayer(m));stopMarkers=[]}
+
+function updateSelectedRouteBar(){
+  const flow = document.getElementById("selectedRouteFlow");
+  if(!flow) return;
+
+  const selected = Array.from(document.querySelectorAll(".stopCheck:checked"))
+    .map(cb => cb.dataset.name || "Tussenstop")
+    .slice(0,8);
+
+  if(!selected.length){
+    flow.innerHTML = `<span class="route-point">Nog geen tussenstop gekozen</span>`;
+    return;
+  }
+
+  flow.innerHTML = selected.map(name => 
+    `<span class="route-point">➕ ${name}</span>`
+  ).join(`<span class="route-arrow">→</span>`);
+}
+
+
+function updateSelected(){let selected=document.querySelectorAll(".stopCheck:checked").length,total=document.querySelectorAll(".stopCheck").length;document.getElementById("count").textContent=selected?selected+" gekozen":total;let btn=document.getElementById("mapsNavBtn");if(btn)btn.textContent=selected>0?"Navigeer":"Navigeer"
+  if(typeof updateSelectedRouteBar==="function") updateSelectedRouteBar();
+}
+function routeAdvice(){
+  const box=document.getElementById("summary");
+  if(box){ box.style.display="none"; box.innerHTML=""; }
+}
+function applyAdvice(){let km=parseInt((document.getElementById("distance").textContent||"0").replace(/\\D/g,""))||0,pace=document.getElementById("pace").value,max=pace==="rustig"?350:pace==="snel"?800:550,advised=Math.max(0,Math.ceil(km/max)-1);document.getElementById("nights").value=String(Math.min(advised,4));if(km>300&&document.getElementById("stopCount").value==="0")document.getElementById("stopCount").value="3";routeAdvice();autoSelectStops()}
+function autoSelectStops(){let count=+document.getElementById("stopCount").value,checks=Array.from(document.querySelectorAll(".stopCheck"));checks.forEach(c=>c.checked=false);if(count>0)checks.slice(0,count).forEach(c=>c.checked=true);updateSelected()}
+function setFilters(values){document.querySelectorAll(".filter input").forEach(cb=>cb.checked=values.includes(cb.value));findStopsAlongRoute()}function selectCoreFilters(){setFilters(["fuel","charging_station","hotel","parking"])}function selectComfortFilters(){setFilters(["hotel","restaurant","toilets","supermarket","attraction"])}
+
+function buildGoogleMapsRouteUrl(){
+  const origin = encodeURIComponent(document.getElementById("fromCoords").value || document.getElementById("from").value || "Rotterdam");
+  const dest = encodeURIComponent(document.getElementById("to").value || "Amsterdam");
+  const selected = Array.from(document.querySelectorAll(".stopCheck:checked"))
+    .slice(0,8)
+    .map(c => encodeURIComponent(c.dataset.lat + "," + c.dataset.lng));
+
+  let url = "https://www.google.com/maps/dir/?api=1&origin=" + origin + "&destination=" + dest + "&travelmode=driving";
+  if(selected.length) url += "&waypoints=" + selected.join("|");
+  return url;
+}
+
+function previewRouteInMaps(){
+  window.open(buildGoogleMapsRouteUrl(), "_blank");
+}
+
+function startNavigationInMaps(){
+  const selected = Array.from(document.querySelectorAll(".stopCheck:checked"));
+  let target = document.getElementById("to").value || "Amsterdam";
+
+  // Voor echte navigatie openen we eerst de eerste geselecteerde stop.
+  // Google Maps start navigatie betrouwbaarder met 1 directe bestemming.
+  if(selected.length){
+    const first = selected[0];
+    target = first.dataset.lat + "," + first.dataset.lng;
+  }
+
+  const navUrl = "google.navigation:q=" + encodeURIComponent(target) + "&mode=d";
+  const webFallback = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(target) + "&travelmode=driving";
+
+  // Android probeert eerst de Google Maps navigatie-intent.
+  window.location.href = navUrl;
+
+  // Fallback voor browser/iPhone als intent niet opent.
+  setTimeout(() => {
+    window.open(webFallback, "_blank");
+  }, 900);
+}
+
+function openGoogleMaps(){ previewRouteInMaps(); }
+function useGpsStart(){let st=document.getElementById("gpsStatus");st.textContent="Locatie ophalen...";if(!navigator.geolocation){st.textContent="GPS wordt niet ondersteund.";return}navigator.geolocation.getCurrentPosition(async pos=>{let lat=pos.coords.latitude.toFixed(6),lng=pos.coords.longitude.toFixed(6);document.getElementById("fromCoords").value=lat+","+lng;let name=await reverseGeocode(lat,lng);document.getElementById("from").value=name;st.textContent="Locatie gevonden: "+name+". Je kunt nu de route plannen."},()=>{st.textContent="Locatie kon niet worden opgehaald. Controleer toestemming."},{enableHighAccuracy:true,timeout:12000,maximumAge:60000})}
+
+function getSelectedStopsForSave(){
+  return Array.from(document.querySelectorAll(".stopCheck:checked")).map(c=>{
+    const stop = allStops.find(s => String(s.lat)===String(c.dataset.lat) && String(s.lng)===String(c.dataset.lng));
+    return stop || {name:c.dataset.name || "Stop", lat:Number(c.dataset.lat), lng:Number(c.dataset.lng), type:"stop", routeDistance:0};
+  });
+}
+function getSavedRoutes(){
+  try{return JSON.parse(localStorage.getItem("roadoraSavedRoutes") || "[]");}
+  catch(e){return [];}
+}
+function setSavedRoutes(routes){
+  localStorage.setItem("roadoraSavedRoutes", JSON.stringify(routes));
+}
+function saveCurrentRoute(){
+  if(!routeCoords || !routeCoords.length){
+    alert("Maak eerst een route voordat je hem opslaat.");
+    return;
+  }
+  const from = document.getElementById("from").value || "Vertrekpunt";
+  const to = document.getElementById("to").value || "Bestemming";
+  const selectedStops = getSelectedStopsForSave();
+  const name = prompt("Naam voor deze route:", from + " → " + to);
+  if(!name) return;
+  const route = {
+    id: Date.now(),
+    name, from, to,
+    fromCoords: document.getElementById("fromCoords").value || "",
+    distance: document.getElementById("distance").textContent || "-",
+    duration: document.getElementById("duration").textContent || "-",
+    stops: selectedStops,
+    createdAt: new Date().toISOString()
+  };
+  const routes = getSavedRoutes();
+  routes.unshift(route);
+  setSavedRoutes(routes);
+  alert("Route opgeslagen in Mijn Routes.");
+  renderSavedRoutes();
+}
+function renderSavedRoutes(){
+  const box = document.getElementById("savedRoutesList");
+  if(!box) return;
+  const routes = getSavedRoutes();
+  if(!routes.length){
+    box.innerHTML = '<div class="notice">Je hebt nog geen routes opgeslagen. Maak eerst een route en klik op <b>Route opslaan</b>.</div>';
+    return;
+  }
+  box.innerHTML = routes.map(r => `
+    <div class="stop" style="display:block">
+      <h3>💾 ${r.name}</h3>
+      <p>${r.from} → ${r.to}</p>
+      <p>${r.distance || "-"} • ${r.duration || "-"} • ${(r.stops || []).length} stop(s)</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="accent" onclick="navigateSavedRoute(${r.id})">Navigeer</button>
+        <button class="secondary" onclick="openSavedRoute(${r.id})">Open route</button>
+        <button class="secondary" onclick="deleteSavedRoute(${r.id})">Verwijder</button>
+      </div>
+    </div>
+  `).join("");
+}
+function findSavedRoute(id){return getSavedRoutes().find(r => Number(r.id) === Number(id));}
+function navigateSavedRoute(id){
+  const r = findSavedRoute(id);
+  if(!r) return;
+  const origin = encodeURIComponent(r.fromCoords || r.from);
+  const dest = encodeURIComponent(r.to);
+  const waypoints = (r.stops || []).slice(0,8).map(s => encodeURIComponent(s.lat + "," + s.lng));
+  let url = "https://www.google.com/maps/dir/?api=1&origin=" + origin + "&destination=" + dest + "&travelmode=driving";
+  if(waypoints.length) url += "&waypoints=" + waypoints.join("|");
+  window.open(url, "_blank");
+}
+function openSavedRoute(id){
+  const r = findSavedRoute(id);
+  if(!r) return;
+  showPage("route");
+  document.getElementById("from").value = r.from || "";
+  document.getElementById("to").value = r.to || "";
+  document.getElementById("fromCoords").value = r.fromCoords || "";
+  setTimeout(() => {
+    const result = planRoute();
+    Promise.resolve(result).then(() => {
+      setTimeout(() => {
+        const savedStops = r.stops || [];
+        document.querySelectorAll(".stopCheck").forEach(cb => {
+          cb.checked = savedStops.some(s => String(s.lat) === String(cb.dataset.lat) && String(s.lng) === String(cb.dataset.lng));
+        });
+        updateSelected();
+      }, 600);
+    });
+  }, 200);
+}
+function deleteSavedRoute(id){
+  if(!confirm("Weet je zeker dat je deze route wilt verwijderen?")) return;
+  setSavedRoutes(getSavedRoutes().filter(r => Number(r.id) !== Number(id)));
+  renderSavedRoutes();
+}
+
+
+function toggleAccordion(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle("open");
+}
+
+
+function toggleMap(){
+  const mapEl=document.getElementById("map");
+  if(!mapEl) return;
+  mapEl.style.display = mapEl.style.display === "none" ? "block" : "none";
+  setTimeout(()=>{ if(typeof map!=="undefined" && map && map.invalidateSize) map.invalidateSize(); },150);
+}
+
+window.addEventListener("DOMContentLoaded",()=>{renderHotels(hotels);initMap();renderSavedRoutes()});
+</script>
+
+<!-- Roadora stop navigation fix v8.3 -->
+
+<script>
+/* Roadora bottom nav safe override */
+function showPage(key){
+  const pageMap = {
+    hotels: "hotelsPage",
+    route: "routePage",
+    saved: "savedPage",
+    compare: "comparePage",
+    road: "roadPage",
+    trips: "tripsPage"
+  };
+
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".bottom button").forEach(b => b.classList.remove("active"));
+
+  const page = document.getElementById(pageMap[key]);
+  if(page) page.classList.add("active");
+
+  const nav = document.getElementById("nav-" + key);
+  if(nav) nav.classList.add("active");
+
+  if(key === "route"){
+    setTimeout(() => {
+      if(typeof initMap === "function") initMap();
+      if(typeof map !== "undefined" && map && map.invalidateSize) map.invalidateSize();
+    }, 150);
+  }
+
+  if(key === "saved" && typeof renderSavedRoutes === "function") renderSavedRoutes();
+  if(key === "compare" && typeof renderCompare === "function") renderCompare();
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  ["hotels","route","saved","compare","road","trips"].forEach(key => {
+    const btn = document.getElementById("nav-" + key);
+    if(btn){
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(key);
+      });
+    }
+  });
+});
+</script>
+
+
+<button id="scrollTopBtn" onclick="scrollToTopSmooth()" aria-label="Naar boven">↑</button>
+
+<script>
+function scrollToTopSmooth(){
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+window.addEventListener("scroll", ()=>{
+  const btn=document.getElementById("scrollTopBtn");
+  if(!btn) return;
+  if(window.scrollY > 500){ btn.classList.add("show"); }
+  else { btn.classList.remove("show"); }
+});
+</script>
+
+
+<!-- Premium later activeren: voeg class 'premium-ready' toe aan body -->
+
+<script id="roadora-basic-4lang">
+window.RD_TRANSLATIONS = {"en": {"Plan je perfecte roadtrip door Europa": "Plan your perfect road trip through Europe", "Vind hotels, vergelijk verblijfplaatsen en bewaar de beste stops voor onderweg.": "Find hotels, compare stays and save the best stops along the way.", "🔎 Zoek hotels voor je roadtrip": "🔎 Search hotels for your road trip", "Bestemming": "Destination", "Max prijs": "Max price", "Zoek hotels": "Search hotels", "Bekijk populaire hotels": "View popular hotels", "🗺️ Roadora Routeplanner": "🗺️ Roadora Route Planner", "Slimme route met stops onderweg": "Smart route with stops along the way", "Maak een route, vind tankstations, hotels en andere stops, en navigeer in Maps.": "Create a route, find fuel stations, hotels and other stops, and navigate in Maps.", "🗺️ Slimme route maken": "🗺️ Create smart route", "Stap 1: kies eerst wat je onderweg wilt vinden.": "Step 1: choose what you want to find along the way.", "⚙️ Filters kiezen": "⚙️ Choose filters", "⛽ Tankstations": "⛽ Fuel stations", "⚡ Laadpalen": "⚡ Charging stations", "🏨 Hotels": "🏨 Hotels", "🎢 Uitjes": "🎢 Activities", "🅿️ Parkeren": "🅿️ Parking", "🍽️ Restaurants": "🍽️ Restaurants", "🛒 Supermarkt": "🛒 Supermarket", "🚻 Toiletten": "🚻 Toilets", "Stap 2: vul je route in.": "Step 2: enter your route.", "Tussenstops": "Stops", "Nog geen tussenstop gekozen": "No stop selected yet", "Vertrekpunt": "Start point", "Rustig reizen": "Relaxed travel", "Normaal tempo": "Normal pace", "Zo snel mogelijk": "As fast as possible", "Geen overnachting": "No overnight stay", "0 overnachtingen": "0 overnight stays", "Geen tussenstops": "No stops", "1 tussenstop": "1 stop", "2 tussenstops": "2 stops", "0 tussenstops": "0 stops", "Plan route": "Plan route", "Route opslaan": "Save route", "Navigeren": "Navigate", "Bekijk route": "View route", "Kaart verbergen / tonen": "Hide / show map", "Afstand": "Distance", "Reistijd": "Travel time", "Stops": "Stops", "Stops langs je route": "Stops along your route", "💶 Vergelijk": "💶 Compare", "Vergelijk hotels en stops": "Compare hotels and stops", "Hotel vergelijking": "Hotel comparison", "⛽ Onderweg": "⛽ On the road", "Handige stops onderweg": "Useful stops along the way", "🎡 Uitjes": "🎡 Activities", "Uitjes voor onderweg": "Activities along the way", "💾 Mijn Routes": "💾 My Routes", "Opgeslagen routes": "Saved routes", "💾 Mijn opgeslagen routes": "💾 My saved routes", "Hotels": "Hotels", "Route": "Route", "Mijn Routes": "My Routes", "Vergelijk": "Compare", "Onderweg": "On the road", "Uitjes": "Activities", "Kies": "Choose", "Navigeer": "Navigate", "Zet in route": "Add to route", "Open route": "Open route", "Verwijder": "Delete", "Naar boven": "To top", "Aan het water": "By the water", "Boutique": "Boutique", "Familie": "Family", "City stop": "City stop", "Spa & wellness": "Spa & wellness", "nacht": "night", "Bekijk": "View", "Attracties": "Attractions", "Musea": "Museums", "Natuur": "Nature", "Zoek attracties via de routeplanner.": "Find attractions via the route planner.", "Culturele stops voor onderweg.": "Cultural stops along the way.", "Mooie pauzeplekken op de route.": "Nice break spots on the route.", "Tankstations": "Fuel stations", "Laadpalen": "Charging stations", "Parkeren": "Parking", "Vind tankstations langs je route via de routeplanner.": "Find fuel stations along your route via the route planner.", "Zoek laadpunten onderweg.": "Find charging points along the way.", "Vind parkeerplekken bij stops.": "Find parking near stops.", "Roadora": "Roadora", "Premium komt later beschikbaar": "Premium will be available later", "Geen stops gevonden. Kies filters en plan je route opnieuw.": "No stops found. Choose filters and plan your route again.", "Route en stops worden gezocht...": "Searching route and stops...", "Route kon niet worden geladen:": "Route could not be loaded:", "Stops konden niet worden geladen:": "Stops could not be loaded:", "Locatie ontbreekt.": "Location is missing.", "Locatie ophalen...": "Getting location...", "GPS wordt niet ondersteund.": "GPS is not supported.", "Locatie gevonden:": "Location found:", "Je kunt nu de route plannen.": "You can now plan the route.", "Locatie kon niet worden opgehaald. Controleer toestemming.": "Location could not be retrieved. Check permission.", "Maak eerst een route voordat je hem opslaat.": "Create a route before saving it.", "Naam voor deze route:": "Name for this route:", "Route opgeslagen in Mijn Routes.": "Route saved in My Routes.", "Je hebt nog geen routes opgeslagen. Maak eerst een route en klik op": "You have no saved routes yet. Create a route first and click", "Weet je zeker dat je deze route wilt verwijderen?": "Are you sure you want to delete this route?", "Home": "Home", "🚗 Roadora Europa": "🚗 Roadora Europe", "Plan jouw roadtrip slim door Europa": "Plan your road trip smartly through Europe", "Maak je route, vind hotels onderweg en ontdek handige stops voor je reis.": "Create your route, find hotels along the way and discover useful stops for your trip.", "🚗 Start route": "🚗 Start route", "Route eerst": "Route first", "Plan van A naar B en kies stops onderweg.": "Plan from A to B and choose stops along the way.", "Hotels snel vinden": "Find hotels fast", "Zoek hotels bij je bestemming of onderweg.": "Find hotels at your destination or along the way.", "Routes bewaren": "Save routes", "Sla je favoriete roadtrips lokaal op.": "Save your favorite road trips locally.", "🏨 Hotels zoeken": "🏨 Search hotels", "🎡 Uitjes vinden": "🎡 Find activities", "Zo werkt Roadora": "How Roadora works", "1. Plan je route": "1. Plan your route", "Kies vertrekpunt, bestemming en voertuigtype.": "Choose start point, destination and vehicle type.", "2. Kies stops": "2. Choose stops", "Vind tankstations, laadpalen, restaurants, hotels en uitjes langs je route.": "Find fuel stations, chargers, restaurants, hotels and activities along your route.", "3. Navigeer": "3. Navigate", "Sla je route op of open hem direct in Google Maps.": "Save your route or open it directly in Google Maps.", "Populaire roadtrip ideeën": "Popular road trip ideas", "Korte rit met hotels en stops onderweg.": "Short route with hotels and stops along the way.", "Perfect voor een eerste overnachting richting Scandinavië.": "Perfect for a first overnight stop toward Scandinavia.", "Mooie route met hotels, laadstops en uitjes.": "Great route with hotels, charging stops and activities.", "Gebruik route": "Use route", "💡 Roadora helpt je niet alleen navigeren, maar ook slim kiezen waar je stopt, slaapt en pauzeert.": "💡 Roadora helps you not only navigate, but also choose smartly where to stop, sleep and take breaks.", "🏨 Hotels voor je roadtrip": "🏨 Hotels for your road trip", "Zoek hotels bij je bestemming, gebruik je locatie of bereid straks affiliate boekingen voor.": "Search hotels at your destination, use your location or prepare affiliate bookings later.", "Parking mogelijk": "Parking available", "Roadtrip proof": "Roadtrip proof", "vanaf / nacht": "from / night", "Affiliate-ready: later koppelbaar aan Booking.com partnerlink.": "Affiliate-ready: can later be connected to your Booking.com partner link.", "Bekijk hotel": "View hotel", "Open in Maps": "Open in Maps", "Zoek exact op route / 0 km": "Search exactly on route / 0 km", "🏨 Hotels langs je route": "🏨 Hotels along your route", "Vind snelle overnachtingen op logische plekken onderweg.": "Find quick overnight stays at logical points along the way.", "Zoek hotels langs route": "Search hotels along route", "Plan eerst een route voordat je hotels langs de route zoekt.": "Plan a route first before searching hotels along the route.", "Vroeg onderweg": "Early on the route", "Halverwege": "Halfway", "Dicht bij bestemming": "Near destination", "omgeving": "area", "Halverwege route": "Halfway along route", "vanaf": "from", "omrijden": "detour", "Tussenstop": "Stopover", "👶 Kindvriendelijk": "👶 Kid-friendly", "🐶 Diervriendelijk": "🐶 Pet-friendly", "Familie pauzeplek": "Family break stop", "Kindvriendelijke stop met speelruimte en veilige parking": "Kid-friendly stop with play area and safe parking", "Hondvriendelijke rustplek": "Dog-friendly rest stop", "Groene stop met uitlaatruimte en terras in de buurt": "Green stop with dog walking space and nearby terrace", "Kindvriendelijk": "Kid-friendly", "Diervriendelijk": "Pet-friendly"}, "de": {"Plan je perfecte roadtrip door Europa": "Plane deinen perfekten Roadtrip durch Europa", "Vind hotels, vergelijk verblijfplaatsen en bewaar de beste stops voor onderweg.": "Finde Hotels, vergleiche Unterkünfte und speichere die besten Stopps unterwegs.", "🔎 Zoek hotels voor je roadtrip": "🔎 Hotels für deinen Roadtrip suchen", "Bestemming": "Ziel", "Max prijs": "Max. Preis", "Zoek hotels": "Hotels suchen", "Bekijk populaire hotels": "Beliebte Hotels anzeigen", "🗺️ Roadora Routeplanner": "🗺️ Roadora Routenplaner", "Slimme route met stops onderweg": "Smarte Route mit Stopps unterwegs", "Maak een route, vind tankstations, hotels en andere stops, en navigeer in Maps.": "Erstelle eine Route, finde Tankstellen, Hotels und andere Stopps und navigiere in Maps.", "🗺️ Slimme route maken": "🗺️ Smarte Route erstellen", "Stap 1: kies eerst wat je onderweg wilt vinden.": "Schritt 1: Wähle zuerst, was du unterwegs finden möchtest.", "⚙️ Filters kiezen": "⚙️ Filter wählen", "⛽ Tankstations": "⛽ Tankstellen", "⚡ Laadpalen": "⚡ Ladestationen", "🏨 Hotels": "🏨 Hotels", "🎢 Uitjes": "🎢 Aktivitäten", "🅿️ Parkeren": "🅿️ Parken", "🍽️ Restaurants": "🍽️ Restaurants", "🛒 Supermarkt": "🛒 Supermarkt", "🚻 Toiletten": "🚻 Toiletten", "Stap 2: vul je route in.": "Schritt 2: Gib deine Route ein.", "Tussenstops": "Zwischenstopps", "Nog geen tussenstop gekozen": "Noch kein Zwischenstopp gewählt", "Vertrekpunt": "Startpunkt", "Rustig reizen": "Entspannt reisen", "Normaal tempo": "Normales Tempo", "Zo snel mogelijk": "So schnell wie möglich", "Geen overnachting": "Keine Übernachtung", "0 overnachtingen": "0 Übernachtungen", "Geen tussenstops": "Keine Zwischenstopps", "1 tussenstop": "1 Zwischenstopp", "2 tussenstops": "2 Zwischenstopps", "0 tussenstops": "0 Zwischenstopps", "Plan route": "Route planen", "Route opslaan": "Route speichern", "Navigeren": "Navigieren", "Bekijk route": "Route ansehen", "Kaart verbergen / tonen": "Karte aus-/einblenden", "Afstand": "Entfernung", "Reistijd": "Reisezeit", "Stops": "Stopps", "Stops langs je route": "Stopps entlang deiner Route", "💶 Vergelijk": "💶 Vergleichen", "Vergelijk hotels en stops": "Hotels und Stopps vergleichen", "Hotel vergelijking": "Hotelvergleich", "⛽ Onderweg": "⛽ Unterwegs", "Handige stops onderweg": "Nützliche Stopps unterwegs", "🎡 Uitjes": "🎡 Aktivitäten", "Uitjes voor onderweg": "Aktivitäten unterwegs", "💾 Mijn Routes": "💾 Meine Routen", "Opgeslagen routes": "Gespeicherte Routen", "💾 Mijn opgeslagen routes": "💾 Meine gespeicherten Routen", "Mijn Routes": "Meine Routen", "Vergelijk": "Vergleichen", "Onderweg": "Unterwegs", "Uitjes": "Aktivitäten", "Kies": "Wählen", "Navigeer": "Navigieren", "Zet in route": "Zur Route hinzufügen", "Open route": "Route öffnen", "Verwijder": "Löschen", "Naar boven": "Nach oben", "Aan het water": "Am Wasser", "Boutique": "Boutique", "Familie": "Familie", "City stop": "Stadtstopp", "Spa & wellness": "Spa & Wellness", "nacht": "Nacht", "Bekijk": "Ansehen", "Attracties": "Attraktionen", "Musea": "Museen", "Natuur": "Natur", "Zoek attracties via de routeplanner.": "Finde Attraktionen über den Routenplaner.", "Culturele stops voor onderweg.": "Kulturelle Stopps unterwegs.", "Mooie pauzeplekken op de route.": "Schöne Pausenplätze auf der Route.", "Tankstations": "Tankstellen", "Laadpalen": "Ladestationen", "Parkeren": "Parken", "Vind tankstations langs je route via de routeplanner.": "Finde Tankstellen entlang deiner Route über den Routenplaner.", "Zoek laadpunten onderweg.": "Finde Ladestationen unterwegs.", "Vind parkeerplekken bij stops.": "Finde Parkplätze bei Stopps.", "Premium komt later beschikbaar": "Premium ist später verfügbar", "Geen stops gevonden. Kies filters en plan je route opnieuw.": "Keine Stopps gefunden. Wähle Filter und plane die Route erneut.", "Route en stops worden gezocht...": "Route und Stopps werden gesucht...", "Route kon niet worden geladen:": "Route konnte nicht geladen werden:", "Stops konden niet worden geladen:": "Stopps konnten nicht geladen werden:", "Locatie ontbreekt.": "Standort fehlt.", "Locatie ophalen...": "Standort wird abgerufen...", "GPS wordt niet ondersteund.": "GPS wird nicht unterstützt.", "Locatie gevonden:": "Standort gefunden:", "Je kunt nu de route plannen.": "Du kannst jetzt die Route planen.", "Locatie kon niet worden opgehaald. Controleer toestemming.": "Standort konnte nicht abgerufen werden. Prüfe die Berechtigung.", "Maak eerst een route voordat je hem opslaat.": "Erstelle zuerst eine Route, bevor du sie speicherst.", "Naam voor deze route:": "Name für diese Route:", "Route opgeslagen in Mijn Routes.": "Route in Meine Routen gespeichert.", "Je hebt nog geen routes opgeslagen. Maak eerst een route en klik op": "Du hast noch keine Routen gespeichert. Erstelle zuerst eine Route und klicke auf", "Weet je zeker dat je deze route wilt verwijderen?": "Möchtest du diese Route wirklich löschen?", "Home": "Home", "🚗 Roadora Europa": "🚗 Roadora Europa", "Plan jouw roadtrip slim door Europa": "Plane deinen Roadtrip smart durch Europa", "Maak je route, vind hotels onderweg en ontdek handige stops voor je reis.": "Erstelle deine Route, finde Hotels unterwegs und entdecke nützliche Stopps.", "🚗 Start route": "🚗 Route starten", "Route eerst": "Route zuerst", "Plan van A naar B en kies stops onderweg.": "Plane von A nach B und wähle Stopps unterwegs.", "Hotels snel vinden": "Hotels schnell finden", "Zoek hotels bij je bestemming of onderweg.": "Finde Hotels am Ziel oder unterwegs.", "Routes bewaren": "Routen speichern", "Sla je favoriete roadtrips lokaal op.": "Speichere deine Lieblings-Roadtrips lokal.", "🏨 Hotels zoeken": "🏨 Hotels suchen", "🎡 Uitjes vinden": "🎡 Aktivitäten finden", "Zo werkt Roadora": "So funktioniert Roadora", "1. Plan je route": "1. Plane deine Route", "Kies vertrekpunt, bestemming en voertuigtype.": "Wähle Startpunkt, Ziel und Fahrzeugtyp.", "2. Kies stops": "2. Wähle Stopps", "Vind tankstations, laadpalen, restaurants, hotels en uitjes langs je route.": "Finde Tankstellen, Ladestationen, Restaurants, Hotels und Aktivitäten entlang deiner Route.", "3. Navigeer": "3. Navigieren", "Sla je route op of open hem direct in Google Maps.": "Speichere deine Route oder öffne sie direkt in Google Maps.", "Populaire roadtrip ideeën": "Beliebte Roadtrip-Ideen", "Gebruik route": "Route verwenden", "Korte rit met hotels en stops onderweg.": "Kurze Strecke mit Hotels und Stopps unterwegs.", "Perfect voor een eerste overnachting richting Scandinavië.": "Perfekt für eine erste Übernachtung Richtung Skandinavien.", "Mooie route met hotels, laadstops en uitjes.": "Schöne Route mit Hotels, Ladestopps und Aktivitäten.", "🏨 Hotels voor je roadtrip": "🏨 Hotels für deinen Roadtrip", "Zoek hotels bij je bestemming, gebruik je locatie of bereid straks affiliate boekingen voor.": "Suche Hotels am Ziel, nutze deinen Standort oder bereite später Affiliate-Buchungen vor.", "Parking mogelijk": "Parken möglich", "Roadtrip proof": "Roadtrip-tauglich", "vanaf / nacht": "ab / Nacht", "Affiliate-ready: later koppelbaar aan Booking.com partnerlink.": "Affiliate-ready: später mit deinem Booking.com Partnerlink koppelbar.", "Bekijk hotel": "Hotel ansehen", "Open in Maps": "In Maps öffnen", "Zoek exact op route / 0 km": "Exakt auf der Route suchen / 0 km", "🏨 Hotels langs je route": "🏨 Hotels entlang deiner Route", "Vind snelle overnachtingen op logische plekken onderweg.": "Finde schnelle Übernachtungen an logischen Punkten unterwegs.", "Zoek hotels langs route": "Hotels entlang der Route suchen", "Plan eerst een route voordat je hotels langs de route zoekt.": "Plane zuerst eine Route, bevor du Hotels entlang der Route suchst.", "Vroeg onderweg": "Früh unterwegs", "Halverwege": "Auf halber Strecke", "Dicht bij bestemming": "Nahe am Ziel", "omgeving": "Umgebung", "Halverwege route": "Auf halber Strecke", "vanaf": "ab", "omrijden": "Umweg", "Tussenstop": "Zwischenstopp", "👶 Kindvriendelijk": "👶 Kinderfreundlich", "🐶 Diervriendelijk": "🐶 Tierfreundlich", "Familie pauzeplek": "Familien-Pausenstopp", "Kindvriendelijke stop met speelruimte en veilige parking": "Kinderfreundlicher Stopp mit Spielbereich und sicherem Parkplatz", "Hondvriendelijke rustplek": "Hundefreundlicher Rastplatz", "Groene stop met uitlaatruimte en terras in de buurt": "Grüner Stopp mit Auslaufbereich und Terrasse in der Nähe", "Kindvriendelijk": "Kinderfreundlich", "Diervriendelijk": "Tierfreundlich"}, "fr": {"Plan je perfecte roadtrip door Europa": "Planifiez votre road trip parfait en Europe", "Vind hotels, vergelijk verblijfplaatsen en bewaar de beste stops voor onderweg.": "Trouvez des hôtels, comparez les hébergements et enregistrez les meilleurs arrêts.", "🔎 Zoek hotels voor je roadtrip": "🔎 Rechercher des hôtels pour votre road trip", "Bestemming": "Destination", "Max prijs": "Prix max", "Zoek hotels": "Rechercher des hôtels", "Bekijk populaire hotels": "Voir les hôtels populaires", "🗺️ Roadora Routeplanner": "🗺️ Planificateur Roadora", "Slimme route met stops onderweg": "Itinéraire intelligent avec arrêts", "Maak een route, vind tankstations, hotels en andere stops, en navigeer in Maps.": "Créez un itinéraire, trouvez stations-service, hôtels et autres arrêts, puis naviguez dans Maps.", "🗺️ Slimme route maken": "🗺️ Créer un itinéraire intelligent", "Stap 1: kies eerst wat je onderweg wilt vinden.": "Étape 1 : choisissez ce que vous voulez trouver en route.", "⚙️ Filters kiezen": "⚙️ Choisir les filtres", "⛽ Tankstations": "⛽ Stations-service", "⚡ Laadpalen": "⚡ Bornes de recharge", "🏨 Hotels": "🏨 Hôtels", "🎢 Uitjes": "🎢 Activités", "🅿️ Parkeren": "🅿️ Parking", "🍽️ Restaurants": "🍽️ Restaurants", "🛒 Supermarkt": "🛒 Supermarché", "🚻 Toiletten": "🚻 Toilettes", "Stap 2: vul je route in.": "Étape 2 : entrez votre itinéraire.", "Tussenstops": "Étapes", "Nog geen tussenstop gekozen": "Aucune étape sélectionnée", "Vertrekpunt": "Départ", "Rustig reizen": "Voyage tranquille", "Normaal tempo": "Rythme normal", "Zo snel mogelijk": "Le plus rapide possible", "Geen overnachting": "Aucune nuit", "0 overnachtingen": "0 nuit", "Geen tussenstops": "Aucune étape", "1 tussenstop": "1 étape", "2 tussenstops": "2 étapes", "0 tussenstops": "0 étape", "Plan route": "Planifier", "Route opslaan": "Enregistrer", "Navigeren": "Naviguer", "Bekijk route": "Voir l’itinéraire", "Kaart verbergen / tonen": "Masquer / afficher la carte", "Afstand": "Distance", "Reistijd": "Durée", "Stops": "Arrêts", "Stops langs je route": "Arrêts sur votre route", "💶 Vergelijk": "💶 Comparer", "Vergelijk hotels en stops": "Comparer hôtels et arrêts", "Hotel vergelijking": "Comparaison d’hôtels", "⛽ Onderweg": "⛽ En route", "Handige stops onderweg": "Arrêts utiles en route", "🎡 Uitjes": "🎡 Activités", "Uitjes voor onderweg": "Activités en route", "💾 Mijn Routes": "💾 Mes itinéraires", "Opgeslagen routes": "Itinéraires enregistrés", "💾 Mijn opgeslagen routes": "💾 Mes itinéraires enregistrés", "Hotels": "Hôtels", "Route": "Itinéraire", "Mijn Routes": "Mes itinéraires", "Vergelijk": "Comparer", "Onderweg": "En route", "Uitjes": "Activités", "Kies": "Choisir", "Navigeer": "Naviguer", "Zet in route": "Ajouter à l’itinéraire", "Open route": "Ouvrir l’itinéraire", "Verwijder": "Supprimer", "Naar boven": "En haut", "Aan het water": "Au bord de l’eau", "Boutique": "Boutique", "Familie": "Famille", "City stop": "Étape en ville", "Spa & wellness": "Spa & bien-être", "nacht": "nuit", "Bekijk": "Voir", "Attracties": "Attractions", "Musea": "Musées", "Natuur": "Nature", "Zoek attracties via de routeplanner.": "Trouvez des attractions via le planificateur d’itinéraire.", "Culturele stops voor onderweg.": "Arrêts culturels en route.", "Mooie pauzeplekken op de route.": "Beaux endroits pour faire une pause.", "Tankstations": "Stations-service", "Laadpalen": "Bornes de recharge", "Parkeren": "Parking", "Vind tankstations langs je route via de routeplanner.": "Trouvez des stations-service le long de votre route via le planificateur.", "Zoek laadpunten onderweg.": "Trouvez des bornes de recharge en route.", "Vind parkeerplekken bij stops.": "Trouvez des parkings près des arrêts.", "Premium komt later beschikbaar": "Premium sera disponible plus tard", "Geen stops gevonden. Kies filters en plan je route opnieuw.": "Aucun arrêt trouvé. Choisissez des filtres et planifiez à nouveau votre route.", "Route en stops worden gezocht...": "Recherche de l’itinéraire et des arrêts...", "Route kon niet worden geladen:": "L’itinéraire n’a pas pu être chargé :", "Stops konden niet worden geladen:": "Les arrêts n’ont pas pu être chargés :", "Locatie ontbreekt.": "La localisation manque.", "Locatie ophalen...": "Récupération de la localisation...", "GPS wordt niet ondersteund.": "Le GPS n’est pas pris en charge.", "Locatie gevonden:": "Localisation trouvée :", "Je kunt nu de route plannen.": "Vous pouvez maintenant planifier l’itinéraire.", "Locatie kon niet worden opgehaald. Controleer toestemming.": "La localisation n’a pas pu être récupérée. Vérifiez l’autorisation.", "Maak eerst een route voordat je hem opslaat.": "Créez d’abord un itinéraire avant de l’enregistrer.", "Naam voor deze route:": "Nom de cet itinéraire :", "Route opgeslagen in Mijn Routes.": "Itinéraire enregistré dans Mes itinéraires.", "Je hebt nog geen routes opgeslagen. Maak eerst een route en klik op": "Vous n’avez pas encore d’itinéraires enregistrés. Créez d’abord un itinéraire et cliquez sur", "Weet je zeker dat je deze route wilt verwijderen?": "Voulez-vous vraiment supprimer cet itinéraire ?", "Home": "Accueil", "🚗 Roadora Europa": "🚗 Roadora Europe", "Plan jouw roadtrip slim door Europa": "Planifiez intelligemment votre road trip en Europe", "Maak je route, vind hotels onderweg en ontdek handige stops voor je reis.": "Créez votre itinéraire, trouvez des hôtels en route et découvrez des arrêts utiles.", "🚗 Start route": "🚗 Démarrer l’itinéraire", "Route eerst": "Itinéraire d’abord", "Plan van A naar B en kies stops onderweg.": "Planifiez de A à B et choisissez des arrêts en route.", "Hotels snel vinden": "Trouver des hôtels rapidement", "Zoek hotels bij je bestemming of onderweg.": "Trouvez des hôtels à destination ou en route.", "Routes bewaren": "Enregistrer les itinéraires", "Sla je favoriete roadtrips lokaal op.": "Enregistrez vos road trips favoris localement.", "🏨 Hotels zoeken": "🏨 Rechercher des hôtels", "🎡 Uitjes vinden": "🎡 Trouver des activités", "Zo werkt Roadora": "Comment fonctionne Roadora", "1. Plan je route": "1. Planifiez votre itinéraire", "Kies vertrekpunt, bestemming en voertuigtype.": "Choisissez le départ, la destination et le type de véhicule.", "2. Kies stops": "2. Choisissez des arrêts", "Vind tankstations, laadpalen, restaurants, hotels en uitjes langs je route.": "Trouvez stations-service, bornes, restaurants, hôtels et activités sur votre route.", "3. Navigeer": "3. Naviguez", "Sla je route op of open hem direct in Google Maps.": "Enregistrez votre itinéraire ou ouvrez-le directement dans Google Maps.", "Populaire roadtrip ideeën": "Idées de road trips populaires", "Gebruik route": "Utiliser l’itinéraire", "Korte rit met hotels en stops onderweg.": "Petit trajet avec hôtels et arrêts en route.", "Perfect voor een eerste overnachting richting Scandinavië.": "Parfait pour une première nuit vers la Scandinavie.", "Mooie route met hotels, laadstops en uitjes.": "Bel itinéraire avec hôtels, recharges et activités.", "🏨 Hotels voor je roadtrip": "🏨 Hôtels pour votre road trip", "Zoek hotels bij je bestemming, gebruik je locatie of bereid straks affiliate boekingen voor.": "Recherchez des hôtels à destination, utilisez votre position ou préparez plus tard les réservations affiliées.", "Parking mogelijk": "Parking possible", "Roadtrip proof": "Adapté au road trip", "vanaf / nacht": "à partir de / nuit", "Affiliate-ready: later koppelbaar aan Booking.com partnerlink.": "Prêt pour l’affiliation : pourra être relié plus tard à votre lien partenaire Booking.com.", "Bekijk hotel": "Voir l’hôtel", "Open in Maps": "Ouvrir dans Maps", "Zoek exact op route / 0 km": "Rechercher exactement sur l’itinéraire / 0 km", "🏨 Hotels langs je route": "🏨 Hôtels sur votre route", "Vind snelle overnachtingen op logische plekken onderweg.": "Trouvez des nuits rapides à des endroits logiques en route.", "Zoek hotels langs route": "Rechercher des hôtels sur la route", "Plan eerst een route voordat je hotels langs de route zoekt.": "Planifiez d’abord un itinéraire avant de chercher des hôtels sur la route.", "Vroeg onderweg": "Début du trajet", "Halverwege": "À mi-chemin", "Dicht bij bestemming": "Proche de la destination", "omgeving": "région", "Halverwege route": "À mi-chemin", "vanaf": "à partir de", "omrijden": "détour", "Tussenstop": "Étape", "👶 Kindvriendelijk": "👶 Adapté aux enfants", "🐶 Diervriendelijk": "🐶 Animaux acceptés", "Familie pauzeplek": "Pause familiale", "Kindvriendelijke stop met speelruimte en veilige parking": "Arrêt adapté aux enfants avec aire de jeu et parking sûr", "Hondvriendelijke rustplek": "Pause adaptée aux chiens", "Groene stop met uitlaatruimte en terras in de buurt": "Arrêt vert avec espace pour chien et terrasse à proximité", "Kindvriendelijk": "Adapté aux enfants", "Diervriendelijk": "Animaux acceptés"}};
+function rdClean(s){return (s||"").replace(/\s+/g," ").trim();}
+function rdT(s,lang){const k=rdClean(s); if(!k||lang==="nl") return k; return (window.RD_TRANSLATIONS[lang]&&window.RD_TRANSLATIONS[lang][k])||k;}
+
+function rdTranslateTextNodes(root, lang){
+  const walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      const parent=node.parentElement;
+      if(!parent || ["SCRIPT","STYLE","OPTION"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      const txt=rdClean(node.textContent);
+      if(!txt) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes=[];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const parent=node.parentElement;
+    if(!parent.dataset.rdTextBaseMap) parent.dataset.rdTextBaseMap="1";
+    if(!node.__rdBase) node.__rdBase=rdClean(node.textContent);
+    const translated=rdT(node.__rdBase, lang);
+    if(translated) node.textContent=node.textContent.replace(node.__rdBase, translated);
+  });
+}
+
+function rdApply(lang){
+  localStorage.setItem("roadoraLanguage",lang);
+  const sel=document.getElementById("languageSelect"); if(sel) sel.value=lang;
+  document.querySelectorAll("body *").forEach(el=>{
+    if(["SCRIPT","STYLE","SELECT","OPTION"].includes(el.tagName)) return;
+    if(el.childNodes.length===1 && el.childNodes[0].nodeType===Node.TEXT_NODE){
+      if(!el.dataset.rdBase) el.dataset.rdBase=rdClean(el.textContent);
+      el.textContent=rdT(el.dataset.rdBase,lang);
+    }
+  });
+  document.querySelectorAll("option").forEach(opt=>{if(!opt.dataset.rdBase) opt.dataset.rdBase=rdClean(opt.textContent); opt.textContent=rdT(opt.dataset.rdBase,lang);});
+  document.querySelectorAll("input[placeholder]").forEach(inp=>{if(!inp.dataset.rdPlaceholder) inp.dataset.rdPlaceholder=inp.getAttribute("placeholder"); inp.setAttribute("placeholder",rdT(inp.dataset.rdPlaceholder,lang));});
+}
+function setLanguage(lang){rdApply(lang);}
+function rdWrap(fn){const old=window[fn]; if(typeof old!=="function"||old.__rd) return; window[fn]=function(...a){const r=old.apply(this,a); setTimeout(()=>rdApply(localStorage.getItem("roadoraLanguage")||"nl"),0); return r;}; window[fn].__rd=true;}
+window.addEventListener("DOMContentLoaded",()=>{["renderHotels","renderCompare","renderStops","renderSavedRoutes","showPage"].forEach(rdWrap); rdApply(localStorage.getItem("roadoraLanguage")||"nl");});
+</script>
+
+
+<script id="roadora-bottom-nav-translation-fix">
+function translateBottomNav(lang){
+  const labels = {
+    nl: {hotels:"Hotels", route:"Route", saved:"Mijn Routes", compare:"Vergelijk", road:"Onderweg", trips:"Uitjes"},
+    en: {hotels:"Hotels", route:"Route", saved:"My Routes", compare:"Compare", road:"On the road", trips:"Activities"},
+    de: {hotels:"Hotels", route:"Route", saved:"Meine Routen", compare:"Vergleichen", road:"Unterwegs", trips:"Aktivitäten"},
+    fr: {hotels:"Hôtels", route:"Itinéraire", saved:"Mes itinéraires", compare:"Comparer", road:"En route", trips:"Activités"}
+  };
+  const t = labels[lang] || labels.nl;
+  const map = {
+    "nav-hotels": ["🏨", t.hotels],
+    "nav-route": ["🚗", t.route],
+    "nav-saved": ["💾", t.saved],
+    "nav-compare": ["💶", t.compare],
+    "nav-road": ["⛽", t.road],
+    "nav-trips": ["🎡", t.trips]
+  };
+  Object.keys(map).forEach(id=>{
+    const btn=document.getElementById(id);
+    if(btn){
+      btn.innerHTML = '<span class="nav-icon">'+map[id][0]+'</span>' + map[id][1];
+    }
+  });
+}
+
+(function(){
+  const oldSetLanguage = window.setLanguage;
+  window.setLanguage = function(lang){
+    if(typeof oldSetLanguage === "function") oldSetLanguage(lang);
+    localStorage.setItem("roadoraLanguage", lang);
+    translateBottomNav(lang);
+  };
+  window.addEventListener("DOMContentLoaded", ()=>{
+    translateBottomNav(localStorage.getItem("roadoraLanguage") || "nl");
+  });
+})();
+</script>
+
+
+<script id="roadora-filter-label-translation-fix">
+function translateFilterLabels(lang){
+  const labels = {
+    nl: {
+      fuel:"Tankstations", charging_station:"Laadpalen", hotel:"Hotels", attraction:"Uitjes",
+      parking:"Parkeren", restaurant:"Restaurants", supermarket:"Supermarkt", toilets:"Toiletten"
+    },
+    en: {
+      fuel:"Fuel stations", charging_station:"Charging stations", hotel:"Hotels", attraction:"Activities",
+      parking:"Parking", restaurant:"Restaurants", supermarket:"Supermarket", toilets:"Toilets"
+    },
+    de: {
+      fuel:"Tankstellen", charging_station:"Ladestationen", hotel:"Hotels", attraction:"Aktivitäten",
+      parking:"Parken", restaurant:"Restaurants", supermarket:"Supermarkt", toilets:"Toiletten"
+    },
+    fr: {
+      fuel:"Stations-service", charging_station:"Bornes de recharge", hotel:"Hôtels", attraction:"Activités",
+      parking:"Parking", restaurant:"Restaurants", supermarket:"Supermarché", toilets:"Toilettes"
+    }
+  };
+
+  const icons = {
+    fuel:"⛽", charging_station:"⚡", hotel:"🏨", attraction:"🎢",
+    parking:"🅿️", restaurant:"🍽️", supermarket:"🛒", toilets:"🚻"
+  };
+
+  const t = labels[lang] || labels.nl;
+
+  document.querySelectorAll(".filter input").forEach(input=>{
+    const value = input.value;
+    const label = input.closest(".filter");
+    if(label && t[value]){
+      label.innerHTML = "";
+      label.appendChild(input);
+      label.append(" " + icons[value] + " " + t[value]);
+    }
+  });
+}
+
+(function(){
+  const oldSetLanguage = window.setLanguage;
+  window.setLanguage = function(lang){
+    if(typeof oldSetLanguage === "function") oldSetLanguage(lang);
+    localStorage.setItem("roadoraLanguage", lang);
+    translateFilterLabels(lang);
+    if(typeof translateBottomNav === "function") translateBottomNav(lang);
+  };
+
+  window.addEventListener("DOMContentLoaded", ()=>{
+    translateFilterLabels(localStorage.getItem("roadoraLanguage") || "nl");
+  });
+})();
+</script>
+
+
+<script id="hotel-filter-accordion-script">
+(function(){
+function insertHotelTools(){
+  const hotelsPage = document.getElementById('hotelsPage');
+  if(!hotelsPage || document.getElementById('hotelTools')) return;
+
+  const box = document.createElement('section');
+  box.className='hotel-filter-accordion';
+  box.id='hotelTools';
+  box.innerHTML = `
+    <button type="button" class="hotel-filter-head" onclick="document.getElementById('hotelTools').classList.toggle('open')">
+      <span>⚙️ Hotel filters</span>
+      <span class="chev">⌄</span>
+    </button>
+    <div class="hotel-filter-body">
+      <div class="hotel-filter-row">
+        <button class="hotel-chip" data-filter="budget">💶 Budget</button>
+        <button class="hotel-chip" data-filter="family">👨‍👩‍👧 Familie</button>
+        <button class="hotel-chip" data-filter="luxury">✨ Luxe</button>
+        <button class="hotel-chip" data-filter="parking">🅿️ Parkeren</button>
+        <button class="hotel-chip" data-filter="ev">⚡ Laadpaal</button>
+        <button class="hotel-chip" data-filter="pets">🐶 Huisdieren</button>
+      </div>
+    </div>
+  `;
+
+  const searchCard = Array.from(hotelsPage.querySelectorAll('.card.section'))
+    .find(card => card.innerText.includes('Zoek hotels') || card.innerText.includes('Search hotels') || card.innerText.includes('Hotels suchen') || card.innerText.includes('Rechercher'));
+  if(searchCard) hotelsPage.insertBefore(box, searchCard);
+  else hotelsPage.insertBefore(box, hotelsPage.firstChild.nextSibling);
+
+  box.querySelectorAll('.hotel-chip').forEach(btn=>{
+    btn.addEventListener('click', ()=>btn.classList.toggle('active'));
+  });
+}
+
+function upgradeHotelButtons(){
+  document.querySelectorAll('.hotel-card-premium').forEach(card=>{
+    if(card.dataset.affReady) return;
+    card.dataset.affReady="1";
+    const cta = card.querySelector('.hotel-cta');
+    if(cta){
+      cta.textContent = 'Bekijk hotel';
+      cta.href = '#';
+      cta.addEventListener('click', (e)=>{
+        e.preventDefault();
+        alert('Affiliate-ready knop: hier komt later je Booking.com partnerlink.');
+      });
+      if(!card.querySelector('.hotel-cta-secondary')){
+        const extra = document.createElement('a');
+        extra.href='#';
+        extra.className='hotel-cta-secondary';
+        extra.textContent='Vergelijk prijzen';
+        extra.onclick=(e)=>{e.preventDefault(); alert('Hier kun je later meerdere aanbieders tonen.');};
+        cta.after(extra);
+      }
+    }
+  });
+}
+
+function run(){
+  insertHotelTools();
+  upgradeHotelButtons();
+}
+
+window.addEventListener('DOMContentLoaded', run);
+const oldRender = window.renderHotels;
+if(typeof oldRender === 'function' && !oldRender.__hotelFilterWrapped){
+  window.renderHotels = function(...args){
+    const r = oldRender.apply(this,args);
+    setTimeout(run,80);
+    return r;
+  };
+  window.renderHotels.__hotelFilterWrapped = true;
+}
+})();
+</script>
+
+
+
+<script id="vehicle-script">
+(function(){
+function saveVehicle(type){
+  localStorage.setItem('roadoraVehicle', type);
+  updateVehicleUI();
+}
+function getVehicle(){
+  return localStorage.getItem('roadoraVehicle') || 'car';
+}
+function updateVehicleUI(){
+  const type = getVehicle();
+
+  document.querySelectorAll('#routeVehicleBox .vehicle-chip').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.vehicle === type);
+  });
+
+  const note = document.getElementById('hotelVehicleNote');
+  if(note){
+    const notes = {
+      car: '🚗 Hotelresultaten afgestemd op normale roadtrips',
+      ev: '⚡ Tip: kies hotels met laadpaal of parkeren',
+      camper: '🚐 Tip: kies hotels met ruime parkeerplaats of camperopties',
+      motor: '🏍️ Tip: kies hotels met veilige parking'
+    };
+    note.textContent = notes[type] || '';
+  }
+}
+
+function insertRouteVehicle(){
+  const routePage = document.getElementById('routePage');
+  if(!routePage || document.getElementById('routeVehicleBox')) return;
+
+  const box = document.createElement('div');
+  box.className='vehicle-box';
+  box.id='routeVehicleBox';
+  box.innerHTML = `
+    <div style="font-weight:900;margin-bottom:8px">🚘 Soort voertuig</div>
+    <div class="vehicle-row">
+      <button class="vehicle-chip" data-vehicle="car">🚗 Auto</button>
+      <button class="vehicle-chip" data-vehicle="ev">⚡ EV</button>
+      <button class="vehicle-chip" data-vehicle="camper">🚐 Camper</button>
+      <button class="vehicle-chip" data-vehicle="motor">🏍️ Motor</button>
+    </div>
+  `;
+  routePage.insertBefore(box, routePage.firstChild.nextSibling);
+
+  box.querySelectorAll('.vehicle-chip').forEach(btn=>{
+    btn.onclick=()=>saveVehicle(btn.dataset.vehicle);
+  });
+}
+
+function insertHotelVehicleNote(){
+  const hotelTools = document.getElementById('hotelTools');
+  if(!hotelTools || document.getElementById('hotelVehicleInfo')) return;
+
+  const info = document.createElement('div');
+  info.className='vehicle-note hotel-vehicle-info';
+  info.id='hotelVehicleInfo';
+  info.innerHTML = `<div id="hotelVehicleNote"></div>`;
+  hotelTools.appendChild(info);
+}
+
+function run(){
+  insertRouteVehicle();
+  insertHotelVehicleNote();
+  updateVehicleUI();
+}
+
+window.addEventListener('DOMContentLoaded', run);
+['showPage','renderHotels'].forEach(fn=>{
+  const old = window[fn];
+  if(typeof old === 'function' && !old.__vehicleWrapped2){
+    window[fn] = function(...args){
+      const r = old.apply(this,args);
+      setTimeout(run,80);
+      return r;
+    };
+    window[fn].__vehicleWrapped2 = true;
+  }
+});
+})();
+</script>
+
+
+
+
+
+<script id="hotel-gps-script">
+(function(){
+function initGpsField(){
+ const input = document.getElementById('city');
+ if(!input || document.getElementById('gpsInlineBtn')) return;
+ const wrap=document.createElement('div');
+ wrap.className='dest-wrap';
+ input.parentNode.insertBefore(wrap,input);
+ wrap.appendChild(input);
+ const btn=document.createElement('button');
+ btn.type='button'; btn.className='gps-inline'; btn.id='gpsInlineBtn'; btn.innerHTML='🛰️';
+ btn.onclick=useGps;
+ wrap.appendChild(btn);
+ const note=document.createElement('div');
+ note.className='gps-inline-note'; note.id='gpsInlineNote'; note.textContent='Gebruik locatie';
+ wrap.after(note);
+}
+function msg(t){const n=document.getElementById('gpsInlineNote'); if(n) n.textContent=t;}
+function useGps(){
+ if(!navigator.geolocation){msg('GPS niet ondersteund');return;}
+ msg('Locatie ophalen...');
+ navigator.geolocation.getCurrentPosition(p=>{
+   const v=p.coords.latitude.toFixed(4)+', '+p.coords.longitude.toFixed(4);
+   const input=document.getElementById('city'); if(input) input.value=v;
+   msg('Locatie gevonden');
+ },e=>msg('Locatie niet toegestaan'),{enableHighAccuracy:true,timeout:10000});
+}
+window.addEventListener('DOMContentLoaded',initGpsField);
+const oldShow=window.showPage;
+if(typeof oldShow==='function'){
+ window.showPage=function(...a){const r=oldShow.apply(this,a); setTimeout(initGpsField,80); return r;}
+}
+})();
+</script>
+
+
+<script id="hotel-button-balance-script">
+(function(){
+function balanceButtons(){
+ const buttons = Array.from(document.querySelectorAll('button')).filter(b =>
+   /Zoek hotels|Search hotels|Hotels suchen|Rechercher des hôtels|Bekijk populaire hotels|View popular hotels|Beliebte Hotels anzeigen|Voir les hôtels populaires/.test(b.innerText)
+ );
+
+ if(buttons.length >= 2){
+   const parent = buttons[0].parentElement;
+   if(parent && !parent.classList.contains('hotel-action-row')){
+     const row = document.createElement('div');
+     row.className = 'hotel-action-row';
+     parent.insertBefore(row, buttons[0]);
+     row.appendChild(buttons[0]);
+     row.appendChild(buttons[1]);
+   }
+ }
+}
+window.addEventListener('DOMContentLoaded', balanceButtons);
+const oldShow = window.showPage;
+if(typeof oldShow === 'function'){
+ window.showPage = function(...a){
+   const r = oldShow.apply(this,a);
+   setTimeout(balanceButtons,80);
+   return r;
+ }
+}
+})();
+</script>
+
+
+
+<script id="home-v2-script">
+(function(){
+  window.showPage = function(key){
+    const pageMap = {
+      home:"homePage",
+      hotels:"hotelsPage",
+      route:"routePage",
+      saved:"savedPage",
+      compare:"comparePage",
+      road:"roadPage",
+      trips:"tripsPage"
+    };
+
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+
+    const page = document.getElementById(pageMap[key]);
+    if(page) page.classList.add("active");
+
+    const nav = document.getElementById("nav-" + key);
+    if(nav) nav.classList.add("active");
+
+    if(key==="route"){
+      setTimeout(()=>{ if(typeof initMap==="function") initMap(); if(typeof map!=="undefined" && map && map.invalidateSize) map.invalidateSize(); },150);
+    }
+    if(key==="saved" && typeof renderSavedRoutes==="function") renderSavedRoutes();
+    if(key==="compare" && typeof renderCompare==="function") renderCompare();
+
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+
+  window.addEventListener("DOMContentLoaded",()=>{
+    showPage("home");
+  });
+})();
+</script>
+
+
+<script id="hotels-v2-script">
+(function(){
+function hotelAffiliateUrl(hotelName){
+  return "https://www.booking.com/searchresults.html?ss=" + encodeURIComponent(hotelName || "hotel");
+}
+
+function renderHotelCardV2(h){
+  const img = h.image || "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80";
+  const price = typeof euro === "function" ? euro(h.price || 129) : "€" + (h.price || 129);
+  const title = h.name || "Roadora hotel";
+  const city = h.city || "";
+  const country = h.country || "";
+  const rating = h.rating || "8.5";
+  const type = h.type || "Roadtrip hotel";
+  const link = hotelAffiliateUrl(title);
+
+  return `
+    <article class="hotel-card-v2">
+      <div class="hotel-card-v2-img" style="background-image:url('${img}')"></div>
+      <div class="hotel-card-v2-body">
+        <div>
+          <div class="hotel-card-v2-title">${title}</div>
+          <div class="hotel-card-v2-sub">🛰️ ${city}${country ? ", " + country : ""}</div>
+        </div>
+
+        <div class="hotel-card-v2-badges">
+          <span class="hotel-card-v2-badge">⭐ ${rating}</span>
+          <span class="hotel-card-v2-badge">🏨 ${type}</span>
+          <span class="hotel-card-v2-badge">🅿️ Parking mogelijk</span>
+          <span class="hotel-card-v2-badge">🚗 Roadtrip proof</span>
+        </div>
+
+        <div class="hotel-card-v2-bottom">
+          <div>
+            <div class="hotel-card-v2-price">${price}<small>vanaf / nacht</small></div>
+            <div class="affiliate-note">Affiliate-ready: later koppelbaar aan Booking.com partnerlink.</div>
+          </div>
+          <div class="hotel-card-v2-actions">
+            <a class="btn accent" target="_blank" rel="noopener" href="${link}">Bekijk hotel</a>
+            <a class="secondary btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title + ' ' + city)}">Open in Maps</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+window.renderHotels = function(data){
+  const box = document.getElementById("hotelResults");
+  if(!box) return;
+  const list = data && data.length ? data : (window.hotels || hotels || []);
+  box.innerHTML = list.map(renderHotelCardV2).join("");
+  setTimeout(()=>{
+    if(typeof rdApply === "function") rdApply(localStorage.getItem("roadoraLanguage") || "nl");
+    if(typeof rdTranslateAll === "function") rdTranslateAll(localStorage.getItem("roadoraLanguage") || "nl");
+  },0);
+};
+
+function addHotelsIntro(){
+  const page=document.getElementById("hotelsPage");
+  if(!page || document.getElementById("hotelsV2Intro")) return;
+  const hero=page.querySelector(".hero");
+  const intro=document.createElement("section");
+  intro.className="hotels-v2-intro";
+  intro.id="hotelsV2Intro";
+  intro.innerHTML=`
+    <h2>🏨 Hotels voor je roadtrip</h2>
+    <p>Zoek hotels bij je bestemming, gebruik je locatie of bereid straks affiliate boekingen voor.</p>
+  `;
+  if(hero) hero.after(intro);
+}
+
+function runHotelsV2(){
+  addHotelsIntro();
+  if(typeof renderHotels === "function" && typeof hotels !== "undefined"){
+    const results=document.getElementById("hotelResults");
+    if(results && !results.innerHTML.trim()) renderHotels(hotels);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", runHotelsV2);
+const oldShowPage=window.showPage;
+if(typeof oldShowPage==="function" && !oldShowPage.__hotelsV2Wrapped){
+  window.showPage=function(...args){
+    const r=oldShowPage.apply(this,args);
+    setTimeout(runHotelsV2,80);
+    return r;
+  };
+  window.showPage.__hotelsV2Wrapped=true;
+}
+})();
+</script>
+
+
+<script id="hotel-route-actions-safe-script">
+function roadoraSafeText(v){
+  return String(v || '').replace(/`/g,'').replace(/"/g,'&quot;').replace(/'/g,'');
+}
+
+function showHotelRouteNotice(text){
+  const routePage = document.getElementById('routePage');
+  if(!routePage) return;
+  const old = document.getElementById('hotelRouteNotice');
+  if(old) old.remove();
+  const box = document.createElement('div');
+  box.id = 'hotelRouteNotice';
+  box.className = 'hotel-route-note';
+  box.textContent = text;
+  routePage.insertBefore(box, routePage.firstChild.nextSibling);
+  setTimeout(()=>box.remove(),3500);
+}
+
+function addHotelAsStop(name, city){
+  const cleanName = roadoraSafeText(name);
+  const cleanCity = roadoraSafeText(city);
+  const target = cleanCity || cleanName;
+
+  const stops = JSON.parse(localStorage.getItem('roadoraHotelStops') || '[]');
+  if(!stops.some(s => s.name === cleanName)){
+    stops.push({name:cleanName, city:cleanCity, target});
+    localStorage.setItem('roadoraHotelStops', JSON.stringify(stops));
+  }
+
+  showPage('route');
+
+  setTimeout(()=>{
+    const flow = document.getElementById('selectedRouteFlow');
+    if(flow){
+      const empty = !flow.innerText.trim() || /Nog geen|No stop|Noch kein|Aucune/.test(flow.innerText);
+      const chip = '<span class="route-point">🏨 '+cleanName+'</span>';
+      flow.innerHTML = empty ? chip : flow.innerHTML + '<span class="route-arrow">→</span>' + chip;
+    }
+    showHotelRouteNotice('Hotel toegevoegd als tussenstop: ' + cleanName); if(window.attachRemoveButtons) setTimeout(window.attachRemoveButtons,50);
+  },180);
+}
+
+function setHotelAsDestination(name, city){
+  const cleanName = roadoraSafeText(name);
+  const cleanCity = roadoraSafeText(city);
+  const target = cleanCity || cleanName;
+
+  showPage('route');
+
+  setTimeout(()=>{
+    const to = document.getElementById('to');
+    if(to) to.value = target;
+    if(typeof updateSelectedRouteBar === 'function') updateSelectedRouteBar();
+    showHotelRouteNotice('Hotel ingesteld als eindbestemming: ' + cleanName);
+  },180);
+}
+
+function addHotelRouteButtons(){
+  document.querySelectorAll('.hotel-card-v2').forEach(card=>{
+    if(card.dataset.routeActionsAdded) return;
+    card.dataset.routeActionsAdded = '1';
+
+    const title = card.querySelector('.hotel-card-v2-title')?.textContent || 'Hotel';
+    const sub = card.querySelector('.hotel-card-v2-sub')?.textContent || '';
+    const city = sub.replace('🛰️','').split(',')[0].trim();
+
+    const actions = card.querySelector('.hotel-card-v2-actions');
+    if(!actions) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'hotel-route-actions';
+    wrap.innerHTML = `
+      <button type="button" class="secondary">➕ Tussenstop</button>
+      <button type="button" class="secondary">🎯 Eindbestemming</button>
+    `;
+
+    const btns = wrap.querySelectorAll('button');
+    btns[0].onclick = ()=>addHotelAsStop(title, city);
+    btns[1].onclick = ()=>setHotelAsDestination(title, city);
+
+    actions.appendChild(wrap);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(addHotelRouteButtons,200);
+});
+
+const oldRenderHotelsForActions = window.renderHotels;
+if(typeof oldRenderHotelsForActions === 'function' && !oldRenderHotelsForActions.__hotelActionsSafe){
+  window.renderHotels = function(...args){
+    const r = oldRenderHotelsForActions.apply(this,args);
+    setTimeout(addHotelRouteButtons,120);
+    return r;
+  };
+  window.renderHotels.__hotelActionsSafe = true;
+}
+</script>
+
+
+<script id="route-remove-chip-script">
+(function(){
+
+function saveStopsFromUI(){
+  const chips = Array.from(document.querySelectorAll('#selectedRouteFlow .route-point'));
+  const items = chips.map(chip=>{
+    const txt = chip.getAttribute('data-name') || chip.textContent.replace('✕','').trim().replace(/^🏨|^⛽|^⚡|^🍽️|^🅿️/,'').trim();
+    return {name:txt,target:txt};
+  });
+  localStorage.setItem('roadoraHotelStops', JSON.stringify(items));
+}
+
+function attachRemoveButtons(){
+  const flow = document.getElementById('selectedRouteFlow');
+  if(!flow) return;
+
+  flow.querySelectorAll('.route-point').forEach(chip=>{
+    if(chip.querySelector('.route-remove')) return;
+
+    const raw = chip.textContent.trim();
+    const clean = raw.replace('✕','').trim();
+    chip.setAttribute('data-name', clean);
+
+    const btn = document.createElement('button');
+    btn.type='button';
+    btn.className='route-remove';
+    btn.textContent='✕';
+
+    btn.onclick = (e)=>{
+      e.stopPropagation();
+      const arrow = chip.nextElementSibling && chip.nextElementSibling.classList.contains('route-arrow')
+        ? chip.nextElementSibling
+        : (chip.previousElementSibling && chip.previousElementSibling.classList.contains('route-arrow') ? chip.previousElementSibling : null);
+
+      chip.remove();
+      if(arrow) arrow.remove();
+
+      saveStopsFromUI();
+
+      if(!flow.querySelector('.route-point')){
+        flow.textContent = 'Nog geen tussenstop gekozen';
+      }
+    };
+
+    chip.appendChild(btn);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(attachRemoveButtons,250);
+});
+
+const oldShow = window.showPage;
+if(typeof oldShow === 'function' && !oldShow.__removeChipWrapped){
+  window.showPage = function(...args){
+    const r = oldShow.apply(this,args);
+    setTimeout(attachRemoveButtons,120);
+    return r;
+  };
+  window.showPage.__removeChipWrapped = true;
+}
+
+const oldRender = window.renderHotels;
+if(typeof oldRender === 'function' && !oldRender.__removeChipWrapped){
+  window.renderHotels = function(...args){
+    const r = oldRender.apply(this,args);
+    setTimeout(attachRemoveButtons,120);
+    return r;
+  };
+  window.renderHotels.__removeChipWrapped = true;
+}
+
+window.attachRemoveButtons = attachRemoveButtons;
+})();
+</script>
+
+
+<script id="hotel-stops-no-duplicate-fix">
+(function(){
+function cleanText(v){
+  return String(v || '').replace(/✕/g,'').replace(/🏨/g,'').trim();
+}
+
+function getStoredHotelStops(){
+  let stops = [];
+  try { stops = JSON.parse(localStorage.getItem('roadoraHotelStops') || '[]'); }
+  catch(e){ stops = []; }
+
+  const seen = new Set();
+  const clean = [];
+
+  stops.forEach(s=>{
+    const name = cleanText(s.name || s.target || s.city || 'Hotel');
+    const target = cleanText(s.target || s.city || s.name || name);
+    const key = (target || name).toLowerCase();
+
+    if(!seen.has(key)){
+      seen.add(key);
+      clean.push({name, target, city: cleanText(s.city || '')});
+    }
+  });
+
+  localStorage.setItem('roadoraHotelStops', JSON.stringify(clean));
+  return clean;
+}
+
+function saveHotelStops(stops){
+  const seen = new Set();
+  const clean = [];
+  stops.forEach(s=>{
+    const name = cleanText(s.name || s.target || 'Hotel');
+    const target = cleanText(s.target || s.city || s.name || name);
+    const key = (target || name).toLowerCase();
+    if(!seen.has(key)){
+      seen.add(key);
+      clean.push({name,target,city: cleanText(s.city || '')});
+    }
+  });
+  localStorage.setItem('roadoraHotelStops', JSON.stringify(clean));
+}
+
+function renderHotelStops(){
+  const flow = document.getElementById('selectedRouteFlow');
+  if(!flow) return;
+
+  const stops = getStoredHotelStops();
+
+  if(!stops.length){
+    flow.textContent = 'Nog geen tussenstop gekozen';
+    return;
+  }
+
+  flow.innerHTML = stops.map((s, index)=>{
+    const arrow = index < stops.length - 1 ? '<span class="route-arrow">→</span>' : '';
+    return '<span class="route-point" data-stop-key="'+encodeURIComponent((s.target||s.name).toLowerCase())+'">🏨 '+s.name+'<button type="button" class="route-remove" aria-label="Verwijder tussenstop">×</button></span>' + arrow;
+  }).join('');
+
+  flow.querySelectorAll('.route-remove').forEach(btn=>{
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      const chip = btn.closest('.route-point');
+      const key = chip ? decodeURIComponent(chip.dataset.stopKey || '') : '';
+      const remaining = getStoredHotelStops().filter(s => (s.target || s.name).toLowerCase() !== key);
+
+      saveHotelStops(remaining);
+      renderHotelStops();
+    };
+  });
+}
+
+window.addHotelAsStop = function(name, city){
+  const cleanName = cleanText(name || 'Hotel');
+  const cleanCity = cleanText(city || '');
+  const target = cleanCity || cleanName;
+
+  const stops = getStoredHotelStops();
+  const key = target.toLowerCase();
+
+  if(!stops.some(s => (s.target || s.name).toLowerCase() === key)){
+    stops.push({name: cleanName, city: cleanCity, target});
+    saveHotelStops(stops);
+  }
+
+  if(typeof showPage === 'function') showPage('route');
+
+  setTimeout(()=>{
+    renderHotelStops();
+
+    const routePage = document.getElementById('routePage');
+    if(routePage){
+      const old = document.getElementById('hotelRouteNotice');
+      if(old) old.remove();
+      const note = document.createElement('div');
+      note.id = 'hotelRouteNotice';
+      note.className = 'hotel-route-note';
+      note.textContent = 'Hotel toegevoegd als tussenstop: ' + cleanName;
+      routePage.insertBefore(note, routePage.firstChild.nextSibling);
+      setTimeout(()=>note.remove(), 3000);
+    }
+  },180);
+};
+
+window.setHotelAsDestination = function(name, city){
+  const cleanName = cleanText(name || 'Hotel');
+  const cleanCity = cleanText(city || '');
+  const target = cleanCity || cleanName;
+
+  if(typeof showPage === 'function') showPage('route');
+
+  setTimeout(()=>{
+    const to = document.getElementById('to');
+    if(to) to.value = target;
+    if(typeof updateSelectedRouteBar === 'function') updateSelectedRouteBar();
+    renderHotelStops();
+  },180);
+};
+
+function patchPlanRoute(){}
+}
+
+function patchMapsUrl(){
+  const oldBuild = window.buildGoogleMapsRouteUrl;
+  if(typeof oldBuild === 'function' && !oldBuild.__noDuplicateHotelStops){
+    window.buildGoogleMapsRouteUrl = function(){
+      const fromEl = document.getElementById('from');
+      const toEl = document.getElementById('to');
+      const origin = encodeURIComponent((document.getElementById('fromCoords')?.value || fromEl?.value || '').trim());
+      const dest = encodeURIComponent((toEl?.value || '').trim());
+
+      const checkedStops = Array.from(document.querySelectorAll('.stopCheck:checked'))
+        .slice(0,8)
+        .map(c => encodeURIComponent(c.dataset.lat + ',' + c.dataset.lng));
+
+      const hotelStops = getStoredHotelStops()
+        .slice(0,8)
+        .map(s => encodeURIComponent(s.target || s.name));
+
+      const waypoints = [...checkedStops, ...hotelStops].filter(Boolean).slice(0,8);
+
+      let url = 'https://www.google.com/maps/dir/?api=1&origin=' + origin + '&destination=' + dest + '&travelmode=driving';
+      if(waypoints.length) url += '&waypoints=' + waypoints.join('|');
+      return url;
+    };
+    window.buildGoogleMapsRouteUrl.__noDuplicateHotelStops = true;
+  }
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  patchPlanRoute();
+  patchMapsUrl();
+  setTimeout(renderHotelStops,300);
+});
+
+const oldShow = window.showPage;
+if(typeof oldShow === 'function' && !oldShow.__noDuplicateHotelStops){
+  window.showPage = function(...args){
+    const r = oldShow.apply(this,args);
+    setTimeout(()=>{
+      patchPlanRoute();
+      patchMapsUrl();
+      if(args[0] === 'route') renderHotelStops();
+    },150);
+    return r;
+  };
+  window.showPage.__noDuplicateHotelStops = true;
+}
+
+window.renderHotelStops = renderHotelStops;
+})();
+</script>
+
+
+<script id="hotel-destination-safe-simple">
+(function(){
+function cleanHotelText(v){
+  return String(v || '').replace(/✕/g,'').replace(/🏨/g,'').trim();
+}
+window.setHotelAsDestination = function(name, city){
+  const cleanName = cleanHotelText(name || 'Hotel');
+  const cleanCity = cleanHotelText(city || '');
+  const target = cleanCity || cleanName;
+
+  localStorage.setItem('roadoraHotelDestination', JSON.stringify({
+    name: cleanName,
+    city: cleanCity,
+    target: target
+  }));
+
+  if(typeof showPage === 'function') showPage('route');
+
+  setTimeout(()=>{
+    const to = document.getElementById('to');
+    if(to) to.value = target;
+
+    if(typeof updateSelectedRouteBar === 'function') updateSelectedRouteBar();
+
+    const routePage = document.getElementById('routePage');
+    if(routePage){
+      const old = document.getElementById('hotelRouteNotice');
+      if(old) old.remove();
+      const note = document.createElement('div');
+      note.id = 'hotelRouteNotice';
+      note.className = 'hotel-route-note';
+      note.textContent = 'Hotel ingesteld als eindbestemming: ' + cleanName;
+      routePage.insertBefore(note, routePage.firstChild.nextSibling);
+      setTimeout(()=>note.remove(), 3000);
+    }
+  },180);
+};
+})();
+</script>
+
+
+
+<script id="route-stats-id-safe-fix">
+(function(){
+function setRouteStatsSafe(distanceText, durationText){
+  const distanceTargets = [
+    document.getElementById("distance"),
+    document.getElementById("routeDistance"),
+    document.getElementById("distanceValue"),
+    document.querySelector('[data-stat="distance"]')
+  ].filter(Boolean);
+
+  const durationTargets = [
+    document.getElementById("duration"),
+    document.getElementById("travelTime"),
+    document.getElementById("routeDuration"),
+    document.getElementById("durationValue"),
+    document.querySelector('[data-stat="duration"]'),
+    document.querySelector('[data-stat="time"]')
+  ].filter(Boolean);
+
+  // Fallback: zoek de stat-kaarten op tekst Afstand/Reistijd
+  document.querySelectorAll(".stat,.route-stat,.stats-card,.card").forEach(card=>{
+    const txt = (card.innerText || "").toLowerCase();
+    if(txt.includes("afstand") || txt.includes("distance") || txt.includes("entfernung") || txt.includes("distance")){
+      const strong = card.querySelector("strong,b,.value,span:last-child");
+      if(strong) distanceTargets.push(strong);
+    }
+    if(txt.includes("reistijd") || txt.includes("travel") || txt.includes("reisezeit") || txt.includes("durée")){
+      const strong = card.querySelector("strong,b,.value,span:last-child");
+      if(strong) durationTargets.push(strong);
+    }
+  });
+
+  [...new Set(distanceTargets)].forEach(el=>{ el.textContent = distanceText; });
+  [...new Set(durationTargets)].forEach(el=>{ el.textContent = durationText; });
+
+  window.__lastRouteDistance = distanceText;
+  window.__lastRouteDuration = durationText;
+}
+
+function patchPlanRouteStats(){
+  const oldPlan = window.planRoute;
+  if(typeof oldPlan !== "function" || oldPlan.__statsIdSafeFix) return;
+
+  window.planRoute = async function(...args){
+    const result = await oldPlan.apply(this,args);
+
+    // Als routeCoords bestaat, bereken via OSRM opnieuw heel licht en vul de juiste vakken.
+    try{
+      const fromEl = document.getElementById("from");
+      const toEl = document.getElementById("to");
+      const fromCoordsEl = document.getElementById("fromCoords");
+
+      const fromText = (fromCoordsEl?.value || fromEl?.value || "").trim();
+      const toText = (toEl?.value || "").trim();
+
+      if(fromText && toText && typeof geocodePlace === "function"){
+        const from = await geocodePlace(fromText);
+        const to = await geocodePlace(toText);
+
+        const url = "https://router.project-osrm.org/route/v1/driving/"
+          + from.lng + "," + from.lat + ";"
+          + to.lng + "," + to.lat
+          + "?overview=false";
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if(data.routes && data.routes[0]){
+          const r = data.routes[0];
+          const distanceText = Math.round(r.distance / 1000) + " km";
+          const h = Math.floor(r.duration / 3600);
+          const m = Math.round((r.duration % 3600) / 60);
+          const durationText = h + "u " + m + "m";
+
+          setRouteStatsSafe(distanceText, durationText);
+          setTimeout(()=>setRouteStatsSafe(distanceText, durationText), 500);
+          setTimeout(()=>setRouteStatsSafe(distanceText, durationText), 1500);
+        }
+      }
+    }catch(e){
+      console.warn("Stats safe fix kon afstand/reistijd niet invullen:", e);
+    }
+
+    return result;
+  };
+
+  window.planRoute.__statsIdSafeFix = true;
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(patchPlanRouteStats, 300);
+  setTimeout(patchPlanRouteStats, 1000);
+});
+
+const oldShowPageStats = window.showPage;
+if(typeof oldShowPageStats === "function" && !oldShowPageStats.__statsIdSafeFix){
+  window.showPage = function(...args){
+    const r = oldShowPageStats.apply(this,args);
+    setTimeout(patchPlanRouteStats,300);
+    return r;
+  };
+  window.showPage.__statsIdSafeFix = true;
+}
+})();
+</script>
+
+
+
+<script id="hotels-along-route-v1b-script">
+(function(){
+const routeHotelImages = [
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80"
+];
+
+function hasPlannedRoute(){
+  const distanceText = (document.getElementById("distance")?.textContent || "").trim();
+  const durationText = (document.getElementById("duration")?.textContent || "").trim();
+  const hasStats = distanceText && distanceText !== "-" && durationText && durationText !== "-";
+  const hasLine = typeof routeLine !== "undefined" && routeLine;
+  return !!(hasStats || hasLine);
+}
+
+function ensureHotelsAlongRouteBox(){
+  const routePage = document.getElementById("routePage");
+  if(!routePage || document.getElementById("hotelsAlongRouteBox")) return;
+
+  const box = document.createElement("section");
+  box.id = "hotelsAlongRouteBox";
+  box.className = "hotels-route-box";
+  box.innerHTML = `
+    <div class="hotels-route-head">
+      <h2>🏨 Hotels langs je route</h2>
+      <div class="hotel-route-note">Vind snelle overnachtingen op logische plekken onderweg.</div>
+    </div>
+    <button class="hotels-route-btn accent" type="button" onclick="findHotelsAlongRouteV1()">Zoek hotels langs route</button>
+    <div id="hotelsAlongRouteResults" class="hotels-route-results"></div>
+  `;
+
+  const stopsTitle = Array.from(routePage.querySelectorAll("h2,h1,.section-title"))
+    .find(el => (el.innerText || "").toLowerCase().includes("stops langs"));
+
+  if(stopsTitle && stopsTitle.parentElement){
+    stopsTitle.parentElement.insertBefore(box, stopsTitle);
+  } else {
+    const stopsBox = document.getElementById("stops");
+    if(stopsBox && stopsBox.parentElement) stopsBox.parentElement.insertBefore(box, stopsBox);
+    else routePage.appendChild(box);
+  }
+}
+
+function routeLabels(){
+  const from = document.getElementById("from")?.value?.trim() || "Vertrekpunt";
+  const to = document.getElementById("to")?.value?.trim() || "Bestemming";
+  return {from, to};
+}
+
+window.findHotelsAlongRouteV1 = function(){
+  const results = document.getElementById("hotelsAlongRouteResults");
+  if(!results) return;
+
+  if(!hasPlannedRoute()){
+    results.innerHTML = '<div class="notice">Plan eerst een route voordat je hotels langs de route zoekt.</div>';
+    return;
+  }
+
+  const labels = routeLabels();
+
+  const hotels = [
+    {
+      name:"Roadora Comfort Hotel",
+      place:labels.from + " omgeving",
+      price:95,
+      rating:"8.2",
+      detour:"+4 min",
+      img:routeHotelImages[0]
+    },
+    {
+      name:"Roadora Midway Stay",
+      place:"Halverwege route",
+      price:119,
+      rating:"8.6",
+      detour:"+7 min",
+      img:routeHotelImages[1]
+    },
+    {
+      name:"Roadora Destination Hotel",
+      place:labels.to + " omgeving",
+      price:139,
+      rating:"8.8",
+      detour:"+5 min",
+      img:routeHotelImages[2]
+    }
+  ];
+
+  results.innerHTML = hotels.map(h=>{
+    const mapsQuery = encodeURIComponent(h.name + " " + h.place);
+    const safeName = h.name.replace(/'/g,"");
+    const safePlace = h.place.replace(/'/g,"");
+    return `
+      <article class="hotel-route-card">
+        <div class="hotel-route-img" style="background-image:url('${h.img}')"></div>
+        <div>
+          <div class="hotel-route-title">${h.name}</div>
+          <div class="hotel-route-place">🛰️ ${h.place}</div>
+          <div class="hotel-route-meta">
+            <span class="hotel-route-pill">⭐ ${h.rating}</span>
+            <span class="hotel-route-pill">€${h.price} vanaf</span>
+            <span class="hotel-route-pill">${h.detour} omrijden</span>
+          </div>
+          <div class="hotel-route-actions">
+            <a class="btn accent" target="_blank" rel="noopener" href="https://www.booking.com/searchresults.html?ss=${mapsQuery}">Bekijk hotel</a>
+            <a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}">Maps</a>
+            <button class="secondary" type="button" onclick="addHotelAsStop('${safeName}', '${safePlace}')">Tussenstop</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  if(typeof rdApply === "function") rdApply(localStorage.getItem("roadoraLanguage") || "nl");
+  if(typeof rdTranslateAll === "function") rdTranslateAll(localStorage.getItem("roadoraLanguage") || "nl");
+};
+
+function run(){
+  ensureHotelsAlongRouteBox();
+}
+
+window.addEventListener("DOMContentLoaded", run);
+
+const oldShowHotelsRoute = window.showPage;
+if(typeof oldShowHotelsRoute === "function" && !oldShowHotelsRoute.__hotelsAlongRouteV1b){
+  window.showPage = function(...args){
+    const r = oldShowHotelsRoute.apply(this,args);
+    setTimeout(run,100);
+    return r;
+  };
+  window.showPage.__hotelsAlongRouteV1b = true;
+}
+})();
+</script>
+
+
+<script id="hotels-along-route-preserve-stats-fix">
+(function(){
+function getRouteStats(){
+  return {
+    distance: (document.getElementById("distance")?.textContent || "").trim(),
+    duration: (document.getElementById("duration")?.textContent || "").trim()
+  };
+}
+
+function setRouteStats(stats){
+  const d = document.getElementById("distance");
+  const t = document.getElementById("duration");
+
+  if(d && stats.distance && stats.distance !== "-") d.textContent = stats.distance;
+  if(t && stats.duration && stats.duration !== "-") t.textContent = stats.duration;
+}
+
+function patchHotelsAlongRoute(){
+  const oldFind = window.findHotelsAlongRouteV1;
+  if(typeof oldFind !== "function" || oldFind.__preserveStatsFix) return;
+
+  window.findHotelsAlongRouteV1 = function(...args){
+    const before = getRouteStats();
+
+    const result = oldFind.apply(this,args);
+
+    // Herstel direct en na eventuele vertaling/render callbacks.
+    setRouteStats(before);
+    setTimeout(()=>setRouteStats(before), 50);
+    setTimeout(()=>setRouteStats(before), 300);
+    setTimeout(()=>setRouteStats(before), 900);
+
+    return result;
+  };
+
+  window.findHotelsAlongRouteV1.__preserveStatsFix = true;
+}
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  setTimeout(patchHotelsAlongRoute, 200);
+  setTimeout(patchHotelsAlongRoute, 800);
+});
+
+const oldShow = window.showPage;
+if(typeof oldShow === "function" && !oldShow.__preserveStatsFix){
+  window.showPage = function(...args){
+    const r = oldShow.apply(this,args);
+    setTimeout(patchHotelsAlongRoute,200);
+    return r;
+  };
+  window.showPage.__preserveStatsFix = true;
+}
+})();
+</script>
+
+
+<script id="onderweg-v2-script">
+(function(){
+const stops=[
+{type:"fuel",icon:"⛽",name:"Shell Road Stop",desc:"Tankstation met shop en koffie",dist:"+3 min",rating:"4.3",tag:"Brandstof"},
+{type:"charging",icon:"⚡",name:"FastCharge Hub",desc:"Snellader met restaurant dichtbij",dist:"+5 min",rating:"4.6",tag:"EV"},
+{type:"food",icon:"🍔",name:"Roadside Bistro",desc:"Snelle lunch langs je route",dist:"+4 min",rating:"4.4",tag:"Eten"},
+{type:"parking",icon:"🅿️",name:"Veilige Parking Centrum",desc:"Parkeren dicht bij route",dist:"+6 min",rating:"4.1",tag:"Parkeren"},
+{type:"market",icon:"🛒",name:"Supermarkt Stop",desc:"Boodschappen en snacks onderweg",dist:"+4 min",rating:"4.2",tag:"Supermarkt"},
+{type:"toilet",icon:"🚻",name:"Rustplaats met toiletten",desc:"Korte pauze en sanitaire stop",dist:"+2 min",rating:"4.0",tag:"Pauze"},
+{type:"kids",icon:"👶",name:"Familie pauzeplek",desc:"Kindvriendelijke stop met speelruimte en veilige parking",dist:"+5 min",rating:"4.5",tag:"Kindvriendelijk"},
+{type:"pets",icon:"🐶",name:"Hondvriendelijke rustplek",desc:"Groene stop met uitlaatruimte en terras in de buurt",dist:"+4 min",rating:"4.4",tag:"Diervriendelijk"}];
+
+function renderOnderweg(filter="all"){
+ const box=document.getElementById("onderwegV2Results"); if(!box)return;
+ const list=filter==="all"?stops:stops.filter(s=>s.type===filter);
+ box.innerHTML=list.map(s=>{
+  const q=encodeURIComponent(s.name);
+  return `<article class="onderweg-card">
+  <div class="onderweg-card-top"><div><div class="onderweg-title">${s.icon} ${s.name}</div><div class="onderweg-sub">${s.desc}</div></div><span class="onderweg-badge">${s.dist}</span></div>
+  <div class="onderweg-badges"><span class="onderweg-badge">⭐ ${s.rating}</span><span class="onderweg-badge">${s.tag}</span><span class="onderweg-badge">Roadtrip proof</span></div>
+  <div class="onderweg-actions"><a class="btn accent" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${q}">Open in Maps</a><button class="secondary" type="button" onclick="addHotelAsStop('${s.name.replace(/'/g,"")}', '${s.name.replace(/'/g,"")}')">➕ Tussenstop</button></div>
+  </article>`;
+ }).join("");
+ if(typeof rdApply==="function")rdApply(localStorage.getItem("roadoraLanguage")||"nl");
+}
+function buildOnderweg(){
+ const page=document.getElementById("roadPage"); if(!page||document.getElementById("onderwegV2"))return;
+ page.innerHTML=`<section id="onderwegV2"><div class="onderweg-v2-hero"><span class="pill">⛽ Onderweg</span><h1>Alles wat je nodig hebt onderweg</h1><p>Vind tankstations, laadpalen, restaurants, parkeren, supermarkten en toiletten langs je reis.</p></div>
+ <section class="onderweg-tools"><h2>Snelle filters</h2><div class="onderweg-filter-grid">
+ <button class="onderweg-filter active" data-filter="all">✨ Alles</button><button class="onderweg-filter" data-filter="fuel">⛽ Tankstations</button><button class="onderweg-filter" data-filter="charging">⚡ Laadpalen</button><button class="onderweg-filter" data-filter="food">🍔 Restaurants</button><button class="onderweg-filter" data-filter="parking">🅿️ Parkeren</button><button class="onderweg-filter" data-filter="market">🛒 Supermarkt</button><button class="onderweg-filter" data-filter="toilet">🚻 Toiletten</button><button class="onderweg-filter" data-filter="kids">👶 Kindvriendelijk</button><button class="onderweg-filter" data-filter="pets">🐶 Diervriendelijk</button></div>
+ <div class="onderweg-affiliate-note">💡 Affiliate-ready: later kunnen hier laadpassen, parkeerapps, pechhulp of travel deals gekoppeld worden.</div></section><section class="onderweg-results" id="onderwegV2Results"></section></section>`;
+ page.querySelectorAll(".onderweg-filter").forEach(btn=>btn.onclick=()=>{page.querySelectorAll(".onderweg-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderOnderweg(btn.dataset.filter);});
+ renderOnderweg();
+}
+window.addEventListener("DOMContentLoaded",buildOnderweg);
+const old=window.showPage;if(typeof old==="function"&&!old.__onderwegV2){window.showPage=function(...a){const r=old.apply(this,a);setTimeout(buildOnderweg,100);return r};window.showPage.__onderwegV2=true;}
+})();
+</script>
+
+
+<!-- Roadora Fase 1 route clean -->
+<style id="roadora-fase1-route-style">
+.route-phase1-card{
+  border-radius:30px!important;
+  padding:20px!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.075)!important;
+}
+.route-phase1-card h2{
+  margin-bottom:16px!important;
+}
+.route-phase1-form{
+  display:grid;
+  gap:12px;
+}
+.route-phase1-from{
+  display:grid;
+  grid-template-columns:1fr 60px;
+  gap:10px;
+}
+#routePage input{
+  min-height:58px!important;
+  border-radius:21px!important;
+  font-weight:850!important;
+  font-size:16px!important;
+}
+.route-phase1-gps{
+  min-height:58px!important;
+  width:60px!important;
+  border-radius:21px!important;
+  padding:0!important;
+  background:#166534!important;
+  color:#fff!important;
+  font-size:22px!important;
+}
+.route-phase1-plan{
+  min-height:60px!important;
+  width:100%!important;
+  border-radius:22px!important;
+  font-size:17px!important;
+  font-weight:950!important;
+  background:#166534!important;
+}
+.route-phase1-help{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:850;
+}
+.route-phase1-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.route-phase1-stat{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  font-weight:950;
+}
+.route-phase1-stat small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.route-phase1-stat span{
+  font-size:22px;
+  color:var(--text);
+}
+#routeMapPage #map{
+  display:block!important;
+  height:520px!important;
+  width:100%!important;
+  border-radius:24px!important;
+  border:1px solid var(--line)!important;
+  overflow:hidden!important;
+}
+.route-phase1-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.route-phase1-actions button{
+  min-height:52px!important;
+  border-radius:18px!important;
+  font-weight:950!important;
+}
+@media(max-width:700px){
+  .route-phase1-from{grid-template-columns:1fr 56px}
+  .route-phase1-gps{width:56px!important}
+  .route-phase1-stats,
+  .route-phase1-actions{grid-template-columns:1fr}
+  #routeMapPage #map{height:410px!important}
+}
+</style>
+
+<script id="roadora-fase1-route-script">
+(function(){
+function fase1ShowPage(key){
+  const pageMap = {
+    home:"homePage",
+    hotels:"hotelsPage",
+    route:"routePage",
+    routeMap:"routeMapPage",
+    saved:"savedPage",
+    compare:"comparePage",
+    road:"roadPage",
+    trips:"tripsPage"
+  };
+
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+
+  const page = document.getElementById(pageMap[key]);
+  if(page) page.classList.add("active");
+
+  const navKey = key === "routeMap" ? "route" : key;
+  const nav = document.getElementById("nav-" + navKey);
+  if(nav) nav.classList.add("active");
+
+  if(key === "routeMap"){
+    setTimeout(()=>{
+      if(typeof map !== "undefined" && map && map.invalidateSize) map.invalidateSize();
+      if(typeof routeLine !== "undefined" && routeLine && map) map.fitBounds(routeLine.getBounds(),{padding:[35,35]});
+    },250);
+  }
+
+  if(key === "route"){
+    setTimeout(()=>{
+      if(typeof initMap === "function") initMap();
+      if(typeof map !== "undefined" && map && map.invalidateSize) map.invalidateSize();
+    },150);
+  }
+
+  if(key === "saved" && typeof renderSavedRoutes === "function") renderSavedRoutes();
+  if(key === "compare" && typeof renderCompare === "function") renderCompare();
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function patchShowPage(){
+  window.showPage = fase1ShowPage;
+}
+
+function patchPlanRoute(){
+  const oldPlan = window.planRoute;
+  if(typeof oldPlan !== "function" || oldPlan.__fase1Clean) return;
+
+  window.planRoute = async function(...args){
+    const result = await oldPlan.apply(this,args);
+
+    const d = (document.getElementById("distance")?.textContent || "").trim();
+    if(d && d !== "-"){
+      const from = document.getElementById("from")?.value || "Vertrekpunt";
+      const to = document.getElementById("to")?.value || "Bestemming";
+      const sub = document.getElementById("routeMapSubtitle");
+      if(sub) sub.textContent = from + " → " + to;
+      fase1ShowPage("routeMap");
+    }
+
+    return result;
+  };
+
+  window.planRoute.__fase1Clean = true;
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    patchShowPage();
+    patchPlanRoute();
+  },400);
+  setTimeout(()=>{
+    patchShowPage();
+    patchPlanRoute();
+  },1400);
+});
+
+setInterval(()=>{
+  patchShowPage();
+  patchPlanRoute();
+},1500);
+})();
+</script>
+
+
+<!-- Fase 1 fix: soort voertuig blok verwijderen -->
+<style id="remove-vehicle-box-style">
+#routeVehicleBox,
+.vehicle-box{
+  display:none!important;
+}
+</style>
+
+<script id="remove-vehicle-box-script">
+(function(){
+function removeVehicleBox(){
+  document.querySelectorAll("#routeVehicleBox,.vehicle-box").forEach(el=>el.remove());
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(removeVehicleBox,100);
+  setTimeout(removeVehicleBox,600);
+  setTimeout(removeVehicleBox,1400);
+});
+
+setInterval(removeVehicleBox,1000);
+})();
+</script>
+
+
+<!-- Remove hotels langs je route blok -->
+<style>
+#routeMapPage h2:has(+ #routeMapStopsList),
+#routeMapStopsList,
+#routeMapPage .card:has(#routeMapStopsList){
+  display:none !important;
+}
+</style>
+
+<script>
+(function(){
+function removeHotelBlock(){
+  document.querySelectorAll("#routeMapStopsList").forEach(el=>el.remove());
+  document.querySelectorAll("#routeMapPage h2").forEach(h=>{
+    if(h.textContent.toLowerCase().includes("hotel")){
+      h.parentElement?.remove();
+    }
+  });
+}
+window.addEventListener("DOMContentLoaded", removeHotelBlock);
+setTimeout(removeHotelBlock,500);
+setTimeout(removeHotelBlock,1500);
+})();
+</script>
+
+
+<!-- Roadora Fase 2 test: simpele stopknoppen op routekaartpagina -->
+<style id="roadora-fase2-stops-style">
+.phase2-stop-panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  margin-top:18px;
+}
+.phase2-stop-panel h2{
+  margin:0 0 6px!important;
+}
+.phase2-stop-panel p{
+  margin:0 0 14px!important;
+  font-weight:750;
+}
+.phase2-filter-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.phase2-filter-btn{
+  background:#f8f5ef!important;
+  color:#111827!important;
+  border:1px solid var(--line)!important;
+  border-radius:18px!important;
+  min-height:52px!important;
+  font-weight:950!important;
+}
+.phase2-filter-btn.active{
+  background:#166534!important;
+  color:#fff!important;
+  border-color:#166534!important;
+}
+.phase2-results{
+  display:grid;
+  gap:12px;
+  margin-top:14px;
+}
+.phase2-stop-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,.04);
+}
+.phase2-stop-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.phase2-stop-title{
+  font-size:17px;
+  font-weight:950;
+}
+.phase2-stop-sub{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  margin-top:4px;
+}
+.phase2-pill{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:850;
+  color:#374151;
+  display:inline-block;
+  margin-top:8px;
+}
+.phase2-stop-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.phase2-stop-actions button,
+.phase2-stop-actions a{
+  min-height:42px!important;
+  border-radius:14px!important;
+  font-weight:900!important;
+}
+@media(max-width:700px){
+  .phase2-filter-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .phase2-stop-actions{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
+<script id="roadora-fase2-stops-script">
+(function(){
+const demoStops = {
+  fuel:[
+    {icon:"⛽", name:"Shell Road Stop", sub:"Tankstation met shop en koffie", dist:"+3 min", rating:"4.3"},
+    {icon:"⛽", name:"Esso Express", sub:"Snelle tankstop langs de route", dist:"+5 min", rating:"4.1"}
+  ],
+  charging:[
+    {icon:"⚡", name:"FastCharge Hub", sub:"Snellader met restaurant dichtbij", dist:"+5 min", rating:"4.6"},
+    {icon:"⚡", name:"EV Power Stop", sub:"Laadpunt met parkeerplaats", dist:"+7 min", rating:"4.4"}
+  ],
+  food:[
+    {icon:"🍽️", name:"Roadside Bistro", sub:"Lunch en koffie onderweg", dist:"+4 min", rating:"4.4"},
+    {icon:"🍔", name:"Burger Stop", sub:"Snelle hap langs de route", dist:"+6 min", rating:"4.0"}
+  ],
+  parking:[
+    {icon:"🅿️", name:"Veilige Parking Centrum", sub:"Parkeren dicht bij de route", dist:"+6 min", rating:"4.1"},
+    {icon:"🅿️", name:"P+R Roadora Stop", sub:"Ruime parkeerplek", dist:"+8 min", rating:"4.2"}
+  ]
+};
+
+function ensurePhase2Panel(){
+  const routeMapPage = document.getElementById("routeMapPage");
+  if(!routeMapPage || document.getElementById("phase2StopPanel")) return;
+
+  const panel = document.createElement("section");
+  panel.className = "phase2-stop-panel";
+  panel.id = "phase2StopPanel";
+  panel.innerHTML = `
+    <h2>Onderweg zoeken</h2>
+    <p class="muted">Testversie: kies wat je langs je route wilt vinden.</p>
+
+    <div class="phase2-filter-grid">
+      <button type="button" class="phase2-filter-btn" data-type="fuel">⛽ Tankstation</button>
+      <button type="button" class="phase2-filter-btn" data-type="charging">⚡ Laadpaal</button>
+      <button type="button" class="phase2-filter-btn" data-type="food">🍽️ Eten</button>
+      <button type="button" class="phase2-filter-btn" data-type="parking">🅿️ Parking</button>
+    </div>
+
+    <div id="phase2Results" class="phase2-results"></div>
+  `;
+
+  const actionsCard = Array.from(routeMapPage.querySelectorAll(".card.section")).pop();
+  if(actionsCard){
+    actionsCard.after(panel);
+  }else{
+    routeMapPage.appendChild(panel);
+  }
+
+  panel.querySelectorAll(".phase2-filter-btn").forEach(btn=>{
+    btn.onclick = () => {
+      panel.querySelectorAll(".phase2-filter-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      renderPhase2Stops(btn.dataset.type);
+    };
+  });
+}
+
+function renderPhase2Stops(type){
+  const box = document.getElementById("phase2Results");
+  if(!box) return;
+
+  const list = demoStops[type] || [];
+  if(!list.length){
+    box.innerHTML = '<div class="notice">Geen stops gevonden.</div>';
+    return;
+  }
+
+  box.innerHTML = list.map(s=>{
+    const q = encodeURIComponent(s.name);
+    return `
+      <article class="phase2-stop-card">
+        <div class="phase2-stop-top">
+          <div>
+            <div class="phase2-stop-title">${s.icon} ${s.name}</div>
+            <div class="phase2-stop-sub">${s.sub}</div>
+            <span class="phase2-pill">${s.dist}</span>
+            <span class="phase2-pill">⭐ ${s.rating}</span>
+          </div>
+        </div>
+        <div class="phase2-stop-actions">
+          <a class="btn accent" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${q}">Open in Maps</a>
+          <button class="secondary" type="button" onclick="alert('In fase 2 test: later voegen we deze stop toe aan je route.')">➕ Tussenstop</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function runPhase2(){
+  ensurePhase2Panel();
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(runPhase2,500);
+  setTimeout(runPhase2,1400);
+});
+
+const oldShowFase2 = window.showPage;
+if(typeof oldShowFase2 === "function" && !oldShowFase2.__fase2Stops){
+  window.showPage = function(...args){
+    const r = oldShowFase2.apply(this,args);
+    setTimeout(runPhase2,200);
+    return r;
+  };
+  window.showPage.__fase2Stops = true;
+}
+})();
+</script>
+
+
+<!-- Fase 2 fix: afstand/reistijd kleiner, stops weg -->
+<style id="fase2-small-stats-style">
+#routeMapPage .route-phase1-stats{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  margin:0!important;
+}
+
+#routeMapPage .route-phase1-stat{
+  padding:10px 12px!important;
+  border-radius:16px!important;
+}
+
+#routeMapPage .route-phase1-stat small{
+  font-size:11px!important;
+  margin-bottom:2px!important;
+}
+
+#routeMapPage .route-phase1-stat span{
+  font-size:17px!important;
+  font-weight:950!important;
+}
+
+/* derde vak = Stops verwijderen */
+#routeMapPage .route-phase1-stat:nth-child(3){
+  display:none!important;
+}
+
+@media(max-width:700px){
+  #routeMapPage .route-phase1-stats{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+</style>
+
+<script id="fase2-small-stats-script">
+(function(){
+function removeStopsStat(){
+  const stats = document.querySelectorAll("#routeMapPage .route-phase1-stat");
+  if(stats[2]) stats[2].remove();
+}
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(removeStopsStat,300);
+  setTimeout(removeStopsStat,1200);
+});
+setInterval(removeStopsStat,1500);
+})();
+</script>
+
+
+<!-- Compact route header -->
+<style id="compact-route-header-style">
+#routeMapPage .hero{
+  min-height:auto!important;
+  padding:14px 16px!important;
+  border-radius:0!important;
+  background:#ffffff!important;
+  color:var(--text)!important;
+  box-shadow:none!important;
+  border-bottom:1px solid var(--line)!important;
+}
+
+#routeMapPage .hero .pill{
+  display:none!important;
+}
+
+#routeMapPage .hero h1{
+  font-size:20px!important;
+  margin:0!important;
+  line-height:1.2!important;
+}
+
+#routeMapPage .hero p{
+  font-size:13px!important;
+  margin:2px 0 0!important;
+  color:var(--muted)!important;
+}
+
+/* Meer ruimte voor kaart */
+#routeMapPage .card.section:first-of-type{
+  margin-top:10px!important;
+}
+</style>
+
+
+<!-- Fase 2 app header met terugknop -->
+<style id="fase2-app-header-style">
+#routeMapPage .hero{
+  display:none!important;
+}
+
+.route-app-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:12px;
+  margin:0 0 10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+.route-app-back{
+  width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  border-radius:16px!important;
+  padding:0!important;
+  background:#f8f5ef!important;
+  color:var(--text)!important;
+  border:1px solid var(--line)!important;
+  font-size:22px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+.route-app-title{
+  min-width:0;
+  flex:1;
+}
+
+.route-app-title strong{
+  display:block;
+  font-size:17px;
+  line-height:1.15;
+  font-weight:950;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.route-app-title span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+#routeMapPage .card.section:first-of-type{
+  margin-top:0!important;
+}
+</style>
+
+<script id="fase2-app-header-script">
+(function(){
+function ensureRouteAppHeader(){
+  const page = document.getElementById("routeMapPage");
+  if(!page || document.getElementById("routeAppHeader")) return;
+
+  const header = document.createElement("div");
+  header.id = "routeAppHeader";
+  header.className = "route-app-header";
+  header.innerHTML = `
+    <button class="route-app-back" type="button" onclick="showPage('route')" aria-label="Terug">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+<path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+    <div class="route-app-title">
+      <strong>Jouw route</strong>
+      <span id="routeAppSubtitle">Vertrekpunt → Bestemming</span>
+    </div>
+  `;
+
+  page.insertBefore(header, page.firstChild);
+}
+
+function updateRouteAppHeader(){
+  ensureRouteAppHeader();
+
+  const from = document.getElementById("from")?.value || "Vertrekpunt";
+  const to = document.getElementById("to")?.value || "Bestemming";
+  const sub = document.getElementById("routeAppSubtitle");
+
+  if(sub) sub.textContent = from + " → " + to;
+}
+
+const oldShow = window.showPage;
+if(typeof oldShow === "function" && !oldShow.__routeAppHeader){
+  window.showPage = function(...args){
+    const r = oldShow.apply(this,args);
+    setTimeout(updateRouteAppHeader,120);
+    return r;
+  };
+  window.showPage.__routeAppHeader = true;
+}
+
+const oldPlan = window.planRoute;
+if(typeof oldPlan === "function" && !oldPlan.__routeAppHeader){
+  window.planRoute = async function(...args){
+    const r = await oldPlan.apply(this,args);
+    setTimeout(updateRouteAppHeader,120);
+    setTimeout(updateRouteAppHeader,700);
+    return r;
+  };
+  window.planRoute.__routeAppHeader = true;
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(updateRouteAppHeader,400);
+  setTimeout(updateRouteAppHeader,1200);
+});
+})();
+</script>
+
+
+<style>
+.route-app-back svg{
+  width:22px;
+  height:22px;
+}
+</style>
+
+
+<!-- Fase 2.1 slimme GPS -->
+<style id="smart-gps-style">
+.gps-smart-status{
+  margin-top:10px;
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:11px 13px;
+  font-size:13px;
+  font-weight:850;
+  color:#374151;
+}
+.gps-smart-status.ok{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}
+.gps-smart-status.error{
+  background:#fff7ed;
+  border-color:#fed7aa;
+  color:#9a3412;
+}
+.gps-smart-status.loading{
+  background:#ecfeff;
+  border-color:#99f6e4;
+  color:#115e59;
+}
+.gps-smart-loading{
+  animation:gpsPulse 1s infinite ease-in-out;
+}
+@keyframes gpsPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+.route-phase1-gps.gps-loading,
+.route-premium-gps.gps-loading{
+  opacity:.85;
+  pointer-events:none;
+}
+#gpsLiveBadge{
+  display:none;
+  margin-top:8px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:900;
+  color:#166534;
+}
+#gpsLiveBadge.show{
+  display:inline-block;
+}
+</style>
+
+<script id="smart-gps-script">
+(function(){
+let lastGpsCoords = null;
+
+function gpsEls(){
+  return {
+    from: document.getElementById("from"),
+    coords: document.getElementById("fromCoords"),
+    status: document.getElementById("gpsStatus"),
+    routeHelp: document.getElementById("routePremiumHelp") || document.querySelector(".route-phase1-help"),
+    gpsBtn: document.querySelector(".route-phase1-gps, .route-premium-gps, button[onclick='useGpsStart()']")
+  };
+}
+
+function ensureSmartGpsStatus(){
+  const routePage = document.getElementById("routePage");
+  if(!routePage || document.getElementById("gpsSmartStatus")) return;
+
+  const box = document.createElement("div");
+  box.id = "gpsSmartStatus";
+  box.className = "gps-smart-status";
+  box.textContent = "Tip: tik op 🛰️ om je huidige locatie als vertrekpunt te gebruiken.";
+
+  const card = routePage.querySelector(".route-phase1-card, .route-premium-card, .card.section");
+  if(card) card.appendChild(box);
+
+  const badge = document.createElement("div");
+  badge.id = "gpsLiveBadge";
+  badge.textContent = "GPS locatie actief";
+  box.after(badge);
+}
+
+function setGpsStatus(text, type){
+  ensureSmartGpsStatus();
+
+  const box = document.getElementById("gpsSmartStatus");
+  if(box){
+    box.className = "gps-smart-status" + (type ? " " + type : "");
+    box.textContent = text;
+  }
+
+  const els = gpsEls();
+  if(els.status) els.status.textContent = text;
+  if(els.routeHelp) els.routeHelp.textContent = text;
+
+  const badge = document.getElementById("gpsLiveBadge");
+  if(badge) badge.classList.toggle("show", type === "ok");
+}
+
+function setGpsLoading(on){
+  const btn = gpsEls().gpsBtn;
+  if(!btn) return;
+
+  btn.classList.toggle("gps-loading", !!on);
+  btn.classList.toggle("gps-smart-loading", !!on);
+  btn.innerHTML = on ? "⏳" : "🛰️";
+}
+
+function explainGeoError(err){
+  if(!err) return "Locatie kon niet worden opgehaald.";
+  if(err.code === 1) return "Locatie geweigerd. Zet locatietoegang aan voor je browser en probeer opnieuw.";
+  if(err.code === 2) return "Locatie niet beschikbaar. Controleer GPS, internet of probeer buiten opnieuw.";
+  if(err.code === 3) return "Locatie ophalen duurde te lang. Probeer opnieuw of vul handmatig je vertrekpunt in.";
+  return "Locatie kon niet worden opgehaald. Vul eventueel handmatig je vertrekpunt in.";
+}
+
+async function reverseGpsName(lat,lng){
+  if(typeof reverseGeocode === "function"){
+    try{
+      return await reverseGeocode(lat,lng);
+    }catch(e){}
+  }
+  return "Mijn locatie";
+}
+
+window.useGpsStart = function(){
+  ensureSmartGpsStatus();
+
+  const els = gpsEls();
+
+  if(!navigator.geolocation){
+    setGpsStatus("GPS wordt niet ondersteund op dit apparaat. Vul je vertrekpunt handmatig in.", "error");
+    return;
+  }
+
+  setGpsLoading(true);
+  setGpsStatus("Locatie ophalen... geef toestemming als je browser daarom vraagt.", "loading");
+
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat = Number(pos.coords.latitude).toFixed(6);
+    const lng = Number(pos.coords.longitude).toFixed(6);
+    const accuracy = Math.round(pos.coords.accuracy || 0);
+
+    lastGpsCoords = lat + "," + lng;
+
+    const name = await reverseGpsName(lat,lng);
+
+    const fresh = gpsEls();
+    if(fresh.coords) fresh.coords.value = lastGpsCoords;
+    if(fresh.from) fresh.from.value = name || "Mijn locatie";
+
+    setGpsStatus("GPS actief: " + (name || "Mijn locatie") + (accuracy ? " • nauwkeurigheid ±" + accuracy + "m" : ""), "ok");
+    setGpsLoading(false);
+  }, err=>{
+    setGpsLoading(false);
+    setGpsStatus(explainGeoError(err), "error");
+  }, {
+    enableHighAccuracy:true,
+    timeout:15000,
+    maximumAge:30000
+  });
+};
+
+function patchPlanRouteForGps(){
+  const oldPlan = window.planRoute;
+  if(typeof oldPlan !== "function" || oldPlan.__smartGps) return;
+
+  window.planRoute = async function(...args){
+    const els = gpsEls();
+
+    // Als het veld 'Mijn locatie' bevat maar coords leeg zijn, vraag GPS eerst opnieuw.
+    const fromText = (els.from?.value || "").trim().toLowerCase();
+    const coords = (els.coords?.value || "").trim();
+
+    if((fromText === "mijn locatie" || fromText === "huidige locatie") && !coords){
+      setGpsStatus("Je koos Mijn locatie, maar GPS-coördinaten ontbreken. Tik eerst op 🛰️.", "error");
+      return;
+    }
+
+    return await oldPlan.apply(this,args);
+  };
+
+  window.planRoute.__smartGps = true;
+}
+
+function runSmartGps(){
+  ensureSmartGpsStatus();
+  patchPlanRouteForGps();
+
+  const btn = gpsEls().gpsBtn;
+  if(btn && !btn.__smartGpsIcon){
+    btn.__smartGpsIcon = true;
+    btn.innerHTML = "🛰️";
+    btn.title = "Gebruik mijn huidige locatie";
+  }
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(runSmartGps,300);
+  setTimeout(runSmartGps,1200);
+});
+
+setInterval(runSmartGps,1500);
+})();
+</script>
+
+
+<!-- Fix: GPS status niet dubbel tonen -->
+<style id="gps-double-status-fix">
+/* Oude gpsStatus verbergen, nieuwe slimme GPS-box blijft zichtbaar */
+#gpsStatus{
+  display:none!important;
+}
+</style>
+
+<script id="gps-double-status-fix-script">
+(function(){
+function hideOldGpsStatus(){
+  const old = document.getElementById("gpsStatus");
+  if(old){
+    old.style.setProperty("display","none","important");
+  }
+}
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(hideOldGpsStatus,100);
+  setTimeout(hideOldGpsStatus,800);
+});
+setInterval(hideOldGpsStatus,1000);
+})();
+</script>
+
+
+<!-- Fase 2.2 echte tankstations via OpenStreetMap Overpass -->
+<style id="real-fuel-stops-style">
+.real-fuel-note{
+  margin-top:10px;
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:11px 13px;
+  font-size:13px;
+  font-weight:850;
+  color:#374151;
+}
+.real-fuel-note.loading{
+  background:#ecfeff;
+  border-color:#99f6e4;
+  color:#115e59;
+}
+.real-fuel-note.error{
+  background:#fff7ed;
+  border-color:#fed7aa;
+  color:#9a3412;
+}
+.real-fuel-note.ok{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}
+.real-fuel-list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+.real-fuel-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 5px 16px rgba(0,0,0,.04);
+}
+.real-fuel-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.real-fuel-title{
+  font-weight:950;
+  font-size:16px;
+}
+.real-fuel-sub{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  margin-top:3px;
+}
+.real-fuel-pill{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:12px;
+  font-weight:850;
+  white-space:nowrap;
+}
+.real-fuel-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.real-fuel-actions button,
+.real-fuel-actions a{
+  min-height:40px!important;
+  border-radius:13px!important;
+  font-weight:900!important;
+  padding:9px 8px!important;
+  font-size:13px!important;
+}
+@media(max-width:700px){
+  .real-fuel-actions{grid-template-columns:1fr}
+}
+</style>
+
+<script id="real-fuel-stops-script">
+(function(){
+let realFuelMarkers = [];
+
+function haversineKm(a,b){
+  const R = 6371;
+  const dLat = (b.lat-a.lat) * Math.PI/180;
+  const dLng = (b.lng-a.lng) * Math.PI/180;
+  const lat1 = a.lat * Math.PI/180;
+  const lat2 = b.lat * Math.PI/180;
+  const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+  return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
+
+function sampleCurrentRoute(max=5){
+  if(!window.routeCoords || !routeCoords.length) return [];
+  const pts = [];
+  const count = Math.min(max, routeCoords.length);
+  for(let i=0;i<count;i++){
+    const idx = Math.floor((i/(count-1 || 1)) * (routeCoords.length-1));
+    pts.push({lat: routeCoords[idx][0], lng: routeCoords[idx][1]});
+  }
+  return pts;
+}
+
+function nearestRouteDistanceKm(stop){
+  const points = sampleCurrentRoute(7);
+  if(!points.length) return 999;
+  let min = 999;
+  points.forEach(p=>{
+    const d = haversineKm(stop,p);
+    if(d < min) min = d;
+  });
+  return min;
+}
+
+function clearRealFuelMarkers(){
+  if(typeof map === "undefined" || !map) return;
+  realFuelMarkers.forEach(m=>map.removeLayer(m));
+  realFuelMarkers = [];
+}
+
+function setFuelNote(text,type){
+  const note = document.getElementById("realFuelNote");
+  if(!note) return;
+  note.className = "real-fuel-note" + (type ? " " + type : "");
+  note.textContent = text;
+}
+
+function ensureRealFuelPanel(){
+  const panel = document.getElementById("phase2StopPanel");
+  if(!panel) return;
+
+  if(!document.getElementById("realFuelNote")){
+    const note = document.createElement("div");
+    note.id = "realFuelNote";
+    note.className = "real-fuel-note";
+    note.textContent = "Klik op ⛽ Tankstation om echte tankstations langs je route te zoeken.";
+    panel.appendChild(note);
+  }
+
+  let list = document.getElementById("realFuelList");
+  if(!list){
+    list = document.createElement("div");
+    list.id = "realFuelList";
+    list.className = "real-fuel-list";
+    panel.appendChild(list);
+  }
+}
+
+async function fetchFuelAround(point, radiusMeters=7000){
+  const query = `
+[out:json][timeout:25];
+(
+  node["amenity"="fuel"](around:${radiusMeters},${point.lat},${point.lng});
+  way["amenity"="fuel"](around:${radiusMeters},${point.lat},${point.lng});
+  relation["amenity"="fuel"](around:${radiusMeters},${point.lat},${point.lng});
+);
+out center tags 25;
+`;
+  const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+  const res = await fetch(url);
+  if(!res.ok) throw Error("Overpass fout " + res.status);
+  const data = await res.json();
+  return (data.elements || []).map(el=>{
+    const lat = el.lat || el.center?.lat;
+    const lng = el.lon || el.center?.lon;
+    const tags = el.tags || {};
+    return {
+      id: el.type + "_" + el.id,
+      name: tags.name || tags.brand || "Tankstation",
+      brand: tags.brand || "",
+      operator: tags.operator || "",
+      address: [tags["addr:street"], tags["addr:housenumber"], tags["addr:city"]].filter(Boolean).join(" "),
+      lat, lng
+    };
+  }).filter(x=>x.lat && x.lng);
+}
+
+async function findRealFuelStops(){
+  ensureRealFuelPanel();
+
+  if(!window.routeCoords || !routeCoords.length){
+    setFuelNote("Plan eerst een route. Daarna zoeken we echte tankstations langs je route.", "error");
+    return;
+  }
+
+  const btn = document.querySelector('.phase2-filter-btn[data-type="fuel"]');
+  if(btn) btn.classList.add("active");
+
+  const listBox = document.getElementById("realFuelList");
+  if(listBox) listBox.innerHTML = "";
+
+  clearRealFuelMarkers();
+  setFuelNote("Echte tankstations zoeken langs je route...", "loading");
+
+  try{
+    const sample = sampleCurrentRoute(5);
+    const seen = new Set();
+    let results = [];
+
+    for(const point of sample){
+      const found = await fetchFuelAround(point, 8000);
+      found.forEach(s=>{
+        const key = (s.name + "_" + Math.round(s.lat*10000) + "_" + Math.round(s.lng*10000)).toLowerCase();
+        if(seen.has(key)) return;
+        seen.add(key);
+        s.routeDistance = nearestRouteDistanceKm({lat:s.lat,lng:s.lng});
+        results.push(s);
+      });
+    }
+
+    results = results
+      .filter(s=>s.routeDistance <= 12)
+      .sort((a,b)=>a.routeDistance-b.routeDistance)
+      .slice(0,8);
+
+    if(!results.length){
+      setFuelNote("Geen tankstations gevonden binnen 12 km van deze route. Probeer een langere route.", "error");
+      return;
+    }
+
+    renderRealFuelStops(results);
+    setFuelNote(results.length + " echte tankstations gevonden langs je route.", "ok");
+
+  }catch(e){
+    console.error(e);
+    setFuelNote("Tankstations konden niet worden geladen. Probeer opnieuw of test later via GitHub Pages.", "error");
+  }
+}
+
+function renderRealFuelStops(stops){
+  ensureRealFuelPanel();
+  const box = document.getElementById("realFuelList");
+  if(!box) return;
+
+  box.innerHTML = stops.map((s,idx)=>{
+    const q = encodeURIComponent(s.lat + "," + s.lng);
+    const sub = s.address || s.brand || s.operator || "Langs je route";
+    const dist = Math.round(s.routeDistance * 10) / 10;
+    return `
+      <article class="real-fuel-card">
+        <div class="real-fuel-card-top">
+          <div>
+            <div class="real-fuel-title">⛽ ${s.name}</div>
+            <div class="real-fuel-sub">${sub}</div>
+          </div>
+          <span class="real-fuel-pill">${dist} km</span>
+        </div>
+        <div class="real-fuel-actions">
+          <button class="secondary" type="button" onclick="zoomToRealFuelStop(${s.lat},${s.lng})">Bekijk op kaart</button>
+          <a class="btn accent" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${q}">Open in Maps</a>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  if(typeof map !== "undefined" && map){
+    stops.forEach(s=>{
+      const marker = L.marker([s.lat,s.lng]).addTo(map);
+      marker.bindPopup(`<b>⛽ ${s.name}</b><br>${s.address || s.brand || "Tankstation"}<br>${Math.round(s.routeDistance*10)/10} km van route`);
+      realFuelMarkers.push(marker);
+    });
+  }
+}
+
+window.zoomToRealFuelStop = function(lat,lng){
+  if(typeof map === "undefined" || !map) return;
+  map.setView([lat,lng], 15);
+};
+
+function patchFuelButton(){
+  const btn = document.querySelector('.phase2-filter-btn[data-type="fuel"]');
+  if(btn && !btn.__realFuel){
+    btn.__realFuel = true;
+    btn.onclick = () => {
+      document.querySelectorAll(".phase2-filter-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      findRealFuelStops();
+    };
+  }
+}
+
+function runRealFuel(){
+  ensureRealFuelPanel();
+  patchFuelButton();
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(runRealFuel,800);
+  setTimeout(runRealFuel,1800);
+});
+
+const oldShow = window.showPage;
+if(typeof oldShow === "function" && !oldShow.__realFuel){
+  window.showPage = function(...args){
+    const r = oldShow.apply(this,args);
+    setTimeout(runRealFuel,300);
+    return r;
+  };
+  window.showPage.__realFuel = true;
+}
+})();
+</script>
+
+</body>
+</html>
