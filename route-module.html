@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadora Route Module Fixed v1 Een Pagina Scroll Kaart Compact v2</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#f7f3ec;--card:#fffaf3;--white:#fff;--text:#1f2937;--muted:#6b7280;--line:#eadfce;--green:#166534;--orange:#f59e0b;--soft-green:#e6f4ea;--shadow:0 18px 45px rgba(31,41,55,.14)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+body.modal-lock{position:fixed;width:100%;overflow:hidden}
+.app{max-width:1180px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg,#fbf7ef 0%,#f7f3ec 100%)}
+.header{padding:18px 18px 12px;display:flex;gap:10px;align-items:center}
+.logo{width:42px;height:42px;border-radius:15px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:950;box-shadow:0 10px 25px rgba(22,101,52,.24)}
+h1{font-size:22px;margin:0;line-height:1.1}.sub{font-size:13px;color:var(--muted);margin-top:4px}
+.vehicleBar{display:flex;gap:8px;padding:14px 18px 12px;overflow-x:auto}
+.vehicle{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:850;white-space:nowrap;cursor:pointer}
+.vehicle.active{background:var(--green);color:#fff;border-color:var(--green)}
+.stopsBar{margin:0 18px 14px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 14px;box-shadow:0 10px 26px rgba(31,41,55,.08)}
+.stopsTitle{font-weight:950;display:flex;align-items:center;gap:8px}.stopsTitle:before{content:'📍';font-size:17px}.stopsHint{font-size:12px;color:var(--muted);margin-top:3px}.stopsList{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.emptyStops{margin-top:10px;background:#fbf7ef;border:1px dashed var(--line);border-radius:16px;padding:10px 12px;font-size:12px;color:var(--muted);font-weight:800}
+.stopChip{display:flex;gap:7px;align-items:center;white-space:nowrap;background:var(--soft-green);color:var(--green);border:1px solid #a7d7b6;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:850}.stopChip.fuel{background:#fff1f2;color:#b91c1c;border-color:#fecdd3}.stopOrder{background:#fff;border:1px solid currentColor;border-radius:999px;width:20px;height:20px;display:grid;place-items:center;font-size:11px;font-weight:950}
+.stopChip button{border:0;background:transparent;color:var(--green);font-weight:950;font-size:16px;line-height:1;cursor:pointer}
+.shell{display:grid;grid-template-columns:1.35fr .85fr;gap:14px;padding:0 18px 18px}
+.mapCard,.side{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;padding:14px;background:#fff;border-bottom:1px solid var(--line)}
+.chip{border:1px solid var(--line);background:#fbf7ef;border-radius:999px;padding:9px 12px;font-size:13px;font-weight:850;cursor:pointer}
+.chip.active{background:var(--soft-green);border-color:#a7d7b6;color:var(--green)}
+#map{height:640px;width:100%;background:#e5e7eb}
+.routeActions{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;padding:12px;background:#fff;border-top:1px solid var(--line)}
+.actionBtn{border:1px solid var(--line);border-radius:16px;padding:13px 12px;font-size:14px;font-weight:950;cursor:pointer;background:#fbf7ef;color:var(--text)}
+.actionBtn.primary{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 10px 24px rgba(22,101,52,.22)}
+.sideHead{padding:16px 16px 10px;border-bottom:1px solid var(--line)}.sideHead h2{margin:0;font-size:18px}.count{font-size:13px;color:var(--muted);margin-top:4px}.modeTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.modeTab{border:1px solid var(--line);background:#fbf7ef;border-radius:14px;padding:9px;font-weight:950;cursor:pointer}.modeTab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.list{padding:12px;display:flex;flex-direction:column;gap:10px;max-height:555px;overflow:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px;display:grid;grid-template-columns:84px 1fr;gap:12px;cursor:pointer;transition:.15s}
+.thumb{height:84px;border-radius:16px;background-size:cover;background-position:center}.card h3{margin:0 0 4px;font-size:15px}.meta{font-size:13px;color:var(--muted);line-height:1.45}.price{font-size:16px;font-weight:950;color:var(--green);margin-top:5px}
+.pillrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.pill{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:#374151}
+.modal{position:fixed;inset:0;background:rgba(17,24,39,.35);display:none;align-items:flex-end;justify-content:center;padding:16px;z-index:9999}.modal.open{display:flex}
+.detail{width:min(520px,100%);background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.28);animation:up .18s ease-out}@keyframes up{from{transform:translateY(20px);opacity:.7}to{transform:translateY(0);opacity:1}}
+.hero{height:250px;background-size:cover;background-position:center;position:relative}.close{position:absolute;right:14px;top:14px;border:0;background:rgba(255,255,255,.92);border-radius:999px;width:38px;height:38px;font-size:20px;cursor:pointer}
+.detailBody{padding:18px}.detailBody h2{margin:0 0 6px;font-size:23px}.rating{display:flex;gap:8px;align-items:center;color:#92400e;font-weight:950;font-size:14px;margin:8px 0}
+.detailGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.infoBox{border:1px solid var(--line);border-radius:16px;padding:11px;background:#fbf7ef}.label{font-size:12px;color:var(--muted)}.value{font-weight:950;margin-top:2px}
+.actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.stopBtn{border:1px solid #a7d7b6;background:var(--soft-green);color:var(--green);border-radius:18px;padding:14px;font-weight:950;cursor:pointer;font-size:15px}.stopBtn.added{background:var(--green);color:#fff;border-color:var(--green)}
+.cta{display:block;text-align:center;text-decoration:none;background:var(--green);color:#fff;border-radius:18px;padding:15px;font-weight:950;box-shadow:0 12px 25px rgba(22,101,52,.24)}
+.linkNote{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;border-radius:999px;padding:11px 15px;font-size:14px;font-weight:850;opacity:0;pointer-events:none;transition:.2s;z-index:10000}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){.shell{grid-template-columns:1fr;padding:0 10px 12px}#map{height:58vh}.header{padding:14px 12px 10px}.vehicleBar{padding-left:12px;padding-right:12px}}
+@media(max-width:520px){.routeActions{grid-template-columns:1fr}.actionBtn{padding:14px}}
+
+/* Filters blok weg + kaart sluit direct aan */
+.filters{
+  display:none!important;
+}
+.mapCard{
+  overflow:hidden!important;
+}
+#map{
+  margin-top:0!important;
+}
+
+
+/* Map lock / unlock v1 - safe */
+.mapInnerWrap{
+  position:relative!important;
+}
+.mapLockBtn{
+  position:absolute!important;
+  top:12px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  z-index:700!important;
+  border:1px solid var(--line)!important;
+  background:rgba(255,255,255,.94)!important;
+  color:var(--text)!important;
+  border-radius:999px!important;
+  padding:9px 13px!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  box-shadow:0 8px 22px rgba(17,24,39,.14)!important;
+  cursor:pointer!important;
+}
+.mapLockBtn.active{
+  background:rgba(22,101,52,.95)!important;
+  color:#fff!important;
+  border-color:#166534!important;
+}
+.mapTapLayer{
+  position:absolute!important;
+  inset:0!important;
+  z-index:650!important;
+  background:transparent!important;
+}
+.mapCard.map-active .mapTapLayer{
+  display:none!important;
+}
+
+
+/* Markers + lijst sync v1 */
+.card.selected{
+  border-color:var(--green)!important;
+  background:#f0fdf4!important;
+  box-shadow:0 10px 26px rgba(22,101,52,.16)!important;
+}
+.card.selected:before{
+  content:'Geselecteerd';
+  position:absolute;
+  right:12px;
+  top:12px;
+  background:var(--green);
+  color:#fff;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:10px;
+  font-weight:950;
+  z-index:2;
+}
+.emptyResults{
+  padding:14px;
+  border:1px dashed var(--line);
+  border-radius:18px;
+  background:#fbf7ef;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:850;
+  line-height:1.35;
+}
+.emptyTitle{
+  font-size:17px;
+  font-weight:950;
+  color:var(--text);
+  margin-bottom:5px;
+}
+
+
+/* Categorie knoppen zichtbaar en standaard uit */
+.sideHead{
+  display:block!important;
+  padding:12px!important;
+  background:#fff!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.sideHead h2,.count{
+  display:none!important;
+}
+.modeTabs{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin:0!important;
+}
+.modeTab{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:48px!important;
+  border:1px solid var(--line)!important;
+  background:#fbf7ef!important;
+  color:var(--text)!important;
+  border-radius:16px!important;
+  padding:12px 10px!important;
+  font-weight:950!important;
+}
+.modeTab.active{
+  background:var(--green)!important;
+  color:#fff!important;
+  border-color:var(--green)!important;
+}
+
+
+/* Multi-select categorieknoppen v1 */
+.resultSectionLabel{
+  font-size:15px;
+  font-weight:950;
+  color:var(--text);
+  margin:4px 2px -2px;
+}
+.resultSectionLabel.fuel{
+  margin-top:10px;
+}
+.modeTab.active{
+  background:var(--green)!important;
+  color:#fff!important;
+  border-color:var(--green)!important;
+}
+
+
+/* Eén pagina scroll v1 - inner safe */
+html,body{
+  overflow:hidden!important;
+}
+.list{
+  max-height:none!important;
+  overflow:visible!important;
+}
+.side{
+  overflow:visible!important;
+}
+
+
+/* Kaart compacter v2 - behoud één pagina scroll */
+#map{
+  height:48vh!important;
+  min-height:340px!important;
+  max-height:520px!important;
+}
+@media(max-width:760px){
+  #map{
+    height:42vh!important;
+    min-height:300px!important;
+    max-height:430px!important;
+  }
+}
+@media(max-width:420px){
+  #map{
+    height:38vh!important;
+    min-height:275px!important;
+    max-height:390px!important;
+  }
+}
+
+
+/* Route module fixed v1 */
+html, body{
+  height:100%;
+  overflow:hidden!important;
+}
+body{
+  margin:0!important;
+}
+.app{
+  height:100%;
+  min-height:0!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:calc(110px + env(safe-area-inset-bottom))!important;
+}
+.list{
+  max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:130px!important;
+}
+.side{
+  overflow:visible!important;
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  
+  <nav class="vehicleBar"><button class="vehicle active" onclick="setVehicle('auto',this)">🚗 Auto</button><button class="vehicle" onclick="setVehicle('ev',this)">⚡ EV</button><button class="vehicle" onclick="setVehicle('camper',this)">🚐 Camper</button><button class="vehicle" onclick="setVehicle('motor',this)">🏍 Motor</button></nav>
+  <section class="stopsBar"><div class="stopsTitle">Jouw tussenstops</div><div class="stopsHint" id="stopsHint">Nog geen tussenstop toegevoegd</div><div class="emptyStops" id="emptyStops">Kies een hotel of tankstation en tik op “Voeg toe als tussenstop”.</div><div class="stopsList" id="stopsList"></div></section>
+  <main class="shell">
+    <section class="mapCard">
+      
+      <div class="mapInnerWrap"><div id="map"></div><button class="mapLockBtn" id="mapLockBtn" onclick="toggleMapInteraction()">🔒 Tik om kaart te bedienen</button><div class="mapTapLayer" id="mapTapLayer" onclick="toggleMapInteraction()"></div></div>
+      <div class="routeActions"><button class="actionBtn primary" onclick="openNavigation()">🚀 Navigeren</button><button class="actionBtn" onclick="saveRoutePlan()">💾 Opslaan</button><button class="actionBtn" onclick="shareRoutePlan()">🔗 Delen</button></div>
+    </section>
+    <aside class="side"><div class="sideHead"><h2 id="resultTitle">Resultaten langs je route</h2><div class="count" id="count">Route laden...</div><div class="modeTabs"><button class="modeTab active" id="tabHotels" onclick="toggleResultMode('hotels')">🏨 Hotels</button><button class="modeTab" id="tabFuel" onclick="toggleResultMode('fuel')">⛽ Tankstations</button></div></div><div class="list" id="list"></div></aside>
+  </main>
+</div>
+<div class="modal" id="modal" onclick="closeDetail(event)"><div class="detail" onclick="event.stopPropagation()"><div class="hero" id="detailHero"><button class="close" onclick="hideDetail()">×</button></div><div class="detailBody"><h2 id="detailName"></h2><div class="rating" id="detailRating"></div><div class="pillrow" id="detailBadges"></div><div class="detailGrid"><div class="infoBox"><div class="label">Vanafprijs</div><div class="value" id="detailPrice"></div></div><div class="infoBox"><div class="label">Route afstand</div><div class="value" id="detailDistance"></div></div></div><div class="actions"><button class="stopBtn" id="addStopBtn" onclick="toggleCurrentHotelStop()">➕ Voeg toe als tussenstop</button><a class="cta" id="bookingBtn" href="#" target="_blank" rel="noopener">Bekijk beschikbaarheid →</a></div><div class="linkNote">Plan je stop of bekijk beschikbaarheid. Later kan hier je affiliate-ID bij.</div></div></div></div>
+<div class="toast" id="toast">Route bijgewerkt</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let map, baseRouteLine, routeWithStopsLine, startMarker, endMarker;
+let routeCoords=[], currentFrom='Rotterdam', currentTo='Parijs';
+let hotels=[], fuelStations=[], hotelMarkers=[], fuelMarkers=[], selectedStops=[], selectedStopMarkers=[], selectedHotelIndex=null, selectedFuelIndex=null, activeModes={hotels:false,fuel:false};
+let lockedScrollY=0, toastTimer=null;
+
+const photos=[
+'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80',
+'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1200&q=80',
+'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80'
+];
+
+initMap();
+setRoute('Rotterdam','Parijs');
+
+window.addEventListener('message', (event)=>{
+  if(!event.data || event.data.type !== 'ROADORA_SET_ROUTE') return;
+  setRoute(event.data.from || 'Rotterdam', event.data.to || 'Parijs');
+});
+
+function initMap(){
+  map=L.map('map',{zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,keyboard:false}).setView([52.1,5.1],7);
+  L.control.zoom({position:'bottomright'}).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+}
+
+function toggleMapInteraction(){
+  if(!map) return;
+  const card=document.querySelector('.mapCard');
+  const btn=document.getElementById('mapLockBtn');
+  const active=card?.classList.contains('map-active');
+
+  if(active){
+    disableMapInteraction();
+    showToast('Kaart vergrendeld');
+  }else{
+    enableMapInteraction();
+    showToast('Kaart bedienen aan');
+  }
+}
+
+function enableMapInteraction(){
+  if(!map) return;
+  const card=document.querySelector('.mapCard');
+  const btn=document.getElementById('mapLockBtn');
+
+  card?.classList.add('map-active');
+  if(btn){
+    btn.classList.add('active');
+    btn.textContent='🔓 Kaart actief · tik om te locken';
+  }
+
+  map.dragging.enable();
+  map.touchZoom.enable();
+  map.doubleClickZoom.enable();
+  map.scrollWheelZoom.enable();
+  map.boxZoom.enable();
+  map.keyboard.enable();
+}
+
+function disableMapInteraction(){
+  if(!map) return;
+  const card=document.querySelector('.mapCard');
+  const btn=document.getElementById('mapLockBtn');
+
+  map.dragging.disable();
+  map.touchZoom.disable();
+  map.doubleClickZoom.disable();
+  map.scrollWheelZoom.disable();
+  map.boxZoom.disable();
+  map.keyboard.disable();
+
+  card?.classList.remove('map-active');
+  if(btn){
+    btn.classList.remove('active');
+    btn.textContent='🔒 Tik om kaart te bedienen';
+  }
+}
+
+
+
+async function setRoute(from,to){
+  currentFrom=from; currentTo=to;
+  selectedStops=[]; selectedHotelIndex=null; selectedFuelIndex=null; fuelStations=[];
+  renderStops();
+  
+  document.getElementById('count').textContent='Route laden...';
+  document.getElementById('list').innerHTML='<div class="card" style="display:block">Route en demo-hotels laden...</div>';
+
+  clearMapLayers();
+
+  try{
+    const a=await geocode(from);
+    const b=await geocode(to);
+    const coords=await routeBetween(a,b);
+    routeCoords=coords.length ? coords : [[a.lat,a.lng],[b.lat,b.lng]];
+
+    baseRouteLine=L.polyline(routeCoords,{color:'#166534',weight:5,opacity:.88}).addTo(map);
+    startMarker=L.marker(routeCoords[0]).addTo(map).bindPopup('<b>Vertrekpunt</b><br>'+from);
+    endMarker=L.marker(routeCoords[routeCoords.length-1]).addTo(map).bindPopup('<b>Bestemming</b><br>'+to);
+    perfectFitRoute();
+    disableMapInteraction();
+    generateDemoHotels();
+    generateFuelStationsFallback();
+    resetResultModes();
+    fetchFuelStationsAlongRoute().then(found=>{ if(found.length){ fuelStations=found; if(activeModes.fuel){ updateCategoryMarkers(); renderCombinedResults(); } } }).catch(()=>{});
+  }catch(e){
+    console.error(e);
+    document.getElementById('count').textContent='Route kon niet laden';
+    document.getElementById('list').innerHTML='<div class="card" style="display:block">Route kon niet worden geladen. Controleer vertrekpunt/bestemming.</div>';
+  }
+}
+
+function clearMapLayers(){
+  [baseRouteLine,routeWithStopsLine,startMarker,endMarker].forEach(l=>{if(l)map.removeLayer(l)});
+  hotelMarkers.forEach(m=>map.removeLayer(m));
+  fuelMarkers.forEach(m=>map.removeLayer(m));
+  selectedStopMarkers.forEach(m=>map.removeLayer(m));
+  baseRouteLine=null; routeWithStopsLine=null; startMarker=null; endMarker=null; hotelMarkers=[]; fuelMarkers=[]; selectedStopMarkers=[];
+}
+
+async function geocode(place){
+  const q=String(place||'').trim();
+  if(!q) throw new Error('Plaats is leeg');
+
+  // Wereld/Europa v1:
+  // Geen ", Nederland" meer forceren. Daardoor werken ook Slovenië, Italië, Frankrijk, etc.
+  const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=nl&q='+encodeURIComponent(q);
+  const res=await fetch(url);
+  const data=await res.json();
+
+  if(!data.length){
+    throw new Error('Plaats niet gevonden: '+q+'. Probeer bijvoorbeeld: Bled Slovenië, Ljubljana Slovenië, Parijs Frankrijk.');
+  }
+
+  return {lat:Number(data[0].lat), lng:Number(data[0].lon)};
+}
+
+async function routeBetween(a,b){
+  const url=`https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`;
+  const res=await fetch(url);
+  const data=await res.json();
+  if(!data.routes || !data.routes[0]) return [[a.lat,a.lng],[b.lat,b.lng]];
+  return data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+}
+
+function pointAt(percent){
+  if(!routeCoords.length) return [52.1,5.1];
+  const idx=Math.max(0,Math.min(routeCoords.length-1,Math.floor(routeCoords.length*percent)));
+  return routeCoords[idx];
+}
+
+function generateDemoHotels(){
+  const names=['Roadora Hotel Startpunt','EV Stay langs route','Hotel Route Midden','Comfort Stop Hotel','Roadora Hotel Bestemming'];
+  const cities=[currentFrom,'Onderweg','Halverwege','Onderweg',currentTo];
+  const perc=[.18,.35,.52,.70,.86];
+
+  hotels=perc.map((p,i)=>{
+    const pt=pointAt(p);
+    const lat=pt[0]+(i%2===0?.006:-.006);
+    const lng=pt[1]+(i%2===0?.006:-.006);
+    return {
+      name:names[i],
+      city:cities[i],
+      lat,lng,
+      price:[96,118,132,109,149][i],
+      rating:[8.1,8.6,8.8,8.7,8.4][i],
+      reviews:[734,1248,892,1163,2104][i],
+      distance:[1.8,2.4,3.1,2.9,4.6][i]+' km van route',
+      photo:photos[i],
+      badges:i===1||i===3?['⚡ Laadpaal','🚗 Parkeren','⭐ Topmatch']:['🚗 Parkeren','🍳 Ontbijt','⭐ Erg goed'],
+      booking:'https://www.booking.com/searchresults.nl.html?ss='+encodeURIComponent(names[i]+' '+cities[i])+'&group_adults=2&no_rooms=1&group_children=0',
+      order:i+1
+    };
+  });
+}
+
+
+function generateFuelStationsFallback(){
+  const names=['Tankstation startpunt','Shell route stop','Esso onderweg','TotalEnergies stop','Tankstation bestemming'];
+  const perc=[.12,.30,.50,.68,.84];
+
+  fuelStations=perc.map((p,i)=>{
+    const pt=pointAt(p);
+    return {
+      name:names[i],
+      brand:i===1?'Shell':i===2?'Esso':i===3?'TotalEnergies':'Tankstation',
+      lat:pt[0]+(i%2===0?.003:-.003),
+      lng:pt[1]+(i%2===0?-.003:.003),
+      distance:[0.7,1.4,2.2,1.9,3.0][i]+' km van route',
+      badges:['⛽ Brandstof','🧭 Langs route','➕ Tussenstop'],
+      order:i+1
+    };
+  });
+}
+
+async function fetchFuelStationsAlongRoute(){
+  const sample=[.15,.3,.45,.6,.75,.9].map(pointAt).filter(Boolean);
+  const seen=new Set();
+  const results=[];
+
+  for(const pt of sample){
+    const query=`[out:json][timeout:18];(node["amenity"="fuel"](around:6000,${pt[0]},${pt[1]});way["amenity"="fuel"](around:6000,${pt[0]},${pt[1]}););out center tags 12;`;
+    const res=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
+    if(!res.ok) continue;
+    const data=await res.json();
+
+    (data.elements||[]).forEach(el=>{
+      const lat=el.lat || el.center?.lat;
+      const lng=el.lon || el.center?.lon;
+      if(!lat || !lng) return;
+
+      const tags=el.tags||{};
+      const name=tags.name || tags.brand || 'Tankstation langs route';
+      const key=(name+'_'+Math.round(lat*10000)+'_'+Math.round(lng*10000)).toLowerCase();
+      if(seen.has(key)) return;
+      seen.add(key);
+
+      results.push({
+        name,
+        brand:tags.brand || tags.operator || 'Tankstation',
+        lat:Number(lat),
+        lng:Number(lng),
+        distance:'langs je route',
+        badges:['⛽ Brandstof', tags.opening_hours?'🕒 Openingstijden':'🧭 Langs route', '➕ Tussenstop'],
+        order:results.length+1
+      });
+    });
+  }
+
+  return results.slice(0,18).map((s,i)=>({...s, order:i+1}));
+}
+
+function addFuelMarkers(){
+  const fuelIcon=L.divIcon({html:'<div style="background:#dc2626;color:white;width:34px;height:34px;border-radius:14px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.25);border:2px solid white">⛽</div>',className:'',iconSize:[34,34],iconAnchor:[17,17]});
+
+  if(fuelStations.length){ const label=document.createElement('div'); label.className='resultSectionLabel fuel'; label.textContent='⛽ Tankstations langs je route'; list.appendChild(label); }
+  fuelStations.forEach((s,i)=>{
+    const marker=L.marker([s.lat,s.lng],{icon:fuelIcon}).addTo(map).on('click',()=>focusFuelFromMarker(i)).bindPopup(`<b>${s.name}</b><br>${s.brand}<br><button onclick="showFuelDetail(${i})" style="margin-top:6px;border:0;background:#dc2626;color:white;border-radius:10px;padding:7px 9px;font-weight:800">Bekijk tankstation</button>`);
+    fuelMarkers.push(marker);
+  });
+}
+
+function refreshFuelMarkers(){
+  fuelMarkers.forEach(m=>map.removeLayer(m));
+  fuelMarkers=[];
+  addFuelMarkers();
+}
+
+function appendFuelList(){
+  const list=document.getElementById('list');
+
+  fuelStations.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.kind='fuel';
+    card.dataset.index=String(i);
+    card.style.gridTemplateColumns='1fr';
+    card.onclick=()=>selectFuelFromList(i);
+    card.innerHTML=`<div><h3>⛽ ${s.name}</h3><div class="meta">${s.brand}<br>${s.distance}</div><div class="pillrow">${s.badges.slice(0,3).map(b=>`<span class="pill">${b}</span>`).join('')}</div></div>`;
+    list.appendChild(card);
+  });
+}
+
+
+function renderFuelList(){ activeModes.fuel=true; updateModeButtons(); updateCategoryMarkers(); renderCombinedResults(); }
+function resetResultModes(){
+  activeModes.hotels=false;
+  activeModes.fuel=false;
+  updateModeButtons();
+  updateCategoryMarkers();
+  renderCombinedResults();
+}
+
+function toggleResultMode(mode){
+  if(mode==='hotels') activeModes.hotels=!activeModes.hotels;
+  if(mode==='fuel') activeModes.fuel=!activeModes.fuel;
+
+  updateModeButtons();
+  updateCategoryMarkers();
+  renderCombinedResults();
+}
+
+function updateModeButtons(){
+  document.getElementById('tabHotels')?.classList.toggle('active', activeModes.hotels);
+  document.getElementById('tabFuel')?.classList.toggle('active', activeModes.fuel);
+}
+
+function updateCategoryMarkers(){
+  hotelMarkers.forEach(m=>map.removeLayer(m));
+  fuelMarkers.forEach(m=>map.removeLayer(m));
+  hotelMarkers=[];
+  fuelMarkers=[];
+
+  if(activeModes.hotels) addHotelMarkers();
+  if(activeModes.fuel) addFuelMarkers();
+}
+
+function renderCombinedResults(){
+  const list=document.getElementById('list');
+  list.innerHTML='';
+
+  if(!activeModes.hotels && !activeModes.fuel){
+    renderEmptyResults();
+    return;
+  }
+
+  document.getElementById('resultTitle').textContent='Stops langs je route';
+
+  const activeCount=(activeModes.hotels?hotels.length:0)+(activeModes.fuel?fuelStations.length:0);
+  document.getElementById('count').textContent=activeCount+' resultaten gevonden';
+
+  if(activeModes.hotels) appendHotelList();
+  if(activeModes.fuel) appendFuelList();
+}
+
+function renderEmptyResults(){
+  const list=document.getElementById('list');
+  document.getElementById('resultTitle').textContent='Kies een categorie';
+  document.getElementById('count').textContent='Hotels en tankstations staan uit';
+  list.innerHTML='<div class="emptyResults"><div class="emptyTitle">Wat wil je langs je route zien?</div><div>Zet <b>Hotels</b>, <b>Tankstations</b> of allebei aan. Dan tonen we pas de lijst en pins op de kaart.</div></div>';
+}
+
+function showFuelDetail(i){
+  selectedFuelIndex=i;
+  const s=fuelStations[i];
+  const added=isStopSelected(s.name);
+
+  document.getElementById('detailHero').style.backgroundImage='linear-gradient(135deg,rgba(17,24,39,.65),rgba(220,38,38,.55)),url(https://images.unsplash.com/photo-1615906655593-ad0386982a0f?auto=format&fit=crop&w=1200&q=80)';
+  document.getElementById('detailName').textContent=s.name;
+  document.getElementById('detailRating').innerHTML='⛽ <span>'+s.brand+' · tankstation langs route</span>';
+  document.getElementById('detailBadges').innerHTML=s.badges.map(b=>`<span class="pill">${b}</span>`).join('');
+  document.getElementById('detailPrice').textContent='Navigeren';
+  document.getElementById('detailDistance').textContent=s.distance;
+  document.getElementById('bookingBtn').textContent='Navigeer naar tankstation →';
+  document.getElementById('bookingBtn').href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.lat+','+s.lng)}`;
+
+  const addStopButton=document.getElementById('addStopBtn');
+  addStopButton.textContent=added?'✓ Tussenstop toegevoegd':'➕ Voeg toe als tussenstop';
+  addStopButton.classList.toggle('added',added);
+
+  selectedHotelIndex=null;
+  lockPageScroll();
+  document.getElementById('modal').classList.add('open');
+}
+
+
+function addHotelMarkers(){
+  const hotelIcon=L.divIcon({html:'<div style="background:#166534;color:white;width:34px;height:34px;border-radius:14px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.25);border:2px solid white">🏨</div>',className:'',iconSize:[34,34],iconAnchor:[17,17]});
+  if(hotels.length){ const label=document.createElement('div'); label.className='resultSectionLabel'; label.textContent='🏨 Hotels langs je route'; list.appendChild(label); }
+  hotels.forEach((h,i)=>{
+    const marker=L.marker([h.lat,h.lng],{icon:hotelIcon}).addTo(map).on('click',()=>focusHotelFromMarker(i)).bindPopup(`<b>${h.name}</b><br>Vanaf €${h.price} · ${h.rating}/10<br><button onclick="showDetail(${i})" style="margin-top:6px;border:0;background:#166534;color:white;border-radius:10px;padding:7px 9px;font-weight:800">Bekijk hotel</button>`);
+    hotelMarkers.push(marker);
+  });
+}
+
+function perfectFitRoute(){
+  setTimeout(()=>{map.invalidateSize(); const line=routeWithStopsLine||baseRouteLine; if(line)map.fitBounds(line.getBounds(),{padding:[80,80],maxZoom:13,animate:true});},350);
+  setTimeout(()=>{map.invalidateSize(); const line=routeWithStopsLine||baseRouteLine; if(line)map.fitBounds(line.getBounds(),{padding:[80,80],maxZoom:13,animate:false});},900);
+}
+
+
+function clearSelection(){
+  document.querySelectorAll('.card.selected').forEach(el=>el.classList.remove('selected'));
+}
+
+function selectHotelFromList(index){
+  const h=hotels[index];
+  if(!h) return;
+
+  clearSelection();
+  const card=document.querySelector(`[data-kind="hotel"][data-index="${index}"]`);
+  card?.classList.add('selected');
+
+  if(hotelMarkers[index]){
+    map.setView([h.lat,h.lng],13);
+    hotelMarkers[index].openPopup();
+  }
+
+  showDetail(index);
+}
+
+function selectFuelFromList(index){
+  const s=fuelStations[index];
+  if(!s) return;
+
+  clearSelection();
+  const card=document.querySelector(`[data-kind="fuel"][data-index="${index}"]`);
+  card?.classList.add('selected');
+
+  if(fuelMarkers[index]){
+    map.setView([s.lat,s.lng],14);
+    fuelMarkers[index].openPopup();
+  }
+
+  showFuelDetail(index);
+}
+
+function focusHotelFromMarker(index){
+  const h=hotels[index];
+  if(!h) return;
+
+  clearSelection();
+  const card=document.querySelector(`[data-kind="hotel"][data-index="${index}"]`);
+  card?.classList.add('selected');
+  card?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function focusFuelFromMarker(index){
+  const s=fuelStations[index];
+  if(!s) return;
+
+  clearSelection();
+  const card=document.querySelector(`[data-kind="fuel"][data-index="${index}"]`);
+  card?.classList.add('selected');
+  card?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+
+function appendHotelList(){
+  const list=document.getElementById('list');
+  hotels.forEach((h,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.kind='hotel';
+    card.dataset.index=String(i);
+    card.onclick=()=>selectHotelFromList(i);
+    card.innerHTML=`<div class="thumb" style="background-image:url('${h.photo}')"></div><div><h3>${h.name}</h3><div class="meta">⭐ ${h.rating} · ${h.reviews} reviews<br>${h.distance} · ${h.city}</div><div class="price">vanaf €${h.price} / nacht</div><div class="pillrow">${h.badges.slice(0,3).map(b=>`<span class="pill">${b}</span>`).join('')}</div></div>`;
+    list.appendChild(card);
+  });
+}
+
+
+function renderHotelList(){ activeModes.hotels=true; updateModeButtons(); updateCategoryMarkers(); renderCombinedResults(); }
+function showDetail(i){
+  selectedHotelIndex=i; selectedFuelIndex=null;
+  const h=hotels[i];
+  const added=isHotelSelected(h.name);
+  document.getElementById('detailHero').style.backgroundImage=`url('${h.photo}')`;
+  document.getElementById('detailName').textContent=h.name;
+  document.getElementById('detailRating').innerHTML=`★★★★★ <span>${h.rating}/10 · Erg goed · ${h.reviews} reviews</span>`;
+  document.getElementById('detailBadges').innerHTML=h.badges.map(b=>`<span class="pill">${b}</span>`).join('');
+  document.getElementById('detailPrice').textContent='€'+h.price+' / nacht';
+  document.getElementById('detailDistance').textContent=h.distance;
+  document.getElementById('bookingBtn').textContent='Bekijk beschikbaarheid →';
+  document.getElementById('bookingBtn').href=h.booking;
+  updateAddStopButton(h.name);
+  lockPageScroll();
+  document.getElementById('modal').classList.add('open');
+}
+
+function hideDetail(){document.getElementById('modal').classList.remove('open');unlockPageScroll()}
+function closeDetail(e){if(e.target.id==='modal')hideDetail()}
+function lockPageScroll(){lockedScrollY=window.scrollY||document.documentElement.scrollTop;document.body.style.top=`-${lockedScrollY}px`;document.body.classList.add('modal-lock')}
+function unlockPageScroll(){document.body.classList.remove('modal-lock');document.body.style.top='';window.scrollTo(0,lockedScrollY)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal').classList.contains('open'))hideDetail()});
+
+function toggleCurrentHotelStop(){
+  const item = selectedHotelIndex !== null ? hotels[selectedHotelIndex] : fuelStations[selectedFuelIndex];
+  if(!item) return;
+
+  const exists=isStopSelected(item.name);
+  if(exists){
+    selectedStops=selectedStops.filter(s=>s.name!==item.name);
+    showToast((item.brand?'Tankstation':'Hotel')+' verwijderd als tussenstop');
+  }else{
+    selectedStops.push(item);
+    showToast((item.brand?'Tankstation':'Hotel')+' toegevoegd als tussenstop');
+  }
+
+  renderStops();
+  updateRouteWithStops();
+
+  const b=document.getElementById('addStopBtn');
+  const added=isStopSelected(item.name);
+  b.textContent=added?'✓ Tussenstop toegevoegd':'➕ Voeg toe als tussenstop';
+  b.classList.toggle('added',added);
+}
+
+function updateRouteWithStops(){
+  if(routeWithStopsLine){map.removeLayer(routeWithStopsLine);routeWithStopsLine=null}
+  selectedStopMarkers.forEach(m=>map.removeLayer(m)); selectedStopMarkers=[];
+  if(!selectedStops.length){perfectFitRoute();return}
+  const ordered=getOrderedStops();
+  const pts=[routeCoords[0],...ordered.map(s=>[s.lat,s.lng]),routeCoords[routeCoords.length-1]];
+  routeWithStopsLine=L.polyline(pts,{color:'#f59e0b',weight:6,opacity:.95,dashArray:'10,8'}).addTo(map);
+  ordered.forEach((s,i)=>{
+    const m=L.marker([s.lat,s.lng],{icon:L.divIcon({html:`<div style="background:#f59e0b;color:white;width:38px;height:38px;border-radius:999px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.30);border:3px solid white;font-weight:950">${i+1}</div>`,className:'',iconSize:[38,38],iconAnchor:[19,19]})}).addTo(map).bindPopup(`<b>Tussenstop ${i+1}</b><br>${s.name}`);
+    selectedStopMarkers.push(m);
+  });
+  perfectFitRoute();
+}
+
+function renderStops(){
+  const list=document.getElementById('stopsList');
+  const hint=document.getElementById('stopsHint');
+  const empty=document.getElementById('emptyStops');
+
+  list.innerHTML='';
+  const ordered=getOrderedStops();
+
+  hint.textContent=ordered.length
+    ? ordered.length+' tussenstop(s) toegevoegd aan je route'
+    : 'Nog geen tussenstop toegevoegd';
+
+  if(empty){
+    empty.style.display=ordered.length ? 'none' : 'block';
+  }
+
+  ordered.forEach((s,index)=>{
+    const chip=document.createElement('div');
+    chip.className='stopChip '+(s.brand?'fuel':'hotel');
+    chip.innerHTML=`<span class="stopOrder">${index+1}</span><span>${s.brand?'⛽':'🏨'} ${s.name}</span><button onclick="removeStop('${String(s.name).replace(/'/g,"\\'")}')">×</button>`;
+    list.appendChild(chip);
+  });
+}
+function removeStop(name){selectedStops=selectedStops.filter(s=>s.name!==name);renderStops();updateRouteWithStops();if(selectedHotelIndex!==null)updateAddStopButton(hotels[selectedHotelIndex].name)}
+function updateAddStopButton(name){const b=document.getElementById('addStopBtn'), added=isStopSelected(name);b.textContent=added?'✓ Tussenstop toegevoegd':'➕ Voeg toe als tussenstop';b.classList.toggle('added',added)}
+function isStopSelected(name){return selectedStops.some(s=>s.name===name)}
+function isHotelSelected(name){return isStopSelected(name)}
+function getOrderedStops(){return [...selectedStops].sort((a,b)=>(a.order||99)-(b.order||99))}
+function setVehicle(type,el){document.querySelectorAll('.vehicle').forEach(v=>v.classList.remove('active'));el.classList.add('active');document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));const chips=document.querySelectorAll('.chip');if(type==='ev'){chips[0].classList.add('active');chips[1].classList.add('active');chips[3].classList.add('active')}else if(type==='camper'){chips[0].classList.add('active')}else{chips[0].classList.add('active');chips[2].classList.add('active')}}
+function toggleFilter(k,el){el.classList.toggle('active')}
+function openNavigation(){let url=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentFrom)}&destination=${encodeURIComponent(currentTo)}&travelmode=driving`;const w=getOrderedStops().map(s=>`${s.lat},${s.lng}`).join('|');if(w)url+=`&waypoints=${encodeURIComponent(w)}`;window.open(url,'_blank','noopener')}
+function saveRoutePlan(){localStorage.setItem('roadoraRoutePlanV1',JSON.stringify({route:currentFrom+' → '+currentTo,stops:selectedStops,savedAt:new Date().toISOString()}));showToast('Route opgeslagen')}
+function shareRoutePlan(){const text=`Roadora route: ${currentFrom} → ${currentTo}\nTussenstops: ${getOrderedStops().map(s=>s.name).join(' → ')||'Geen tussenstops gekozen'}`;if(navigator.share){navigator.share({title:'Roadora route',text}).catch(()=>{});return}navigator.clipboard.writeText(text).then(()=>showToast('Route tekst gekopieerd')).catch(()=>showToast('Delen niet beschikbaar'))}
+function showToast(text){const t=document.getElementById('toast');t.textContent=text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
+</script>
+
+
+
+</body>
+</html>
