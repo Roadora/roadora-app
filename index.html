@@ -1,13 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadora</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#f7f3ec;
+}
+
+#map {
+  height:50vh;
+}
+
+.container {
+  padding:15px;
+}
+
+button {
+  cursor:pointer;
+}
+
+.main-btn {
+  width:100%;
+  background:#166534;
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-weight:600;
+  margin-top:10px;
+}
+
+.actions {
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.actions button {
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  background:#fff;
+  font-weight:600;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Route plannen</h2>
+
+<input type="text" placeholder="Van" id="from">
+<input type="text" placeholder="Naar" id="to">
+
+<button class="main-btn" onclick="planRoute()">Plan route</button>
+
+<div id="routeInfo"></div>
+
+<!-- ENIGE NAVIGATIEKNOP -->
+
+<button id="startNavigationBtn" class="main-btn" onclick="startNavigation()">Start navigatie</button>
+
+</div>
+
+<div id="map"></div>
+
+<div class="container">
+
+<!-- ONDERSTE ACTIES (GEEN NAVIGATIE!) -->
+
+<div class="actions">
+  <button onclick="saveRoute()">💾 Opslaan</button>
+  <button onclick="shareRoute()">🔗 Delen</button>
+</div>
+
+</div>
+
 <script>
-// ===== ROADORA V4.3 FINAL CLEAN FIX =====
 
-// 1. Verwijder ALLE dubbele navigatieknoppen
+// Dummy route (jouw echte logic komt hier)
+function planRoute(){
+  document.getElementById("routeInfo").innerText = "Route geladen";
+}
+
+// Navigatie
+function startNavigation(){
+  alert("Google Maps openen...");
+}
+
+// Opslaan
+function saveRoute(){
+  alert("Route opgeslagen");
+}
+
+// Delen
+function shareRoute(){
+  alert("Deel link gemaakt");
+}
+
+// ===== V4.3 FIX =====
 function removeDuplicateNavButtons() {
-  // oude navigateBtn
-  const oldBtn = document.getElementById("navigateBtn");
-  if (oldBtn) oldBtn.remove();
-
-  // knoppen met tekst "Navigeren"
   document.querySelectorAll("button").forEach(btn => {
     if (btn.innerText.toLowerCase().includes("navigeer")) {
       if (btn.id !== "startNavigationBtn") {
@@ -17,20 +119,9 @@ function removeDuplicateNavButtons() {
   });
 }
 
-// 2. Zorg dat de hoofdknop goed blijft
-function fixMainNavButton() {
-  const main = document.getElementById("startNavigationBtn");
-  if (!main) return;
-
-  main.style.background = "#166534";
-  main.style.color = "#fff";
-  main.style.fontWeight = "600";
-  main.style.borderRadius = "12px";
-}
-
-// 3. Run na load + nog een keer later (zekerheid)
-setTimeout(removeDuplicateNavButtons, 300);
-setTimeout(removeDuplicateNavButtons, 1000);
-setTimeout(fixMainNavButton, 300);
+setTimeout(removeDuplicateNavButtons, 500);
 
 </script>
+
+</body>
+</html>
