@@ -1,0 +1,2422 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadora Clean Core v4.5</title>
+
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://router.project-osrm.org">
+<link rel="preconnect" href="https://nominatim.openstreetmap.org">
+<link rel="preconnect" href="https://overpass-api.de">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
+<style>
+:root{
+  --bg:#f7f3ec;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e7dfd3;
+  --accent:#166534;
+  --soft:#f8f5ef;
+  --dark:#111827;
+  --danger:#991b1b;
+  --blue:#1d4ed8;
+  --orange:#9a3412;
+  --shadow:0 12px 34px rgba(17,24,39,.10);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  padding-bottom:calc(132px + env(safe-area-inset-bottom));
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,a,input,select{font:inherit}
+button,a{touch-action:manipulation}
+button{cursor:pointer}
+a{text-decoration:none}
+
+.topbar{
+  max-width:1160px;
+  margin:0 auto;
+  padding:8px 12px 4px;
+  min-height:48px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  position:sticky;
+  top:0;
+  z-index:10000;
+  background:rgba(247,243,236,.88);
+  backdrop-filter:blur(14px);
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:18px;
+  font-weight:950;
+  color:var(--accent);
+}
+.top-actions{display:flex;align-items:center;gap:8px}
+.langbox{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 10px;
+  box-shadow:0 5px 16px rgba(0,0,0,.05);
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.langbox select{border:0;background:transparent;font-weight:950;font-size:12px;outline:none;max-width:54px}
+.account-btn{
+  width:36px;height:36px;min-width:36px;min-height:36px;
+  border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--text);
+  padding:0;font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 16px rgba(0,0,0,.05);
+}
+
+.wrap{max-width:1160px;margin:auto;padding:10px 12px}
+.page{display:none}
+.page.active{display:block}
+
+.hero{
+  min-height:190px;
+  border-radius:24px;
+  padding:18px;
+  background:
+    linear-gradient(135deg,rgba(17,24,39,.72),rgba(22,101,52,.45)),
+    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80');
+  background-size:cover;
+  background-position:center;
+  color:#fff;
+  display:flex;
+  align-items:flex-end;
+  box-shadow:0 16px 42px rgba(0,0,0,.12);
+}
+.hero h1{font-size:clamp(30px,7vw,46px);line-height:1;margin:8px 0}
+.hero p{color:#f3f4f6;font-size:14px;margin:0}
+.pill{
+  display:inline-block;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.section{margin-top:14px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.04);
+}
+h2{margin:0 0 12px;font-size:22px}
+h3{margin:0 0 6px}
+p{color:var(--muted)}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.info-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.icon{font-size:30px;margin-bottom:8px}
+
+.home-actions{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:12px;
+  margin-top:18px;
+}
+.home-btn{
+  min-height:70px;
+  border-radius:22px;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:950;
+  border:1px solid rgba(255,255,255,.28);
+}
+.home-btn.primary{background:#166534;color:#fff;font-size:20px}
+.home-btn.light{background:rgba(255,255,255,.96);color:#111827}
+
+.route-form{display:grid;gap:10px}
+input,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px 14px;
+  background:#fff;
+  font-weight:800;
+  outline:none;
+}
+button,.btn{
+  border:0;
+  border-radius:16px;
+  padding:13px 16px;
+  background:var(--dark);
+  color:#fff;
+  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+button.secondary,.btn.secondary{background:var(--soft);color:var(--text);border:1px solid var(--line)}
+button.accent,.btn.accent{background:var(--accent)}
+.route-plan{min-height:52px;border-radius:18px;font-size:17px}
+
+.vehicle-select{margin:0 0 6px}
+.vehicle-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+.vehicle-btn{
+  min-height:42px!important;
+  padding:8px 4px!important;
+  border-radius:14px!important;
+  background:#f8f5ef!important;
+  color:#111827!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+}
+.vehicle-btn strong{font-size:12px;line-height:1.1;white-space:nowrap}
+.vehicle-btn.active{background:#166534!important;color:#fff!important;border-color:#166534!important}
+.vehicle-advice{
+  margin-top:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  display:inline-flex;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  color:#166534;
+}
+
+.loading,.message{
+  display:none;
+  border-radius:16px;
+  padding:12px 14px;
+  font-weight:850;
+  margin-top:10px;
+}
+.loading{background:#ecfeff;border:1px solid #99f6e4;color:#115e59}
+.message.error{display:block;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+.message.ok{display:block;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+
+.route-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:12px;
+  margin-bottom:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+.back-btn{
+  width:44px!important;height:44px!important;border-radius:16px!important;padding:0!important;
+  background:#f8f5ef!important;color:var(--text)!important;border:1px solid var(--line)!important;
+}
+.route-title strong{display:block;font-size:17px;font-weight:950}
+.route-title span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-top:3px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{
+  background:#f8f5ef;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px 12px;
+  font-weight:950;
+}
+.stat small{display:block;color:var(--muted);font-size:11px;font-weight:900;margin-bottom:2px}
+.stat span{font-size:17px}
+
+.map-card{padding:12px}
+#map{
+  height:500px;
+  width:100%;
+  border-radius:24px;
+  border:1px solid var(--line);
+  overflow:hidden;
+  background:#e5e7eb;
+}
+.route-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.save-route-btn{
+  display:block;
+  width:100%;
+  min-height:48px;
+  border-radius:14px;
+  border:1px solid #e7dfd3;
+  font-weight:950;
+  font-size:14px;
+}
+.save-route-btn.logged-in{background:#fff;color:#166534}
+.save-route-btn.logged-out{background:#f8f5ef;color:#1f2937}
+
+.route-map-category-bar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.route-map-category-btn{
+  min-height:48px;
+  border:1px solid var(--line);
+  background:#f8f5ef;
+  color:var(--text);
+  border-radius:16px;
+  font-size:13px;
+  font-weight:950;
+}
+.route-map-category-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#routeMapCategoryStatus{display:none!important}
+
+.map-lock-wrap{position:relative}
+.map-lock-overlay{
+  position:absolute;
+  inset:0;
+  z-index:650;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:14px;
+  pointer-events:none;
+  background:transparent;
+  border-radius:24px;
+}
+.map-lock-hint{display:none!important}
+.map-unlock-btn{
+  position:absolute;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:700;
+  max-width:85%;
+  min-height:42px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.96);
+  color:#1f2937;
+  padding:0 14px;
+  font-size:13px;
+  font-weight:950;
+  box-shadow:0 10px 26px rgba(17,24,39,.16);
+  backdrop-filter:blur(12px);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  cursor:pointer;
+}
+
+.category-marker-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:18px;
+  background:#fff;
+  border:2px solid #166534;
+  box-shadow:0 8px 20px rgba(17,24,39,.20);
+}
+.category-marker-icon.fuel{border-color:#b91c1c}
+.category-marker-icon.charge{border-color:#1d4ed8}
+.category-marker-icon.food{border-color:#d97706}
+
+/* Roadora v4.6 - premium map marker polish */
+.category-marker-icon{
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, opacity .22s ease;
+}
+.category-marker-icon.map-active{
+  transform:scale(1.22);
+  border-color:#111827!important;
+  box-shadow:0 14px 34px rgba(17,24,39,.34),0 0 0 5px rgba(22,101,52,.16);
+}
+.category-marker-icon.map-muted{
+  opacity:.72;
+  transform:scale(.92);
+}
+.leaflet-marker-icon{transition:transform .22s ease, opacity .22s ease}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(0,0,0,.08)!important}
+.marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{
+  background:#111827!important;color:#fff!important;font-weight:900!important;
+  border:2px solid #fff!important;box-shadow:0 6px 16px rgba(0,0,0,.2)!important;
+}
+
+.filter-results-panel{
+  margin-top:12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 8px 22px rgba(17,24,39,.06);
+}
+.filter-results-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.filter-results-head strong{display:block;font-size:16px;color:#1f2937}
+.filter-results-head span{display:block;color:#6b7280;font-size:12px;font-weight:850;margin-top:3px}
+.filter-results-count{
+  white-space:nowrap;
+  background:#f0fdf4;
+  color:#166534;
+  border:1px solid #bbf7d0;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:950;
+}
+.filter-results-list{display:flex;flex-direction:column;gap:9px}
+.filter-result-item{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:center;
+  background:#fffaf3;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.filter-result-item.active{
+  background:#f0fdf4!important;
+  border-color:#166534!important;
+  box-shadow:0 10px 26px rgba(22,101,52,.14)!important;
+  transform:translateY(-1px);
+}
+.filter-result-title{color:#1f2937;font-size:14px;font-weight:950}
+.filter-result-meta{color:#6b7280;font-size:12px;font-weight:800;margin-top:3px;line-height:1.35}
+.filter-result-actions{display:flex;gap:7px}
+.filter-result-actions button,.filter-result-actions a{
+  min-height:36px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#1f2937;
+  padding:0 10px;
+  font-size:12px;
+  font-weight:950;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.filter-result-actions .primary,
+.filter-result-actions a.booking-cta{background:#166534!important;color:#fff!important;border-color:#166534!important}
+
+.route-stops-list-clean{
+  margin-top:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 8px 22px rgba(17,24,39,.06);
+}
+.route-stops-list-clean strong{display:block;color:#1f2937;font-size:15px;margin-bottom:8px}
+.route-stop-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:center;
+  background:#fffaf3;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  margin-top:8px;
+}
+.route-stop-row-title{color:#1f2937;font-size:14px;font-weight:950}
+.route-stop-row-meta{color:#6b7280;font-size:12px;font-weight:800;margin-top:2px}
+.route-stop-controls{display:flex;align-items:center;gap:6px}
+.route-stop-move,.route-stop-delete{
+  width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;
+  border-radius:999px!important;font-size:14px!important;font-weight:950!important;padding:0!important;
+  display:grid!important;place-items:center!important;
+}
+.route-stop-move{border:1px solid var(--line)!important;background:#fff!important;color:#1f2937!important}
+.route-stop-move:disabled{opacity:.35!important;cursor:not-allowed!important}
+.route-stop-delete{border:1px solid #fecaca!important;background:#fee2e2!important;color:#991b1b!important}
+.route-stops-empty{
+  background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:16px;padding:10px 12px;font-size:13px;font-weight:900;
+}
+
+.hotel-v4-row,.hotel-badges{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;
+}
+.hotel-v4-badge,.hotel-badge{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:950;border:1px solid #e7dfd3;background:#fff;color:#1f2937;
+}
+.hotel-v4-badge.rating,.hotel-badge.rating{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.hotel-v4-badge.price,.hotel-badge.price{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.hotel-v4-badge.urgency,.hotel-badge.urgent{background:#111827;color:#fff;border-color:#111827}
+.hotel-v4-badge.family{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.osm-live-pill{
+  display:inline-flex;align-items:center;gap:5px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:950;margin-top:6px;
+}
+.osm-live-pill.fallback{background:#fff7ed!important;color:#9a3412!important;border-color:#fed7aa!important}
+.osm-loading-note{
+  margin-top:10px;background:#ecfeff;color:#115e59;border:1px solid #99f6e4;border-radius:14px;padding:10px 12px;font-size:12px;font-weight:900;
+}
+
+.roadora-bottom-sheet-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(17,24,39,.12);
+  opacity:0;
+  pointer-events:none;
+  transition:.2s ease;
+  z-index:24999;
+}
+.roadora-bottom-sheet-backdrop.active{opacity:1;pointer-events:auto}
+.roadora-bottom-sheet{
+  position:fixed;
+  left:50%;
+  bottom:calc(88px + env(safe-area-inset-bottom));
+  transform:translateX(-50%) translateY(120%);
+  opacity:0;
+  pointer-events:none;
+  width:min(560px,calc(100% - 24px));
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(231,223,211,.86);
+  border-radius:30px;
+  box-shadow:0 26px 80px rgba(17,24,39,.26);
+  z-index:25000;
+  transition:transform .32s cubic-bezier(.22,1,.36,1), opacity .22s ease;
+  overflow:hidden;
+}
+.roadora-bottom-sheet.active{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.roadora-bottom-sheet.dragging{transition:none}
+.roadora-sheet-handle{
+  width:46px;height:5px;border-radius:999px;background:#d6d3d1;margin:11px auto 6px;cursor:grab;touch-action:none;
+}
+.roadora-sheet-body{padding:14px 18px 18px}
+.roadora-sheet-top{position:relative;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding-right:44px}
+.roadora-sheet-title{margin:0 0 5px;font-size:20px;line-height:1.12;letter-spacing:-.02em;color:#172033;font-weight:950}
+.roadora-sheet-meta{font-size:13px;color:#6b7280;line-height:1.35;font-weight:850}
+.roadora-sheet-close{
+  position:absolute;top:0;right:0;width:38px;height:38px;border-radius:999px;border:1px solid rgba(231,223,211,.95);
+  background:rgba(248,245,239,.92);color:#1f2937;font-size:18px;font-weight:950;display:grid;place-items:center;padding:0;box-shadow:0 8px 22px rgba(17,24,39,.10);
+}
+.roadora-sheet-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:15px}
+.roadora-sheet-actions button,.roadora-sheet-actions a{
+  min-height:48px;border-radius:17px;font-size:14px;font-weight:950;text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;
+  border:1px solid rgba(231,223,211,.95);
+  background:rgba(248,245,239,.88);
+  color:#1f2937;
+}
+.roadora-sheet-actions .primary,.roadora-sheet-actions a.booking-cta{
+  background:#166534!important;color:#fff!important;border-color:#166534!important;box-shadow:0 12px 26px rgba(22,101,52,.22)!important;
+}
+.booking-affiliate-note{
+  display:inline-flex;margin-top:9px;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:950;
+}
+.booking-disclaimer{margin-top:7px;font-size:10.5px;color:#6b7280;font-weight:800;line-height:1.25}
+
+
+/* Bottom sheet v3 - Uber style snap + sticky CTA */
+.roadora-bottom-sheet.full{
+  max-height:min(78vh,680px);
+}
+.roadora-bottom-sheet.full .roadora-sheet-body{
+  max-height:calc(78vh - 24px);
+  overflow:auto;
+  padding-bottom:20px;
+}
+.roadora-sheet-actions{
+  position:sticky;
+  bottom:0;
+  margin-left:-2px;
+  margin-right:-2px;
+  padding-top:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.92) 22%,rgba(255,255,255,.96));
+}
+.roadora-sheet-hint{
+  display:inline-flex;
+  margin-top:8px;
+  color:#6b7280;
+  font-size:11px;
+  font-weight:900;
+}
+.roadora-sheet-minirow{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.roadora-sheet-minirow span{
+  background:#f8f5ef;
+  border:1px solid #e7dfd3;
+  border-radius:14px;
+  padding:9px 10px;
+  color:#1f2937;
+  font-size:12px;
+  font-weight:950;
+}
+@media(max-width:760px){
+  .roadora-bottom-sheet.full{max-height:calc(86vh - env(safe-area-inset-bottom));}
+  .roadora-bottom-sheet.full .roadora-sheet-body{max-height:calc(86vh - 34px - env(safe-area-inset-bottom));}
+}
+
+.account-menu{
+  position:fixed;
+  top:70px;
+  right:12px;
+  width:240px;
+  background:#fff;
+  border:1px solid #e7dfd3;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  padding:12px;
+  z-index:2000;
+  display:none;
+}
+.account-menu.active{display:block}
+.account-menu-status{
+  background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:14px;padding:9px 10px;font-size:12px;font-weight:950;margin-bottom:8px;
+}
+.account-menu-status.logged-out{background:#fffaf3;border-color:#e7dfd3;color:#6b7280}
+.account-menu button{
+  width:100%;border:1px solid #e7dfd3!important;background:#f8f5ef!important;color:#1f2937!important;
+  padding:10px;border-radius:12px;font-weight:900;margin-top:6px;text-align:left;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;
+}
+.account-menu button.primary{background:#166534!important;color:#fff!important;border-color:#166534!important}
+.account-menu button.disabled{opacity:.55!important;cursor:not-allowed!important}
+
+.saved-routes-modal{
+  position:fixed;inset:0;background:rgba(17,24,39,.38);display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:3000;
+}
+.saved-routes-modal.active{display:flex}
+.saved-routes-sheet{
+  width:min(520px,100%);max-height:78vh;overflow:auto;background:#fff;border-radius:24px;border:1px solid #e7dfd3;box-shadow:0 24px 70px rgba(0,0,0,.25);padding:14px;
+}
+.saved-routes-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.saved-routes-head h2{margin:0;font-size:20px}
+.saved-routes-close{width:38px;height:38px;border-radius:999px;border:1px solid #e7dfd3;background:#f8f5ef;color:#1f2937;font-weight:950}
+.saved-route-card{background:#fffaf3;border:1px solid #e7dfd3;border-radius:18px;padding:12px;margin-top:10px}
+.saved-route-card strong{display:block;font-size:15px;color:#1f2937}
+.saved-route-card span{display:block;color:#6b7280;font-size:12px;font-weight:800;margin-top:4px}
+.saved-route-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.saved-route-actions button{min-height:40px;border-radius:13px;border:1px solid #e7dfd3;font-size:12px;font-weight:950}
+.saved-route-actions .open{background:#166534;color:#fff;border-color:#166534}
+.saved-route-actions .delete{background:#fff;color:#b91c1c}
+.saved-empty{background:#f8f5ef;border:1px dashed #e7dfd3;border-radius:18px;padding:14px;color:#6b7280;font-size:13px;font-weight:850}
+
+.roadora-toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  transform:translateX(-50%) translateY(20px);
+  max-width:calc(100% - 28px);
+  background:#111827;
+  color:#fff;
+  border-radius:999px;
+  padding:11px 15px;
+  font-size:14px;
+  font-weight:900;
+  box-shadow:0 16px 42px rgba(17,24,39,.28);
+  opacity:0;
+  pointer-events:none;
+  transition:.22s ease;
+  z-index:30000;
+  text-align:center;
+}
+.roadora-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.roadora-toast.success{background:#166534}
+.roadora-toast.warning{background:#92400e}
+.roadora-toast.error{background:#991b1b}
+
+.bottom{
+  position:fixed;
+  left:50%;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  width:min(1120px,calc(100% - 24px));
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 12px 34px rgba(0,0,0,.14);
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:8px;
+  padding:10px;
+  z-index:30000;
+}
+.bottom button{background:transparent;color:var(--text);border:0;border-radius:16px;padding:8px 6px;font-size:13px}
+.bottom button.active{background:var(--accent);color:#fff}
+.nav-icon{display:block;font-size:22px;margin-bottom:4px}
+
+@media(max-width:760px){
+  .home-actions,.grid-2,.grid-3{grid-template-columns:1fr}
+  .hero{min-height:155px;padding:16px}
+  .home-btn{min-height:62px}
+  #map{height:410px}
+  .route-map-category-bar{grid-template-columns:1fr 1fr}
+  .filter-result-item{grid-template-columns:1fr}
+  .filter-result-actions{display:grid;grid-template-columns:1fr 1fr}
+  .filter-results-head{display:block}
+  .filter-results-count{display:inline-flex;margin-top:8px}
+  .bottom{gap:4px;padding:8px}
+  .bottom button{font-size:10px;padding:8px 1px}
+  .vehicle-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .vehicle-btn strong{font-size:11px}
+  .roadora-bottom-sheet{width:calc(100% - 16px);bottom:calc(76px + env(safe-area-inset-bottom));border-radius:28px}
+  .roadora-sheet-title{font-size:19px}
+  .roadora-sheet-body{padding:13px 16px 17px}
+}
+
+/* Mijn Routes v2 - save/edit/delete/open */
+.saved-route-page-card{
+  background:#fffaf3;
+  border:1px solid var(--line,#e7dfd3);
+  border-radius:18px;
+  padding:13px;
+  margin-top:10px;
+}
+.saved-route-page-card h3{
+  margin:0;
+  font-size:16px;
+  color:#1f2937;
+  line-height:1.25;
+}
+.saved-route-page-meta{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:850;
+  line-height:1.35;
+  margin-top:5px;
+}
+.saved-route-page-actions{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.saved-route-page-actions button{
+  min-height:42px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:950;
+  padding:0 10px;
+}
+.saved-route-page-actions .open{
+  background:#166534;
+  color:#fff;
+}
+.saved-route-page-actions .edit{
+  background:#fff;
+  color:#1f2937;
+  border:1px solid var(--line,#e7dfd3);
+}
+.saved-route-page-actions .delete{
+  background:#fee2e2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+}
+.save-current-route-card{
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:18px;
+  padding:13px;
+  margin-bottom:12px;
+}
+.save-current-route-card strong{
+  color:#166534;
+  font-size:15px;
+}
+.save-current-route-card p{
+  margin:5px 0 10px;
+  font-size:12px;
+  font-weight:850;
+}
+@media(max-width:620px){
+  .saved-route-page-actions{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* Route delen v1 */
+.share-route-btn{
+  width:100%;
+  min-height:48px;
+  border-radius:14px;
+  border:1px solid #e7dfd3!important;
+  background:#f8f5ef!important;
+  color:#1f2937!important;
+  font-weight:950;
+  font-size:14px;
+}
+.saved-route-page-actions{
+  grid-template-columns:1.1fr 1fr 1fr 1fr!important;
+}
+.saved-route-page-actions .share{
+  background:#eff6ff!important;
+  color:#1d4ed8!important;
+  border:1px solid #bfdbfe!important;
+}
+@media(max-width:620px){
+  .saved-route-page-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* Auto stops slim v1 */
+.smart-auto-stops{
+  margin-top:10px;
+  background:#fff;
+  border:1px solid var(--line,#e7dfd3);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 8px 22px rgba(17,24,39,.06);
+}
+.smart-auto-stops-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.smart-auto-stops-head strong{
+  display:block;
+  color:#1f2937;
+  font-size:15px;
+}
+.smart-auto-stops-head span{
+  display:block;
+  color:#6b7280;
+  font-size:12px;
+  font-weight:850;
+  margin-top:3px;
+  line-height:1.35;
+}
+.smart-auto-pill{
+  white-space:nowrap;
+  background:#f0fdf4;
+  color:#166534;
+  border:1px solid #bbf7d0;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:950;
+}
+.smart-auto-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+}
+.smart-auto-item{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+  background:#fffaf3;
+  border:1px solid var(--line,#e7dfd3);
+  border-radius:16px;
+  padding:10px;
+}
+.smart-auto-title{
+  color:#1f2937;
+  font-size:14px;
+  font-weight:950;
+}
+.smart-auto-meta{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:800;
+  margin-top:2px;
+}
+.smart-auto-item button{
+  min-height:36px;
+  border-radius:12px;
+  background:#166534;
+  color:#fff;
+  font-size:12px;
+  font-weight:950;
+  padding:0 10px;
+}
+.smart-auto-marker{
+  width:36px!important;
+  height:36px!important;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:#166534;
+  border:3px solid #fff;
+  box-shadow:0 8px 24px rgba(17,24,39,.28);
+  font-weight:950;
+  font-size:15px;
+}
+.smart-auto-marker.ev{background:#1d4ed8}
+.smart-auto-marker.camper{background:#0f766e}
+.smart-auto-marker.motor{background:#d97706}
+@media(max-width:620px){
+  .smart-auto-stops-head{display:block}
+  .smart-auto-pill{display:inline-flex;margin-top:8px}
+  .smart-auto-item{grid-template-columns:1fr}
+  .smart-auto-item button{width:100%}
+}
+
+
+/* Smart stops inline status v1 */
+.smart-auto-inline{
+  margin-top:8px;
+  background:#f8f5ef;
+  border:1px solid var(--line,#e7dfd3);
+  border-radius:16px;
+  padding:9px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  font-weight:950;
+  color:#166534;
+}
+.smart-auto-inline span:last-child{
+  white-space:nowrap;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:999px;
+  padding:5px 9px;
+}
+@media(max-width:620px){
+  .smart-auto-inline{font-size:11px;padding:8px 10px}
+}
+
+
+/* Smart stops boven kaart v2 */
+.smart-auto-stops{
+  margin:10px 0 0;
+}
+.smart-auto-stops-compact{
+  padding:0;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.smart-auto-stops-compact .smart-auto-inline{
+  margin-top:0;
+}
+
+
+/* Smart stops uitklap v3 */
+.smart-auto-stops.compact{
+  padding:10px 12px;
+}
+.smart-auto-toggle{
+  width:100%;
+  min-height:46px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  background:#fffaf3!important;
+  color:#1f2937!important;
+  border:1px solid var(--line,#e7dfd3)!important;
+  border-radius:16px!important;
+  padding:10px 12px!important;
+  box-shadow:none!important;
+  text-align:left;
+}
+.smart-auto-toggle-title{
+  display:block;
+  font-size:14px;
+  font-weight:950;
+  color:#1f2937;
+}
+.smart-auto-toggle-sub{
+  display:block;
+  margin-top:2px;
+  font-size:12px;
+  font-weight:850;
+  color:#6b7280;
+  line-height:1.25;
+}
+.smart-auto-toggle-pill{
+  white-space:nowrap;
+  background:#f0fdf4;
+  color:#166534;
+  border:1px solid #bbf7d0;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:950;
+}
+.smart-auto-list.collapsed{
+  display:none;
+}
+.smart-auto-stops.expanded .smart-auto-list{
+  display:flex;
+}
+.smart-auto-stops.expanded .smart-auto-toggle{
+  margin-bottom:9px;
+}
+
+
+/* v4.6.1 clean: slimme stops alleen inline, geen dubbele kaart */
+#smartAutoStopsPanel{display:none!important;}
+
+
+/* v4.6.2 - compacte slimme-stops dropdown */
+.smart-auto-inline span:last-child{
+  cursor:pointer;
+  user-select:none;
+}
+.smart-inline-toggle{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:30px;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:999px;
+  padding:6px 11px;
+  font-size:12px;
+  font-weight:950;
+  color:#166534;
+  cursor:pointer;
+  user-select:none;
+  box-shadow:0 4px 12px rgba(22,101,52,.08);
+  transition:background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.smart-inline-toggle:hover{
+  background:#dcfce7;
+  transform:translateY(-1px);
+  box-shadow:0 7px 18px rgba(22,101,52,.14);
+}
+.smart-inline-toggle:active{
+  transform:scale(.97);
+}
+.smart-inline-toggle.is-open{
+  background:#166534;
+  border-color:#166534;
+  color:#fff;
+}
+.smart-inline-chevron{
+  display:inline-block;
+  font-size:11px;
+  line-height:1;
+  transition:transform .2s ease;
+}
+.smart-inline-toggle.is-open .smart-inline-chevron{
+  transform:rotate(180deg);
+}
+.smart-inline-dropdown{
+  margin-top:8px;
+  background:#fff;
+  border:1px solid var(--line,#e7dfd3);
+  border-radius:16px;
+  padding:10px;
+  box-shadow:0 8px 22px rgba(17,24,39,.08);
+  display:none;
+}
+.smart-inline-item{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:8px;
+  align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid #f1ece3;
+}
+.smart-inline-item:last-child{border-bottom:0}
+.smart-inline-item strong{
+  display:block;
+  color:#1f2937;
+  font-size:13px;
+  font-weight:950;
+}
+.smart-inline-item small{
+  display:block;
+  margin-top:2px;
+  color:#6b7280;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.25;
+}
+.smart-inline-item button{
+  min-height:34px;
+  border-radius:12px;
+  padding:0 10px;
+  font-size:11px;
+  font-weight:950;
+}
+.smart-inline-item button.secondary{
+  background:#f8f5ef!important;
+  color:#1f2937!important;
+  border:1px solid var(--line,#e7dfd3)!important;
+}
+.smart-inline-empty{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+  padding:4px;
+}
+@media(max-width:620px){
+  .smart-inline-item{grid-template-columns:1fr;gap:6px}
+  .smart-inline-item button{width:100%}
+}
+
+</style>
+</head>
+
+<body>
+<noscript><div style="margin:12px;padding:12px;border-radius:14px;background:#fff7ed;color:#9a3412;font-weight:900">Roadora heeft JavaScript nodig om de kaart en routeplanner te gebruiken.</div></noscript>
+<header class="topbar">
+  <div class="brand"><span>🚗</span><span>Roadora</span></div>
+  <div class="top-actions">
+    <div class="langbox"><span>🌍</span><select aria-label="Taal"><option>NL</option><option>EN</option><option>DE</option><option>FR</option></select></div>
+    <button class="account-btn" type="button" aria-label="Account">👤</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="homePage" class="page active">
+    <section class="hero">
+      <div>
+        <span class="pill">🚗 Roadora Europa</span>
+        <h1>Plan jouw roadtrip slim door Europa</h1>
+        <p>Maak je route, vind hotels onderweg en ontdek handige stops voor je reis.</p>
+        <div class="home-actions">
+          <a class="home-btn primary" href="#" onclick="showPage('route');return false;">🚗 Start route</a>
+          <a class="home-btn light" href="#" onclick="showPage('hotels');return false;">🏨 Hotels zoeken</a>
+          <a class="home-btn light" href="#" onclick="showPage('trips');return false;">🎡 Uitjes vinden</a>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section">Zo werkt Roadora</h2>
+    <section class="grid grid-3">
+      <div class="info-card"><div class="icon">🗺️</div><h3>1. Plan je route</h3><p>Kies vertrekpunt en bestemming.</p></div>
+      <div class="info-card"><div class="icon">🏨</div><h3>2. Vind stops</h3><p>Hotels, tankstations, laadpalen en eten langs je route.</p></div>
+      <div class="info-card"><div class="icon">🧭</div><h3>3. Navigeer</h3><p>Open je route direct in Google Maps.</p></div>
+    </section>
+  </section>
+
+  <section id="routePage" class="page">
+    <section class="hero">
+      <div>
+        <span class="pill">🧭 Route</span>
+        <h1>Plan jouw route</h1>
+        <p>Kies je voertuig, vertrekpunt en bestemming.</p>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>🛰️ Route plannen</h2>
+      <div class="route-form">
+        <div class="vehicle-select">
+          <div class="vehicle-grid">
+            <button type="button" class="vehicle-btn active" data-vehicle="car" onclick="selectVehicle('car')"><strong>🚗 Auto</strong></button>
+            <button type="button" class="vehicle-btn" data-vehicle="ev" onclick="selectVehicle('ev')"><strong>⚡ EV</strong></button>
+            <button type="button" class="vehicle-btn" data-vehicle="camper" onclick="selectVehicle('camper')"><strong>🚐 Camper</strong></button>
+            <button type="button" class="vehicle-btn" data-vehicle="motor" onclick="selectVehicle('motor')"><strong>🏍️ Motor</strong></button>
+          </div>
+          <div id="vehicleAdvice" class="vehicle-advice">🚗 Auto geselecteerd</div>
+        </div>
+
+        <input id="from" placeholder="Vertrekpunt" value="Rotterdam">
+        <input id="to" placeholder="Bestemming" value="Amsterdam">
+        <button class="accent route-plan" onclick="planRoute()">🚗 Plan route</button>
+        <div id="loading" class="loading">Route wordt berekend...</div>
+        <div id="routeMessage" class="message"></div>
+      </div>
+    </section>
+  </section>
+
+  <section id="routeMapPage" class="page">
+    <div class="route-header">
+      <button class="back-btn" onclick="showPage('route')" aria-label="Terug">‹</button>
+      <div class="route-title">
+        <strong>Jouw route</strong>
+        <span id="routeSubtitle">Vertrekpunt → Bestemming</span>
+      </div>
+    </div>
+
+    <section class="card section">
+      <div class="stats">
+        <div class="stat"><small>Afstand</small><span id="distance">-</span></div>
+        <div class="stat"><small>Reistijd</small><span id="duration">-</span></div>
+      </div>
+      <div id="smartInlineStatus" class="smart-auto-inline">
+        <span>🚗 Nog geen route</span>
+        <span>—</span>
+      </div>
+    </section>
+
+    <section class="card section map-card">
+      <div id="map"></div>
+
+      <div id="routeCategoryBar" class="route-map-category-bar">
+        <button type="button" class="route-map-category-btn" data-cat="hotel">🏨 Hotels</button>
+        <button type="button" class="route-map-category-btn" data-cat="fuel">⛽ Tankstations</button>
+        <button type="button" class="route-map-category-btn" data-cat="charge">⚡ Laadpalen</button>
+        <button type="button" class="route-map-category-btn" data-cat="food">🍽 Eten</button>
+      </div>
+      <div id="routeMapCategoryStatus"></div>
+
+      <div class="route-actions">
+        <button class="accent" onclick="startNavigationInMaps()">Navigeren</button>
+        <button id="saveRouteBtn" class="save-route-btn">🔐 Log in om op te slaan</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="hotelsPage" class="page">
+    <section class="hero"><div><span class="pill">🏨 Hotels</span><h1>Hotels zoeken</h1><p>Zoek hotels per bestemming of ga direct naar Booking.</p></div></section>
+    <section class="card section">
+      <h2>🔎 Hotel zoeken</h2>
+      <div class="grid grid-2"><input id="hotelCity" placeholder="Bestemming" value="Amsterdam"><input id="hotelBudget" placeholder="Max prijs optioneel" type="number"></div>
+      <div class="section"><button class="accent" onclick="searchHotelPage()">Zoek hotels</button><button class="secondary" onclick="useHotelAsRouteDestination()">Gebruik als routebestemming</button></div>
+    </section>
+    <section class="section grid" id="hotelPageResults"></section>
+  </section>
+
+  <section id="savedPage" class="page">
+    <section class="hero"><div><span class="pill">💾 Mijn Routes</span><h1>Opgeslagen routes</h1><p>Bewaar je favoriete routes op dit apparaat.</p></div></section>
+    <section class="card section"><h2>💾 Mijn routes</h2><div class="section grid" id="savedRoutesList"></div></section>
+  </section>
+
+  <section id="roadPage" class="page">
+    <section class="hero"><div><span class="pill">⛽ Onderweg</span><h1>Handige stops onderweg</h1><p>Tankstations, laadpalen, parkeren en eten als snelle Maps-zoekopdracht.</p></div></section>
+    <section class="card section"><h2>Snelle stops</h2><div class="grid grid-3" id="roadQuickStops"></div></section>
+  </section>
+
+  <section id="tripsPage" class="page">
+    <section class="hero"><div><span class="pill">🎡 Uitjes</span><h1>Uitjes voor onderweg</h1><p>Vind attracties, musea en natuur langs je reis.</p></div></section>
+    <section class="card section"><h2>Uitjes zoeken</h2><div class="grid grid-3" id="tripQuickStops"></div></section>
+  </section>
+</main>
+
+<nav class="bottom">
+  <button id="nav-home" class="active" onclick="showPage('home')"><span class="nav-icon">🏠</span>Home</button>
+  <button id="nav-route" onclick="showPage('route')"><span class="nav-icon">🚗</span>Route</button>
+  <button id="nav-hotels" onclick="showPage('hotels')"><span class="nav-icon">🏨</span>Hotels</button>
+  <button id="nav-saved" onclick="showPage('saved')"><span class="nav-icon">💾</span>Mijn Routes</button>
+  <button id="nav-road" onclick="showPage('road')"><span class="nav-icon">⛽</span>Onderweg</button>
+  <button id="nav-trips" onclick="showPage('trips')"><span class="nav-icon">🎡</span>Uitjes</button>
+</nav>
+
+<div id="accountMenu" class="account-menu">
+  <div id="accountMenuStatus" class="account-menu-status logged-out">👤 Niet ingelogd · log in om routes te bewaren</div>
+  <button class="primary" onclick="loginUser()">🔐 Inloggen</button>
+  <button onclick="openMyRoutes()">📍 Mijn routes</button>
+  <button onclick="logoutUser()">🚪 Uitloggen</button>
+</div>
+
+<div id="savedRoutesModal" class="saved-routes-modal" onclick="closeSavedRoutesModal(event)">
+  <div class="saved-routes-sheet">
+    <div class="saved-routes-head">
+      <h2>💾 Mijn routes</h2>
+      <button class="saved-routes-close" onclick="closeSavedRoutesModal()">×</button>
+    </div>
+    <div id="savedRoutesModalList"></div>
+  </div>
+</div>
+
+<div id="roadoraSheetBackdrop" class="roadora-bottom-sheet-backdrop" onclick="roadoraCloseBottomSheet()"></div>
+<div id="roadoraBottomSheet" class="roadora-bottom-sheet" aria-live="polite">
+  <div class="roadora-sheet-handle"></div>
+  <div class="roadora-sheet-body" id="roadoraBottomSheetBody"></div>
+</div>
+
+<div id="roadoraToast" class="roadora-toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<script>
+"use strict";
+
+const ROADORA_VERSION = "4.6.6-future-proof";
+const ROADORA_ROUTE_API = "https://project-uxgks.vercel.app/api/route";
+const ROADORA_BOOKING_AID = "";
+
+function storageGet(key, fallback=""){
+  try{
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  }catch(e){
+    return fallback;
+  }
+}
+function storageSet(key, value){
+  try{ localStorage.setItem(key, value); }catch(e){}
+}
+function storageRemove(key){
+  try{ localStorage.removeItem(key); }catch(e){}
+}
+async function fetchWithTimeout(url, options={}, timeoutMs=15000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try{
+    return await fetch(url, {...options, signal:controller.signal});
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+const VEHICLES = {
+  car:{label:"Auto",icon:"🚗",km:300},
+  ev:{label:"EV",icon:"⚡",km:220},
+  camper:{label:"Camper",icon:"🚐",km:200},
+  motor:{label:"Motor",icon:"🏍️",km:160}
+};
+
+let selectedVehicle = storageGet("roadoraVehicle", "car") || "car";
+let routePlanning = false;
+let lastInteractionType = null; // "smart" of "filter"
+let map, routeLine, startMarker, endMarker;
+let routeCoords = [];
+let mapUnlocked = false;
+let categoryMarkers = [];
+let categoryCluster = null;
+let activeCategories = new Set();
+let activeFilterItemId = null;
+let activeMapItemId = null;
+let selectedStops = [];
+let addedStopMarkers = [];
+let realFuelStations = [];
+let fuelLoadedKey = "";
+let fuelLoading = false;
+
+/* ---------- Basic UI ---------- */
+function showPage(key){
+  const pageMap={home:"homePage",route:"routePage",routeMap:"routeMapPage",hotels:"hotelsPage",saved:"savedPage",road:"roadPage",trips:"tripsPage"};
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(pageMap[key])?.classList.add("active");
+  const navKey = key==="routeMap" ? "route" : key;
+  document.getElementById("nav-"+navKey)?.classList.add("active");
+
+  if(key==="routeMap") setTimeout(()=>{ if(map){ map.invalidateSize(); fitFullRoute(); } },250);
+  if(key==="saved") renderSavedRoutes();
+  if(key==="road") renderRoadStops();
+  if(key==="trips") renderTrips();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toast(message,type="default"){
+  const el=document.getElementById("roadoraToast");
+  if(!el) return;
+  el.textContent=message;
+  el.className="roadora-toast show "+type;
+  clearTimeout(window.__roadoraToastTimer);
+  window.__roadoraToastTimer=setTimeout(()=>{el.className="roadora-toast "+type},2200);
+}
+
+function setLoading(on){
+  const el=document.getElementById("loading");
+  if(el)el.style.display=on?"block":"none";
+  const btn=document.querySelector(".route-plan");
+  if(btn){
+    btn.disabled=!!on;
+    btn.style.opacity=on?".72":"";
+    btn.textContent=on?"Route berekenen...":"🚗 Plan route";
+  }
+}
+function setMessage(text,type="error"){const el=document.getElementById("routeMessage");if(!el)return;if(!text){el.className="message";el.style.display="none";el.textContent="";return}el.className="message "+type;el.textContent=text;el.style.display="block"}
+
+/* ---------- Account + saved routes (Clean Core v3) ---------- */
+function isLoggedIn(){
+  try{const user=JSON.parse(storageGet("roadoraUserV1","null")||"null");return !!(user&&user.loggedIn)}catch(e){return false}
+}
+function loginUser(){
+  storageSet("roadoraUserV1",JSON.stringify({name:"Gebruiker",loggedIn:true}));
+  renderAccountState();
+  updateSaveButton();
+  toast("Ingelogd ✅","success");
+}
+function logoutUser(){
+  storageRemove("roadoraUserV1");
+  renderAccountState();
+  updateSaveButton();
+  closeAllRoadoraOverlays();
+  toast("Uitgelogd","warning");
+}
+function closeAllRoadoraOverlays(except){
+  if(except!=="account") document.getElementById("accountMenu")?.classList.remove("active");
+  if(except!=="sheet") closeBottomSheet(false);
+}
+function toggleAccountMenu(){
+  const menu=document.getElementById("accountMenu");
+  if(!menu)return;
+  const willOpen=!menu.classList.contains("active");
+  closeAllRoadoraOverlays("account");
+  menu.classList.toggle("active",willOpen);
+  renderAccountState();
+}
+function renderAccountState(){
+  const logged=isLoggedIn();
+  const status=document.getElementById("accountMenuStatus");
+  if(status){
+    status.className="account-menu-status"+(logged?"":" logged-out");
+    status.textContent=logged?"✅ Ingelogd · routes opslaan actief":"👤 Niet ingelogd · log in om routes te bewaren";
+  }
+  document.querySelectorAll("#accountMenu button").forEach(btn=>{
+    const txt=(btn.textContent||"").toLowerCase();
+    if(txt.includes("inloggen")) btn.style.display=logged?"none":"flex";
+    if(txt.includes("uitloggen")) btn.style.display=logged?"flex":"none";
+    if(txt.includes("mijn routes")) btn.classList.toggle("disabled",!logged);
+  });
+}
+function updateSaveButton(){
+  const btn=document.getElementById("saveRouteBtn");
+  if(!btn)return;
+  const logged=isLoggedIn();
+  btn.style.display="block";
+  btn.classList.toggle("logged-in",logged);
+  btn.classList.toggle("logged-out",!logged);
+  btn.textContent=logged?"💾 Opslaan":"🔐 Log in om op te slaan";
+  btn.onclick=(e)=>{e.preventDefault();saveRoute()};
+}
+function loadSavedRoutes(){
+  try{return JSON.parse(storageGet("roadoraRoutes","[]")||"[]")}catch(e){return[]}
+}
+function storeSavedRoutes(routes){
+  storageSet("roadoraRoutes",JSON.stringify(routes.slice(0,50)));
+  storageSet("roadoraSavedRoutesV2",JSON.stringify(routes.slice(0,50)));
+}
+function currentRouteData(){
+  const from=document.getElementById("from")?.value.trim()||"";
+  const to=document.getElementById("to")?.value.trim()||"";
+  if(!from||!to)return null;
+  return {
+    id:Date.now(),
+    title:`${from} → ${to}`,
+    from,to,vehicle:selectedVehicle,
+    distance:document.getElementById("distance")?.textContent.trim()||"-",
+    duration:document.getElementById("duration")?.textContent.trim()||"-",
+    stops:selectedStops.map(s=>({id:s.id,name:s.name,type:s.type,desc:s.desc,coord:s.coord})),
+    createdAt:new Date().toISOString()
+  };
+}
+function saveRoute(){
+  if(!isLoggedIn()){
+    document.getElementById("accountMenu")?.classList.add("active");
+    renderAccountState();
+    toast("Log eerst in om je route op te slaan","warning");
+    return;
+  }
+  const route=currentRouteData();
+  if(!route){toast("Maak eerst een route","warning");return}
+  const routes=loadSavedRoutes();
+  routes.unshift(route);
+  storeSavedRoutes(routes);
+  renderSavedRoutes();
+  updateSaveButton();
+  toast("Route opgeslagen ✅","success");
+}
+function openMyRoutes(){
+  if(!isLoggedIn()){
+    document.getElementById("accountMenu")?.classList.add("active");
+    renderAccountState();
+    toast("Log eerst in om je routes te bekijken","warning");
+    return;
+  }
+  closeAllRoadoraOverlays();
+  showPage("saved");
+  renderSavedRoutes();
+}
+function closeSavedRoutesModal(e){
+  document.getElementById("savedRoutesModal")?.classList.remove("active");
+}
+function renderSavedRoutesModal(){
+  renderSavedRoutes();
+}
+function renderSavedRoutes(){
+  const box=document.getElementById("savedRoutesList");
+  if(!box)return;
+  const routes=loadSavedRoutes();
+  const current=currentRouteData();
+  const saveCard=current?`<div class="save-current-route-card"><strong>💾 Huidige route bewaren</strong><p>${escapeHtml(current.from)} → ${escapeHtml(current.to)} · ${escapeHtml(current.distance)} · ${escapeHtml(current.duration)}</p><button class="accent" onclick="saveRoute()">Huidige route opslaan</button></div>`:"";
+  if(!routes.length){box.innerHTML=saveCard+'<div class="info-card">Je hebt nog geen routes opgeslagen.</div>';return}
+  box.innerHTML=saveCard+routes.map(route=>{
+    const date=route.createdAt?new Date(route.createdAt).toLocaleDateString("nl-NL"):"";
+    const stopCount=Array.isArray(route.stops)?route.stops.length:0;
+    const title=route.title||`${route.from||"Vertrek"} → ${route.to||"Bestemming"}`;
+    const id=String(route.id);
+    return `<article class="saved-route-page-card">
+      <h3>💾 ${escapeHtml(title)}</h3>
+      <div class="saved-route-page-meta">${escapeHtml(route.from||"Vertrek")} → ${escapeHtml(route.to||"Bestemming")}<br>${escapeHtml(route.distance||"-")} · ${escapeHtml(route.duration||"-")} · ${escapeHtml(route.vehicle||"auto")} · ${stopCount} stop(s) · ${escapeHtml(date)}</div>
+      <div class="saved-route-page-actions">
+        <button class="open" type="button" onclick="openSavedRoute('${id}')">Open route</button>
+        <button class="share" type="button" onclick="roadoraShareRoute('${id}')">Delen</button>
+        <button class="edit" type="button" onclick="editSavedRouteTitle('${id}')">Naam wijzigen</button>
+        <button class="delete" type="button" onclick="deleteSavedRoute('${id}')">Verwijder</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+}
+function findSavedRoute(id){
+  return loadSavedRoutes().find(r=>String(r.id)===String(id));
+}
+function openSavedRoute(id){
+  const route=findSavedRoute(id);
+  if(!route){toast("Route niet gevonden","error");return}
+  const fromEl=document.getElementById("from"), toEl=document.getElementById("to");
+  if(fromEl)fromEl.value=route.from||"";
+  if(toEl)toEl.value=route.to||"";
+  if(route.vehicle)selectVehicle(route.vehicle);
+  selectedStops=Array.isArray(route.stops)?route.stops:[];
+  closeAllRoadoraOverlays();
+  showPage("route");
+  setTimeout(planRoute,250);
+}
+function editSavedRouteTitle(id){
+  const routes=loadSavedRoutes();
+  const route=routes.find(r=>String(r.id)===String(id));
+  if(!route){toast("Route niet gevonden","error");return}
+  const currentTitle=route.title||`${route.from||"Vertrek"} → ${route.to||"Bestemming"}`;
+  const newTitle=prompt("Nieuwe naam voor deze route:",currentTitle);
+  if(!newTitle||!newTitle.trim())return;
+  route.title=newTitle.trim();
+  storeSavedRoutes(routes);
+  renderSavedRoutes();
+  toast("Routenaam aangepast ✅","success");
+}
+function deleteSavedRoute(id){
+  const route=findSavedRoute(id);
+  if(!route){toast("Route niet gevonden","error");return}
+  if(!confirm("Weet je zeker dat je deze route wilt verwijderen?"))return;
+  storeSavedRoutes(loadSavedRoutes().filter(r=>String(r.id)!==String(id)));
+  renderSavedRoutes();
+  toast("Route verwijderd","warning");
+}
+
+/* ---------- Vehicle + route ---------- */
+function selectVehicle(type){
+  selectedVehicle=VEHICLES[type]?type:"car";
+  storageSet("roadoraVehicle",selectedVehicle);
+  document.querySelectorAll(".vehicle-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.vehicle===selectedVehicle));
+  const v=VEHICLES[selectedVehicle];
+  const advice=document.getElementById("vehicleAdvice");
+  if(advice)advice.textContent=v.icon+" "+v.label+" geselecteerd";
+  setTimeout(()=>{
+    if(typeof renderSmartAutoStops === "function") renderSmartAutoStops();
+    if(typeof updateSmartInlineStatus === "function") updateSmartInlineStatus();
+  },250);
+}
+function initMap(){
+  if(map)return map;
+  map=L.map("map").setView([52.1,5.1],7);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap © CARTO"}).addTo(map);
+  setupMapLock();
+  return map;
+}
+async function geocode(place){
+  const raw=String(place||"").trim();
+  const coords=raw.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+  if(coords)return{lat:Number(coords[1]),lng:Number(coords[2])};
+  let q=raw;
+  const nl=["rotterdam","amsterdam","utrecht","den haag","eindhoven","breda","tilburg","groningen","maastricht","arnhem","nijmegen","haarlem","leiden","delft","zwolle","leeuwarden","alkmaar","dordrecht","barendrecht","hendrik-ido-ambacht","hendrik ido ambacht"];
+  if(nl.includes(q.toLowerCase())&&!q.includes(","))q+=", Nederland";
+  const res=await fetchWithTimeout("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q), {}, 12000);
+  if(!res.ok)throw new Error("Plaats zoeken lukt nu niet.");
+  const data=await res.json();
+  if(!data.length)throw new Error("Plaats niet gevonden: "+raw);
+  return{lat:Number(data[0].lat),lng:Number(data[0].lon)};
+}
+async function fetchRouteFromApi(from,to){
+  const res=await fetchWithTimeout(ROADORA_ROUTE_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({coordinates:[[from.lng,from.lat],[to.lng,to.lat]]})}, 15000);
+  const data=await res.json();
+  if(!res.ok||!data.features||!data.features[0])throw new Error(data?.error?.message||data?.message||"Route API fout");
+  return data.features[0];
+}
+async function fetchRouteOSRM(from,to){
+  const url=`https://router.project-osrm.org/route/v1/driving/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
+  const res=await fetchWithTimeout(url, {}, 15000);
+  const data=await res.json();
+  if(!res.ok||!data.routes||!data.routes[0])throw new Error("Backup route niet beschikbaar");
+  const r=data.routes[0];
+  return {geometry:{coordinates:r.geometry.coordinates},properties:{summary:{distance:r.distance,duration:r.duration}}};
+}
+async function planRoute(){
+  if(routePlanning){toast("Route wordt al berekend...","warning");return}
+  routePlanning=true;
+  const fromText=document.getElementById("from").value.trim();
+  const toText=document.getElementById("to").value.trim();
+  setMessage("");
+  if(!fromText){routePlanning=false;setMessage("Vul eerst een vertrekpunt in.");return}
+  if(!toText){routePlanning=false;setMessage("Vul eerst een bestemming in.");return}
+  setLoading(true);
+
+  try{
+    const from=await geocode(fromText);
+    const to=await geocode(toText);
+    let feature;
+    try{ feature=await fetchRouteFromApi(from,to); }
+    catch(e){ feature=await fetchRouteOSRM(from,to); }
+
+    showPage("routeMap");
+    await new Promise(r=>setTimeout(r,250));
+    initMap();
+    map.invalidateSize();
+
+    if(routeLine)map.removeLayer(routeLine);
+    if(startMarker)map.removeLayer(startMarker);
+    if(endMarker)map.removeLayer(endMarker);
+
+    routeCoords=feature.geometry.coordinates.map(c=>[c[1],c[0]]);
+    window.routeCoords=routeCoords;
+
+    routeLine=L.polyline(routeCoords,{color:"#166534",weight:6,opacity:.92}).addTo(map);
+    startMarker=L.marker([from.lat,from.lng]).addTo(map).bindPopup("<b>Vertrekpunt</b><br>"+fromText);
+    endMarker=L.marker([to.lat,to.lng]).addTo(map).bindPopup("<b>Bestemming</b><br>"+toText);
+
+    const summary=feature.properties?.summary||{};
+    document.getElementById("distance").textContent=Math.round((summary.distance||0)/1000)+" km";
+    const seconds=summary.duration||0,h=Math.floor(seconds/3600),m=Math.round((seconds%3600)/60);
+    document.getElementById("duration").textContent=h+"u "+m+"m";
+    document.getElementById("routeSubtitle").textContent=fromText+" → "+toText;
+
+    realFuelStations=[];
+    fuelLoadedKey="";
+    clearFilterMarkers();
+    renderCategoryMarkers();
+    renderStopsList();
+    renderFilterResults();
+    setTimeout(()=>{map.invalidateSize();fitFullRoute();},200);
+    setTimeout(()=>{
+      if(typeof renderSmartAutoStops === "function") renderSmartAutoStops();
+      updateSmartInlineStatus();
+    },800);
+  }catch(e){
+    console.error(e);
+    showPage("route");
+    setMessage("Route kon niet worden geladen: "+e.message);
+  }finally{
+    routePlanning=false;
+    setLoading(false);
+  }
+}
+function fitFullRoute(){
+  try{if(map&&routeLine)map.fitBounds(routeLine.getBounds(),{padding:[35,35]})}catch(e){}
+}
+function routePoint(percent){
+  if(!routeCoords.length)return null;
+  const idx=Math.max(0,Math.min(routeCoords.length-1,Math.floor(routeCoords.length*percent)));
+  return routeCoords[idx];
+}
+function startNavigationInMaps(){
+  const from = document.getElementById("from").value.trim();
+  const to = document.getElementById("to").value.trim();
+
+  if(!from || !to){
+    toast("Vul eerst vertrekpunt en bestemming in","warning");
+    return;
+  }
+
+  let url = "https://www.google.com/maps/dir/?api=1";
+  url += "&origin=" + encodeURIComponent(from);
+  url += "&destination=" + encodeURIComponent(to);
+  url += "&travelmode=driving";
+
+  // Route v2.1: toegevoegde stops gaan mee naar Google Maps
+  if(selectedStops && selectedStops.length){
+    const waypoints = selectedStops
+      .filter(s => s && s.coord && s.coord.length >= 2)
+      .map(s => `${s.coord[0]},${s.coord[1]}`)
+      .join("|");
+
+    if(waypoints){
+      url += "&waypoints=" + encodeURIComponent(waypoints);
+    }
+  }
+
+  window.open(url, "_blank", "noopener");
+}
+
+/* ---------- Map lock ---------- */
+function setupMapLock(){
+  const mapEl=document.getElementById("map");
+  if(!mapEl)return;
+  if(mapEl.parentElement&&mapEl.parentElement.classList.contains("map-lock-wrap"))return;
+
+  const wrap=document.createElement("div");
+  wrap.className="map-lock-wrap";
+  mapEl.parentNode.insertBefore(wrap,mapEl);
+  wrap.appendChild(mapEl);
+
+  const overlay=document.createElement("div");
+  overlay.className="map-lock-overlay";
+  const hint=document.createElement("div");
+  hint.className="map-lock-hint";
+  overlay.appendChild(hint);
+
+  const btn=document.createElement("button");
+  btn.type="button";
+  btn.className="map-unlock-btn";
+  btn.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleMapLock()};
+
+  wrap.appendChild(overlay);
+  wrap.appendChild(btn);
+  applyMapLockState(false);
+}
+function applyMapLockState(unlocked){
+  mapUnlocked=!!unlocked;
+  const wrap=document.querySelector(".map-lock-wrap");
+  const btn=document.querySelector(".map-unlock-btn");
+  if(wrap)wrap.classList.toggle("map-is-unlocked",mapUnlocked);
+  if(btn)btn.textContent=mapUnlocked?"🔓 Kaart actief · tik om vast te zetten":"🔒 Kaart vast · tik om te bewegen";
+
+  if(map){
+    if(mapUnlocked){
+      map.dragging.enable();map.scrollWheelZoom.enable();map.doubleClickZoom.enable();map.touchZoom.enable();map.boxZoom.enable();map.keyboard.enable();map.invalidateSize();
+    }else{
+      map.dragging.disable();map.scrollWheelZoom.disable();map.doubleClickZoom.disable();map.touchZoom.disable();map.boxZoom.disable();map.keyboard.disable();
+    }
+  }
+}
+function toggleMapLock(){applyMapLockState(!mapUnlocked)}
+
+/* ---------- Categories + markers ---------- */
+const categoryMeta={
+  hotel:{icon:"🏨",label:"Hotels",cls:"hotel"},
+  fuel:{icon:"⛽",label:"Tankstations",cls:"fuel"},
+  charge:{icon:"⚡",label:"Laadpalen",cls:"charge"},
+  food:{icon:"🍽",label:"Eten",cls:"food"}
+};
+function markerIcon(type, state="normal"){
+  const meta=categoryMeta[type]||categoryMeta.hotel;
+  const stateClass = state === "active" ? "map-active" : state === "muted" ? "map-muted" : "";
+  return L.divIcon({className:"",html:`<div class="category-marker-icon ${meta.cls} ${stateClass}">${meta.icon}</div>`,iconSize:[34,34],iconAnchor:[17,17],popupAnchor:[0,-18]});
+}
+function offset(point,lat,lng){return point?[point[0]+lat,point[1]+lng]:[52.1,5.1]}
+function baseMarkerData(){
+  const p20=routePoint(.20),p30=routePoint(.30),p35=routePoint(.35),p50=routePoint(.50),p65=routePoint(.65),p80=routePoint(.80);
+  return {
+    hotel:[
+      {id:"hotel_1",type:"hotel",name:"Roadora Hotel Stop",desc:"Hotel dichtbij je route",coord:offset(p35,.015,.015)},
+      {id:"hotel_2",type:"hotel",name:"Comfort Route Hotel",desc:"Rustige overnachting onderweg",coord:offset(p65,-.015,.012)}
+    ],
+    fuel: realFuelStations.length ? realFuelStations : [
+      {id:"fallback_fuel_1",type:"fuel",name:"Tankstation langs route",desc:"Route suggestie · controleer in Maps",coord:offset(p30,.01,.012),fallback:true},
+      {id:"fallback_fuel_2",type:"fuel",name:"Servicepunt langs route",desc:"Route suggestie · controleer in Maps",coord:offset(p50,-.01,-.012),fallback:true},
+      {id:"fallback_fuel_3",type:"fuel",name:"Brandstofstop onderweg",desc:"Route suggestie · controleer in Maps",coord:offset(p80,.01,-.012),fallback:true}
+    ],
+    charge:[
+      {id:"charge_1",type:"charge",name:"FastCharge Roadora Hub",desc:"Snellader voor EV-route",coord:offset(p35,-.016,.018)},
+      {id:"charge_2",type:"charge",name:"EV Stop & Rest",desc:"Laadpunt met pauzemogelijkheid",coord:offset(p80,.014,-.016)}
+    ],
+    food:[
+      {id:"food_1",type:"food",name:"Route Restaurant",desc:"Eten en pauzeren onderweg",coord:offset(p50,.018,.018)},
+      {id:"food_2",type:"food",name:"Koffie & Pauzeplek",desc:"Korte stop met koffie",coord:offset(p65,-.018,-.018)}
+    ]
+  };
+}
+function ensureCluster(){
+  if(!map||!L.markerClusterGroup)return null;
+  if(!categoryCluster){
+    categoryCluster=L.markerClusterGroup({
+      showCoverageOnHover:false,spiderfyOnMaxZoom:true,zoomToBoundsOnClick:true,animate:true,disableClusteringAtZoom:17,maxClusterRadius:30
+    });
+    categoryCluster.on("clusterclick",e=>{try{map.flyToBounds(e.layer.getBounds(),{padding:[42,42],duration:.45})}catch(err){}});
+    map.addLayer(categoryCluster);
+  }
+  return categoryCluster;
+}
+function clearFilterMarkers(){
+  if(categoryCluster)categoryCluster.clearLayers();
+  categoryMarkers.forEach(m=>{try{if(map&&map.hasLayer(m))map.removeLayer(m)}catch(e){}});
+  categoryMarkers=[];
+}
+function renderCategoryMarkers(){
+  if(!map||!routeCoords.length)return;
+  clearFilterMarkers();
+  const active=[...activeCategories];
+  if(!active.length){renderFilterResults();return}
+
+  const cluster=ensureCluster();
+  if(!cluster)return;
+  const data=baseMarkerData();
+
+  active.forEach(cat=>{
+    (data[cat]||[]).forEach((item,index)=>{
+      item.id=item.id||(item.type+"_"+index+"_"+item.name).replace(/\s+/g,"_");
+      const marker=L.marker(item.coord,{icon:markerIcon(item.type, activeMapItemId&&String(item.id)===String(activeMapItemId)?"active":activeMapItemId?"muted":"normal")});
+      marker._roadoraItem=item;
+      marker.on("click",()=>{lastInteractionType="filter";showBottomSheet(item);setActiveFilterItem(item.id)});
+      cluster.addLayer(marker);
+      categoryMarkers.push(marker);
+    });
+  });
+  renderFilterResults();
+}
+function activeFilterItems(){
+  const data=baseMarkerData();
+  return [...activeCategories].flatMap(cat=>(data[cat]||[]).map((item,index)=>{
+    item.id=item.id||(item.type+"_"+index+"_"+item.name).replace(/\s+/g,"_");
+    return item;
+  }));
+}
+function filterItemLabel(type){
+  const meta=categoryMeta[type]||{icon:"📍",label:"Stop"};
+  return meta.icon+" "+meta.label;
+}
+document.querySelectorAll(".route-map-category-btn").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    const cat=btn.dataset.cat;
+    if(activeCategories.has(cat)){activeCategories.delete(cat);btn.classList.remove("active")}
+    else{activeCategories.add(cat);btn.classList.add("active")}
+    if(cat==="fuel"&&activeCategories.has("fuel")) await loadFuelStations();
+    renderCategoryMarkers();
+  });
+});
+
+/* ---------- Fuel OSM ---------- */
+function fuelRouteKey(){return (document.getElementById("from")?.value||"")+"___"+(document.getElementById("to")?.value||"")+"___"+routeCoords.length}
+async function fetchFuelAround(point,radius=12000){
+  if(!point)return[];
+  const [lat,lng]=point;
+  const query=`[out:json][timeout:25];(node["amenity"="fuel"](around:${radius},${lat},${lng});way["amenity"="fuel"](around:${radius},${lat},${lng}););out center tags 25;`;
+  const res=await fetchWithTimeout("https://overpass-api.de/api/interpreter?data="+encodeURIComponent(query), {}, 20000);
+  if(!res.ok)throw new Error("OSM request failed");
+  const data=await res.json();
+  return (data.elements||[]).map(el=>{
+    const tags=el.tags||{}, latVal=el.lat||el.center?.lat, lngVal=el.lon||el.center?.lon;
+    if(!latVal||!lngVal)return null;
+    const brand=tags.brand||tags.operator||"", name=tags.name||brand||"Tankstation", city=tags["addr:city"]||tags["addr:town"]||tags["addr:village"]||"Langs je route", opening=tags.opening_hours||"";
+    return {id:"osm_fuel_"+el.type+"_"+el.id,type:"fuel",name,desc:(brand?brand+" · ":"")+city+(opening?" · "+opening:""),coord:[Number(latVal),Number(lngVal)],osm:true};
+  }).filter(Boolean);
+}
+function fallbackFuel(){
+  const percents=[.16,.28,.40,.52,.64,.76,.88];
+  const names=["Tankstation langs route","Servicepunt langs route","Brandstofstop onderweg","Snelweg tankstop","Pauze & tankstation","Route tankstation","Brandstofpunt richting bestemming"];
+  return percents.map((pct,i)=>{
+    const p=routePoint(pct); if(!p)return null;
+    return {id:"fallback_fuel_"+i,type:"fuel",name:names[i],desc:"Route suggestie · controleer in Maps",coord:[p[0]+(i%2===0?.01:-.01),p[1]+(i%3===0?.012:-.012)],fallback:true};
+  }).filter(Boolean);
+}
+async function loadFuelStations(){
+  const key=fuelRouteKey();
+  if(fuelLoadedKey===key&&realFuelStations.length)return realFuelStations;
+  if(fuelLoading)return realFuelStations;
+  fuelLoading=true;
+
+  const panel=document.getElementById("filterResultsPanel");
+  let note=document.getElementById("osmFuelLoading");
+  if(panel&&!note){
+    note=document.createElement("div");
+    note.id="osmFuelLoading";
+    note.className="osm-loading-note";
+    note.textContent="⛽ Echte tankstations langs je route zoeken...";
+    panel.appendChild(note);
+  }
+
+  const points=[];
+  for(let i=.1;i<=.9;i+=.1){const p=routePoint(i);if(p)points.push(p)}
+  const seen=new Set(), results=[];
+  for(const p of points){
+    try{
+      const found=await fetchFuelAround(p,12000);
+      found.forEach(item=>{
+        const unique=(item.name+"_"+Math.round(item.coord[0]*10000)+"_"+Math.round(item.coord[1]*10000)).toLowerCase();
+        if(seen.has(unique))return;
+        seen.add(unique);results.push(item);
+      });
+    }catch(e){console.warn("OSM punt overgeslagen",e)}
+  }
+  realFuelStations=results.length>=5?results.slice(0,18):fallbackFuel();
+  fuelLoadedKey=key;
+  fuelLoading=false;
+  document.getElementById("osmFuelLoading")?.remove();
+  return realFuelStations;
+}
+
+/* ---------- Filter list ---------- */
+function ensureFilterPanel(){
+  const card=document.getElementById("map")?.closest(".card");
+  if(!card)return null;
+  let panel=document.getElementById("filterResultsPanel");
+  if(!panel){
+    panel=document.createElement("div");
+    panel.id="filterResultsPanel";
+    panel.className="filter-results-panel";
+    const stops=document.getElementById("routeStopsListClean");
+    if(stops)stops.insertAdjacentElement("afterend",panel);
+    else card.appendChild(panel);
+  }
+  return panel;
+}
+function applyMapMarkerFocus(id){
+  activeMapItemId = id ? String(id) : null;
+  categoryMarkers.forEach(marker=>{
+    const item = marker && marker._roadoraItem;
+    if(!item) return;
+    const state = !activeMapItemId ? "normal" : String(item.id)===activeMapItemId ? "active" : "muted";
+    try{ marker.setIcon(markerIcon(item.type,state)); }catch(e){}
+  });
+}
+function setActiveFilterItem(id){
+  activeFilterItemId=String(id);
+  document.querySelectorAll(".filter-result-item").forEach(el=>el.classList.toggle("active",el.dataset.itemId===activeFilterItemId));
+  applyMapMarkerFocus(id);
+}
+function focusFilterItem(id){
+  lastInteractionType="filter";
+  window.roadoraLastInteractionSource="list";
+  setActiveFilterItem(id);
+  const item=activeFilterItems().find(i=>String(i.id)===String(id));
+  if(!item)return;
+  if(map&&item.coord)map.flyTo(item.coord,12,{animate:true,duration:.55});
+  setTimeout(()=>{
+    const mapEl=document.getElementById("map");
+    if(mapEl){const top=mapEl.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top,behavior:"smooth"})}
+    showBottomSheet(item);
+  },200);
+}
+function renderFilterResults(){
+  const panel=ensureFilterPanel();
+  if(!panel)return;
+  const items=activeFilterItems();
+  if(!items.length){
+    panel.innerHTML=`<div class="filter-results-head"><div><strong>Resultaten langs je route</strong><span>Kies Hotels, Tankstations, Laadpalen of Eten om markers en resultaten te tonen.</span></div><div class="filter-results-count">0 actief</div></div>`;
+    return;
+  }
+  const labels=[...activeCategories].map(c=>categoryMeta[c]?.label||c);
+  panel.innerHTML=`<div class="filter-results-head"><div><strong>Resultaten langs je route</strong><span>Actief: ${labels.join(" + ")}. Kaart en lijst zijn gekoppeld.</span></div><div class="filter-results-count">${items.length} resultaten</div></div><div class="filter-results-list">${items.map(item=>renderFilterItem(item)).join("")}</div>`;
+}
+function renderFilterItem(item){
+  const isHotel=item.type==="hotel";
+  const d=isHotel?hotelData(item):null;
+  const directUrl=isHotel?bookingDeepLink(item):mapsUrl(item);
+  const fallbackPill=item.type==="fuel"?`<div class="osm-live-pill ${item.fallback?'fallback':''}">${item.fallback?'Route suggestie':'OSM live data'}</div>`:"";
+  return `<article class="filter-result-item ${String(item.id)===String(activeFilterItemId)?"active":""}" data-item-id="${item.id}">
+    <div>
+      <div class="filter-result-title">${filterItemLabel(item.type)} · ${item.name}</div>
+      <div class="filter-result-meta">${item.desc||"Stop langs je route"}${isHotel?"<br>Booking deep link · check-in automatisch ingevuld":""}</div>
+      ${isHotel?hotelBadges(item):fallbackPill}
+    </div>
+    <div class="filter-result-actions">
+      <button class="primary" onclick="focusFilterItem('${item.id}')">Kaart</button>
+      <a class="${isHotel?"booking-cta":""}" href="${directUrl}" target="_blank" rel="noopener">${isHotel?"vanaf €"+d.price:"Bekijk"}</a>
+    </div>
+  </article>`;
+}
+
+/* ---------- Stops ---------- */
+function stopIcon(type){return {hotel:"🏨",fuel:"⛽",charge:"⚡",food:"🍽",camper:"🚐",motor:"🏍"}[type]||"📍"}
+function ensureStopsList(){
+  const card=document.getElementById("map")?.closest(".card");
+  if(!card)return null;
+  let box=document.getElementById("routeStopsListClean");
+  if(!box){
+    box=document.createElement("div");
+    box.id="routeStopsListClean";
+    box.className="route-stops-list-clean";
+    const filterPanel=document.getElementById("filterResultsPanel");
+    if(filterPanel)filterPanel.insertAdjacentElement("beforebegin",box);
+    else card.appendChild(box);
+  }
+  return box;
+}
+function addStop(item){
+  if(!item){toast("Stop niet gevonden","warning");return}
+  item.id=item.id||(item.type+"_"+item.name).replace(/\s+/g,"_");
+  const stop={id:item.id,type:item.type||"stop",name:item.name||"Stop",desc:item.desc||"Stop langs je route",coord:item.coord||null};
+  const exists=selectedStops.some(s=>String(s.id)===String(stop.id));
+  if(!exists)selectedStops.push(stop);
+  renderStopsList();renderAddedStopsOnMap();
+  closeBottomSheet();
+  toast(exists?"Stop stond al in je route":"Stop toegevoegd ✅",exists?"warning":"success");
+}
+function removeStop(id){
+  selectedStops=selectedStops.filter(s=>String(s.id)!==String(id));
+  renderStopsList();renderAddedStopsOnMap();
+  toast("Stop verwijderd","warning");
+}
+function moveStop(index,direction){
+  const newIndex=index+direction;
+  if(newIndex<0||newIndex>=selectedStops.length)return;
+  const tmp=selectedStops[index];selectedStops[index]=selectedStops[newIndex];selectedStops[newIndex]=tmp;
+  renderStopsList();renderAddedStopsOnMap();
+  toast("Volgorde aangepast","success");
+}
+function renderStopsList(){
+  const box=ensureStopsList();
+  if(!box)return;
+  if(!selectedStops.length){
+    box.innerHTML='<div class="route-stops-empty">Nog geen stops toegevoegd.</div>';
+    return;
+  }
+  box.innerHTML=`<strong>📍 Stops op je route</strong>${selectedStops.map((stop,i)=>`
+    <div class="route-stop-row" data-stop-index="${i}">
+      <div><div class="route-stop-row-title">${i+1}. ${stopIcon(stop.type)} ${stop.name}</div><div class="route-stop-row-meta">${stop.desc||"Toegevoegd aan je route"}</div></div>
+      <div class="route-stop-controls">
+        <button class="route-stop-move" onclick="moveStop(${i},-1)" ${i===0?"disabled":""}>↑</button>
+        <button class="route-stop-move" onclick="moveStop(${i},1)" ${i===selectedStops.length-1?"disabled":""}>↓</button>
+        <button class="route-stop-delete" onclick="removeStop('${stop.id}')">×</button>
+      </div>
+    </div>`).join("")}`;
+}
+function renderAddedStopsOnMap(){
+  if(!map)return;
+  addedStopMarkers.forEach(m=>map.removeLayer(m));
+  addedStopMarkers=[];
+  selectedStops.forEach((stop,i)=>{
+    if(!stop.coord)return;
+    const icon=L.divIcon({className:"",html:`<div class="category-marker-icon">${i+1}</div>`,iconSize:[34,34],iconAnchor:[17,17]});
+    const marker=L.marker(stop.coord,{icon}).addTo(map).bindPopup(`<b>Stop ${i+1}</b><br>${stop.name}`);
+    addedStopMarkers.push(marker);
+  });
+}
+
+/* ---------- Bottom sheet + booking ---------- */
+function addDays(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function bookingDeepLink(item){
+  const to=document.getElementById("to")?.value.trim()||"";
+  const from=document.getElementById("from")?.value.trim()||"";
+  const place=to||from||"Europa";
+  const ss=`${item?.name||"hotel"} ${place}`;
+  const params=new URLSearchParams({ss,checkin:addDays(14),checkout:addDays(15),group_adults:"2",no_rooms:"1",group_children:"0",order:"class"});
+  if(ROADORA_BOOKING_AID)params.set("aid",ROADORA_BOOKING_AID);
+  return "https://www.booking.com/searchresults.html?"+params.toString();
+}
+function hotelData(item){
+  const name=item?.name||"Hotel";
+  const seed=name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const ratings=[8.1,8.3,8.4,8.6,8.7,8.9,9.0], prices=[79,89,99,109,119,139,159], rooms=[2,3,4,5,6], tags=["Gratis annuleren","Parkeren","Ontbijt mogelijk","Familievriendelijk","Dicht bij route"];
+  return {rating:ratings[seed%ratings.length],price:prices[seed%prices.length],rooms:rooms[seed%rooms.length],tag:tags[seed%tags.length],count:18+(seed%27)};
+}
+function hotelBadges(item){
+  const d=hotelData(item);
+  return `<div class="hotel-v4-row"><span class="hotel-v4-badge rating">⭐ ${d.rating} zeer goed</span><span class="hotel-v4-badge price">vanaf €${d.price}</span><span class="hotel-v4-badge urgency">🔥 nog ${d.rooms} kamers</span><span class="hotel-v4-badge family">${d.tag}</span></div>`;
+}
+function mapsUrl(item){
+  item = item || {};
+  const name = item.name || "locatie";
+
+  if(item.coord && item.coord.length >= 2){
+    return "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent(`${item.coord[0]},${item.coord[1]}`);
+  }
+
+  return "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(name);
+}
+function navigateUrl(item){
+  item = item || {};
+  const from = document.getElementById("from")?.value.trim() || "";
+
+  let destination = item.name || "locatie";
+
+  if(item.coord && item.coord.length >= 2){
+    destination = `${item.coord[0]},${item.coord[1]}`;
+  }
+
+  let url = "https://www.google.com/maps/dir/?api=1";
+  url += "&destination=" + encodeURIComponent(destination);
+  url += "&travelmode=driving";
+
+  if(from){
+    url += "&origin=" + encodeURIComponent(from);
+  }
+
+  return url;
+}
+function showBottomSheet(item){
+  if(window.roadoraLastInteractionSource!=="list") window.roadoraLastInteractionSource="map";
+  closeAllRoadoraOverlays("sheet");
+  if(!item)return;
+  item.id=item.id||(item.type+"_"+item.name).replace(/\s+/g,"_");
+  const meta=categoryMeta[item.type]||{icon:"📍",label:"Stop"};
+  const body=document.getElementById("roadoraBottomSheetBody");
+  const sheet=document.getElementById("roadoraBottomSheet");
+  const backdrop=document.getElementById("roadoraSheetBackdrop");
+  if(!body||!sheet||!backdrop)return;
+
+  const isHotel=item.type==="hotel";
+  const viewUrl=isHotel?bookingDeepLink(item):mapsUrl(item);
+  const d=isHotel?hotelData(item):null;
+  const boost=isHotel?`${hotelBadges(item)}<div class="booking-affiliate-note">Booking deep link · affiliate-ready</div><div class="booking-disclaimer">Prijs/rating zijn indicatief tot echte hotel-API is gekoppeld.</div>`:(item.type==="fuel"&&item.osm?'<div class="osm-live-pill">OSM live data</div>':item.fallback?'<div class="osm-live-pill fallback">Route suggestie</div>':"");
+
+  body.innerHTML=`<div class="roadora-sheet-top"><div><h3 class="roadora-sheet-title">${meta.icon} ${item.name}</h3><div class="roadora-sheet-meta">${item.desc||"Stop langs je route"}<br>${meta.label}</div>${boost}<span class="roadora-sheet-hint">Veeg omhoog voor meer · veeg omlaag om te sluiten</span></div><button class="roadora-sheet-close" onclick="closeBottomSheet()">×</button></div>
+  <div class="roadora-sheet-minirow"><span>📍 Langs je route</span><span>${isHotel?"🏨 Hotel-ready":"🧭 Maps-ready"}</span></div>
+  <div class="roadora-sheet-actions"><button class="primary" onclick="addStopById('${item.id}')">+ Stop</button><a class="${isHotel?"booking-cta":""}" href="${viewUrl}" target="_blank" rel="noopener">${isHotel?"Bekijk "+d.count+" hotels":"Bekijk"}</a><a href="${navigateUrl(item)}" target="_blank" rel="noopener">Navigeer</a></div>`;
+
+  window.__sheetItem=item;
+  setActiveFilterItem(item.id);
+  sheet.classList.add("active");
+  backdrop.classList.add("active");
+  setBottomSheetSnap("peek");
+  if(map&&item.coord)map.flyTo(item.coord,Math.max(map.getZoom(),13),{animate:true,duration:.55});
+}
+function addStopById(id){
+  const item=activeFilterItems().find(i=>String(i.id)===String(id))||window.__sheetItem;
+  addStop(item);
+}
+function setBottomSheetSnap(level="peek"){
+  const sheet=document.getElementById("roadoraBottomSheet");
+  if(!sheet)return;
+  sheet.dataset.snap=level;
+  sheet.classList.toggle("full",level==="full");
+  sheet.style.transform="";
+}
+function closeBottomSheet(applyContext=true){
+  const sheet=document.getElementById("roadoraBottomSheet"),backdrop=document.getElementById("roadoraSheetBackdrop");
+  if(sheet){sheet.classList.remove("active","dragging","full");sheet.dataset.snap="";sheet.style.transform=""}
+  if(backdrop)backdrop.classList.remove("active");
+  applyMapMarkerFocus(null);
+  if(applyContext){setTimeout(afterRouteOverlayClose,120)}
+}
+function roadoraCloseBottomSheet(){closeBottomSheet(true)}
+function afterRouteOverlayClose(){
+  try{
+    if(map&&routeLine){
+      map.closePopup();
+      map.fitBounds(routeLine.getBounds(),{padding:[35,35]});
+    }
+  }catch(e){}
+
+  if(lastInteractionType === "filter"){
+    const mapEl=document.getElementById("map");
+    if(mapEl){
+      const top=mapEl.getBoundingClientRect().top+window.scrollY-80;
+      window.scrollTo({top,behavior:"smooth"});
+    }
+    return;
+  }
+
+  // Slimme stops: terug naar helemaal bovenaan
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function setupBottomSheetSwipe(){
+  const sheet=document.getElementById("roadoraBottomSheet");
+  const handle=sheet?.querySelector(".roadora-sheet-handle");
+  if(!sheet||sheet.__swipeAttached)return;
+  sheet.__swipeAttached=true;
+  let startY=0,currentY=0,dragging=false;
+  const start=(y)=>{if(!sheet.classList.contains("active"))return;startY=y;currentY=y;dragging=true;sheet.classList.add("dragging")};
+  const move=(y)=>{if(!dragging||!sheet.classList.contains("active"))return;currentY=y;const delta=y-startY;if(delta>0){sheet.style.transform=`translateX(-50%) translateY(${delta}px)`}else if(delta<0){sheet.style.transform=`translateX(-50%) translateY(${Math.max(delta*.25,-28)}px)`}};
+  const end=()=>{
+    if(!dragging)return;
+    dragging=false;
+    sheet.classList.remove("dragging");
+    const delta=currentY-startY;
+    sheet.style.transform="";
+    const snap=sheet.dataset.snap||"peek";
+    if(delta<-55){setBottomSheetSnap("full");return}
+    if(delta>110){closeBottomSheet();return}
+    if(delta>55&&snap==="full"){setBottomSheetSnap("peek");return}
+    setBottomSheetSnap(snap);
+  };
+  sheet.addEventListener("touchstart",e=>start(e.touches[0].clientY),{passive:true});
+  sheet.addEventListener("touchmove",e=>move(e.touches[0].clientY),{passive:true});
+  sheet.addEventListener("touchend",end);
+  if(handle){handle.addEventListener("click",()=>setBottomSheetSnap((sheet.dataset.snap||"peek")==="full"?"peek":"full"));}
+}
+
+
+/* ---------- Route delen (Clean Core v3) ---------- */
+function encodeRouteForShare(route){
+  const payload={from:route.from||"",to:route.to||"",vehicle:route.vehicle||"car",title:route.title||"",stops:Array.isArray(route.stops)?route.stops:[]};
+  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+function decodeRouteFromShare(encoded){
+  try{return JSON.parse(decodeURIComponent(escape(atob(encoded))))}catch(e){return null}
+}
+function getRouteForShare(id){
+  if(id){const found=findSavedRoute(id);if(found)return found}
+  return currentRouteData();
+}
+async function roadoraShareRoute(id){
+  const route=getRouteForShare(id);
+  if(!route){toast("Maak eerst een route om te delen","warning");return}
+  const encoded=encodeRouteForShare(route);
+  const base=window.location.href.split("#")[0].split("?")[0];
+  const url=`${base}?route=${encodeURIComponent(encoded)}`;
+  const text=`Bekijk mijn Roadora route: ${route.from} → ${route.to}`;
+  try{if(navigator.share){await navigator.share({title:"Roadora route",text,url});toast("Route gedeeld ✅","success");return}}catch(e){}
+  try{await navigator.clipboard.writeText(url);toast("Deellink gekopieerd ✅","success")}catch(e){prompt("Kopieer deze deellink:",url)}
+}
+function addShareButtonToRouteUI(){
+  const saveBtn=document.getElementById("saveRouteBtn");
+  if(!saveBtn||document.getElementById("shareRouteBtn"))return;
+  const btn=document.createElement("button");
+  btn.id="shareRouteBtn";btn.className="share-route-btn";btn.type="button";btn.textContent="🔗 Route delen";
+  btn.onclick=e=>{e.preventDefault();roadoraShareRoute()};
+  saveBtn.insertAdjacentElement("afterend",btn);
+}
+function openSharedRouteFromUrl(){
+  const encoded=new URLSearchParams(window.location.search).get("route");
+  if(!encoded)return;
+  const route=decodeRouteFromShare(encoded);
+  if(!route||!route.from||!route.to){toast("Deellink kon niet worden geopend","error");return}
+  document.getElementById("from").value=route.from;
+  document.getElementById("to").value=route.to;
+  if(route.vehicle)selectVehicle(route.vehicle);
+  selectedStops=Array.isArray(route.stops)?route.stops:[];
+  showPage("route");
+  setTimeout(()=>{planRoute();toast("Gedeelde route geopend ✅","success")},500);
+}
+
+/* ---------- Slimme stops (Clean Core v3) ---------- */
+let smartAutoMarkers=[];
+let smartAutoStops=[];
+function currentDistanceKm(){return Number((document.getElementById("distance")?.textContent||"").replace(/[^0-9]/g,""))||0}
+function vehicleConfig(){
+  const configs={car:{label:"Auto",icon:"⛽",type:"fuel",every:300,cls:"",title:"Tankstop"},ev:{label:"EV",icon:"⚡",type:"charge",every:220,cls:"ev",title:"Laadstop"},camper:{label:"Camper",icon:"🚐",type:"camper",every:200,cls:"camper",title:"Rust/camperstop"},motor:{label:"Motor",icon:"🏍",type:"motor",every:160,cls:"motor",title:"Motorpauze"}};
+  return configs[selectedVehicle]||configs.car;
+}
+function routePointSmart(percent){
+  const coords=window.routeCoords||routeCoords||[];
+  if(!coords.length)return null;
+  const idx=Math.max(0,Math.min(coords.length-1,Math.floor(coords.length*percent)));
+  return coords[idx];
+}
+function clearSmartAutoMarkers(){
+  if(!map)return;
+  smartAutoMarkers.forEach(m=>{try{map.removeLayer(m)}catch(e){}});
+  smartAutoMarkers=[];
+}
+function smartAutoIcon(stop,index){
+  return L.divIcon({className:"",html:`<div class="smart-auto-marker ${stop.cls}">${index}</div>`,iconSize:[36,36],iconAnchor:[18,18],popupAnchor:[0,-18]});
+}
+function generateSmartAutoStops(){
+  const distance=currentDistanceKm(), config=vehicleConfig();
+  if(!distance||distance<config.every){smartAutoStops=[];return[]}
+  const count=Math.min(5,Math.floor(distance/config.every));
+  const stops=[];
+  for(let i=1;i<=count;i++){
+    const km=i*config.every;
+    const percent=Math.min(.92,Math.max(.08,km/distance));
+    const coord=routePointSmart(percent);
+    if(!coord)continue;
+    stops.push({id:`smart_${config.type}_${i}`,type:config.type,icon:config.icon,cls:config.cls,name:`${config.title} ${i}`,desc:`Aanbevolen rond ±${km} km · ${config.label}`,coord,km,vehicle:config.label});
+  }
+  smartAutoStops=stops;
+  return stops;
+}
+function ensureSmartAutoPanel(){
+  const mapEl=document.getElementById("map");
+  if(!mapEl)return null;
+  const mapCard=mapEl.closest(".map-card")||mapEl.closest(".card");
+  if(!mapCard)return null;
+  let panel=document.getElementById("smartAutoStopsPanel");
+  if(!panel){panel=document.createElement("div");panel.id="smartAutoStopsPanel";panel.className="smart-auto-stops"}
+  if(panel.nextElementSibling!==mapCard)mapCard.insertAdjacentElement("beforebegin",panel);
+  return panel;
+}
+function renderSmartAutoStops(){
+  const panel=ensureSmartAutoPanel();
+  const distance=currentDistanceKm(), config=vehicleConfig(), stops=generateSmartAutoStops();
+
+  // v4.6.1 clean: geen aparte slimme-stops kaart meer.
+  // De inline status boven de kaart is genoeg; markers blijven wel zichtbaar op de kaart.
+  if(panel){
+    panel.style.display="none";
+    panel.innerHTML="";
+  }
+
+  clearSmartAutoMarkers();
+  if(!distance || !stops.length) return;
+
+  if(map){
+    stops.forEach((stop,i)=>{
+      const marker=L.marker(stop.coord,{icon:smartAutoIcon(stop,i+1)}).addTo(map);
+      marker.bindPopup(`<b>${i+1}. ${stop.icon} ${stop.name}</b><br>${stop.desc}<br><br><button onclick="addSmartAutoStop('${stop.id}')" style="border:0;border-radius:10px;background:#166534;color:#fff;font-weight:900;padding:8px 10px;">+ Voeg toe</button>`);
+      smartAutoMarkers.push(marker);
+    });
+    attachMapCloseHandlers();
+  }
+}
+
+function toggleSmartAutoStops(){
+  const panel=document.getElementById("smartAutoStopsPanel");
+  const open=!(panel&&panel.classList.contains("expanded"));
+  storageSet("roadoraSmartStopsOpen",open?"1":"0");
+  renderSmartAutoStops();
+}
+function focusSmartAutoStop(id){
+  lastInteractionType="smart";
+  window.roadoraLastInteractionSource="list";
+  window.roadoraLastSmartInlineFocus=true;
+  const stop=smartAutoStops.find(s=>String(s.id)===String(id));
+  if(!stop||!map)return;
+  map.flyTo(stop.coord,12,{animate:true,duration:.45});
+  const marker=smartAutoMarkers.find(m=>{const ll=m.getLatLng();return Math.abs(ll.lat-stop.coord[0])<0.0001&&Math.abs(ll.lng-stop.coord[1])<0.0001});
+  if(marker)marker.openPopup();
+  const mapEl=document.getElementById("map");
+  if(mapEl){const top=mapEl.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top,behavior:"smooth"})}
+}
+function addSmartAutoStop(id){
+  const stop=smartAutoStops.find(s=>String(s.id)===String(id));
+  if(!stop)return;
+  addStop(stop);
+  if(map)map.closePopup();
+}
+function attachMapCloseHandlers(){
+  try{if(map&&!map.__cleanCoreCloseAttached){map.__cleanCoreCloseAttached=true;map.on("popupclose",()=>setTimeout(afterRouteOverlayClose,80));map.on("click",()=>{window.roadoraLastInteractionSource="map"})}}catch(e){}
+}
+
+/* ---------- Other pages ---------- */
+function searchHotelPage(){
+  const city=document.getElementById("hotelCity").value.trim()||"Amsterdam";
+  const url="https://www.booking.com/searchresults.html?ss="+encodeURIComponent(city)+(ROADORA_BOOKING_AID?"&aid="+encodeURIComponent(ROADORA_BOOKING_AID):"");
+  const box=document.getElementById("hotelPageResults");
+  box.innerHTML=`<article class="info-card"><h3>🏨 Hotels in ${city}</h3><p>Booking-ready zoekresultaat</p><div class="grid grid-2"><a class="btn accent" target="_blank" href="${url}">Bekijk hotels</a><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("hotel "+city)}">Open Maps</a></div></article>`;
+}
+function useHotelAsRouteDestination(){const city=document.getElementById("hotelCity").value.trim()||"Amsterdam";document.getElementById("to").value=city;showPage("route")}
+function renderRoadStops(){
+  const box=document.getElementById("roadQuickStops");if(!box)return;
+  const items=[["⛽","Tankstations","tankstation"],["⚡","Laadpalen","laadpaal"],["🍔","Restaurants","restaurant"],["🅿️","Parkeren","parking"],["🛒","Supermarkt","supermarkt"],["🚻","Toiletten","toilet"]];
+  box.innerHTML=items.map(i=>`<article class="info-card"><h3>${i[0]} ${i[1]}</h3><p>Snel zoeken in Maps</p><a class="btn accent" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i[2])}">Open Maps</a></article>`).join("");
+}
+function renderTrips(){
+  const box=document.getElementById("tripQuickStops");if(!box)return;
+  const items=[["🎢","Attracties","attractie"],["🏛️","Musea","museum"],["🌲","Natuur","natuurgebied"],["🏰","Kastelen","kasteel"],["🏖️","Strand","strand"],["🧒","Kindvriendelijk","kindvriendelijk uitje"]];
+  box.innerHTML=items.map(i=>`<article class="info-card"><h3>${i[0]} ${i[1]}</h3><p>Zoek leuke stops onderweg</p><a class="btn accent" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i[2])}">Open Maps</a></article>`).join("");
+}
+
+
+let smartInlineOpen = false;
+
+function toggleSmartInline(){
+  const stops = generateSmartAutoStops();
+  if(!stops.length){
+    smartInlineOpen = false;
+    updateSmartInlineStatus();
+    toast("Geen slimme stop nodig voor deze route","success");
+    return;
+  }
+  smartInlineOpen = !smartInlineOpen;
+  updateSmartInlineStatus();
+  renderSmartInlineDropdown();
+}
+
+function closeSmartInlineDropdown(){
+  smartInlineOpen = false;
+  updateSmartInlineStatus();
+  renderSmartInlineDropdown();
+}
+
+function renderSmartInlineDropdown(){
+  let box = document.getElementById("smartInlineDropdown");
+  const status = document.getElementById("smartInlineStatus");
+  if(!status) return;
+
+  if(!box){
+    box = document.createElement("div");
+    box.id = "smartInlineDropdown";
+    box.className = "smart-inline-dropdown";
+    status.insertAdjacentElement("afterend", box);
+  }
+
+  if(!smartInlineOpen){
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+
+  const stops = generateSmartAutoStops();
+  if(!stops.length){
+    box.innerHTML = `<div class="smart-inline-empty">Geen slimme stops nodig voor deze route.</div>`;
+    box.style.display = "block";
+    return;
+  }
+
+  box.innerHTML = stops.map((s,i)=>`
+    <div class="smart-inline-item">
+      <div>
+        <strong>${i+1}. ${s.icon} ${s.name}</strong>
+        <small>${s.desc}</small>
+      </div>
+      <button class="secondary" type="button" onclick="focusSmartAutoStop('${s.id}')">Toon</button>
+      <button type="button" onclick="addSmartAutoStop('${s.id}')">+ Stop</button>
+    </div>
+  `).join("");
+  box.style.display = "block";
+}
+
+function updateSmartInlineStatus(){
+  const el = document.getElementById("smartInlineStatus");
+  if(!el) return;
+
+  const distance = currentDistanceKm();
+  const config = vehicleConfig();
+  const stops = generateSmartAutoStops();
+
+  if(!distance){
+    smartInlineOpen = false;
+    el.innerHTML = `<span>🚗 Nog geen route</span><span>—</span>`;
+    renderSmartInlineDropdown();
+    return;
+  }
+
+  const stopLabel = `${stops.length} stop${stops.length===1?"":"s"}`;
+  const left = `🚗 ${distance} km • ${config.icon} ${stopLabel}`;
+
+  if(stops.length){
+    const label = smartInlineOpen ? "Sluit" : `${config.icon} ${stops.length}`;
+    const title = smartInlineOpen ? "Sluit slimme stops" : "Bekijk slimme stops";
+    el.innerHTML = `<span>${left}</span><button type="button" id="smartInlineToggle" class="smart-inline-toggle ${smartInlineOpen ? "is-open" : ""}" onclick="toggleSmartInline()" title="${title}" aria-expanded="${smartInlineOpen ? "true" : "false"}" aria-controls="smartInlineDropdown">${label}<span class="smart-inline-chevron">⌄</span></button>`;
+  } else {
+    el.innerHTML = `<span>${left}</span><button type="button" id="smartInlineToggle" class="smart-inline-toggle" onclick="toggleSmartInline()" title="Geen stop nodig">Geen stop nodig</button>`;
+  }
+  renderSmartInlineDropdown();
+}
+
+/* ---------- Init ---------- */
+document.addEventListener("DOMContentLoaded",()=>{
+  initMap();
+  selectVehicle(selectedVehicle);
+  renderAccountState();
+  updateSaveButton();
+  renderSavedRoutes();
+  renderRoadStops();
+  renderTrips();
+  searchHotelPage();
+  renderFilterResults();
+  renderStopsList();
+  setupBottomSheetSwipe();
+  addShareButtonToRouteUI();
+  openSharedRouteFromUrl();
+  renderSmartAutoStops();
+  updateSmartInlineStatus();
+  attachMapCloseHandlers();
+
+  document.querySelector(".account-btn")?.addEventListener("click",e=>{e.stopPropagation();toggleAccountMenu()});
+  document.addEventListener("click",e=>{
+    const menu=document.getElementById("accountMenu");
+    if(menu && !menu.contains(e.target) && !e.target.closest(".account-btn")) menu.classList.remove("active");
+  });
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeBottomSheet()});
+});
+</script>
+</body>
+</html>
