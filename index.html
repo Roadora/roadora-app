@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Roadora v5.2.1</title>
+<title>Roadora v5.7 tracking v2 online</title>
 
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://router.project-osrm.org">
@@ -1419,6 +1419,243 @@ button.accent,.btn.accent{background:var(--accent)}
   .route-suggestions-right::before{content:"Suggesties";font-size:11.5px!important;color:inherit!important;font-weight:950!important}
 }
 
+
+/* v5.3.2 map-only cleanup: hide bottom result/stops panels */
+#filterResultsPanel,
+.filter-results-panel,
+#routeStopsListClean,
+.route-stops-list-clean{
+  display:none!important;
+}
+
+
+/* v5.4 kaart-first UX */
+body{
+  padding-bottom:calc(112px + env(safe-area-inset-bottom));
+}
+.route-map-first .route-header{
+  margin-bottom:8px;
+}
+.route-map-first .card.section{
+  margin-top:10px;
+}
+.route-map-first .map-card{
+  padding:8px;
+}
+.route-map-first #map{
+  height:calc(100vh - 245px);
+  min-height:520px;
+  border-radius:24px;
+}
+.route-map-first .route-actions{
+  margin-top:10px;
+}
+.route-map-first .route-map-category-bar{
+  margin-top:10px;
+}
+@media(max-width:760px){
+  .route-map-first #map{
+    height:calc(100vh - 275px);
+    min-height:500px;
+  }
+  .route-map-first .map-card{
+    padding:7px;
+  }
+}
+@media(max-width:420px){
+  .route-map-first #map{
+    height:calc(100vh - 290px);
+    min-height:470px;
+  }
+}
+
+
+/* v5.4.1 full map perfect */
+.route-map-first .map-card{
+  padding:6px!important;
+}
+.route-map-first #map{
+  height:calc(100vh - 150px)!important;
+  min-height:620px!important;
+  border-radius:24px!important;
+}
+.route-map-first .route-header{
+  margin-bottom:6px!important;
+}
+.route-map-first .card.section{
+  margin-top:8px!important;
+}
+.route-map-first .stats .stat{
+  padding:8px 10px!important;
+}
+.route-map-first .stat span{
+  font-size:15px!important;
+}
+.route-map-first .route-map-category-bar{
+  margin-top:8px!important;
+}
+.route-map-first .route-map-category-btn{
+  min-height:44px!important;
+}
+.route-map-first .route-actions{
+  margin-top:8px!important;
+}
+@media(max-width:760px){
+  .route-map-first #map{
+    height:calc(100vh - 170px)!important;
+    min-height:590px!important;
+  }
+  .route-map-first .map-card{
+    padding:5px!important;
+  }
+  .route-map-first .route-map-category-btn{
+    min-height:42px!important;
+    font-size:12px!important;
+  }
+}
+@media(max-width:420px){
+  .route-map-first #map{
+    height:calc(100vh - 185px)!important;
+    min-height:560px!important;
+  }
+}
+
+
+/* v5.5 bottom sheet + klik UX */
+.roadora-bottom-sheet-backdrop{
+  background:rgba(17,24,39,.10)!important;
+}
+.roadora-bottom-sheet{
+  bottom:calc(92px + env(safe-area-inset-bottom))!important;
+  width:min(540px,calc(100% - 20px))!important;
+  border-radius:28px!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 24px 80px rgba(17,24,39,.28)!important;
+}
+.roadora-sheet-body{padding:12px 16px 16px!important}
+.sheet-preview-card{display:grid;gap:12px}
+.sheet-visual{
+  height:86px;border-radius:22px;border:1px solid #e7dfd3;
+  display:flex;align-items:center;justify-content:center;font-size:34px;
+  background:linear-gradient(135deg,#f8f5ef,#fff);
+}
+.sheet-visual.hotel{background:linear-gradient(135deg,#f0fdf4,#fff)}
+.sheet-visual.fuel{background:linear-gradient(135deg,#fff7ed,#fff)}
+.sheet-visual.charge{background:linear-gradient(135deg,#eff6ff,#fff)}
+.sheet-visual.food{background:linear-gradient(135deg,#fff7ed,#fff)}
+.sheet-info-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sheet-chip{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+  padding:6px 9px;font-size:11px;font-weight:950;
+  border:1px solid #e7dfd3;background:#f8f5ef;color:#1f2937;
+}
+.sheet-chip.green{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.sheet-chip.dark{background:#111827;color:#fff;border-color:#111827}
+.roadora-sheet-title{font-size:20px!important;margin-bottom:5px!important}
+.roadora-sheet-meta{font-size:13px!important}
+.roadora-sheet-actions{
+  display:grid!important;grid-template-columns:1fr!important;gap:9px!important;
+  margin-top:14px!important;position:static!important;padding-top:0!important;background:transparent!important;
+}
+.roadora-sheet-actions a,.roadora-sheet-actions button{
+  min-height:50px!important;border-radius:18px!important;font-size:14px!important;
+}
+.roadora-sheet-actions .primary,.roadora-sheet-actions .booking-cta{
+  background:#166534!important;color:#fff!important;border-color:#166534!important;
+  box-shadow:0 12px 28px rgba(22,101,52,.22)!important;
+}
+.sheet-secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sheet-secondary-actions a,.sheet-secondary-actions button{
+  min-height:44px!important;border-radius:16px!important;background:#f8f5ef!important;
+  color:#1f2937!important;border:1px solid #e7dfd3!important;box-shadow:none!important;
+}
+@media(max-width:760px){
+  .roadora-bottom-sheet{width:calc(100% - 14px)!important;bottom:calc(82px + env(safe-area-inset-bottom))!important}
+  .sheet-visual{height:76px;border-radius:20px}
+}
+
+
+/* v5.5.1 premium sheet polish */
+.roadora-bottom-sheet{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid rgba(231,223,211,.92)!important;
+}
+.sheet-preview-card{
+  gap:13px!important;
+}
+.sheet-visual{
+  height:104px!important;
+  border-radius:24px!important;
+  position:relative;
+  overflow:hidden;
+  font-size:38px!important;
+}
+.sheet-visual::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(17,24,39,.04));
+  pointer-events:none;
+}
+.sheet-visual.hotel::before{
+  content:"Roadora pick";
+  position:absolute;
+  left:12px;
+  top:12px;
+  z-index:1;
+  background:rgba(255,255,255,.88);
+  border:1px solid rgba(231,223,211,.9);
+  color:#166534;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:11px;
+  font-weight:950;
+  box-shadow:0 8px 18px rgba(17,24,39,.08);
+}
+.roadora-sheet-title{
+  letter-spacing:-.02em!important;
+}
+.sheet-info-row{
+  margin-top:10px!important;
+}
+.sheet-chip{
+  min-height:29px;
+}
+.sheet-chip.price{
+  background:#fff7ed;
+  color:#9a3412;
+  border-color:#fed7aa;
+}
+.sheet-chip.rating{
+  background:#f0fdf4;
+  color:#166534;
+  border-color:#bbf7d0;
+}
+.sheet-primary-cta{
+  min-height:54px!important;
+  border-radius:18px!important;
+  font-size:15px!important;
+  letter-spacing:-.01em;
+}
+.sheet-microcopy{
+  margin-top:-4px;
+  color:#6b7280;
+  font-size:11px;
+  font-weight:850;
+  text-align:center;
+}
+.sheet-secondary-actions{
+  margin-top:0!important;
+}
+.sheet-secondary-actions a,
+.sheet-secondary-actions button{
+  font-size:12px!important;
+  font-weight:950!important;
+}
+@media(max-width:760px){
+  .sheet-visual{height:94px!important}
+}
+
 </style>
 </head>
 
@@ -1486,7 +1723,7 @@ button.accent,.btn.accent{background:var(--accent)}
     </section>
   </section>
 
-  <section id="routeMapPage" class="page">
+  <section id="routeMapPage" class="page route-map-first">
     <div class="route-header">
       <button class="back-btn" onclick="showPage('route')" aria-label="Terug">‹</button>
       <div class="route-title">
@@ -1590,7 +1827,7 @@ button.accent,.btn.accent{background:var(--accent)}
 <script>
 "use strict";
 
-const ROADORA_VERSION = "4.6.6-future-proof";
+const ROADORA_VERSION = "5.7-tracking-v2-online";
 const ROADORA_ROUTE_API = "https://project-uxgks.vercel.app/api/route";
 const ROADORA_BOOKING_AID = "";
 
@@ -1934,6 +2171,7 @@ async function planRoute(){
     const seconds=summary.duration||0,h=Math.floor(seconds/3600),m=Math.round((seconds%3600)/60);
     document.getElementById("duration").textContent=h+"u "+m+"m";
     document.getElementById("routeSubtitle").textContent=fromText+" → "+toText;
+    roadoraTrack("route_planned",{from:fromText,to:toText});
 
     realFuelStations=[];
     fuelLoadedKey="";
@@ -1989,6 +2227,7 @@ function startNavigationInMaps(){
     }
   }
 
+  roadoraTrack("navigation_click",{from:from,to:to,stops:selectedStops?selectedStops.length:0});
   window.open(url, "_blank", "noopener");
 }
 
@@ -2124,6 +2363,7 @@ document.querySelectorAll(".route-map-category-btn").forEach(btn=>{
     const cat=btn.dataset.cat;
     if(activeCategories.has(cat)){activeCategories.delete(cat);btn.classList.remove("active")}
     else{activeCategories.add(cat);btn.classList.add("active")}
+    roadoraTrack("filter_toggle",{category:cat,active:activeCategories.has(cat)});
     if(cat==="fuel"&&activeCategories.has("fuel")) await loadFuelStations();
     renderCategoryMarkers();
   });
@@ -2231,17 +2471,7 @@ function focusFilterItem(id){
     showBottomSheet(item);
   },200);
 }
-function renderFilterResults(){
-  const panel=ensureFilterPanel();
-  if(!panel)return;
-  const items=activeFilterItems();
-  if(!items.length){
-    panel.innerHTML=`<div class="filter-results-head"><div><strong>Resultaten langs je route</strong><span>Kies Hotels, Tankstations, Laadpalen of Eten om markers en resultaten te tonen.</span></div><div class="filter-results-count">0 actief</div></div>`;
-    return;
-  }
-  const labels=[...activeCategories].map(c=>categoryMeta[c]?.label||c);
-  panel.innerHTML=`<div class="filter-results-head"><div><strong>Resultaten langs je route</strong><span>Actief: ${labels.join(" + ")}. Kaart en lijst zijn gekoppeld.</span></div><div class="filter-results-count">${items.length} resultaten</div></div><div class="filter-results-list">${items.map(item=>renderFilterItem(item)).join("")}</div>`;
-}
+function renderFilterResults(){ return; }
 function renderFilterItem(item){
   const isHotel=item.type==="hotel";
   const d=isHotel?hotelData(item):null;
@@ -2281,7 +2511,7 @@ function addStop(item){
   item.id=item.id||(item.type+"_"+item.name).replace(/\s+/g,"_");
   const stop={id:item.id,type:item.type||"stop",name:item.name||"Stop",desc:item.desc||"Stop langs je route",coord:item.coord||null};
   const exists=selectedStops.some(s=>String(s.id)===String(stop.id));
-  if(!exists)selectedStops.push(stop);
+  if(!exists){selectedStops.push(stop);roadoraTrack("stop_added",{type:stop.type,name:stop.name});}
   renderStopsList();renderAddedStopsOnMap();
   closeBottomSheet();
   toast(exists?"Stop stond al in je route":"Stop toegevoegd ✅",exists?"warning":"success");
@@ -2298,23 +2528,7 @@ function moveStop(index,direction){
   renderStopsList();renderAddedStopsOnMap();
   toast("Volgorde aangepast","success");
 }
-function renderStopsList(){
-  const box=ensureStopsList();
-  if(!box)return;
-  if(!selectedStops.length){
-    box.innerHTML='<div class="route-stops-empty">Nog geen stops toegevoegd.</div>';
-    return;
-  }
-  box.innerHTML=`<strong>📍 Stops op je route</strong>${selectedStops.map((stop,i)=>`
-    <div class="route-stop-row" data-stop-index="${i}">
-      <div><div class="route-stop-row-title">${i+1}. ${stopIcon(stop.type)} ${stop.name}</div><div class="route-stop-row-meta">${stop.desc||"Toegevoegd aan je route"}</div></div>
-      <div class="route-stop-controls">
-        <button class="route-stop-move" onclick="moveStop(${i},-1)" ${i===0?"disabled":""}>↑</button>
-        <button class="route-stop-move" onclick="moveStop(${i},1)" ${i===selectedStops.length-1?"disabled":""}>↓</button>
-        <button class="route-stop-delete" onclick="removeStop('${stop.id}')">×</button>
-      </div>
-    </div>`).join("")}`;
-}
+function renderStopsList(){ return; }
 function renderAddedStopsOnMap(){
   if(!map)return;
   addedStopMarkers.forEach(m=>map.removeLayer(m));
@@ -2381,6 +2595,7 @@ function navigateUrl(item){
   return url;
 }
 function showBottomSheet(item){
+  lastInteractionType = item && item.type ? "filter" : lastInteractionType;
   if(window.roadoraLastInteractionSource!=="list") window.roadoraLastInteractionSource="map";
   closeAllRoadoraOverlays("sheet");
   if(!item)return;
@@ -2392,16 +2607,46 @@ function showBottomSheet(item){
   if(!body||!sheet||!backdrop)return;
 
   const isHotel=item.type==="hotel";
+  const isFuel=item.type==="fuel";
+  const isCharge=item.type==="charge";
+  const isFood=item.type==="food";
   const viewUrl=isHotel?bookingDeepLink(item):mapsUrl(item);
+  const ctaText=isHotel?"Bekijk beschikbaarheid":isFuel?"Navigeer naar tankstation":isCharge?"Navigeer naar laadpaal":isFood?"Bekijk restaurant":"Bekijk locatie";
+  const ctaUrl=(isFuel||isCharge||isFood)?navigateUrl(item):viewUrl;
   const d=isHotel?hotelData(item):null;
-  const boost=isHotel?`${hotelBadges(item)}<div class="booking-affiliate-note">Booking deep link · affiliate-ready</div><div class="booking-disclaimer">Prijs/rating zijn indicatief tot echte hotel-API is gekoppeld.</div>`:(item.type==="fuel"&&item.osm?'<div class="osm-live-pill">OSM live data</div>':item.fallback?'<div class="osm-live-pill fallback">Route suggestie</div>':"");
 
-  body.innerHTML=`<div class="roadora-sheet-top"><div><h3 class="roadora-sheet-title">${meta.icon} ${item.name}</h3><div class="roadora-sheet-meta">${item.desc||"Stop langs je route"}<br>${meta.label}</div>${boost}<span class="roadora-sheet-hint">Veeg omhoog voor meer · veeg omlaag om te sluiten</span></div><button class="roadora-sheet-close" onclick="closeBottomSheet()">×</button></div>
-  <div class="roadora-sheet-minirow"><span>📍 Langs je route</span><span>${isHotel?"🏨 Hotel-ready":"🧭 Maps-ready"}</span></div>
-  <div class="roadora-sheet-actions"><button class="primary" onclick="addStopById('${item.id}')">+ Stop</button><a class="${isHotel?"booking-cta":""}" href="${viewUrl}" target="_blank" rel="noopener">${isHotel?"Bekijk "+d.count+" hotels":"Bekijk"}</a><a href="${navigateUrl(item)}" target="_blank" rel="noopener">Navigeer</a></div>`;
+  const visualClass=isHotel?"hotel":isFuel?"fuel":isCharge?"charge":isFood?"food":"";
+  const chips=isHotel
+    ? `<span class="sheet-chip rating">⭐ ${d.rating} zeer goed</span><span class="sheet-chip price">vanaf €${d.price}</span><span class="sheet-chip dark">nog ${d.rooms} kamers</span>`
+    : `<span class="sheet-chip green">📍 Langs je route</span><span class="sheet-chip">${meta.label}</span>`;
 
+  const microcopy=isHotel
+    ? `<div class="sheet-microcopy">Je bekijkt prijs en beschikbaarheid bij Booking.</div>`
+    : `<div class="sheet-microcopy">Open direct in je navigatie-app.</div>`;
+
+  body.innerHTML=`<div class="sheet-preview-card">
+    <div class="roadora-sheet-top">
+      <div>
+        <h3 class="roadora-sheet-title">${meta.icon} ${escapeHtml(item.name)}</h3>
+        <div class="roadora-sheet-meta">${escapeHtml(item.desc||"Stop langs je route")}</div>
+        <div class="sheet-info-row">${chips}</div>
+      </div>
+      <button class="roadora-sheet-close" onclick="closeBottomSheet()">×</button>
+    </div>
+    <div class="sheet-visual ${visualClass}">${meta.icon}</div>
+    <div class="roadora-sheet-actions">
+      <a data-roadora-cta="1" class="sheet-primary-cta ${isHotel?"booking-cta":"primary"}" href="${ctaUrl}" target="_blank" rel="noopener" onclick="roadoraTrack(&quot;cta_click&quot;,{type:&quot;${item.type||'unknown'}&quot;,name:&quot;${escapeHtml(item.name)}&quot;,cta:&quot;${ctaText}&quot;})">${ctaText}</a>
+      ${microcopy}
+      <div class="sheet-secondary-actions">
+        <button type="button" onclick="addStopById('${item.id}')">+ Stop</button>
+        <a href="${mapsUrl(item)}" target="_blank" rel="noopener">Bekijk kaart</a>
+      </div>
+    </div>
+  </div>`;
+
+  roadoraTrack("marker_open",{type:item.type||"unknown",name:item.name||"",id:item.id||""});
   window.__sheetItem=item;
-  setActiveFilterItem(item.id);
+  if(typeof setActiveFilterItem === "function" && item.id) setActiveFilterItem(item.id);
   sheet.classList.add("active");
   backdrop.classList.add("active");
   setBottomSheetSnap("peek");
@@ -2582,7 +2827,7 @@ function renderSmartAutoStops(){
   if(map){
     stops.forEach((stop,i)=>{
       const marker=L.marker(stop.coord,{icon:smartAutoIcon(stop,i+1)}).addTo(map);
-      marker.bindPopup(`<b>${i+1}. ${stop.icon} ${stop.name}</b><br>${stop.desc}<br><br><button onclick="addSmartAutoStop('${stop.id}')" style="border:0;border-radius:10px;background:#166534;color:#fff;font-weight:900;padding:8px 10px;">+ Voeg toe</button>`);
+      marker.on("click",()=>showBottomSheet(stop));
       smartAutoMarkers.push(marker);
     });
     attachMapCloseHandlers();
@@ -2789,6 +3034,96 @@ function updateSmartInlineStatus(){
 
   renderSmartInlineDropdown();
 }
+
+
+
+/* ---------- Tracking v2: online + local fallback ---------- */
+const ROADORA_TRACKING_ENDPOINT = "/api/track";
+
+function roadoraBuildTrackingPayload(eventName, data={}){
+  return {
+    event:eventName,
+    data:data,
+    ts:new Date().toISOString(),
+    appVersion:typeof ROADORA_VERSION !== "undefined" ? ROADORA_VERSION : "unknown",
+    page:location.pathname,
+    referrer:document.referrer || "",
+    route:{
+      from:document.getElementById("from")?.value||"",
+      to:document.getElementById("to")?.value||"",
+      vehicle:typeof selectedVehicle !== "undefined" ? selectedVehicle : "car",
+      distance:document.getElementById("distance")?.textContent||"-"
+    }
+  };
+}
+
+function roadoraTrackLocal(payload){
+  try{
+    const key="roadoraTrackingV2Queue";
+    const events=JSON.parse(localStorage.getItem(key)||"[]");
+    events.push(payload);
+    localStorage.setItem(key,JSON.stringify(events.slice(-500)));
+  }catch(e){}
+}
+
+async function roadoraFlushTrackingQueue(){
+  try{
+    const key="roadoraTrackingV2Queue";
+    const events=JSON.parse(localStorage.getItem(key)||"[]");
+    if(!events.length || !navigator.onLine) return;
+    const remaining=[];
+    for(const event of events){
+      try{
+        const res=await fetch(ROADORA_TRACKING_ENDPOINT,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(event),
+          keepalive:true
+        });
+        if(!res.ok) remaining.push(event);
+      }catch(e){
+        remaining.push(event);
+      }
+    }
+    localStorage.setItem(key,JSON.stringify(remaining.slice(-500)));
+  }catch(e){}
+}
+
+function roadoraTrack(eventName, data={}){
+  const payload=roadoraBuildTrackingPayload(eventName,data);
+  roadoraTrackLocal(payload);
+  try{
+    fetch(ROADORA_TRACKING_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload),
+      keepalive:true
+    }).then(res=>{ if(res.ok) roadoraFlushTrackingQueue(); }).catch(()=>{});
+  }catch(e){}
+}
+
+function roadoraTrackingSummary(){
+  try{
+    const events=JSON.parse(localStorage.getItem("roadoraTrackingV2Queue")||"[]");
+    const counts=events.reduce((acc,e)=>{ acc[e.event]=(acc[e.event]||0)+1; return acc; },{});
+    console.table(counts);
+    return {queued:events.length,counts,events};
+  }catch(e){
+    return {queued:0,counts:{},events:[]};
+  }
+}
+
+function roadoraClearTracking(){
+  try{
+    localStorage.removeItem("roadoraTrackingV2Queue");
+    localStorage.removeItem("roadoraTrackingV1");
+    toast("Tracking gewist","warning");
+  }catch(e){}
+}
+
+window.addEventListener("online",roadoraFlushTrackingQueue);
+setTimeout(roadoraFlushTrackingQueue,1500);
+
 
 /* ---------- Init ---------- */
 document.addEventListener("DOMContentLoaded",()=>{
