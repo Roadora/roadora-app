@@ -6,14 +6,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing start or end" });
     }
 
-    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${process.env.ORS_API_KEY}&start=${start}&end=${end}`;
+    const startCoords = start.split(",").map(Number);
+    const endCoords = end.split(",").map(Number);
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json"
+    const response = await fetch(
+      "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
+      {
+        method: "POST",
+        headers: {
+          Authorization: process.env.ORS_API_KEY,
+          "Content-Type": "application/json",
+          Accept: "application/geo+json"
+        },
+        body: JSON.stringify({
+          coordinates: [startCoords, endCoords]
+        })
       }
-    });
+    );
 
     const data = await response.json();
 
@@ -26,8 +35,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
