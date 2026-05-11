@@ -9,11 +9,15 @@
 
 const route=[[51.9244,4.4777],[51.56,5.15],[50.94,6.96],[50.25,8.4],[49.35,8.72],[48.78,9.18],[48.25,9.85],[47.85,10.75],[47.55,11.05],[47.2692,11.4041]];
 const stops=[
- {name:'Heidelberg',meta:'184 km · 2u 10m',desc:'Fijne lunchstop net buiten de route met laadpunten en een compacte historische binnenstad.',type:'ev',label:'Laadstop',ll:[49.4,8.67]},
- {name:'Stuttgart',meta:'320 km · 3u 15m',desc:'Goede tussenstop met restaurants, koffie en snelle doorreis naar Zuid-Duitsland.',type:'food',label:'Eten & drinken',ll:[48.77,9.18]},
- {name:'Lago di Braies, Italië',meta:'🚘 320 km · ◷ ± 3u 15m',desc:'Prachtig meer in de Dolomieten met wandelroutes en rustige uitzichtpunten.',type:'hotel',label:'Volgende stop',ll:[47.55,10.95]},
- {name:'Alpen uitzicht',meta:'410 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
+ {name:'Fastned Limburg Zuid',meta:'184 km · 2u 05m · 8 snelladers',desc:'Snelle laadstop vlak langs de route. Ideaal voor koffie, toilet en korte EV-pauze zonder grote omweg.',type:'ev',label:'Laadstation',ll:[50.93,6.08],provider:'Fastned',power:'tot 300 kW',status:'6 vrij'},
+ {name:'EnBW Ladepark Heidelberg',meta:'356 km · 3u 55m · 12 snelladers',desc:'Ruime laadlocatie bij Heidelberg met horeca in de buurt. Goede keuze als eerste langere pauze richting Oostenrijk.',type:'ev',label:'Laadstation',ll:[49.42,8.68],provider:'EnBW',power:'tot 300 kW',status:'9 vrij'},
+ {name:'IONITY Ulm Süd',meta:'610 km · 6u 20m · 6 snelladers',desc:'Premium snellaadpunt langs de zuidelijke route. Handig om de auto vol te laden voor het laatste deel richting Tirol.',type:'ev',label:'Laadstation',ll:[48.28,9.98],provider:'IONITY',power:'tot 350 kW',status:'4 vrij'},
+ {name:'Allego Füssen / Fernpass',meta:'820 km · 8u 35m · 4 laders',desc:'Laatste praktische laadstop vóór Oostenrijk. Slim moment om te laden voordat je de Alpen in rijdt.',type:'ev',label:'Laadstation',ll:[47.57,10.70],provider:'Allego',power:'tot 150 kW',status:'2 vrij'},
+ {name:'Stuttgart Mitte',meta:'320 km · 3u 15m',desc:'Goede tussenstop met restaurants, koffie en snelle doorreis naar Zuid-Duitsland.',type:'food',label:'Eten & drinken',ll:[48.77,9.18]},
+ {name:'Hotel bij Ulm',meta:'640 km · dag 1',desc:'Rustige overnachtingsplek dichtbij de route, handig voor een tweedaagse rit naar Innsbruck.',type:'hotel',label:'Overnachten',ll:[48.40,10.00]},
+ {name:'Alpen uitzicht',meta:'900 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
 ];
+const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Route wordt geladen…',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
 const svgs={ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>'};
 const map=L.map('routeLeafletMap',{zoomControl:false,attributionControl:false,preferCanvas:true,scrollWheelZoom:true,tap:true}).setView([49.2,8.1],6);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,crossOrigin:true}).addTo(map);
@@ -35,7 +39,16 @@ function updateSheet(s){
   document.querySelector('.overline').textContent=s.label || 'Volgende stop';
   document.getElementById('stopTitle').textContent=s.name;
   document.getElementById('stopMeta').textContent=s.meta;
-  document.getElementById('stopDesc').textContent=s.desc;
+  const descEl=document.getElementById('stopDesc');
+  if(s.type==='ev'){
+    descEl.innerHTML = `${s.desc}<div class="sheetList"><div class="sheetRow"><b>Aanbieder</b><span>${s.provider||'Laadnetwerk'}</span></div><div class="sheetRow"><b>Laadsnelheid</b><span>${s.power||'snellader'}</span></div><div class="sheetRow"><b>Beschikbaarheid</b><span>${s.status||'check live'}</span></div></div>`;
+  }else{
+    descEl.textContent=s.desc;
+  }
+  const primary=document.querySelector('.sheetActions .primary');
+  const secondary=document.querySelector('.sheetActions .secondary');
+  if(primary) primary.textContent=s.type==='destination'?'⌁ Navigeer naar bestemming':(s.type==='ev'?'⌁ Navigeer naar laadstation':'⌁ Navigeer naar stop');
+  if(secondary) secondary.textContent=s.type==='destination'?'ⓘ Route info':(s.type==='ev'?'ⓘ Laadinfo':'ⓘ Meer informatie');
 }
 function selectStop(ref,fly=true){
   if(selectedMarker) selectedMarker.marker.setIcon(makeStopIcon(selectedMarker.stop,false,!isVisible(selectedMarker.stop)));
@@ -55,9 +68,9 @@ function renderMarkers(){
     markerRefs.push(ref);
     marker.on('click',()=>selectStop(ref,true));
   });
-  if(markerRefs.length){
-    const next=markerRefs.find(r=>r.stop.name.includes('Lago')) || markerRefs[0];
-    selectStop(next,false);
+  if(selectedMarker && !isVisible(selectedMarker.stop)){
+    selectedMarker=null;
+    updateSheet(destinationSheet);
   }
 }
 function fit(){map.fitBounds(routeMain.getBounds(),{paddingTopLeft:[74,180],paddingBottomRight:[58,195],maxZoom:7});}
@@ -81,7 +94,7 @@ document.querySelectorAll('.cat[data-filter]').forEach(btn=>{
     }
     syncCatUI();
     renderMarkers();
-    showToast(activeFilters.has('all')?'Alle stops zichtbaar':'Filters bijgewerkt');
+    showToast(f==='ev' && activeFilters.has('ev') && !activeFilters.has('all') ? 'Laadstations langs route' : (activeFilters.has('all')?'Alle stops zichtbaar':'Filters bijgewerkt'));
   });
 });
 document.querySelectorAll('.vehicle').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.vehicle').forEach(b=>b.classList.remove('active'));btn.classList.add('active');showToast('Voertuig bijgewerkt');}));
@@ -113,6 +126,11 @@ async function loadOrsRoute(){
     const routeSub=document.querySelector('.mapActive .routeSub, .routeSub');
     if(statKm && km) statKm.textContent=km;
     if(routeSub && km && time) routeSub.textContent=`Via Duitsland · ${time} · echte ORS route`;
+    if(km || time){
+      destinationSheet.meta=[km,time].filter(Boolean).join(' · ');
+      destinationSheet.desc='Je echte ORS-route naar Innsbruck is geladen. Onderweg kun je hotels, laadstops en eten als context in dit blok openen.';
+      if(!selectedMarker) updateSheet(destinationSheet);
+    }
     map.fitBounds(routeMain.getBounds(),{paddingTopLeft:[74,180],paddingBottomRight:[58,195],maxZoom:7});
     showToast('Echte ORS route geladen');
   }catch(err){
@@ -123,6 +141,7 @@ async function loadOrsRoute(){
 
 function bootMap(){
   map.invalidateSize(true);
+  updateSheet(destinationSheet);
   renderMarkers();
   syncCatUI();
   fit();
@@ -295,14 +314,14 @@ document.getElementById('north').onclick=()=>showToast('Noordgericht');
       over.textContent='Route-overzicht';
       title.textContent='Rotterdam → Innsbruck';
       meta.textContent='± 920 km · ± 9u 40m · 4 slimme stops';
-      desc.innerHTML='Je route loopt via Duitsland richting Oostenrijk. Ideaal voor laadstops, overnachten en korte scenic pauzes.<div class="sheetList"><div class="sheetRow"><b>Heidelberg</b><span>Laadstop</span></div><div class="sheetRow"><b>Stuttgart</b><span>Eten</span></div><div class="sheetRow"><b>Lago di Braies</b><span>Uitje</span></div></div>';
+      desc.innerHTML='Je route loopt via Duitsland richting Oostenrijk. Ideaal voor laadstops, overnachten en korte scenic pauzes.<div class="sheetList"><div class="sheetRow"><b>Heidelberg</b><span>Laadstop</span></div><div class="sheetRow"><b>Stuttgart</b><span>Eten</span></div><div class="sheetRow"><b>Innsbruck</b><span>Eindbestemming</span></div></div>';
       toast('Route-overzicht geopend');
     }
     if(kind==='stops'){
       over.textContent='Slimme stops';
       title.textContent='Stops langs je route';
       meta.textContent='Hotels · laden · eten · activiteiten';
-      desc.innerHTML='Alle zichtbare pins zijn slimme stops langs de route. Tik op een pin of filter links op categorie.<div class="sheetList"><div class="sheetRow"><b>Overnachten</b><span>4 opties</span></div><div class="sheetRow"><b>Laadstations</b><span>3 opties</span></div><div class="sheetRow"><b>Eten & drinken</b><span>6 opties</span></div></div>';
+      desc.innerHTML='Alle zichtbare pins zijn slimme stops langs de route. Tik op een pin of filter links op categorie.<div class="sheetList"><div class="sheetRow"><b>Overnachten</b><span>4 opties</span></div><div class="sheetRow"><b>Laadstations</b><span>4 snellaadpunten</span></div><div class="sheetRow"><b>Eten & drinken</b><span>6 opties</span></div></div>';
       toast('Stops geopend');
     }
     if(kind==='guide'){
@@ -327,7 +346,7 @@ document.getElementById('north').onclick=()=>showToast('Noordgericht');
   }
 
   function openMoreInfo(){
-    const q=encodeURIComponent(selectedStopName()+' travel info');
+    const q=encodeURIComponent(selectedStopName()+' laadstation EV charging info');
     window.open('https://www.google.com/search?q='+q,'_blank','noopener');
     toast('Meer info geopend');
   }
