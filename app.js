@@ -121,7 +121,15 @@ async function loadOrsRoute(){
   }
 }
 
-window.addEventListener('load',()=>setTimeout(()=>{map.invalidateSize(true);renderMarkers();syncCatUI();fit();loadOrsRoute();},250));
+function bootMap(){
+  map.invalidateSize(true);
+  renderMarkers();
+  syncCatUI();
+  fit();
+  loadOrsRoute();
+}
+setTimeout(bootMap,180);
+window.addEventListener('load',()=>setTimeout(bootMap,120),{once:true});
 window.addEventListener('resize',()=>setTimeout(()=>{map.invalidateSize(true);fit();},120));
 document.getElementById('zoomIn').onclick=()=>map.zoomIn();
 document.getElementById('zoomOut').onclick=()=>map.zoomOut();
