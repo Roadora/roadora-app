@@ -85,7 +85,43 @@ document.querySelectorAll('.cat[data-filter]').forEach(btn=>{
   });
 });
 document.querySelectorAll('.vehicle').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.vehicle').forEach(b=>b.classList.remove('active'));btn.classList.add('active');showToast('Voertuig bijgewerkt');}));
-window.addEventListener('load',()=>setTimeout(()=>{map.invalidateSize(true);renderMarkers();syncCatUI();fit();},250));
+
+async function loadOrsRoute(){
+  try{
+    showToast('Echte route laden…');
+    const profile=document.querySelector('.vehicle.active')?.dataset?.profile || 'driving-car';
+    const params=new URLSearchParams({
+      start:'4.4777,51.9244',
+      end:'11.4041,47.2692',
+      profile
+    });
+    const res=await fetch('/api/route?'+params.toString(),{headers:{Accept:'application/json'}});
+    if(!res.ok) throw new Error('ORS '+res.status);
+    const data=await res.json();
+    const feature=data.features && data.features[0];
+    const coords=feature?.geometry?.coordinates;
+    if(!Array.isArray(coords) || coords.length<2) throw new Error('Geen route geometry');
+    const latlngs=coords.map(c=>[c[1],c[0]]);
+    routeShadow.setLatLngs(latlngs);
+    routeMain.setLatLngs(latlngs);
+    routeHighlight.setLatLngs(latlngs);
+    const summary=feature.properties?.summary || data.routes?.[0]?.summary || {};
+    const km=summary.distance ? Math.round(summary.distance/1000).toLocaleString('nl-NL')+' km' : null;
+    const min=summary.duration ? Math.round(summary.duration/60) : null;
+    const time=min ? (Math.floor(min/60)+'u '+String(min%60).padStart(2,'0')+'m') : null;
+    const statKm=document.querySelector('.routePanel .stat:nth-child(2) b');
+    const routeSub=document.querySelector('.mapActive .routeSub, .routeSub');
+    if(statKm && km) statKm.textContent=km;
+    if(routeSub && km && time) routeSub.textContent=`Via Duitsland · ${time} · echte ORS route`;
+    map.fitBounds(routeMain.getBounds(),{paddingTopLeft:[74,180],paddingBottomRight:[58,195],maxZoom:7});
+    showToast('Echte ORS route geladen');
+  }catch(err){
+    console.warn('ORS fallback route:',err);
+    showToast('Fallback route actief');
+  }
+}
+
+window.addEventListener('load',()=>setTimeout(()=>{map.invalidateSize(true);renderMarkers();syncCatUI();fit();loadOrsRoute();},250));
 window.addEventListener('resize',()=>setTimeout(()=>{map.invalidateSize(true);fit();},120));
 document.getElementById('zoomIn').onclick=()=>map.zoomIn();
 document.getElementById('zoomOut').onclick=()=>map.zoomOut();
