@@ -11,7 +11,11 @@ export default async function handler(req, res) {
     });
   }
 
-  const { points = [], radiusMeters = 22000 } = req.body || {};
+  // Roadora fuel search radius
+  // standaard: 8km
+  // minimum: 4km
+  // maximum: 12km
+  const { points = [], radiusMeters = 8000 } = req.body || {};
 
   if (!Array.isArray(points) || points.length === 0) {
     return res.status(400).json({ error: "Geen routepunten ontvangen" });
@@ -57,6 +61,7 @@ export default async function handler(req, res) {
         status: response.status,
         message: data.error?.message || JSON.stringify(data.error || data)
       });
+
       return [];
     }
 
@@ -64,10 +69,19 @@ export default async function handler(req, res) {
   }
 
   for (const point of points.slice(0, 9)) {
-    if (typeof point.lat !== "number" || typeof point.lng !== "number") continue;
+    if (
+      typeof point.lat !== "number" ||
+      typeof point.lng !== "number"
+    ) {
+      continue;
+    }
 
-    const radius = Math.max(8000, Math.min(Number(radiusMeters) || 22000, 35000));
+    const radius = Math.max(
+      4000,
+      Math.min(Number(radiusMeters) || 8000, 12000)
+    );
 
+    // Nearby Search
     const nearby = await requestGoogle(
       "https://places.googleapis.com/v1/places:searchNearby",
       {
@@ -88,6 +102,7 @@ export default async function handler(req, res) {
 
     nearby.forEach(addPlace);
 
+    // fallback wanneer er weinig gevonden wordt
     if (nearby.length < 2) {
       const text = await requestGoogle(
         "https://places.googleapis.com/v1/places:searchText",
@@ -116,9 +131,15 @@ export default async function handler(req, res) {
   return res.status(200).json({
     places,
     count: places.length,
+
     debug: {
       searchedPoints: points.slice(0, 9).length,
-      radiusMeters: Math.max(8000, Math.min(Number(radiusMeters) || 22000, 35000)),
+
+      radiusMeters: Math.max(
+        4000,
+        Math.min(Number(radiusMeters) || 8000, 12000)
+      ),
+
       errors
     }
   });
