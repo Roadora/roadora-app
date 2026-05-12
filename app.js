@@ -227,7 +227,7 @@ async function loadOrsRoute(){
     liveGoogleFuelLoaded=false;
     liveGoogleFuelStops=[];
     liveGoogleFuelLayer.clearLayers();
-    ifactiveFilters.has('fuel'){
+    if (activeFilters.has('fuel')) {
       setTimeout(loadLiveGoogleFuelStations,250);
     }
 
