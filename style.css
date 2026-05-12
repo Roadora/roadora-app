@@ -1,0 +1,20 @@
+.roadora-autocomplete-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.roadora-autocomplete-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(52, 42, 30, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.roadora-autocomplete-field gmp-place-autocomplete {
+  width: 100%;
+  min-height: 50px;
+  border-radius: 18px;
+  overflow: hidden;
+}
