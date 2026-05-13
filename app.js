@@ -33,6 +33,44 @@
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   }
 
+  function injectSavedHotelsMobilePolish(){
+    if(document.getElementById('roadoraSavedHotelsMobilePolish')) return;
+    const style=document.createElement('style');
+    style.id='roadoraSavedHotelsMobilePolish';
+    style.textContent=`
+      .hotelCompareSheet .hotelCompareCard{max-height:min(72vh,620px);overflow:hidden;padding-bottom:18px}
+      .hotelCompareSheet .hotelCompareList{display:grid;gap:10px;max-height:calc(72vh - 130px);overflow:auto;padding-right:2px}
+      .hotelCompareSheet .hotelCompareItem{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:10px}
+      .hotelCompareSheet .hotelCompareOpen{min-width:0;width:100%;display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:12px;text-align:left}
+      .hotelCompareSheet .hotelCompareText{min-width:0;display:block}
+      .hotelCompareSheet .hotelCompareText b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.16}
+      .hotelCompareSheet .hotelCompareText em{display:block;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.22;opacity:.72}
+      .hotelCompareSheet .hotelCompareText small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;opacity:.62}
+      .hotelCompareSheet .hotelCompareThumb{width:72px;height:72px;flex:0 0 72px;background-size:cover;background-position:center;border-radius:18px}
+      .hotelCompareSheet .hotelCompareDelete{width:42px;height:42px;border-radius:999px;display:grid;place-items:center;font-size:24px;line-height:1}
+      .hotelCompareSheet .hotelCompareHead b{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      @media (max-width:520px){
+        .hotelCompareSheet .hotelCompareCard{width:calc(100vw - 32px);left:16px;right:16px;border-radius:28px}
+        .hotelCompareSheet .hotelCompareOpen{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:9px 10px}
+        .hotelCompareSheet .hotelCompareThumb{width:64px;height:64px;border-radius:16px}
+        .hotelCompareSheet .hotelCompareDelete{width:38px;height:38px;font-size:22px}
+        .hotelCompareSheet .hotelCompareText b{font-size:15px}
+        .hotelCompareSheet .hotelCompareText em,.hotelCompareSheet .hotelCompareText small{font-size:12px}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function compactHotelAddress(h){
+    const raw=String(h?.address||h?.meta||'').replace(/\s+/g,' ').trim();
+    if(!raw) return 'Adres beschikbaar in hotel details';
+    return raw.split(' · ')[0].replace(/,\s*Germany$/i,', Duitsland');
+  }
+
+  function savedHotelMetaLine(h){
+    return [h?.rating?`${h.rating} ★`:'Google rating',h?.detourLabel||'± 10 min van route'].filter(Boolean).join(' · ');
+  }
+
   function closeMenu(){
     const phone=qs('.phone');
     phone?.classList.remove('menuOpen','menuExpanded');
@@ -201,18 +239,32 @@
   function openHotelCompare(){
     const hotels=readSavedStops().filter(x=>x.type==='hotel');
     const el=ensureHotelCompareSheet();
+    injectSavedHotelsMobilePolish();
     const list=qs('.hotelCompareList',el);
     if(list){
       list.innerHTML=hotels.length?hotels.slice(0,10).map(h=>{
         const photo=firstStopPhoto(h);
         const id=escapeHtml(h.id||h.googlePlaceId||`${h.type}:${h.name}`);
-        return `<div class="hotelCompareItem" data-save-id="${id}"><button class="hotelCompareOpen" data-compare-action="open" data-save-id="${id}"><span class="hotelCompareThumb ${photo?'has-photo':''}" style="${photo?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)),url('${String(photo).replace(/'/g,'')}')`:''}"></span><span><b>${escapeHtml(h.name||'Hotel')}</b><em>${escapeHtml([h.rating?`${h.rating} ★`:'',h.detourLabel||'',h.address||''].filter(Boolean).join(' · '))}</em></span></button><button class="hotelCompareDelete" data-compare-action="delete" data-save-id="${id}" aria-label="Hotel verwijderen">×</button></div>`;
+        const meta=escapeHtml(savedHotelMetaLine(h));
+        const address=escapeHtml(compactHotelAddress(h));
+        return `<div class="hotelCompareItem" data-save-id="${id}">
+          <button class="hotelCompareOpen" data-compare-action="open" data-save-id="${id}" aria-label="Open ${escapeHtml(h.name||'hotel')}">
+            <span class="hotelCompareThumb ${photo?'has-photo':''}" style="${photo?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)),url('${String(photo).replace(/'/g,'')}')`:''}"></span>
+            <span class="hotelCompareText">
+              <b>${escapeHtml(h.name||'Hotel')}</b>
+              <em>${meta}</em>
+              <small>${address}</small>
+            </span>
+          </button>
+          <button class="hotelCompareDelete" data-compare-action="delete" data-save-id="${id}" aria-label="Hotel verwijderen">×</button>
+        </div>`;
       }).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
     }
     el.classList.add('open');
     toast(hotels.length?'Hotel shortlist geopend':'Nog geen hotels opgeslagen');
     return false;
   }
+
   function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');return false;}
   function deleteSavedHotel(id){
     try{
@@ -270,45 +322,11 @@
     return items.map(a=>`<span><b>${hotelDetailAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
   }
 
-
-
-  /* ===== Roadora Photo System v1 =====
-     Echte Places foto's + stabiele fallback voor hotel cards/sheets/saved hotels. */
-  const ROADORA_HOTEL_FALLBACK_PHOTOS = [
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
-    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80',
-    'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80',
-    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80'
-  ];
-  function roadoraPhotoUrlFromName(photoName,maxWidth=900){
-    if(!photoName) return '';
-    return '/api/place-photo?photoName='+encodeURIComponent(photoName)+'&maxWidth='+encodeURIComponent(maxWidth);
-  }
-  function roadoraFallbackHotelPhoto(s){
-    const seed=String(s?.googlePlaceId||s?.id||s?.name||'hotel');
-    let total=0;
-    for(let i=0;i<seed.length;i++) total+=seed.charCodeAt(i);
-    return ROADORA_HOTEL_FALLBACK_PHOTOS[Math.abs(total)%ROADORA_HOTEL_FALLBACK_PHOTOS.length];
-  }
-  function roadoraBuildPhotoList(s){
+  function hotelPhotosFor(s){
     const list=[];
     if(Array.isArray(s?.photoUrls)) list.push(...s.photoUrls);
-    if(Array.isArray(s?.photoNames)) s.photoNames.forEach(n=>list.push(roadoraPhotoUrlFromName(n)));
-    if(s?.photoName) list.push(roadoraPhotoUrlFromName(s.photoName));
     ['photoUrl','photo','imageUrl','image'].forEach(k=>{if(s?.[k]) list.push(s[k]);});
-    const clean=Array.from(new Set(list.filter(Boolean)));
-    if(!clean.length && s?.type==='hotel') clean.push(roadoraFallbackHotelPhoto(s));
-    return clean.slice(0,6);
-  }
-  window.RoadoraPhotoSystem={
-    photoUrlFromName:roadoraPhotoUrlFromName,
-    fallbackHotelPhoto:roadoraFallbackHotelPhoto,
-    photoList:roadoraBuildPhotoList,
-    firstPhoto:(s)=>roadoraBuildPhotoList(s)[0]||''
-  };
-
-  function hotelPhotosFor(s){
-    return roadoraBuildPhotoList(s);
+    return Array.from(new Set(list.filter(Boolean))).slice(0,6);
   }
   function firstStopPhoto(s){
     return hotelPhotosFor(s)[0] || s?.photoUrl || s?.photo || s?.imageUrl || s?.image || '';
@@ -435,7 +453,7 @@
   }
 
   window.RoadoraApp={showHome:()=>setScreen('home'),showRoute:()=>setScreen('route'),showMap:()=>setScreen('map'),closeMenu,setVehicle};
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setButtonType,{once:true}); else setButtonType();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{setButtonType();injectSavedHotelsMobilePolish();},{once:true}); else {setButtonType();injectSavedHotelsMobilePolish();}
   document.addEventListener('click',handleClick,false);
 })();
 
@@ -766,7 +784,6 @@
       thumb.style.removeProperty('background-image');
       thumb.style.removeProperty('background');
       const photo =
-        window.RoadoraPhotoSystem?.firstPhoto?.(s) ||
         s?.photoUrl ||
         s?.photo ||
         s?.imageUrl ||
@@ -1046,8 +1063,8 @@
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
           photoNames:Array.isArray(p.photoNames)?p.photoNames:[],
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||(p.photoName?window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName):null)||null,
-          photoUrls:Array.isArray(p.photoUrls)&&p.photoUrls.length?p.photoUrls:(Array.isArray(p.photoNames)?p.photoNames.map(n=>window.RoadoraPhotoSystem?.photoUrlFromName?.(n)).filter(Boolean):(p.photoName?[window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName)].filter(Boolean):[])),
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          photoUrls:Array.isArray(p.photoUrls)?p.photoUrls:[],
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
@@ -1113,7 +1130,7 @@
           googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||(p.photoName?window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName):null)||null,
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
 
