@@ -160,8 +160,8 @@
       googlePlaceId:s.googlePlaceId||null,
       googleMapsUri:s.googleMapsUri||s.infoUrl||null,
       infoUrl:s.infoUrl||s.googleMapsUri||null,
-      photoUrl:s.photoUrl||s.photo||s.imageUrl||s.image||null,
-      photoUrls:Array.isArray(s.photoUrls)?s.photoUrls.slice(0,6):[],
+      photoUrl:firstStopPhoto(s)||null,
+      photoUrls:hotelPhotosFor(s),
       savedAt:new Date().toISOString()
     };
   }
@@ -203,13 +203,35 @@
     const el=ensureHotelCompareSheet();
     const list=qs('.hotelCompareList',el);
     if(list){
-      list.innerHTML=hotels.length?hotels.slice(0,8).map(h=>`<button class="hotelCompareItem" data-place-id="${escapeHtml(h.googlePlaceId||'')}"><span class="hotelCompareThumb" style="${h.photoUrl?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)),url('${String(h.photoUrl).replace(/'/g,'')}')`:''}"></span><span><b>${escapeHtml(h.name||'Hotel')}</b><em>${escapeHtml([h.rating?`${h.rating} ★`:'',h.detourLabel||'',h.address||''].filter(Boolean).join(' · '))}</em></span></button>`).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
+      list.innerHTML=hotels.length?hotels.slice(0,10).map(h=>{
+        const photo=firstStopPhoto(h);
+        const id=escapeHtml(h.id||h.googlePlaceId||`${h.type}:${h.name}`);
+        return `<div class="hotelCompareItem" data-save-id="${id}"><button class="hotelCompareOpen" data-compare-action="open" data-save-id="${id}"><span class="hotelCompareThumb ${photo?'has-photo':''}" style="${photo?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)),url('${String(photo).replace(/'/g,'')}')`:''}"></span><span><b>${escapeHtml(h.name||'Hotel')}</b><em>${escapeHtml([h.rating?`${h.rating} ★`:'',h.detourLabel||'',h.address||''].filter(Boolean).join(' · '))}</em></span></button><button class="hotelCompareDelete" data-compare-action="delete" data-save-id="${id}" aria-label="Hotel verwijderen">×</button></div>`;
+      }).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
     }
     el.classList.add('open');
     toast(hotels.length?'Hotel shortlist geopend':'Nog geen hotels opgeslagen');
     return false;
   }
   function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');return false;}
+  function deleteSavedHotel(id){
+    try{
+      const before=readSavedStops();
+      const next=before.filter(x=>String(x.id||x.googlePlaceId||`${x.type}:${x.name}`)!==String(id));
+      localStorage.setItem(savedStopsKey(),JSON.stringify(next));
+      updateHotelCompareButton();
+      openHotelCompare();
+      toast('Hotel verwijderd uit shortlist');
+    }catch(err){console.warn('Hotel verwijderen fout:',err);toast('Verwijderen niet gelukt');}
+    return false;
+  }
+  function openSavedHotel(id){
+    const h=readSavedStops().find(x=>String(x.id||x.googlePlaceId||`${x.type}:${x.name}`)===String(id));
+    if(!h){toast('Hotel niet gevonden');return false;}
+    RoadoraState.selectedStop=h;
+    closeHotelCompare();
+    return openHotelDetail();
+  }
 
 
   function ensureHotelDetailSheet(){
@@ -253,6 +275,9 @@
     if(Array.isArray(s?.photoUrls)) list.push(...s.photoUrls);
     ['photoUrl','photo','imageUrl','image'].forEach(k=>{if(s?.[k]) list.push(s[k]);});
     return Array.from(new Set(list.filter(Boolean))).slice(0,6);
+  }
+  function firstStopPhoto(s){
+    return hotelPhotosFor(s)[0] || s?.photoUrl || s?.photo || s?.imageUrl || s?.image || '';
   }
   function renderHotelHero(hero, photos, index=0){
     const photo=photos[index]||'';
@@ -362,7 +387,14 @@
       return false;
     }
     const compareAction=target.closest('[data-compare-action]');
-    if(compareAction){event.preventDefault(); if(compareAction.dataset.compareAction==='close') return closeHotelCompare(); return false;}
+    if(compareAction){
+      event.preventDefault();
+      const action=compareAction.dataset.compareAction;
+      if(action==='close') return closeHotelCompare();
+      if(action==='delete') return deleteSavedHotel(compareAction.dataset.saveId);
+      if(action==='open') return openSavedHotel(compareAction.dataset.saveId);
+      return false;
+    }
     if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
     if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') return openHotelDetail(); openMapsStop(); return false;}
     if(target.closest('#mapScreen .secondary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMapsStop(); else openMoreInfo(); return false;}
@@ -699,7 +731,7 @@
       thumb.className='thumb thumb-'+type;
       thumb.style.removeProperty('background-image');
       thumb.style.removeProperty('background');
-      const photo=s?.photoUrl||s?.photo||s?.imageUrl||s?.image||'';
+      const photo=firstStopPhoto(s);
       if(photo){
         thumb.classList.add('has-photo');
         thumb.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)), url("${String(photo).replace(/"/g,'')}")`;

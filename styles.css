@@ -3361,3 +3361,56 @@
   .hotelCompareCard{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 70px);border-radius:24px;}
   .hotelCompareHead b{font-size:20px;}
 }
+
+/* v4.6 — hotel photo thumbnails + saved hotel delete */
+#mapScreen .thumb.has-photo{
+  background-size:cover !important;
+  background-position:center center !important;
+}
+.hotelCompareItem{
+  position:relative;
+  display:grid !important;
+  grid-template-columns:1fr 38px;
+  gap:8px;
+  align-items:center;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+}
+.hotelCompareOpen{
+  min-width:0;
+  display:grid;
+  grid-template-columns:58px 1fr;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  min-height:74px;
+  border-radius:20px;
+  padding:8px 12px 8px 8px;
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(70,47,24,.08);
+  text-align:left;
+}
+.hotelCompareOpen span:last-child{min-width:0;}
+.hotelCompareDelete{
+  width:36px;
+  height:36px;
+  border-radius:999px;
+  background:rgba(255,250,242,.90);
+  border:1px solid rgba(70,47,24,.10);
+  box-shadow:0 8px 18px rgba(30,22,14,.08);
+  font-size:20px;
+  font-weight:900;
+  color:#7b5a39;
+  display:grid;
+  place-items:center;
+}
+.hotelCompareDelete:active{transform:scale(.94);}
+.hotelCompareThumb.has-photo{
+  background-size:cover !important;
+  background-position:center center !important;
+}
+.hotelDetailAmenities span,
+.hotelCompareThumb{
+  overflow:hidden;
+}
