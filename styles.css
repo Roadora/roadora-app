@@ -2273,3 +2273,126 @@
     padding:0 5px !important;
   }
 }
+
+/* ===== Roadora v3.7 Mobile Sheet Safe Area Fix =====
+   Houdt de premium sheet rustig, maar voorkomt dat de CTA's rechts uit beeld lopen.
+   Geen visuele rewrite: alleen interne grid-verdeling en overflow-safety. */
+#mapScreen .sheet{
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+#mapScreen .sheetGrid,
+#mapScreen .sheetGrid > *,
+#mapScreen .sheet[data-type="fuel"] .sheetGrid,
+#mapScreen .sheet[data-type="fuel"] .sheetGrid > *{
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetGrid{
+  width:100% !important;
+  max-width:100% !important;
+  grid-template-columns:58px minmax(0,1fr) 88px !important;
+  gap:8px !important;
+  align-items:center !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions{
+  width:88px !important;
+  min-width:0 !important;
+  max-width:88px !important;
+  justify-self:end !important;
+  align-self:center !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .primary,
+#mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+  width:100% !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip{
+  max-width:100% !important;
+  overflow:hidden !important;
+}
+#mapScreen .sheet[data-type="fuel"] #stopMeta,
+#mapScreen .sheet[data-type="fuel"] .fuelQuickLine{
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+
+@media(max-width:430px){
+  #mapScreen .sheet{
+    left:14px !important;
+    right:14px !important;
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetGrid{
+    grid-template-columns:56px minmax(0,1fr) 82px !important;
+    gap:7px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions{
+    width:82px !important;
+    max-width:82px !important;
+    gap:6px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .primary,
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+    height:32px !important;
+    min-height:32px !important;
+    font-size:7.7px !important;
+    padding:0 4px !important;
+    border-radius:10px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .thumb{
+    width:56px !important;
+    height:56px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] h2{
+    font-size:12.2px !important;
+    line-height:1.05 !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip{
+    gap:5px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip span{
+    min-width:34px !important;
+    height:29px !important;
+    padding:0 4px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip b{
+    font-size:15px !important;
+  }
+}
+
+@media(max-width:360px){
+  #mapScreen .sheet{
+    left:12px !important;
+    right:12px !important;
+    padding-left:9px !important;
+    padding-right:9px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetGrid{
+    grid-template-columns:52px minmax(0,1fr) 76px !important;
+    gap:6px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions{
+    width:76px !important;
+    max-width:76px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .primary,
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+    height:31px !important;
+    min-height:31px !important;
+    font-size:7.2px !important;
+    padding:0 3px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .thumb{
+    width:52px !important;
+    height:52px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip span{
+    min-width:31px !important;
+    height:28px !important;
+  }
+}
