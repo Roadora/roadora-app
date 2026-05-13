@@ -220,7 +220,7 @@
     const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Route wordt geladen…',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
     const svgs={fuel:'<svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"/></svg>',ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>'};
 
-    const map=L.map('routeLeafletMap',{zoomControl:false,attributionControl:false,preferCanvas:true,scrollWheelZoom:true,tap:true}).setView([49.2,8.1],6);
+    const map=L.map('routeLeafletMap',{zoomControl:false,attributionControl:false,preferCanvas:true,scrollWheelZoom:true,tap:true,zoomSnap:.25,zoomDelta:.5}).setView([49.2,8.1],6);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,crossOrigin:true}).addTo(map);
     const routeShadow=L.polyline(route,{color:'#3b2a1a',weight:7.2,opacity:.16,lineCap:'round',lineJoin:'round'}).addTo(map);
     const routeMain=L.polyline(route,{color:'#c98f48',weight:3.8,opacity:.88,lineCap:'round',lineJoin:'round'}).addTo(map);
@@ -265,8 +265,9 @@
     function selectedZoomFor(s){return s?.type==='fuel'?9:s?.type==='hotel'?8:s?.type==='destination'?7:7;}
     function mapPaddingFor(kind='route'){
       const small=window.matchMedia?.('(max-width: 560px)')?.matches;
-      if(kind==='stop') return small?{paddingTopLeft:[34,96],paddingBottomRight:[34,184]}:{paddingTopLeft:[74,160],paddingBottomRight:[58,210]};
-      return small?{paddingTopLeft:[42,130],paddingBottomRight:[42,178],maxZoom:7}:{paddingTopLeft:[74,180],paddingBottomRight:[58,195],maxZoom:7};
+      if(kind==='stop') return small?{paddingTopLeft:[30,92],paddingBottomRight:[28,178]}:{paddingTopLeft:[64,150],paddingBottomRight:[52,205]};
+      // v3.9.1: strakkere route-fit zodat de echte ORS-route groter in beeld komt zonder endpoints kwijt te raken.
+      return small?{paddingTopLeft:[24,112],paddingBottomRight:[24,134],maxZoom:8}:{paddingTopLeft:[42,145],paddingBottomRight:[42,172],maxZoom:8};
     }
     function safeInvalidate(){try{map.invalidateSize(false);}catch(_){}}
     function withProgrammaticMove(fn){mapProgrammaticMove=true;try{fn();}finally{setTimeout(()=>{mapProgrammaticMove=false;},420);}}
@@ -626,6 +627,43 @@
       for(let i=1;i<=maxPoints;i++){const idx=Math.floor((source.length-1)*(i/(maxPoints+1)));const p=source[Math.max(0,Math.min(source.length-1,idx))];points.push({lat:p.lat,lng:p.lng});}
       return points;
     }
+    function routeSpreadIndex(stop, buckets=10){
+      const latlngs=routeMain.getLatLngs?.()||[];
+      const source=latlngs.length?latlngs:route.map(p=>L.latLng(p[0],p[1]));
+      if(!stop || !Array.isArray(stop.ll) || !source.length) return 0;
+      const lat=Number(stop.ll[0]);
+      const lng=Number(stop.ll[1]);
+      let best=0;
+      let bestD=Infinity;
+      const step=Math.max(1,Math.floor(source.length/180));
+      for(let i=0;i<source.length;i+=step){
+        const p=source[i];
+        const d=(p.lat-lat)*(p.lat-lat)+(p.lng-lng)*(p.lng-lng);
+        if(d<bestD){bestD=d;best=i;}
+      }
+      return Math.max(0,Math.min(buckets-1,Math.floor((best/Math.max(1,source.length-1))*buckets)));
+    }
+    function spreadStopsAlongRoute(stopsList,{buckets=11,perBucket=2,maxTotal=18}={}){
+      if(!Array.isArray(stopsList) || stopsList.length<=maxTotal) return stopsList;
+      const bucketsMap=new Map();
+      stopsList.forEach((stop,order)=>{
+        const key=routeSpreadIndex(stop,buckets);
+        if(!bucketsMap.has(key)) bucketsMap.set(key,[]);
+        bucketsMap.get(key).push({...stop,__order:order});
+      });
+      for(const list of bucketsMap.values()){
+        list.sort((a,b)=>(Number(b.rating||0)-Number(a.rating||0)) || (Number(b.userRatingCount||0)-Number(a.userRatingCount||0)) || (a.__order-b.__order));
+      }
+      const result=[];
+      for(let round=0;round<perBucket;round++){
+        for(let key=0;key<buckets;key++){
+          const item=bucketsMap.get(key)?.[round];
+          if(item){result.push(item);if(result.length>=maxTotal) break;}
+        }
+        if(result.length>=maxTotal) break;
+      }
+      return result.sort((a,b)=>routeSpreadIndex(a,buckets)-routeSpreadIndex(b,buckets)).map(({__order,...x})=>x);
+    }
     function googleFuelMessage(data, count){
       if(data?.cached) return count ? `${count} tankstations uit cache` : 'Geen tankstations in cache';
       if(data?.status==='misconfigured') return 'Google key ontbreekt in backend';
@@ -650,7 +688,7 @@
       liveGoogleHotelLoading=true;
       try{
         showToast('Hotels langs route zoeken…');
-        const points=currentRouteSamplePoints(9);
+        const points=currentRouteSamplePoints(13);
         if(!points.length){
           liveGoogleHotelLoading=false;
           showToast('Nog geen routepunten beschikbaar');
@@ -663,7 +701,7 @@
           method:'POST',
           headers:{'Content-Type':'application/json'},
           signal: controller.signal,
-          body:JSON.stringify({points,radiusMeters:10000})
+          body:JSON.stringify({points,radiusMeters:7500})
         });
         clearTimeout(timer);
 
@@ -673,7 +711,7 @@
           console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
         }
 
-        liveGoogleHotelStops=(data.places||[]).map(p=>({
+        liveGoogleHotelStops=spreadStopsAlongRoute((data.places||[]).map(p=>({
           name:p.name||'Hotel langs route',
           meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.detourLabel||'± 5 min van route'].filter(Boolean).join(' · '),
           desc:'',
@@ -686,7 +724,7 @@
           photoName:p.photoName||null,
           photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
           infoUrl:p.url||p.website||p.websiteUri||null
-        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
+        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
         liveGoogleHotelLoaded=true;
         liveGoogleHotelLoading=false;
