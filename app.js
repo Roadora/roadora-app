@@ -913,11 +913,11 @@
           position:absolute;
           left:18px;
           right:18px;
-          top:190px;
+          top:206px;
           z-index:9999;
           display:none;
           align-items:center;
-          gap:7px;
+          gap:6px;
           overflow-x:auto;
           padding:1px 2px 8px;
           pointer-events:none;
@@ -935,10 +935,10 @@
           transform:translateY(0);
         }
         #mapScreen .hotelFilterChipClean{
-          height:30px;
+          height:25px;
           flex:0 0 auto;
           border-radius:999px;
-          padding:0 10px;
+          padding:0 8px;
           display:inline-flex;
           align-items:center;
           gap:6px;
@@ -948,7 +948,7 @@
           box-shadow:0 10px 24px rgba(38,26,12,.10), inset 0 1px 0 rgba(255,255,255,.72);
           backdrop-filter:blur(18px);
           -webkit-backdrop-filter:blur(18px);
-          font-size:10.5px;
+          font-size:9.5px;
           font-weight:800;
           white-space:nowrap;
           transition:transform .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
@@ -966,30 +966,30 @@
         }
         #mapScreen .hotelFilterResetClean{
           opacity:.86;
-          padding:0 9px;
+          padding:0 8px;
         }
         #mapScreen .hotelFilterResetClean[hidden]{display:none!important}
         @media(max-width:560px){
           #mapScreen .hotelFilterbarClean{
             left:14px;
             right:14px;
-            top:190px;
+            top:206px;
             gap:6px;
           }
           #mapScreen .hotelFilterChipClean{
-            height:28px;
-            padding:0 9px;
-            font-size:9.2px;
+            height:26px;
+            padding:0 8px;
+            font-size:8.4px;
           }
           #mapScreen .hotelFilterChipClean b{font-size:11px}
         }
         @media(max-height:760px){
           #mapScreen .hotelFilterbarClean{
-            top:166px;
+            top:184px;
           }
           #mapScreen .hotelFilterChipClean{
-            height:27px;
-            font-size:8.8px;
+            height:25px;
+            font-size:8.4px;
           }
         }
       `;
@@ -1093,23 +1093,23 @@
 
       const hideOne=(el)=>{
         if(!el) return;
-        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton') || el;
+        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton,.mapControl') || el;
         target.style.display='none';
         target.setAttribute('aria-hidden','true');
       };
 
-      // Roadora houdt alleen zoom + volledige-route/centreer terug.
-      ['#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle'].forEach(sel=>{
+      // Verwijder technische kaartlagen/noord controls. Roadora houdt alleen zoom + terug naar route.
+      ['#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle','.layerBtn','.layersBtn','.mapLayers','.map-layer','.map-layers','.leaflet-control-layers'].forEach(sel=>{
         root.querySelectorAll(sel).forEach(hideOne);
       });
 
-      root.querySelectorAll('button,a').forEach(btn=>{
-        const txt=((btn.textContent||'')+' '+(btn.getAttribute('aria-label')||'')+' '+(btn.title||'')+' '+(btn.id||'')+' '+(btn.className||'')).toLowerCase();
-        const isNorth=txt.includes('north') || txt.includes('noord');
-        const isLayer=txt.includes('layer') || txt.includes('lagen') || txt.includes('kaartlaag');
+      root.querySelectorAll('button,a,div').forEach(el=>{
+        const txt=((el.textContent||'')+' '+(el.getAttribute?.('aria-label')||'')+' '+(el.title||'')+' '+(el.id||'')+' '+(el.className||'')).toLowerCase();
+        const isLayer=txt.includes('layer') || txt.includes('lagen') || txt.includes('kaartlaag') || txt.includes('map layer');
+        const isNorth=txt.includes('north') || txt.includes('noord') || txt.includes('bearing') || txt.includes('compass');
         const isZoom=txt.includes('zoom') || txt.trim()==='+' || txt.trim()==='-';
-        const isCenter=txt.includes('center') || txt.includes('centreer') || txt.includes('fit') || txt.includes('route');
-        if((isNorth || isLayer) && !isZoom && !isCenter) hideOne(btn);
+        const isRouteCenter=txt.includes('fitroute') || txt.includes('volledige route') || txt.includes('terug naar route') || txt.includes('centreer') || txt.includes('center route');
+        if((isLayer || isNorth) && !isZoom && !isRouteCenter) hideOne(el);
       });
 
       const fit=document.querySelector('#fitRoute');
@@ -1123,18 +1123,75 @@
         const style=document.createElement('style');
         style.id='roadoraMapControlPolish';
         style.textContent=`
-          #north,#mapNorth,#layerBtn,#layersBtn,#mapLayers,#layerToggle,#layersToggle{
+          #north,#mapNorth,#layerBtn,#layersBtn,#mapLayers,#layerToggle,#layersToggle,
+          .layerBtn,.layersBtn,.mapLayers,.map-layer,.map-layers,.leaflet-control-layers{
             display:none!important;
           }
-          .roadoraCenterRouteBtn{
-            width:46px!important;
-            height:46px!important;
-            border-radius:18px!important;
-            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(240,227,210,.96))!important;
+
+          /* Zoom + route-terug als één rustige verticale Roadora pill */
+          #mapScreen .leaflet-control-zoom,
+          #mapScreen .mapZoomControls,
+          #mapScreen .zoomControls{
+            border-radius:22px!important;
+            overflow:hidden!important;
+            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
             border:1px solid rgba(222,198,168,.48)!important;
-            box-shadow:0 12px 28px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.70)!important;
+            box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
             backdrop-filter:blur(18px)!important;
             -webkit-backdrop-filter:blur(18px)!important;
+          }
+
+          #mapScreen .leaflet-control-zoom a,
+          #mapScreen #zoomIn,
+          #mapScreen #zoomOut{
+            width:44px!important;
+            height:42px!important;
+            line-height:42px!important;
+            border-radius:0!important;
+            background:transparent!important;
+            border:0!important;
+            box-shadow:none!important;
+            color:#2f251d!important;
+            font-weight:900!important;
+          }
+
+          #mapScreen .roadoraCenterRouteBtn{
+            width:44px!important;
+            height:44px!important;
+            border-radius:20px!important;
+            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
+            border:1px solid rgba(222,198,168,.48)!important;
+            box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
+            backdrop-filter:blur(18px)!important;
+            -webkit-backdrop-filter:blur(18px)!important;
+          }
+
+          /* Plaats controls iets lager en rustiger rechts */
+          #mapScreen .leaflet-top.leaflet-right,
+          #mapScreen .mapControlsRight,
+          #mapScreen .mapTools{
+            top:300px!important;
+            right:15px!important;
+          }
+
+          @media(max-width:560px){
+            #mapScreen .leaflet-top.leaflet-right,
+            #mapScreen .mapControlsRight,
+            #mapScreen .mapTools{
+              top:292px!important;
+              right:13px!important;
+            }
+            #mapScreen .leaflet-control-zoom a,
+            #mapScreen #zoomIn,
+            #mapScreen #zoomOut{
+              width:42px!important;
+              height:40px!important;
+              line-height:40px!important;
+            }
+            #mapScreen .roadoraCenterRouteBtn{
+              width:42px!important;
+              height:42px!important;
+            }
           }
         `;
         document.head.appendChild(style);
