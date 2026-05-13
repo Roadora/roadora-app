@@ -196,18 +196,21 @@
           </section>
           </section>
 
-          <div class="cats">
-            <button class="cat active" data-filter="all" type="button"><svg viewBox="0 0 24 24"><path d="M5 19V9l7-5 7 5v10H5z"></path><path d="M9 19v-6h6v6"></path></svg><span>Alle stops</span></button>
-            <button class="cat" data-filter="hotel" type="button"><svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Overnachten</span></button>
-            <button class="cat" data-filter="food" type="button"><svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"></path></svg><span>Eten &amp; drinken</span></button>
-            <button class="cat active" data-filter="ev" type="button"><svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"></path></svg><span>Laadstations</span></button>
+          <button class="stopsCta" id="stopsCta" type="button" aria-expanded="false" aria-controls="mapCats">
+            <span>＋</span><b>Stops</b>
+          </button>
+
+          <div class="cats is-collapsed" id="mapCats" aria-label="Stopcategorieën">
             <button class="cat" data-filter="fuel" type="button"><svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"></path></svg><span>Tankstations</span></button>
+            <button class="cat" data-filter="hotel" type="button"><svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Overnachten</span></button>
+            <button class="cat" data-filter="ev" type="button"><svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"></path></svg><span>Laadstations</span></button>
+            <button class="cat" data-filter="food" type="button"><svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"></path></svg><span>Eten &amp; drinken</span></button>
             <button class="cat" data-filter="view" type="button"><svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"></path></svg><span>Activiteiten</span></button>
           </div>
 
           <div class="controls"><div class="ctrlGroup"><button class="ctrl" id="north" type="button">▴</button><button class="ctrl" id="fitRoute" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><button class="ctrl" type="button"><svg viewBox="0 0 24 24"><path d="M12 2l8 4-8 4-8-4 8-4zM4 12l8 4 8-4M4 18l8 4 8-4"></path></svg></button></div><div class="ctrlGroup"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
 
-          <section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
+          <section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="saveStop" type="button">＋ Tussenstop</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
 
           <nav class="bottomNav">
             <button class="navItem active" type="button"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>

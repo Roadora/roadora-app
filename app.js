@@ -92,9 +92,9 @@
   }
 
   function syncRouteSetupFiltersToMap(){
-    const activeSetup=qsa('#routeSetupScreen .rCat.active[data-filter]').map(b=>b.dataset.filter);
-    if(!activeSetup.length || !window.RoadoraMapApi) return;
-    window.RoadoraMapApi.setFilters(activeSetup);
+    // v3.4: de kaart start bewust clean. Route setup keuzes worden later gebruikt voor suggesties,
+    // maar tonen geen pins totdat de gebruiker op de kaart zelf een categorie opent.
+    return;
   }
 
   function selectedStop(){return RoadoraState.selectedStop || window.RoadoraMapApi?.getSelectedStop?.() || null;}
@@ -131,6 +131,21 @@
     const s=selectedStop();
     toast(s?.type==='hotel'?'Hotelinformatie geopend':s?.type==='fuel'?'Tankstation info geopend':s?.type==='ev'?'Laadinfo geopend':'Meer informatie geopend');
   }
+  function saveSelectedStop(){
+    const s=selectedStop();
+    if(!s || s.type==='destination' || s.type==='overview'){toast('Kies eerst een tussenstop');return false;}
+    const item={name:s.name,type:s.type,label:s.label||'Tussenstop',meta:s.meta||'',ll:s.ll||null,googlePlaceId:s.googlePlaceId||null,savedAt:new Date().toISOString()};
+    try{
+      const key='roadoraSavedStops';
+      const list=JSON.parse(localStorage.getItem(key)||'[]');
+      const id=item.googlePlaceId || (item.type+':'+item.name);
+      const exists=list.some(x=>(x.googlePlaceId||x.type+':'+x.name)===id);
+      if(!exists) list.unshift(item);
+      localStorage.setItem(key,JSON.stringify(list.slice(0,50)));
+      toast(exists?'Tussenstop stond al opgeslagen':'Tussenstop opgeslagen');
+    }catch(err){console.warn('Opslaan tussenstop fout:',err);toast('Opslaan niet gelukt');}
+    return false;
+  }
   function setActiveBottomNav(btn){qsa('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.remove('active','is-active'));btn?.classList.add('active','is-active');}
   function setSheet(kind){
     const api=window.RoadoraMapApi;
@@ -163,7 +178,8 @@
     const setupCat=target.closest('#routeSetupScreen .rCat[data-filter]');
     if(setupCat){event.preventDefault();setupCat.classList.toggle('active');toast('Categorie bijgewerkt');return false;}
     const bottomNav=target.closest('#mapScreen .bottomNav .navItem');
-    if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){setSheet('stops');return false;}if(label.includes('reisgids')){setSheet('guide');return false;}return false;}
+    if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){window.RoadoraMapApi?.toggleCategories?.();return false;}if(label.includes('reisgids')){setSheet('guide');return false;}return false;}
+    if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
     if(target.closest('#mapScreen .primary')){event.preventDefault();openMapsStop();return false;}
     if(target.closest('#mapScreen .secondary')){event.preventDefault();openMoreInfo();return false;}
   }
@@ -177,7 +193,7 @@
   'use strict';
   let roadoraMapInitialized=false;
   let mapBooted=false;
-  let activeFilters=new Set(['all','ev']);
+  let activeFilters=new Set();
   let selectedMarker=null;
   let selectedStopData=null;
   let routeDistanceLabel='— km';
@@ -227,7 +243,20 @@
     route.slice(1,-1).forEach((p,i)=>{if(i%2===0)L.marker(p,{icon:divIcon('<div class="routeDot"></div>',[10,10])}).addTo(map);});
 
     function showToast(txt){window.RoadoraToast?window.RoadoraToast(txt):console.log(txt);}
-    function isVisible(s){return activeFilters.has('all')||activeFilters.has(s.type);}
+    function setCategoriesOpen(open){
+      const cats=document.getElementById('mapCats');
+      const cta=document.getElementById('stopsCta');
+      cats?.classList.toggle('is-collapsed',!open);
+      cats?.classList.toggle('is-open',!!open);
+      cta?.classList.toggle('active',!!open || activeFilters.size>0);
+      cta?.setAttribute('aria-expanded',open?'true':'false');
+    }
+    function toggleCategories(){
+      const cats=document.getElementById('mapCats');
+      setCategoriesOpen(!(cats?.classList.contains('is-open')));
+      showToast(cats?.classList.contains('is-open')?'Kies je stops':'Stops verborgen');
+    }
+    function isVisible(s){return activeFilters.has(s.type);}
     function stopKey(s){return (s?.googlePlaceId?('place:'+s.googlePlaceId):((s?.type||'stop')+':'+(s?.name||'unknown')));}
     function selectedZoomFor(s){return s?.type==='fuel'?9:s?.type==='hotel'?8:s?.type==='destination'?7:7;}
     function mapPaddingFor(kind='route'){
@@ -498,8 +527,10 @@
       }else{descEl.textContent=s.desc||'';}
       const primary=document.querySelector('.sheetActions .primary');
       const secondary=document.querySelector('.sheetActions .secondary');
+      const save=document.querySelector('.sheetActions .saveStop');
       if(primary) primary.textContent=actionText(s,false);
       if(secondary) secondary.textContent=actionText(s,true);
+      if(save){const canSave=s.type&& !['destination','overview','stops','guide'].includes(s.type);save.textContent=canSave?'＋ Opslaan als stop':'＋ Tussenstop';save.disabled=!canSave;save.classList.toggle('is-disabled',!canSave);}
       updateSmartTopbar(s);
     }
     function resetSelectedIcon(){if(selectedMarker?.marker && selectedMarker?.stop) selectedMarker.marker.setIcon(makeStopIcon(selectedMarker.stop,false,!isVisible(selectedMarker.stop)));}
@@ -591,13 +622,14 @@
         map.fitBounds(routeMain.getBounds(),mapPaddingFor('route'));
       });
     }
-    function syncCatUI(){document.querySelectorAll('.cat[data-filter]').forEach(btn=>{const f=btn.dataset.filter;btn.classList.toggle('active',activeFilters.has(f));btn.classList.toggle('is-muted',!activeFilters.has(f)&&!activeFilters.has('all'));});}
+    function syncCatUI(){document.querySelectorAll('.cat[data-filter]').forEach(btn=>{const f=btn.dataset.filter;btn.classList.toggle('active',activeFilters.has(f));btn.classList.toggle('is-muted',!activeFilters.has(f));});document.getElementById('stopsCta')?.classList.toggle('has-active',activeFilters.size>0);}
     function setFilters(filters){
-      if(!Array.isArray(filters)||!filters.length){activeFilters=new Set(['all']);}
-      else{activeFilters=new Set(filters);activeFilters.delete('all');if(activeFilters.size===0) activeFilters.add('all');}
+      if(!Array.isArray(filters)||!filters.length){activeFilters=new Set();}
+      else{activeFilters=new Set(filters);activeFilters.delete('all');}
       syncCatUI();renderMarkers();if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();
     }
-    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;if(f==='all'){activeFilters=new Set(['all']);}else{activeFilters.delete('all');activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);if(activeFilters.size===0) activeFilters.add('all');}syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}showToast(activeFilters.has('all')?'Alle stops zichtbaar':'Filters bijgewerkt');});});
+    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
+    document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
     async function loadOrsRoute(){
       try{
@@ -639,7 +671,9 @@
       clearSelection:()=>{resetSelectedIcon();selectedMarker=null;updateSheet(destinationSheet);fit('force');},
       showPanel:(data)=>{resetSelectedIcon();selectedMarker=null;updateSheet(data);},
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
-      getSelectedStop:()=>selectedStopData
+      getSelectedStop:()=>selectedStopData,
+      toggleCategories,
+      closeCategories:()=>setCategoriesOpen(false)
     };
 
     window.roadoraLeafletMap=map;

@@ -1935,3 +1935,127 @@
     min-width: 40px !important;
   }
 }
+
+/* ===== Roadora v3.4 Smart Stops CTA =====
+   Clean kaart als default: geen 'Alle stops', geen actieve categorieën, pins pas na keuze.
+   Categorieën openen op dezelfde plek, iets hoger voor de grotere slimme bottom bar.
+*/
+#mapScreen .stopsCta{
+  pointer-events:auto !important;
+  position:absolute !important;
+  left:14px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 214px) !important;
+  z-index:765 !important;
+  height:36px !important;
+  min-width:104px !important;
+  padding:0 12px !important;
+  border-radius:14px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  background:rgba(255,250,242,.93) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 12px 26px rgba(24,18,12,.14), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(28px) !important;
+  -webkit-backdrop-filter:blur(28px) !important;
+  color:#2b2119 !important;
+  font-size:10.2px !important;
+  font-weight:850 !important;
+  transition:transform .2s ease, opacity .2s ease, background .2s ease !important;
+}
+#mapScreen .stopsCta span{
+  width:20px !important;
+  height:20px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;
+  color:#fff !important;
+  font-size:14px !important;
+  line-height:1 !important;
+  box-shadow:0 7px 14px rgba(196,134,61,.24) !important;
+}
+#mapScreen .stopsCta.active,
+#mapScreen .stopsCta.has-active{
+  background:linear-gradient(135deg,#f3dfbb,#cf9856) !important;
+  color:#211914 !important;
+}
+#mapScreen .stopsCta:active{transform:scale(.965) !important;}
+
+#mapScreen .cats{
+  left:14px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 256px) !important;
+  z-index:764 !important;
+  transform-origin:left bottom !important;
+  transition:opacity .2s ease, transform .22s cubic-bezier(.22,1,.36,1) !important;
+}
+#mapScreen .cats.is-collapsed{
+  opacity:0 !important;
+  transform:translateY(10px) scale(.96) !important;
+  pointer-events:none !important;
+}
+#mapScreen .cats.is-open{
+  opacity:1 !important;
+  transform:translateY(0) scale(1) !important;
+  pointer-events:auto !important;
+}
+#mapScreen .cat{
+  background:rgba(255,250,242,.92) !important;
+  color:#3a2d22 !important;
+  opacity:1 !important;
+}
+#mapScreen .cat.is-muted{
+  opacity:1 !important;
+  filter:none !important;
+}
+#mapScreen .cat.active{
+  background:linear-gradient(135deg,#f1debc,#c88b43) !important;
+  color:#211914 !important;
+  box-shadow:0 12px 26px rgba(196,134,61,.21), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+
+/* Slimme bottom bar: extra knop om geselecteerde stop te bewaren zonder het blok te laten exploderen. */
+#mapScreen .sheetActions{
+  gap:5px !important;
+}
+#mapScreen .sheetActions .primary{
+  height:33px !important;
+  font-size:8.8px !important;
+}
+#mapScreen .sheetActions .saveStop,
+#mapScreen .sheetActions .secondary{
+  height:27px !important;
+  border-radius:10px !important;
+  font-size:8px !important;
+  font-weight:850 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  padding:0 5px !important;
+  white-space:nowrap !important;
+}
+#mapScreen .sheetActions .saveStop{
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(70,47,24,.07) !important;
+  color:#8a5f2e !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.84),0 7px 15px rgba(33,22,11,.05) !important;
+}
+#mapScreen .sheetActions .saveStop.is-disabled,
+#mapScreen .sheetActions .saveStop:disabled{
+  opacity:.48 !important;
+  color:#8d8175 !important;
+}
+#mapScreen .sheetActions .secondary{
+  background:rgba(255,255,255,.56) !important;
+}
+
+@media(max-width:380px){
+  #mapScreen .stopsCta{bottom:calc(env(safe-area-inset-bottom) + 208px) !important;min-width:96px !important;height:34px !important;font-size:9.6px !important;}
+  #mapScreen .cats{bottom:calc(env(safe-area-inset-bottom) + 248px) !important;}
+  #mapScreen .cat{height:30px !important;min-width:112px !important;font-size:8.5px !important;}
+  #mapScreen .sheetActions .primary{height:32px !important;font-size:8.3px !important;}
+  #mapScreen .sheetActions .saveStop,
+  #mapScreen .sheetActions .secondary{height:25px !important;font-size:7.6px !important;}
+}
