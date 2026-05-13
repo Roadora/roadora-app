@@ -392,17 +392,15 @@
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
       const reviews=s?.userRatingCount ? `${escapeHtml(s.userRatingCount)} reviews` : 'reviews';
       const detour=escapeHtml(s?.detourLabel || '± 10 min van route');
-      const price=escapeHtml(hotelPriceLabel(s));
       const amenitiesList=hotelAmenities(s);
-      const visible=amenitiesList.slice(0,5).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
-      const more=amenitiesList.length>5?`<span class="moreAmenity"><b>+${amenitiesList.length-5}</b><em>Meer</em></span>`:'';
+      const visible=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
+      const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
       return `
-        <div class="hotelPremiumV2">
+        <div class="hotelPremiumV2 hotelCompactV21">
           <div class="hotelQuickLine">
-            <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${detour}</span><i></i><span>${price}</span>
+            <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${detour}</span>
           </div>
           <div class="hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
-          <div class="hotelHint">Bekijk eerst foto’s en reviews in Roadora, boek later gericht via affiliate.</div>
         </div>`;
     }
     function routeArrivalLabel(){
@@ -573,8 +571,8 @@
       if(primary) primary.textContent=actionText(s,false);
       if(secondary){
         secondary.textContent=actionText(s,true);
-        secondary.hidden = s.type === 'fuel';
-        secondary.classList.toggle('is-hidden', s.type === 'fuel');
+        secondary.hidden = s.type === 'fuel' || s.type === 'hotel';
+        secondary.classList.toggle('is-hidden', s.type === 'fuel' || s.type === 'hotel');
       }
       if(save){const canSave=s.type&& !['destination','overview','stops','guide'].includes(s.type);save.textContent=canSave?'＋ Opslaan als stop':'＋ Tussenstop';save.disabled=!canSave;save.classList.toggle('is-disabled',!canSave);}
       updateSmartTopbar(s);
