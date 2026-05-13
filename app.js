@@ -910,7 +910,7 @@
           position:absolute;
           left:18px;
           right:18px;
-          top:calc(env(safe-area-inset-top) + 154px);
+          top:calc(env(safe-area-inset-top) + 174px);
           z-index:818;
           display:flex;
           align-items:center;
@@ -970,7 +970,7 @@
           #mapScreen .hotelFilterbarClean{
             left:14px;
             right:14px;
-            top:calc(env(safe-area-inset-top) + 136px);
+            top:calc(env(safe-area-inset-top) + 174px);
             gap:6px;
           }
           #mapScreen .hotelFilterChipClean{
@@ -982,7 +982,7 @@
         }
         @media(max-height:760px){
           #mapScreen .hotelFilterbarClean{
-            top:calc(env(safe-area-inset-top) + 122px);
+            top:calc(env(safe-area-inset-top) + 162px);
           }
           #mapScreen .hotelFilterChipClean{
             height:27px;
@@ -1034,7 +1034,8 @@
       injectHotelFilterbarClean();
       const bar=document.getElementById('hotelFilterbarClean');
       if(!bar) return;
-      const visible=activeFilters.has('hotel');
+      const hotelCatActive=!!document.querySelector('.cat[data-filter="hotel"].active,.cat[data-filter="hotel"].is-active,.cat[data-filter="hotel"][aria-pressed="true"]');
+      const visible=activeFilters.has('hotel') || hotelCatActive || selectedStopData?.type==='hotel';
       bar.classList.toggle('is-visible',visible);
       const filters=window.RoadoraState?.hotelFilters||{};
       bar.querySelectorAll('[data-hotel-filter]').forEach(btn=>{
@@ -1339,7 +1340,7 @@
       else{activeFilters=new Set(filters);activeFilters.delete('all');}
       syncCatUI();renderMarkers();if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();if(activeFilters.has('hotel')) loadLiveGoogleHotels();
     }
-    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'&&activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
+    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'){renderHotelFilterbarClean();if(activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
     document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
     async function loadOrsRoute(){
