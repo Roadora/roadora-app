@@ -1,4 +1,4 @@
-/* Roadora v4.9.1 Hotel Filterbar v1 Clean
+/* Roadora v3.5 Compact Smart Sheet Pro
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -17,19 +17,9 @@
     vehicle:'car',
     profile:'driving-car',
     hotelDetailPhotos:[],
-    hotelDetailPhotoIndex:0,
-    hotelFilters:{
-      pets:false,
-      family:false,
-      ev:false,
-      breakfast:false,
-      wellness:false,
-      budget:false,
-      premium:false
-    }
+    hotelDetailPhotoIndex:0
   };
   window.RoadoraState=RoadoraState;
-  RoadoraState.hotelFilters=readHotelPreferences();
 
   function setButtonType(){qsa('button').forEach(b=>{if(!b.hasAttribute('type')) b.type='button';});}
   function toast(message){
@@ -41,17 +31,6 @@
 
   function escapeHtml(value){
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-
-  function hotelPreferencesKey(){return 'roadoraHotelPreferencesV1';}
-  function readHotelPreferences(){
-    try{
-      const saved=JSON.parse(localStorage.getItem(hotelPreferencesKey())||'{}');
-      return {...(window.RoadoraState?.hotelFilters||{}),...saved};
-    }catch(_){return window.RoadoraState?.hotelFilters||{};}
-  }
-  function saveHotelPreferences(filters){
-    try{localStorage.setItem(hotelPreferencesKey(),JSON.stringify(filters||{}));}catch(_){}
   }
 
   function injectSavedHotelsMobilePolish(){
@@ -282,12 +261,11 @@
       }).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
     }
     el.classList.add('open');
-    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     toast(hotels.length?'Hotel shortlist geopend':'Nog geen hotels opgeslagen');
     return false;
   }
 
-  function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);return false;}
+  function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');return false;}
   function deleteSavedHotel(id){
     try{
       const before=readSavedStops();
@@ -395,14 +373,12 @@
       <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Je blijft eerst in Roadora om hotels rustig te vergelijken.</div>`;
     updateHotelCompareButton();
     el.classList.add('open');
-    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     toast('Hotel details geopend');
     return false;
   }
 
   function closeHotelDetail(){
     qs('#hotelDetailSheet')?.classList.remove('open');
-    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     return false;
   }
   function setActiveBottomNav(btn){qsa('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.remove('active','is-active'));btn?.classList.add('active','is-active');}
@@ -893,191 +869,6 @@
       if(fly) focusStop(ref.stop,true);
     }
     function selectedKey(){return selectedStopData?stopKey(selectedStopData):null;}
-    const hotelFilterDefs=[
-      {key:'pets',icon:'🐶',label:'Huisdieren'},
-      {key:'family',icon:'👨‍👩‍👧',label:'Familie'},
-      {key:'ev',icon:'⚡',label:'EV laden'},
-      {key:'breakfast',icon:'☕',label:'Ontbijt'},
-      {key:'wellness',icon:'♨️',label:'Wellness'},
-      {key:'budget',icon:'€',label:'Budget'},
-      {key:'premium',icon:'★',label:'Premium'}
-    ];
-
-    function injectHotelFilterbarClean(){
-      if(document.getElementById('roadoraHotelFilterbarCleanV1')) return;
-
-      const style=document.createElement('style');
-      style.id='roadoraHotelFilterbarCleanV1';
-      style.textContent=`
-        #mapScreen .hotelFilterbarClean{
-          position:absolute;
-          left:18px;
-          right:18px;
-          top:178px;
-          z-index:9999;
-          display:none;
-          align-items:center;
-          gap:6px;
-          overflow-x:auto;
-          padding:1px 2px 8px;
-          pointer-events:none;
-          opacity:0;
-          transform:translateY(-6px);
-          transition:opacity .18s ease, transform .18s ease;
-          scrollbar-width:none;
-          -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent 100%);
-          mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent 100%);
-        }
-        #mapScreen .hotelFilterbarClean::-webkit-scrollbar{display:none}
-        #mapScreen .hotelFilterbarClean.is-visible{
-          pointer-events:auto;
-          opacity:1;
-          transform:translateY(0);
-        }
-        #mapScreen .hotelFilterChipClean{
-          height:25px;
-          flex:0 0 auto;
-          border-radius:999px;
-          padding:0 8px;
-          display:inline-flex;
-          align-items:center;
-          gap:6px;
-          background:linear-gradient(180deg,rgba(255,248,242,.94),rgba(241,229,214,.92));
-          border:1px solid rgba(221,196,164,.38);
-          color:rgba(45,34,25,.82);
-          box-shadow:0 10px 24px rgba(38,26,12,.10), inset 0 1px 0 rgba(255,255,255,.72);
-          backdrop-filter:blur(18px);
-          -webkit-backdrop-filter:blur(18px);
-          font-size:9.5px;
-          font-weight:800;
-          white-space:nowrap;
-          transition:transform .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
-        }
-        #mapScreen .hotelFilterChipClean:active{transform:scale(.97)}
-        #mapScreen .hotelFilterChipClean b{
-          font-size:12px;
-          line-height:1;
-          font-weight:900;
-        }
-        #mapScreen .hotelFilterChipClean.active{
-          background:linear-gradient(135deg,#E7C38E,#D9A95E);
-          color:#211914;
-          box-shadow:0 10px 23px rgba(196,134,61,.20), inset 0 1px 0 rgba(255,255,255,.58);
-        }
-        #mapScreen .hotelFilterResetClean{
-          opacity:.86;
-          padding:0 8px;
-        }
-        #mapScreen .hotelFilterResetClean[hidden]{display:none!important}
-        @media(max-width:560px){
-          #mapScreen .hotelFilterbarClean{
-            left:14px;
-            right:14px;
-            top:178px;
-            gap:6px;
-          }
-          #mapScreen .hotelFilterChipClean{
-            height:26px;
-            padding:0 8px;
-            font-size:8.4px;
-          }
-          #mapScreen .hotelFilterChipClean b{font-size:11px}
-        }
-        @media(max-height:760px){
-          #mapScreen .hotelFilterbarClean{
-            top:160px;
-          }
-          #mapScreen .hotelFilterChipClean{
-            height:25px;
-            font-size:8.4px;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-
-      const mapToolsStyle=document.createElement('style');
-      mapToolsStyle.textContent=`
-        .leaflet-control-layers,
-        .leaflet-control-compass,
-        .leaflet-control-reset,
-        .leaflet-control-bearing{
-          display:none!important;
-        }
-
-        .leaflet-control-custom-center,
-        .mapCenterButton{
-          width:46px!important;
-          height:46px!important;
-          border-radius:18px!important;
-          background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(240,227,210,.96))!important;
-          box-shadow:0 12px 28px rgba(31,20,12,.14)!important;
-          border:1px solid rgba(222,198,168,.44)!important;
-          backdrop-filter:blur(18px)!important;
-          -webkit-backdrop-filter:blur(18px)!important;
-        }
-      `;
-      document.head.appendChild(mapToolsStyle);
-
-
-      const bar=document.createElement('div');
-      bar.id='hotelFilterbarClean';
-      bar.className='hotelFilterbarClean';
-      bar.setAttribute('aria-label','Hotel voorkeuren');
-      bar.innerHTML=hotelFilterDefs.map(def=>`
-        <button class="hotelFilterChipClean" data-hotel-filter="${def.key}" type="button" aria-pressed="false">
-          <b>${def.icon}</b><span>${def.label}</span>
-        </button>
-      `).join('') + `<button class="hotelFilterChipClean hotelFilterResetClean" data-hotel-filter-reset type="button" hidden>Reset</button>`;
-
-      (document.querySelector('#mapScreen')||document.querySelector('#mapScreen .roadMapApp')||document.body).appendChild(bar);
-
-      bar.addEventListener('click',(event)=>{
-        const reset=event.target.closest('[data-hotel-filter-reset]');
-        if(reset){
-          hotelFilterDefs.forEach(def=>{window.RoadoraState.hotelFilters[def.key]=false;});
-          saveHotelPreferences(window.RoadoraState.hotelFilters);
-          renderHotelFilterbarClean();
-          showToast('Hotelfilters gereset');
-          return;
-        }
-
-        const btn=event.target.closest('[data-hotel-filter]');
-        if(!btn) return;
-        const key=btn.dataset.hotelFilter;
-        window.RoadoraState.hotelFilters[key]=!window.RoadoraState.hotelFilters[key];
-        saveHotelPreferences(window.RoadoraState.hotelFilters);
-        renderHotelFilterbarClean();
-        const label=btn.textContent.trim().replace(/\s+/g,' ');
-        showToast(window.RoadoraState.hotelFilters[key] ? `${label} actief` : `${label} uit`);
-      });
-    }
-
-    function activeHotelFilterCountClean(){
-      const filters=window.RoadoraState?.hotelFilters||{};
-      return hotelFilterDefs.filter(def=>!!filters[def.key]).length;
-    }
-
-    function renderHotelFilterbarClean(){
-      injectHotelFilterbarClean();
-      const bar=document.getElementById('hotelFilterbarClean');
-      if(!bar) return;
-      const hotelCatActive=!!document.querySelector('.cat[data-filter="hotel"].active,.cat[data-filter="hotel"].is-active,.cat[data-filter="hotel"][aria-pressed="true"]');
-      const detailOpen=!!document.querySelector('#hotelDetailSheet.open,#hotelCompareSheet.open');
-      const visible=(activeFilters.has('hotel') || hotelCatActive || selectedStopData?.type==='hotel') && !detailOpen;
-      bar.classList.toggle('is-visible',visible);
-      bar.style.display=visible?'flex':'none';
-      bar.style.opacity=visible?'1':'0';
-      bar.style.pointerEvents=visible?'auto':'none';
-      const filters=window.RoadoraState?.hotelFilters||{};
-      bar.querySelectorAll('[data-hotel-filter]').forEach(btn=>{
-        const active=!!filters[btn.dataset.hotelFilter];
-        btn.classList.toggle('active',active);
-        btn.setAttribute('aria-pressed',active?'true':'false');
-      });
-      const reset=bar.querySelector('[data-hotel-filter-reset]');
-      if(reset) reset.hidden=activeHotelFilterCountClean()===0;
-    }
-
     function registerMarker(s,layer){
       const isSelected=selectedKey()===stopKey(s);
       const marker=L.marker(s.ll,{icon:makeStopIcon(s,isSelected,false)}).addTo(layer);
@@ -1087,142 +878,12 @@
       marker.on('click',()=>selectStop(ref,true));
       return ref;
     }
-    function cleanupMapUtilityControls(){
-      const root=document.querySelector('#mapScreen');
-      if(!root) return;
-
-      const hideOne=(el)=>{
-        if(!el) return;
-        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton,.mapControl,.mapControls') || el;
-        target.style.display='none';
-        target.setAttribute('aria-hidden','true');
-      };
-
-      // Laag/noord controls eruit. Alleen zoom + terug naar volledige route blijft.
-      [
-        '#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle',
-        '.layerBtn','.layersBtn','.mapLayers','.map-layer','.map-layers','.leaflet-control-layers',
-        '[aria-label*="layer" i]','[aria-label*="lagen" i]','[title*="layer" i]','[title*="lagen" i]'
-      ].forEach(sel=>{
-        try{root.querySelectorAll(sel).forEach(hideOne);}catch(_){}
-      });
-
-      root.querySelectorAll('button,a,div').forEach(el=>{
-        const txt=((el.textContent||'')+' '+(el.getAttribute?.('aria-label')||'')+' '+(el.title||'')+' '+(el.id||'')+' '+(el.className||'')).toLowerCase();
-        const isLayer=txt.includes('layer') || txt.includes('lagen') || txt.includes('kaartlaag') || txt.includes('map layer');
-        const isNorth=txt.includes('north') || txt.includes('noord') || txt.includes('bearing') || txt.includes('compass');
-        const isZoom=txt.includes('zoom') || txt.trim()==='+' || txt.trim()==='-';
-        const isRouteCenter=txt.includes('fitroute') || txt.includes('volledige route') || txt.includes('terug naar route') || txt.includes('centreer') || txt.includes('center route');
-        if((isLayer || isNorth) && !isZoom && !isRouteCenter) hideOne(el);
-      });
-
-      const fit=document.querySelector('#fitRoute');
-      if(fit){
-        fit.classList.add('roadoraCenterRouteBtn');
-        fit.setAttribute('aria-label','Terug naar volledige route');
-        fit.title='Terug naar volledige route';
-      }
-
-      // Visuele polish: zoom + centreer in één rustige rechter pil; laagknop blijft verborgen.
-      if(!document.getElementById('roadoraMapControlPolish')){
-        const style=document.createElement('style');
-        style.id='roadoraMapControlPolish';
-        style.textContent=`
-          #north,#mapNorth,#layerBtn,#layersBtn,#mapLayers,#layerToggle,#layersToggle,
-          .layerBtn,.layersBtn,.mapLayers,.map-layer,.map-layers,.leaflet-control-layers,
-          [aria-label*="layer" i],[aria-label*="lagen" i],[title*="layer" i],[title*="lagen" i]{
-            display:none!important;
-          }
-
-          #mapScreen .leaflet-top.leaflet-right,
-          #mapScreen .mapControlsRight,
-          #mapScreen .mapTools{
-            top:300px!important;
-            right:18px!important;
-            display:flex!important;
-            flex-direction:column!important;
-            gap:10px!important;
-            align-items:flex-end!important;
-          }
-
-          #mapScreen .leaflet-control-zoom,
-          #mapScreen .mapZoomControls,
-          #mapScreen .zoomControls{
-            border-radius:23px!important;
-            overflow:hidden!important;
-            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
-            border:1px solid rgba(222,198,168,.50)!important;
-            box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
-            backdrop-filter:blur(18px)!important;
-            -webkit-backdrop-filter:blur(18px)!important;
-          }
-
-          #mapScreen .leaflet-control-zoom a,
-          #mapScreen #zoomIn,
-          #mapScreen #zoomOut{
-            width:46px!important;
-            height:42px!important;
-            line-height:42px!important;
-            border-radius:0!important;
-            background:transparent!important;
-            border:0!important;
-            box-shadow:none!important;
-            color:#2f251d!important;
-            font-weight:900!important;
-          }
-
-          #mapScreen .roadoraCenterRouteBtn{
-            width:46px!important;
-            height:44px!important;
-            border-radius:23px!important;
-            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
-            border:1px solid rgba(222,198,168,.50)!important;
-            box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
-            backdrop-filter:blur(18px)!important;
-            -webkit-backdrop-filter:blur(18px)!important;
-            margin:0!important;
-          }
-
-          /* Als de controls in dezelfde container staan, lijken ze samen als één verticale pil. */
-          #mapScreen .roadoraCenterRouteBtn + .leaflet-control-zoom,
-          #mapScreen .leaflet-control-zoom + .roadoraCenterRouteBtn{
-            margin-top:-10px!important;
-          }
-
-          @media(max-width:560px){
-            #mapScreen .leaflet-top.leaflet-right,
-            #mapScreen .mapControlsRight,
-            #mapScreen .mapTools{
-              top:300px!important;
-              right:14px!important;
-              gap:9px!important;
-            }
-
-            #mapScreen .leaflet-control-zoom a,
-            #mapScreen #zoomIn,
-            #mapScreen #zoomOut{
-              width:44px!important;
-              height:40px!important;
-              line-height:40px!important;
-            }
-
-            #mapScreen .roadoraCenterRouteBtn{
-              width:44px!important;
-              height:42px!important;
-            }
-          }
-        `;
-        document.head.appendChild(style);
-      }
-    }
-
     function renderMarkers(){
       const previous=selectedStopData;
       markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();liveGoogleHotelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
       if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
-      renderHotelFilterbarClean();
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         updateSheet(destinationSheet);
@@ -1241,7 +902,6 @@
 
     function renderLiveGoogleHotelMarkers(){
       liveGoogleHotelLayer.clearLayers();
-      renderHotelFilterbarClean();
       if(!activeFilters.has('hotel')) return;
       liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
@@ -1411,7 +1071,6 @@
         liveGoogleHotelLoaded=true;
         liveGoogleHotelKey=requestKey;
         liveGoogleHotelLoading=false;
-        renderHotelFilterbarClean();
         renderLiveGoogleHotelMarkers();
         showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
       }catch(err){
@@ -1501,7 +1160,7 @@
       else{activeFilters=new Set(filters);activeFilters.delete('all');}
       syncCatUI();renderMarkers();if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();if(activeFilters.has('hotel')) loadLiveGoogleHotels();
     }
-    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'){renderHotelFilterbarClean();if(activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
+    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'&&activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
     document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
     async function loadOrsRoute(){
@@ -1538,10 +1197,6 @@
       safeInvalidate();
       if(mapBooted){fit('force');return;}
       mapBooted=true;
-      injectHotelFilterbarClean();
-      cleanupMapUtilityControls();
-      setTimeout(cleanupMapUtilityControls,250);
-      setTimeout(cleanupMapUtilityControls,800);
       updateSheet(destinationSheet);renderMarkers();syncCatUI();fit('force');loadOrsRoute();
     }
 
@@ -1555,8 +1210,7 @@
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
       getSelectedStop:()=>selectedStopData,
       toggleCategories,
-      closeCategories:()=>setCategoriesOpen(false),
-      refreshHotelFilters:()=>renderHotelFilterbarClean()
+      closeCategories:()=>setCategoriesOpen(false)
     };
 
     window.roadoraLeafletMap=map;
