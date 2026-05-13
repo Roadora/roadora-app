@@ -910,9 +910,9 @@
           position:absolute;
           left:18px;
           right:18px;
-          top:calc(env(safe-area-inset-top) + 174px);
-          z-index:818;
-          display:flex;
+          top:190px;
+          z-index:9999;
+          display:none;
           align-items:center;
           gap:7px;
           overflow-x:auto;
@@ -970,7 +970,7 @@
           #mapScreen .hotelFilterbarClean{
             left:14px;
             right:14px;
-            top:calc(env(safe-area-inset-top) + 174px);
+            top:190px;
             gap:6px;
           }
           #mapScreen .hotelFilterChipClean{
@@ -982,7 +982,7 @@
         }
         @media(max-height:760px){
           #mapScreen .hotelFilterbarClean{
-            top:calc(env(safe-area-inset-top) + 162px);
+            top:166px;
           }
           #mapScreen .hotelFilterChipClean{
             height:27px;
@@ -1002,7 +1002,7 @@
         </button>
       `).join('') + `<button class="hotelFilterChipClean hotelFilterResetClean" data-hotel-filter-reset type="button" hidden>Reset</button>`;
 
-      (document.querySelector('#mapScreen .ui')||document.querySelector('#mapScreen .roadMapApp')||document.body).appendChild(bar);
+      (document.querySelector('#mapScreen')||document.querySelector('#mapScreen .roadMapApp')||document.body).appendChild(bar);
 
       bar.addEventListener('click',(event)=>{
         const reset=event.target.closest('[data-hotel-filter-reset]');
@@ -1037,6 +1037,9 @@
       const hotelCatActive=!!document.querySelector('.cat[data-filter="hotel"].active,.cat[data-filter="hotel"].is-active,.cat[data-filter="hotel"][aria-pressed="true"]');
       const visible=activeFilters.has('hotel') || hotelCatActive || selectedStopData?.type==='hotel';
       bar.classList.toggle('is-visible',visible);
+      bar.style.display=visible?'flex':'none';
+      bar.style.opacity=visible?'1':'0';
+      bar.style.pointerEvents=visible?'auto':'none';
       const filters=window.RoadoraState?.hotelFilters||{};
       bar.querySelectorAll('[data-hotel-filter]').forEach(btn=>{
         const active=!!filters[btn.dataset.hotelFilter];
@@ -1251,6 +1254,7 @@
         liveGoogleHotelLoaded=true;
         liveGoogleHotelKey=requestKey;
         liveGoogleHotelLoading=false;
+        renderHotelFilterbarClean();
         renderLiveGoogleHotelMarkers();
         showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
       }catch(err){
