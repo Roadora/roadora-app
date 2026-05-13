@@ -315,12 +315,10 @@
       const open=escapeHtml(fuelOpenLabel(s));
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
       const amenitiesList=fuelAmenities(s);
-      const visibleAmenities=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}">${amenityIcon(a)}</span>`).join('');
-      const more=amenitiesList.length>4?`<span class="moreAmenity">+${amenitiesList.length-4}</span>`:'';
-      const address=escapeHtml(cleanMetaPart(s,'Langs je route'));
-      const desc=escapeHtml(s?.desc || 'Slimme tankstop langs je route. Handig voor brandstof, koffie en een korte pauze zonder grote omweg.');
+      const visibleAmenities=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${amenityIcon(a)}</b><em>${escapeHtml(String(a).replace('Goed beoordeeld','Top'))}</em></span>`).join('');
+      const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
       return `
-        <div class="fuelPremium fuelPremiumV3 fuelCompactV31">
+        <div class="fuelPremium fuelPremiumV3 fuelCleanV32">
           <div class="fuelQuickLine">
             <span>${rating}</span>
             <i></i>
@@ -328,15 +326,13 @@
             <i></i>
             <span>${detour}</span>
           </div>
-          <p>${desc}</p>
+          <div class="fuelAmenitiesStrip" aria-label="Voorzieningen">${visibleAmenities}${more}</div>
           <div class="fuelFooterRow">
             <div class="fuelHeroRow">
               <span class="fuelBrand">⛽ ${brand}</span>
               <span class="fuelDetour">${detour}</span>
             </div>
-            <div class="fuelAmenitiesStrip" aria-label="Voorzieningen">${visibleAmenities}${more}</div>
           </div>
-          <div class="fuelAddress">${address}</div>
         </div>`;
     }
     function routeArrivalLabel(){
@@ -487,7 +483,7 @@
       setSheetThumb(s);
       document.querySelector('.overline').textContent=s.label||'Volgende stop';
       document.getElementById('stopTitle').textContent=s.name;
-      document.getElementById('stopMeta').textContent=s.meta||'';
+      document.getElementById('stopMeta').textContent=s.type==='fuel' ? cleanMetaPart(s,'Langs je route') : (s.meta||'');
       const descEl=document.getElementById('stopDesc');
       if(s.type==='fuel'){
         descEl.innerHTML=premiumFuelHtml(s);
