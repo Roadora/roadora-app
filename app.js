@@ -369,12 +369,12 @@
 
       if(type==='fuel') return {
         state:'fuel',
-        title:stop?.name||'Tankstation',
+        title:'Volgende tankstop',
         badge:fuelOpenLabel(stop),
-        sub:`${stop?.brand||inferFuelBrand(stop?.name)} · ${fuelDetourLabel(stop)} · ${stop?.rating?stop.rating+' ★':'Google Places'}`,
-        eta:fuelDetourLabel(stop),
-        distance:fuelPriceLabel(stop),
-        next:fuelAmenities(stop).slice(0,2).join(' · ') || 'Voorzieningen'
+        sub:'Live cockpit · GPS-ready route-context',
+        eta:stop?.etaToStop || stop?.timeToStop || fuelDetourLabel(stop),
+        distance:stop?.distanceToStop || stop?.kmToStop || '± 3 km',
+        next:(vehicleInfo().short || 'Auto') + ' · langs route'
       };
 
       if(type==='ev') return {

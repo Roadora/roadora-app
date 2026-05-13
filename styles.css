@@ -1878,3 +1878,60 @@
     font-size:7.7px !important;
   }
 }
+
+/* ===== Roadora v3.3 Live Cockpit Pro =====
+   Topbar is live route-context; bottom sheet is stop-detail.
+   This removes duplicate POI info while staying GPS-ready. */
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusTitle{
+  font-size: clamp(13px, 3.7vw, 15px) !important;
+  letter-spacing: -.25px !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusSub{
+  color: rgba(95,84,75,.82) !important;
+  font-weight: 750 !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] .mapLiveChips span{
+  min-width: 0 !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusDistance{
+  display: inline-flex !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusNext{
+  max-width: 128px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* The sheet owns POI identity and details. Keep it calm and scannable. */
+#mapScreen .sheet[data-type="fuel"] #stopMeta{
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelQuickLine{
+  font-size: 9.4px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip span{
+  min-width: 46px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip b{
+  font-size: 17px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip em{
+  font-size: 8.2px !important;
+}
+@media(max-width:520px){
+  #mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusTitle{
+    font-size: 12.4px !important;
+  }
+  #mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusSub{
+    font-size: 8.6px !important;
+  }
+  #mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusNext{
+    max-width: 92px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip span{
+    min-width: 40px !important;
+  }
+}
