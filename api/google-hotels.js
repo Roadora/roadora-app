@@ -105,6 +105,7 @@ function normalizePlace(hit) {
     phone: place?.nationalPhoneNumber || null,
     priceLevel: place?.priceLevel || null,
     photoName: Array.isArray(place?.photos) && place.photos[0]?.name ? place.photos[0].name : null,
+    photoUrl: Array.isArray(place?.photos) && place.photos[0]?.name ? `/api/google-photo?name=${encodeURIComponent(place.photos[0].name)}&w=420` : null,
     summary: place?.editorialSummary?.text || null,
     routeSampleIndex: Number.isFinite(hit?.sampleIndex) ? hit.sampleIndex : null,
     routeProgress: Number.isFinite(hit?.point?.progress) ? hit.point.progress : null,
