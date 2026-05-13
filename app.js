@@ -270,11 +270,45 @@
     return items.map(a=>`<span><b>${hotelDetailAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
   }
 
-  function hotelPhotosFor(s){
+
+
+  /* ===== Roadora Photo System v1 =====
+     Echte Places foto's + stabiele fallback voor hotel cards/sheets/saved hotels. */
+  const ROADORA_HOTEL_FALLBACK_PHOTOS = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80'
+  ];
+  function roadoraPhotoUrlFromName(photoName,maxWidth=900){
+    if(!photoName) return '';
+    return '/api/place-photo?photoName='+encodeURIComponent(photoName)+'&maxWidth='+encodeURIComponent(maxWidth);
+  }
+  function roadoraFallbackHotelPhoto(s){
+    const seed=String(s?.googlePlaceId||s?.id||s?.name||'hotel');
+    let total=0;
+    for(let i=0;i<seed.length;i++) total+=seed.charCodeAt(i);
+    return ROADORA_HOTEL_FALLBACK_PHOTOS[Math.abs(total)%ROADORA_HOTEL_FALLBACK_PHOTOS.length];
+  }
+  function roadoraBuildPhotoList(s){
     const list=[];
     if(Array.isArray(s?.photoUrls)) list.push(...s.photoUrls);
+    if(Array.isArray(s?.photoNames)) s.photoNames.forEach(n=>list.push(roadoraPhotoUrlFromName(n)));
+    if(s?.photoName) list.push(roadoraPhotoUrlFromName(s.photoName));
     ['photoUrl','photo','imageUrl','image'].forEach(k=>{if(s?.[k]) list.push(s[k]);});
-    return Array.from(new Set(list.filter(Boolean))).slice(0,6);
+    const clean=Array.from(new Set(list.filter(Boolean)));
+    if(!clean.length && s?.type==='hotel') clean.push(roadoraFallbackHotelPhoto(s));
+    return clean.slice(0,6);
+  }
+  window.RoadoraPhotoSystem={
+    photoUrlFromName:roadoraPhotoUrlFromName,
+    fallbackHotelPhoto:roadoraFallbackHotelPhoto,
+    photoList:roadoraBuildPhotoList,
+    firstPhoto:(s)=>roadoraBuildPhotoList(s)[0]||''
+  };
+
+  function hotelPhotosFor(s){
+    return roadoraBuildPhotoList(s);
   }
   function firstStopPhoto(s){
     return hotelPhotosFor(s)[0] || s?.photoUrl || s?.photo || s?.imageUrl || s?.image || '';
@@ -732,6 +766,7 @@
       thumb.style.removeProperty('background-image');
       thumb.style.removeProperty('background');
       const photo =
+        window.RoadoraPhotoSystem?.firstPhoto?.(s) ||
         s?.photoUrl ||
         s?.photo ||
         s?.imageUrl ||
@@ -1011,8 +1046,8 @@
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
           photoNames:Array.isArray(p.photoNames)?p.photoNames:[],
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          photoUrls:Array.isArray(p.photoUrls)?p.photoUrls:[],
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||(p.photoName?window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName):null)||null,
+          photoUrls:Array.isArray(p.photoUrls)&&p.photoUrls.length?p.photoUrls:(Array.isArray(p.photoNames)?p.photoNames.map(n=>window.RoadoraPhotoSystem?.photoUrlFromName?.(n)).filter(Boolean):(p.photoName?[window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName)].filter(Boolean):[])),
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
@@ -1078,7 +1113,7 @@
           googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||(p.photoName?window.RoadoraPhotoSystem?.photoUrlFromName?.(p.photoName):null)||null,
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
 
