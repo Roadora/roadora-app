@@ -280,7 +280,8 @@
       return s?.detourLabel || s?.detour || s?.distanceFromRoute || '± 2 min van route';
     }
     function fuelPriceLabel(s){
-      return s?.fuelPrice || s?.priceLabel || s?.price || 'prijs checken';
+      // Live brandstofprijzen blijven bewust uit de MVP. Roadora toont daarom geen harde prijsclaim.
+      return s?.fuelPrice || s?.priceLabel || s?.price || 'geen live prijs';
     }
     function fuelOpenLabel(s){
       if(s?.openNow===true) return 'Nu open';
@@ -300,25 +301,26 @@
       const brand=escapeHtml(s?.brand || inferFuelBrand(s?.name));
       const detour=escapeHtml(fuelDetourLabel(s));
       const open=escapeHtml(fuelOpenLabel(s));
-      const price=escapeHtml(fuelPriceLabel(s));
-      const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'rating volgt';
+      const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
       const amenities=fuelAmenities(s).map(a=>`<span>${escapeHtml(a)}</span>`).join('');
       const address=escapeHtml(cleanMetaPart(s,'Langs je route'));
       const desc=escapeHtml(s?.desc || 'Slimme tankstop langs je route. Handig voor brandstof, koffie en een korte pauze zonder grote omweg.');
       return `
-        <div class="fuelPremium">
+        <div class="fuelPremium fuelPremiumV3">
+          <div class="fuelQuickLine">
+            <span>${rating}</span>
+            <i></i>
+            <span>${open}</span>
+            <i></i>
+            <span>${detour}</span>
+          </div>
           <p>${desc}</p>
           <div class="fuelHeroRow">
             <span class="fuelBrand">⛽ ${brand}</span>
             <span class="fuelDetour">${detour}</span>
           </div>
           <div class="fuelBadges">${amenities}</div>
-          <div class="sheetList fuelFacts">
-            <div class="sheetRow"><b>Status</b><span>${open}</span></div>
-            <div class="sheetRow"><b>Beoordeling</b><span>${rating}</span></div>
-            <div class="sheetRow"><b>Prijs</b><span>${price}</span></div>
-            <div class="sheetRow"><b>Ligging</b><span>${address}</span></div>
-          </div>
+          <div class="fuelAddress">${address}</div>
         </div>`;
     }
     function routeArrivalLabel(){
@@ -456,7 +458,7 @@
       }
       if(type==='destination') return '⌁ Navigeer naar bestemming';
       if(type==='hotel') return '⌁ Navigeer naar hotel';
-      if(type==='fuel') return '⌁ Navigeer naar tankstop';
+      if(type==='fuel') return '➤ Navigeer';
       if(type==='ev') return '⌁ Navigeer naar laadstation';
       if(type==='food') return '⌁ Navigeer naar restaurant';
       return '⌁ Navigeer naar stop';

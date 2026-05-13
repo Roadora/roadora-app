@@ -1368,3 +1368,113 @@
     left:5px;right:5px;bottom:5px;height:17px;font-size:6.4px;
   }
 }
+
+
+/* ===== Roadora v3.0 Premium Stop Sheet Pro =====
+   Rustigere stop-sheet: één hoofdactie, subtiele voorzieningen, geen live prijsclaim in MVP. */
+#mapScreen .sheet[data-type="fuel"]{
+  background:rgba(255,250,242,.955) !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetGrid{
+  align-items:center !important;
+}
+#mapScreen .sheet[data-type="fuel"] .overline{
+  color:#a66e31 !important;
+  letter-spacing:.16em !important;
+  font-size:9px !important;
+}
+#mapScreen .sheet[data-type="fuel"] h2{
+  margin:5px 0 5px !important;
+  font-size:18px !important;
+  letter-spacing:-.45px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .meta{
+  font-size:11px !important;
+  color:#5d5148 !important;
+  font-weight:800 !important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#mapScreen .fuelPremiumV3{
+  display:grid;
+  gap:7px;
+  margin-top:7px;
+}
+#mapScreen .fuelPremiumV3 .fuelQuickLine{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  color:#5a4d42;
+  font-size:10.4px;
+  font-weight:850;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#mapScreen .fuelPremiumV3 .fuelQuickLine i{
+  width:3px;
+  height:3px;
+  border-radius:999px;
+  background:rgba(112,92,72,.38);
+  flex:0 0 auto;
+}
+#mapScreen .fuelPremiumV3 p{
+  margin:0 !important;
+  color:#66594e !important;
+  font-size:11.3px !important;
+  line-height:1.38 !important;
+  max-width:100% !important;
+}
+#mapScreen .fuelPremiumV3 .fuelHeroRow{
+  margin-top:1px;
+}
+#mapScreen .fuelPremiumV3 .fuelAddress{
+  color:#88786a;
+  font-size:9.8px;
+  font-weight:750;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#mapScreen .sheet[data-type="fuel"] .fuelFacts{
+  display:none !important;
+}
+#mapScreen .sheet[data-type="fuel"] .primary{
+  height:52px !important;
+  border-radius:15px !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  background:linear-gradient(135deg,#e7c27f,#c4863d) !important;
+  box-shadow:0 14px 30px rgba(196,134,61,.22), inset 0 1px 0 rgba(255,255,255,.45) !important;
+}
+#mapScreen .sheet[data-type="fuel"] .secondary{
+  height:44px !important;
+  border-radius:14px !important;
+  font-size:11px !important;
+  background:rgba(255,255,255,.64) !important;
+  color:#4f4238 !important;
+}
+#mapScreen .sheet[data-type="fuel"] .thumb::after{
+  content:"Premium stop" !important;
+  background:rgba(255,250,242,.86) !important;
+  color:#6f4d26 !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusDistance{
+  display:none !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusNext{
+  background:rgba(255,255,255,.66) !important;
+}
+@media(max-width:520px){
+  #mapScreen .sheet[data-type="fuel"] h2{font-size:14px !important;}
+  #mapScreen .sheet[data-type="fuel"] .meta{font-size:8.8px !important;}
+  #mapScreen .fuelPremiumV3{gap:5px;margin-top:5px;}
+  #mapScreen .fuelPremiumV3 .fuelQuickLine{font-size:8px;gap:4px;}
+  #mapScreen .fuelPremiumV3 p{font-size:8.8px !important;line-height:1.25 !important;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;}
+  #mapScreen .fuelPremiumV3 .fuelAddress{display:none;}
+  #mapScreen .sheet[data-type="fuel"] .primary{height:34px !important;font-size:9px !important;border-radius:10px !important;}
+  #mapScreen .sheet[data-type="fuel"] .secondary{height:30px !important;font-size:8.2px !important;border-radius:10px !important;}
+}
