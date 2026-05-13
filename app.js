@@ -1,4 +1,4 @@
-/* Roadora Central Router v2.1 stable
+/* Roadora Central Router v2.2 premium sheet photo-ready
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -97,25 +97,37 @@
 
   function selectedStop(){return RoadoraState.selectedStop || window.RoadoraMapApi?.getSelectedStop?.() || null;}
   function selectedStopName(){return (selectedStop()?.name || qs('#stopTitle')?.textContent || 'Roadora stop').trim();}
+  function selectedStopMapsUrl(){
+    const s=selectedStop();
+    if(s?.googlePlaceId){
+      return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name)+'&query_place_id='+encodeURIComponent(s.googlePlaceId);
+    }
+    if(Array.isArray(s?.ll)){
+      return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.ll[0]+','+s.ll[1]);
+    }
+    return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(selectedStopName());
+  }
+  function selectedStopInfoUrl(){
+    const s=selectedStop();
+    if(s?.infoUrl) return s.infoUrl;
+    if(s?.type==='hotel') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' hotel boeken');
+    if(s?.type==='fuel') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' tankstation openingstijden');
+    if(s?.type==='ev') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' laadstation');
+    return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' informatie');
+  }
   function openMapsRoute(){
     const url='https://www.google.com/maps/dir/?api=1&origin=Rotterdam&destination=Innsbruck&travelmode=driving';
     window.open(url,'_blank','noopener');toast('Google Maps route geopend');
   }
   function openMapsStop(){
+    window.open(selectedStopMapsUrl(),'_blank','noopener');
     const s=selectedStop();
-    let url;
-    if(s?.googlePlaceId){
-      url='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name)+'&query_place_id='+encodeURIComponent(s.googlePlaceId);
-    }else if(Array.isArray(s?.ll)){
-      url='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.ll[0]+','+s.ll[1]);
-    }else{
-      url='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(selectedStopName());
-    }
-    window.open(url,'_blank','noopener');toast('Stop geopend in Maps');
+    toast(s?.type==='fuel'?'Tankstation geopend in Maps':s?.type==='ev'?'Laadstation geopend in Maps':'Stop geopend in Maps');
   }
   function openMoreInfo(){
-    const q=encodeURIComponent(selectedStopName()+' informatie');
-    window.open('https://www.google.com/search?q='+q,'_blank','noopener');toast('Meer informatie geopend');
+    window.open(selectedStopInfoUrl(),'_blank','noopener');
+    const s=selectedStop();
+    toast(s?.type==='hotel'?'Hotelinformatie geopend':s?.type==='fuel'?'Tankstation info geopend':s?.type==='ev'?'Laadinfo geopend':'Meer informatie geopend');
   }
   function setActiveBottomNav(btn){qsa('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.remove('active','is-active'));btn?.classList.add('active','is-active');}
   function setSheet(kind){
@@ -210,20 +222,73 @@
     function isVisible(s){return activeFilters.has('all')||activeFilters.has(s.type);}
     function makeStopIcon(s,selected=false,hidden=false){return divIcon(`<div class="stopPin ${selected?'selected':''} ${hidden?'hidden':''}">${svgs[s.type]||svgs.view}</div>`,[34,34]);}
     function setSelectedStop(s){selectedStopData=s;window.RoadoraState&&(window.RoadoraState.selectedStop=s);}
+    function stopPhotoFallback(s){
+      const type=s?.type||'destination';
+      if(type==='fuel') return 'linear-gradient(135deg,#f2d6a6,#8f6a3d 52%,#2d261d)';
+      if(type==='ev') return 'linear-gradient(135deg,#dff0dd,#8ea877 52%,#26402e)';
+      if(type==='hotel') return 'linear-gradient(135deg,#efe0c5,#a98255 52%,#433125)';
+      if(type==='food') return 'linear-gradient(135deg,#f3d7bd,#b07045 52%,#44251a)';
+      if(type==='view') return 'linear-gradient(135deg,#dce9e0,#789273 52%,#1f3629)';
+      return 'linear-gradient(135deg,#dfe4d8,#657866 52%,#1f2d27)';
+    }
+    function setSheetThumb(s){
+      const thumb=document.querySelector('#mapScreen .thumb');
+      if(!thumb) return;
+      const type=s?.type||'destination';
+      thumb.className='thumb thumb-'+type;
+      thumb.style.removeProperty('background-image');
+      thumb.style.removeProperty('background');
+      const photo=s?.photoUrl||s?.photo||s?.imageUrl||s?.image||'';
+      if(photo){
+        thumb.classList.add('has-photo');
+        thumb.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)), url("${String(photo).replace(/"/g,'')}")`;
+      }else{
+        thumb.classList.remove('has-photo');
+        thumb.style.background=stopPhotoFallback(s);
+      }
+      thumb.setAttribute('aria-label', photo?'Foto van '+(s?.name||'stop'):'Roadora preview '+type);
+    }
+    function actionText(s,secondary=false){
+      const type=s?.type||'stop';
+      if(secondary){
+        if(type==='destination') return 'ⓘ Route info';
+        if(type==='hotel') return 'ⓘ Hotel bekijken';
+        if(type==='fuel') return 'ⓘ Openingstijden';
+        if(type==='ev') return 'ⓘ Laadinfo';
+        if(type==='food') return 'ⓘ Menu & reviews';
+        if(type==='view') return 'ⓘ Bekijk plek';
+        return 'ⓘ Meer informatie';
+      }
+      if(type==='destination') return '⌁ Navigeer naar bestemming';
+      if(type==='hotel') return '⌁ Navigeer naar hotel';
+      if(type==='fuel') return '⌁ Navigeer naar tankstation';
+      if(type==='ev') return '⌁ Navigeer naar laadstation';
+      if(type==='food') return '⌁ Navigeer naar restaurant';
+      return '⌁ Navigeer naar stop';
+    }
     function updateSheet(s){
       setSelectedStop(s);
-      document.querySelector('.sheet')?.classList.add('is-open');
+      const sheet=document.querySelector('#mapScreen .sheet');
+      sheet?.classList.add('is-open');
+      if(sheet){sheet.dataset.type=s.type||'stop';}
+      setSheetThumb(s);
       document.querySelector('.overline').textContent=s.label||'Volgende stop';
       document.getElementById('stopTitle').textContent=s.name;
       document.getElementById('stopMeta').textContent=s.meta||'';
       const descEl=document.getElementById('stopDesc');
-      if(s.type==='ev'||s.type==='fuel'){
-        descEl.innerHTML=`${s.desc||''}<div class="sheetList"><div class="sheetRow"><b>Aanbieder</b><span>${s.provider||'Google Places'}</span></div><div class="sheetRow"><b>${s.type==='ev'?'Laadsnelheid':'Status'}</b><span>${s.power||s.status||'check live'}</span></div><div class="sheetRow"><b>Beschikbaarheid</b><span>${s.status||'openingstijden checken'}</span></div></div>`;
+      if(s.type==='ev'||s.type==='fuel'||s.type==='hotel'){
+        const rows=[];
+        rows.push(`<div class="sheetRow"><b>${s.type==='hotel'?'Platform':'Aanbieder'}</b><span>${s.provider||'Google Places'}</span></div>`);
+        if(s.rating) rows.push(`<div class="sheetRow"><b>Beoordeling</b><span>${s.rating} ★</span></div>`);
+        if(s.priceLevel) rows.push(`<div class="sheetRow"><b>Prijsniveau</b><span>${s.priceLevel}</span></div>`);
+        rows.push(`<div class="sheetRow"><b>${s.type==='ev'?'Laadsnelheid':s.type==='hotel'?'Status':'Status'}</b><span>${s.power||s.status||'check live'}</span></div>`);
+        if(s.openNow!==undefined) rows.push(`<div class="sheetRow"><b>Nu</b><span>${s.openNow?'open':'mogelijk gesloten'}</span></div>`);
+        descEl.innerHTML=`${s.desc||''}<div class="sheetList">${rows.join('')}</div>`;
       }else{descEl.textContent=s.desc||'';}
       const primary=document.querySelector('.sheetActions .primary');
       const secondary=document.querySelector('.sheetActions .secondary');
-      if(primary) primary.textContent=s.type==='destination'?'⌁ Navigeer naar bestemming':(s.type==='ev'?'⌁ Navigeer naar laadstation':s.type==='fuel'?'⌁ Navigeer naar tankstation':'⌁ Navigeer naar stop');
-      if(secondary) secondary.textContent=s.type==='destination'?'ⓘ Route info':(s.type==='ev'?'ⓘ Laadinfo':s.type==='fuel'?'ⓘ Tankstation info':'ⓘ Meer informatie');
+      if(primary) primary.textContent=actionText(s,false);
+      if(secondary) secondary.textContent=actionText(s,true);
     }
     function resetSelectedIcon(){if(selectedMarker?.marker && selectedMarker?.stop) selectedMarker.marker.setIcon(makeStopIcon(selectedMarker.stop,false,!isVisible(selectedMarker.stop)));}
     function selectStop(ref,fly=true){resetSelectedIcon();selectedMarker=ref;ref.marker.setIcon(makeStopIcon(ref.stop,true,false));updateSheet(ref.stop);if(fly && Array.isArray(ref.stop.ll)) map.flyTo(ref.stop.ll,ref.stop.type==='fuel'?9:7,{duration:.65});}
@@ -261,7 +326,15 @@
         const res=await fetch('/api/google-fuel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({points,radiusMeters:8000})});
         const data=await res.json().catch(()=>({}));
         if(!res.ok) throw new Error(data.error||'Google Fuel API fout');
-        liveGoogleFuelStops=(data.places||[]).map(p=>({name:p.name||'Tankstation',meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.openNow===true?'Nu open':''].filter(Boolean).join(' · '),desc:'Echt tankstation gevonden via Google Places langs je route.',type:'fuel',label:'Google tankstation',ll:[p.lat,p.lng],provider:'Google Places',status:p.openNow===true?'nu open':'openingstijden checken',googlePlaceId:p.id||p.place_id||null})).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
+        liveGoogleFuelStops=(data.places||[]).map(p=>({
+          name:p.name||'Tankstation',
+          meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.openNow===true?'Nu open':''].filter(Boolean).join(' · '),
+          desc:'Echt tankstation gevonden via Google Places langs je route. Open de stop voor navigatie of check openingstijden voordat je afslaat.',
+          type:'fuel',label:'Google tankstation',ll:[p.lat,p.lng],provider:p.provider||'Google Places',
+          status:p.openNow===true?'nu open':'openingstijden checken',openNow:p.openNow,rating:p.rating||null,
+          googlePlaceId:p.id||p.place_id||null,photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          infoUrl:p.url||p.website||null
+        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
         liveGoogleFuelLoaded=true;liveGoogleFuelLoading=false;renderLiveGoogleFuelMarkers();showToast(liveGoogleFuelStops.length?`${liveGoogleFuelStops.length} tankstations langs route`:'Geen tankstations langs route gevonden');
       }catch(err){liveGoogleFuelLoading=false;console.warn('Live Google tankstations fout:',err);showToast('Google tankstations niet geladen');}
     }
