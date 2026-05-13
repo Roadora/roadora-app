@@ -544,3 +544,246 @@
   #mapScreen .smartTopbar .mapNavBtn{width:38px !important;height:38px !important;}
   #mapScreen .mapLiveChips #mapStatusDistance{display:none !important;}
 }
+
+/* ===== Roadora v2.6 Cockpit Fix =====
+   Fix: geen zwevende terugknop meer over de routekaart.
+   Menu + terug + ritstatus vormen één geïntegreerde premium cockpit.
+   De routePanel eronder is nu alleen compact: voertuig + stats + route aanpassen.
+*/
+#mapScreen .smartTopbar{
+  pointer-events:auto !important;
+  position:absolute !important;
+  left:14px !important;
+  right:14px !important;
+  top:calc(env(safe-area-inset-top) + 12px) !important;
+  z-index:900 !important;
+  min-height:76px !important;
+  height:auto !important;
+  display:grid !important;
+  grid-template-columns:42px 42px minmax(0,1fr) !important;
+  gap:8px !important;
+  align-items:center !important;
+  padding:8px !important;
+  border-radius:24px !important;
+  background:rgba(255,250,242,.88) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 16px 42px rgba(24,18,12,.16), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(30px) !important;
+  -webkit-backdrop-filter:blur(30px) !important;
+}
+
+#mapScreen .smartTopbar .mapNavBtn{
+  width:42px !important;
+  height:42px !important;
+  align-self:center !important;
+  margin:0 !important;
+  border-radius:16px !important;
+  background:rgba(255,255,255,.58) !important;
+  border:1px solid rgba(70,47,24,.06) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.76), 0 7px 16px rgba(24,18,12,.07) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#211914 !important;
+  display:grid !important;
+  place-items:center !important;
+  flex:0 0 auto !important;
+}
+
+#mapScreen .smartTopbar .mapBackBtn{
+  font-size:25px !important;
+  line-height:1 !important;
+}
+
+#mapScreen .smartTopbar .mapLiveStatus{
+  min-width:0 !important;
+  min-height:58px !important;
+  height:auto !important;
+  padding:4px 3px 4px 6px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  display:grid !important;
+  grid-template-rows:auto auto auto !important;
+  gap:4px !important;
+}
+
+#mapScreen .smartTopbar .mapLiveMain b{
+  font-size:13.2px !important;
+  max-width:100% !important;
+}
+
+#mapScreen .smartTopbar .mapLiveSub{
+  font-size:10.2px !important;
+}
+
+#mapScreen .smartTopbar .mapLiveChips{
+  gap:5px !important;
+}
+
+#mapScreen .smartTopbar .mapLiveChips span{
+  background:rgba(255,255,255,.54) !important;
+  border:1px solid rgba(70,47,24,.06) !important;
+}
+
+/* RoutePanel wordt geen tweede topbar meer */
+#mapScreen .routePanel{
+  top:calc(env(safe-area-inset-top) + 104px) !important;
+  left:18px !important;
+  right:18px !important;
+  padding:10px 11px 10px !important;
+  border-radius:22px !important;
+  background:rgba(255,250,242,.88) !important;
+  box-shadow:0 14px 34px rgba(24,18,12,.12), inset 0 1px 0 rgba(255,255,255,.86) !important;
+}
+
+/* Start/bestemming staat nu in de slimme cockpit; hier dus verbergen */
+#mapScreen .routePanel .routePoints,
+#mapScreen .routePanel .divider{
+  display:none !important;
+}
+
+#mapScreen .routePanel .routeTop{
+  display:block !important;
+  min-height:0 !important;
+}
+
+#mapScreen .routePanel .vehicles{
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  gap:7px !important;
+  padding:0 !important;
+}
+
+#mapScreen .routePanel .vehicle{
+  height:34px !important;
+  border-radius:999px !important;
+  font-size:10px !important;
+  background:rgba(255,255,255,.44) !important;
+}
+
+#mapScreen .routePanel .vehicle span:last-child{
+  display:inline !important;
+}
+
+#mapScreen .routePanel .vehicle.active{
+  background:linear-gradient(135deg,#f0d9b2,#ca8d44) !important;
+}
+
+#mapScreen .routePanel .stats{
+  margin-top:9px !important;
+  padding-top:9px !important;
+}
+
+#mapScreen .controls{
+  top:calc(env(safe-area-inset-top) + 218px) !important;
+}
+
+#mapScreen .cats{
+  bottom:calc(env(safe-area-inset-bottom) + 202px) !important;
+}
+
+@media(max-width:520px){
+  #mapScreen .smartTopbar{
+    left:12px !important;
+    right:12px !important;
+    top:calc(env(safe-area-inset-top) + 10px) !important;
+    min-height:72px !important;
+    grid-template-columns:40px 40px minmax(0,1fr) !important;
+    gap:7px !important;
+    padding:7px !important;
+    border-radius:22px !important;
+  }
+
+  #mapScreen .smartTopbar .mapNavBtn{
+    width:40px !important;
+    height:40px !important;
+    border-radius:15px !important;
+  }
+
+  #mapScreen .smartTopbar .mapLiveStatus{
+    min-height:56px !important;
+    padding-left:5px !important;
+  }
+
+  #mapScreen .smartTopbar .mapLiveMain b{
+    font-size:12px !important;
+  }
+
+  #mapScreen .smartTopbar .mapLiveSub{
+    font-size:9.2px !important;
+  }
+
+  #mapScreen .routePanel{
+    top:calc(env(safe-area-inset-top) + 92px) !important;
+    left:14px !important;
+    right:14px !important;
+    padding:9px 10px !important;
+  }
+
+  #mapScreen .routePanel .vehicles{
+    gap:5px !important;
+  }
+
+  #mapScreen .routePanel .vehicle{
+    height:30px !important;
+    font-size:9px !important;
+    gap:3px !important;
+  }
+
+  #mapScreen .routePanel .vehicle span:first-child{
+    font-size:13px !important;
+  }
+
+  #mapScreen .routePanel .stats{
+    margin-top:8px !important;
+    padding-top:8px !important;
+  }
+
+  #mapScreen .controls{
+    top:calc(env(safe-area-inset-top) + 202px) !important;
+  }
+}
+
+@media(max-width:380px){
+  #mapScreen .smartTopbar{
+    grid-template-columns:38px 38px minmax(0,1fr) !important;
+    gap:6px !important;
+  }
+
+  #mapScreen .smartTopbar .mapNavBtn{
+    width:38px !important;
+    height:38px !important;
+  }
+
+  #mapScreen .routePanel .vehicle span:last-child{
+    display:none !important;
+  }
+}
+
+@media(max-height:760px){
+  #mapScreen .smartTopbar{
+    top:8px !important;
+    min-height:66px !important;
+    padding:6px !important;
+  }
+
+  #mapScreen .routePanel{
+    top:82px !important;
+  }
+
+  #mapScreen .routePanel .vehicle{
+    height:28px !important;
+  }
+
+  #mapScreen .routePanel .stats{
+    margin-top:7px !important;
+    padding-top:7px !important;
+  }
+
+  #mapScreen .controls{
+    top:188px !important;
+  }
+}
