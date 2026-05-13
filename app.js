@@ -1,4 +1,4 @@
-/* Roadora v3.5 Compact Smart Sheet Pro
+/* Roadora v4.9.1 Hotel Filterbar v1 Clean
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -17,9 +17,19 @@
     vehicle:'car',
     profile:'driving-car',
     hotelDetailPhotos:[],
-    hotelDetailPhotoIndex:0
+    hotelDetailPhotoIndex:0,
+    hotelFilters:{
+      pets:false,
+      family:false,
+      ev:false,
+      breakfast:false,
+      wellness:false,
+      budget:false,
+      premium:false
+    }
   };
   window.RoadoraState=RoadoraState;
+  RoadoraState.hotelFilters=readHotelPreferences();
 
   function setButtonType(){qsa('button').forEach(b=>{if(!b.hasAttribute('type')) b.type='button';});}
   function toast(message){
@@ -31,6 +41,17 @@
 
   function escapeHtml(value){
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function hotelPreferencesKey(){return 'roadoraHotelPreferencesV1';}
+  function readHotelPreferences(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(hotelPreferencesKey())||'{}');
+      return {...(window.RoadoraState?.hotelFilters||{}),...saved};
+    }catch(_){return window.RoadoraState?.hotelFilters||{};}
+  }
+  function saveHotelPreferences(filters){
+    try{localStorage.setItem(hotelPreferencesKey(),JSON.stringify(filters||{}));}catch(_){}
   }
 
   function injectSavedHotelsMobilePolish(){
@@ -869,6 +890,162 @@
       if(fly) focusStop(ref.stop,true);
     }
     function selectedKey(){return selectedStopData?stopKey(selectedStopData):null;}
+    const hotelFilterDefs=[
+      {key:'pets',icon:'🐶',label:'Huisdieren'},
+      {key:'family',icon:'👨‍👩‍👧',label:'Familie'},
+      {key:'ev',icon:'⚡',label:'EV laden'},
+      {key:'breakfast',icon:'☕',label:'Ontbijt'},
+      {key:'wellness',icon:'♨️',label:'Wellness'},
+      {key:'budget',icon:'€',label:'Budget'},
+      {key:'premium',icon:'★',label:'Premium'}
+    ];
+
+    function injectHotelFilterbarClean(){
+      if(document.getElementById('roadoraHotelFilterbarCleanV1')) return;
+
+      const style=document.createElement('style');
+      style.id='roadoraHotelFilterbarCleanV1';
+      style.textContent=`
+        #mapScreen .hotelFilterbarClean{
+          position:absolute;
+          left:18px;
+          right:18px;
+          top:calc(env(safe-area-inset-top) + 154px);
+          z-index:818;
+          display:flex;
+          align-items:center;
+          gap:7px;
+          overflow-x:auto;
+          padding:1px 2px 8px;
+          pointer-events:none;
+          opacity:0;
+          transform:translateY(-6px);
+          transition:opacity .18s ease, transform .18s ease;
+          scrollbar-width:none;
+          -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent 100%);
+          mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent 100%);
+        }
+        #mapScreen .hotelFilterbarClean::-webkit-scrollbar{display:none}
+        #mapScreen .hotelFilterbarClean.is-visible{
+          pointer-events:auto;
+          opacity:1;
+          transform:translateY(0);
+        }
+        #mapScreen .hotelFilterChipClean{
+          height:30px;
+          flex:0 0 auto;
+          border-radius:999px;
+          padding:0 10px;
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+          background:rgba(255,250,242,.58);
+          border:1px solid rgba(255,255,255,.52);
+          color:rgba(45,34,25,.82);
+          box-shadow:0 8px 20px rgba(24,18,12,.08), inset 0 1px 0 rgba(255,255,255,.62);
+          backdrop-filter:blur(18px);
+          -webkit-backdrop-filter:blur(18px);
+          font-size:10px;
+          font-weight:850;
+          white-space:nowrap;
+          transition:transform .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
+        }
+        #mapScreen .hotelFilterChipClean:active{transform:scale(.97)}
+        #mapScreen .hotelFilterChipClean b{
+          font-size:12px;
+          line-height:1;
+          font-weight:900;
+        }
+        #mapScreen .hotelFilterChipClean.active{
+          background:linear-gradient(135deg,rgba(241,217,178,.96),rgba(200,139,67,.88));
+          color:#211914;
+          box-shadow:0 10px 23px rgba(196,134,61,.20), inset 0 1px 0 rgba(255,255,255,.58);
+        }
+        #mapScreen .hotelFilterResetClean{
+          opacity:.86;
+          padding:0 9px;
+        }
+        #mapScreen .hotelFilterResetClean[hidden]{display:none!important}
+        @media(max-width:560px){
+          #mapScreen .hotelFilterbarClean{
+            left:14px;
+            right:14px;
+            top:calc(env(safe-area-inset-top) + 136px);
+            gap:6px;
+          }
+          #mapScreen .hotelFilterChipClean{
+            height:28px;
+            padding:0 9px;
+            font-size:9.2px;
+          }
+          #mapScreen .hotelFilterChipClean b{font-size:11px}
+        }
+        @media(max-height:760px){
+          #mapScreen .hotelFilterbarClean{
+            top:calc(env(safe-area-inset-top) + 122px);
+          }
+          #mapScreen .hotelFilterChipClean{
+            height:27px;
+            font-size:8.8px;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      const bar=document.createElement('div');
+      bar.id='hotelFilterbarClean';
+      bar.className='hotelFilterbarClean';
+      bar.setAttribute('aria-label','Hotel voorkeuren');
+      bar.innerHTML=hotelFilterDefs.map(def=>`
+        <button class="hotelFilterChipClean" data-hotel-filter="${def.key}" type="button" aria-pressed="false">
+          <b>${def.icon}</b><span>${def.label}</span>
+        </button>
+      `).join('') + `<button class="hotelFilterChipClean hotelFilterResetClean" data-hotel-filter-reset type="button" hidden>Reset</button>`;
+
+      (document.querySelector('#mapScreen .ui')||document.querySelector('#mapScreen .roadMapApp')||document.body).appendChild(bar);
+
+      bar.addEventListener('click',(event)=>{
+        const reset=event.target.closest('[data-hotel-filter-reset]');
+        if(reset){
+          hotelFilterDefs.forEach(def=>{window.RoadoraState.hotelFilters[def.key]=false;});
+          saveHotelPreferences(window.RoadoraState.hotelFilters);
+          renderHotelFilterbarClean();
+          showToast('Hotelfilters gereset');
+          return;
+        }
+
+        const btn=event.target.closest('[data-hotel-filter]');
+        if(!btn) return;
+        const key=btn.dataset.hotelFilter;
+        window.RoadoraState.hotelFilters[key]=!window.RoadoraState.hotelFilters[key];
+        saveHotelPreferences(window.RoadoraState.hotelFilters);
+        renderHotelFilterbarClean();
+        const label=btn.textContent.trim().replace(/\s+/g,' ');
+        showToast(window.RoadoraState.hotelFilters[key] ? `${label} actief` : `${label} uit`);
+      });
+    }
+
+    function activeHotelFilterCountClean(){
+      const filters=window.RoadoraState?.hotelFilters||{};
+      return hotelFilterDefs.filter(def=>!!filters[def.key]).length;
+    }
+
+    function renderHotelFilterbarClean(){
+      injectHotelFilterbarClean();
+      const bar=document.getElementById('hotelFilterbarClean');
+      if(!bar) return;
+      const visible=activeFilters.has('hotel');
+      bar.classList.toggle('is-visible',visible);
+      const filters=window.RoadoraState?.hotelFilters||{};
+      bar.querySelectorAll('[data-hotel-filter]').forEach(btn=>{
+        const active=!!filters[btn.dataset.hotelFilter];
+        btn.classList.toggle('active',active);
+        btn.setAttribute('aria-pressed',active?'true':'false');
+      });
+      const reset=bar.querySelector('[data-hotel-filter-reset]');
+      if(reset) reset.hidden=activeHotelFilterCountClean()===0;
+    }
+
     function registerMarker(s,layer){
       const isSelected=selectedKey()===stopKey(s);
       const marker=L.marker(s.ll,{icon:makeStopIcon(s,isSelected,false)}).addTo(layer);
@@ -884,7 +1061,7 @@
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
       if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
-      updateHotelFilterBarVisibility();
+      renderHotelFilterbarClean();
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         updateSheet(destinationSheet);
@@ -901,120 +1078,9 @@
       liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
     }
 
-
-    function injectHotelFilterBarV1(){
-      if(document.getElementById('roadoraHotelFiltersV1')) return;
-
-      const style=document.createElement('style');
-      style.id='roadoraHotelFiltersV1';
-      style.textContent=`
-        #mapScreen .hotelFilterBar{
-          position:absolute;
-          top:calc(env(safe-area-inset-top) + 146px);
-          left:14px;
-          right:14px;
-          z-index:820;
-          display:flex;
-          gap:8px;
-          overflow-x:auto;
-          padding:2px 2px 6px;
-          opacity:0;
-          transform:translateY(-6px);
-          pointer-events:none;
-          transition:opacity .18s ease,transform .18s ease;
-          scrollbar-width:none;
-        }
-
-        #mapScreen .hotelFilterBar::-webkit-scrollbar{
-          display:none;
-        }
-
-        #mapScreen .hotelFilterBar.visible{
-          opacity:1;
-          transform:translateY(0);
-          pointer-events:auto;
-        }
-
-        #mapScreen .hotelFilterChip{
-          height:31px;
-          border:none;
-          border-radius:999px;
-          padding:0 12px;
-          display:flex;
-          align-items:center;
-          gap:6px;
-          flex:0 0 auto;
-
-          background:rgba(255,248,240,.58);
-          backdrop-filter:blur(18px);
-          -webkit-backdrop-filter:blur(18px);
-
-          border:1px solid rgba(255,255,255,.55);
-
-          color:#3d2c1f;
-          font-size:11px;
-          font-weight:700;
-
-          box-shadow:
-            0 8px 24px rgba(31,20,12,.08),
-            inset 0 1px 0 rgba(255,255,255,.55);
-        }
-
-        #mapScreen .hotelFilterChip b{
-          font-size:13px;
-          line-height:1;
-        }
-
-        @media(max-width:560px){
-          #mapScreen .hotelFilterBar{
-            top:calc(env(safe-area-inset-top) + 136px);
-          }
-
-          #mapScreen .hotelFilterChip{
-            height:29px;
-            padding:0 10px;
-            font-size:10px;
-          }
-        }
-      `;
-
-      document.head.appendChild(style);
-
-      const bar=document.createElement('div');
-      bar.className='hotelFilterBar';
-      bar.id='hotelFilterBar';
-
-      const chips=[
-        ['🐶','Huisdieren'],
-        ['👨‍👩‍👧','Familie'],
-        ['⚡','EV laden'],
-        ['🍳','Ontbijt'],
-        ['♨️','Wellness'],
-        ['€','Budget'],
-        ['★','Premium']
-      ];
-
-      bar.innerHTML=chips.map(c=>`
-        <button class="hotelFilterChip" type="button">
-          <b>${c[0]}</b>
-          <span>${c[1]}</span>
-        </button>
-      `).join('');
-
-      (document.querySelector('#mapScreen .ui') || document.querySelector('#mapScreen .roadMapApp') || document.body).appendChild(bar);
-    }
-
-    function updateHotelFilterBarVisibility(){
-      injectHotelFilterBarV1();
-      const bar=document.getElementById('hotelFilterBar');
-      if(!bar) return;
-
-      const visible=activeFilters.has('hotel');
-      bar.classList.toggle('visible',visible);
-    }
-
     function renderLiveGoogleHotelMarkers(){
       liveGoogleHotelLayer.clearLayers();
+      renderHotelFilterbarClean();
       if(!activeFilters.has('hotel')) return;
       liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
@@ -1310,7 +1376,7 @@
       safeInvalidate();
       if(mapBooted){fit('force');return;}
       mapBooted=true;
-      injectHotelFilterBarV1();
+      injectHotelFilterbarClean();
       updateSheet(destinationSheet);renderMarkers();syncCatUI();fit('force');loadOrsRoute();
     }
 
