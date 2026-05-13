@@ -1,10 +1,10 @@
-/* Roadora Central Router v2.3 mapflow polish
+/* Roadora Central Router v2.4 screen navigation
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
    - Google fuel pins selectable
    - Maps opent met exacte coordinaten / place id waar mogelijk
-   - v2.3: betere kaartflow, selected state, focus-terugkeer en minder flicker
+   - v2.4: consistente hamburger/back navigatie op Home, Route en Kaart
 */
 (function(){
   'use strict';
@@ -76,7 +76,7 @@
   function toggleMenu(event){
     event.preventDefault();
     const phone=qs('.phone');
-    if(!phone || phone.classList.contains('mapActive')) return false;
+    if(!phone) return false;
     const open=phone.classList.contains('menuOpen')||phone.classList.contains('menuExpanded');
     if(open) closeMenu(); else {phone.classList.add('menuOpen','menuExpanded');qs('#sideMenu')?.classList.add('open','active','show');qs('#menuScrim')?.classList.add('open','active','show');}
     return false;
@@ -150,7 +150,7 @@
   function handleClick(event){
     const target=event.target;
     if(!target?.closest) return;
-    const menuBtn=target.closest('#menuToggle'); if(menuBtn){event.preventDefault();return toggleMenu(event);}
+    const menuBtn=target.closest('#menuToggle, [data-menu-open]'); if(menuBtn){event.preventDefault();return toggleMenu(event);}
     const langBtn=target.closest('#langBtn'); if(langBtn){event.preventDefault();qs('#langMenu')?.classList.toggle('open');return false;}
     const langOpt=target.closest('#langMenu button'); if(langOpt){event.preventDefault();qsa('#langMenu button').forEach(b=>b.classList.remove('active'));langOpt.classList.add('active');qs('#langBtn').textContent=langOpt.dataset.lang||'NL';qs('#langMenu')?.classList.remove('open');toast('Taal ingesteld');return false;}
     if(target.closest('#menuScrim')){event.preventDefault();closeMenu();return false;}
