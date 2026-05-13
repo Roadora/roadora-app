@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Roadora — Central Router v2.1</title>
+  <title>Roadora — Central Router v2.4 Screen Navigation</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@650;750&display=swap" />
@@ -115,7 +115,8 @@
 
     <section aria-label="Route setup" class="appScreen routeSetup" id="routeSetupScreen">
       <div class="routeInner">
-        <header class="rTop">
+        <header class="rTop rTopNav">
+          <button aria-label="Menu openen" class="rIcon screenMenuBtn" data-menu-open type="button">☰</button>
           <button aria-label="Terug naar home" class="rIcon" id="backHomeBtn" type="button">‹</button>
           <div class="rBrand"><div class="rLogo">⌁</div><span>Roadora</span></div>
           <div class="rActions"><button class="rRound rLang" type="button">NL</button><button class="rRound" type="button">♡</button></div>
@@ -162,6 +163,13 @@
       <div class="roadMapApp">
         <div id="routeLeafletMap"></div>
         <div class="ui">
+          <header class="mapTopbar" aria-label="Kaart navigatie">
+            <button class="mapNavBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
+            <button class="mapNavBtn" data-action="route" aria-label="Terug naar route setup" type="button">‹</button>
+            <div class="mapTitle"><b>Routekaart</b><span>Rotterdam → Innsbruck</span></div>
+            <button class="mapNavBtn" data-action="home" aria-label="Terug naar home" type="button">⌂</button>
+          </header>
+
           <section class="routePanel">
             <div class="routeTop">
               <div class="routePoints"><div class="timeline"><span class="dot"></span><span class="tl"></span><span class="dot"></span></div><div class="pointTexts"><div><div class="label">Van</div><div class="place">Rotterdam, Nederland</div></div><div><div class="label">Naar</div><div class="place">Innsbruck, Oostenrijk</div></div></div><button class="swap" type="button">⇅</button></div>
