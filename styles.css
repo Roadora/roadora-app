@@ -2205,3 +2205,71 @@
   #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip b{font-size:15px !important;}
   #mapScreen .sheet[data-type="fuel"] .fuelAmenitiesStrip em{display:none !important;}
 }
+
+/* ===== Roadora v3.6 Equal Sheet Actions =====
+   Navigeer en Opslaan als stop zijn nu visueel even groot.
+   Navigeer blijft primaire goudkleurige CTA; Opslaan blijft subtiele glass CTA.
+*/
+#mapScreen .sheet[data-type="fuel"] .sheetGrid{
+  grid-template-columns:60px 1fr 92px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions{
+  display:grid !important;
+  grid-template-rows:1fr 1fr !important;
+  gap:7px !important;
+  align-self:center !important;
+  min-width:92px !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .primary,
+#mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+  width:100% !important;
+  height:34px !important;
+  min-height:34px !important;
+  border-radius:11px !important;
+  font-size:8.3px !important;
+  font-weight:900 !important;
+  line-height:1.05 !important;
+  padding:0 7px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  white-space:normal !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .primary{
+  background:linear-gradient(135deg,#ead0a0,#c88b43) !important;
+  color:#211914 !important;
+  box-shadow:0 12px 24px rgba(196,135,61,.20), inset 0 1px 0 rgba(255,255,255,.42) !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(70,47,24,.08) !important;
+  color:#8a5f2e !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 7px 15px rgba(33,22,11,.05) !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop.is-disabled,
+#mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop:disabled{
+  opacity:.48 !important;
+}
+#mapScreen .sheet[data-type="fuel"] .sheetActions .secondary,
+#mapScreen .sheet[data-type="fuel"] .sheetActions .secondary.is-hidden,
+#mapScreen .sheet[data-type="fuel"] .sheetActions .secondary[hidden]{
+  display:none !important;
+}
+
+@media(max-width:380px){
+  #mapScreen .sheet[data-type="fuel"] .sheetGrid{
+    grid-template-columns:56px 1fr 86px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions{
+    min-width:86px !important;
+    gap:6px !important;
+  }
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .primary,
+  #mapScreen .sheet[data-type="fuel"] .sheetActions .saveStop{
+    height:32px !important;
+    min-height:32px !important;
+    font-size:7.7px !important;
+    padding:0 5px !important;
+  }
+}
