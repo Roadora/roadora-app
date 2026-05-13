@@ -731,7 +731,13 @@
       thumb.className='thumb thumb-'+type;
       thumb.style.removeProperty('background-image');
       thumb.style.removeProperty('background');
-      const photo=firstStopPhoto(s);
+      const photo =
+        s?.photoUrl ||
+        s?.photo ||
+        s?.imageUrl ||
+        s?.image ||
+        (Array.isArray(s?.photoUrls) ? s.photoUrls[0] : '') ||
+        '';
       if(photo){
         thumb.classList.add('has-photo');
         thumb.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)), url("${String(photo).replace(/"/g,'')}")`;
