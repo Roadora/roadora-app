@@ -15,7 +15,9 @@
   const RoadoraState={
     selectedStop:null,
     vehicle:'car',
-    profile:'driving-car'
+    profile:'driving-car',
+    hotelDetailPhotos:[],
+    hotelDetailPhotoIndex:0
   };
   window.RoadoraState=RoadoraState;
 
@@ -135,21 +137,79 @@
     const s=selectedStop();
     toast(s?.type==='hotel'?'Hotelinformatie geopend':s?.type==='fuel'?'Tankstation info geopend':s?.type==='ev'?'Laadinfo geopend':'Meer informatie geopend');
   }
+  function savedStopsKey(){return 'roadoraSavedStops';}
+  function readSavedStops(){
+    try{return JSON.parse(localStorage.getItem(savedStopsKey())||'[]').filter(Boolean);}
+    catch(_){return [];}
+  }
+  function stopIdentity(s){return s?.googlePlaceId || `${s?.type||'stop'}:${s?.name||''}:${Array.isArray(s?.ll)?s.ll.join(','):''}`;}
+  function normalizeSavedStop(s){
+    return {
+      id: stopIdentity(s),
+      name:s.name,
+      type:s.type,
+      label:s.label||'Tussenstop',
+      meta:s.meta||'',
+      address:s.address||s.meta||'',
+      ll:s.ll||null,
+      rating:s.rating||null,
+      userRatingCount:s.userRatingCount||null,
+      detourLabel:s.detourLabel||null,
+      priceLevel:s.priceLevel||null,
+      amenities:Array.isArray(s.amenities)?s.amenities.slice(0,8):[],
+      googlePlaceId:s.googlePlaceId||null,
+      googleMapsUri:s.googleMapsUri||s.infoUrl||null,
+      infoUrl:s.infoUrl||s.googleMapsUri||null,
+      photoUrl:s.photoUrl||s.photo||s.imageUrl||s.image||null,
+      photoUrls:Array.isArray(s.photoUrls)?s.photoUrls.slice(0,6):[],
+      savedAt:new Date().toISOString()
+    };
+  }
+  function savedHotelCount(){return readSavedStops().filter(x=>x.type==='hotel').length;}
+  function updateHotelCompareButton(){
+    const btn=qs('[data-hotel-action="compare"]');
+    if(btn){
+      const count=savedHotelCount();
+      btn.hidden=count===0;
+      btn.textContent=count?`Vergelijk opgeslagen hotels (${count})`:'Vergelijk opgeslagen hotels';
+    }
+  }
   function saveSelectedStop(){
     const s=selectedStop();
     if(!s || s.type==='destination' || s.type==='overview'){toast('Kies eerst een tussenstop');return false;}
-    const item={name:s.name,type:s.type,label:s.label||'Tussenstop',meta:s.meta||'',ll:s.ll||null,googlePlaceId:s.googlePlaceId||null,savedAt:new Date().toISOString()};
+    const item=normalizeSavedStop(s);
     try{
-      const key='roadoraSavedStops';
-      const list=JSON.parse(localStorage.getItem(key)||'[]');
-      const id=item.googlePlaceId || (item.type+':'+item.name);
-      const exists=list.some(x=>(x.googlePlaceId||x.type+':'+x.name)===id);
-      if(!exists) list.unshift(item);
-      localStorage.setItem(key,JSON.stringify(list.slice(0,50)));
-      toast(exists?'Tussenstop stond al opgeslagen':'Tussenstop opgeslagen');
+      const list=readSavedStops();
+      const exists=list.some(x=>(x.id||x.googlePlaceId||`${x.type}:${x.name}`)===item.id);
+      const next=exists?list.map(x=>(x.id||x.googlePlaceId||`${x.type}:${x.name}`)===item.id?{...x,...item,savedAt:x.savedAt||item.savedAt}:x):[item,...list];
+      localStorage.setItem(savedStopsKey(),JSON.stringify(next.slice(0,60)));
+      updateHotelCompareButton();
+      toast(exists?'Stond al opgeslagen':'Opgeslagen voor vergelijking');
     }catch(err){console.warn('Opslaan tussenstop fout:',err);toast('Opslaan niet gelukt');}
     return false;
   }
+  function ensureHotelCompareSheet(){
+    let el=qs('#hotelCompareSheet');
+    if(el) return el;
+    el=document.createElement('section');
+    el.id='hotelCompareSheet';
+    el.className='hotelCompareSheet';
+    el.innerHTML=`<div class="hotelCompareScrim" data-compare-action="close"></div><article class="hotelCompareCard"><button class="hotelCompareClose" data-compare-action="close">×</button><div class="hotelCompareHead"><span>Opgeslagen hotels</span><b>Vergelijk je shortlist</b></div><div class="hotelCompareList"></div></article>`;
+    (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
+    return el;
+  }
+  function openHotelCompare(){
+    const hotels=readSavedStops().filter(x=>x.type==='hotel');
+    const el=ensureHotelCompareSheet();
+    const list=qs('.hotelCompareList',el);
+    if(list){
+      list.innerHTML=hotels.length?hotels.slice(0,8).map(h=>`<button class="hotelCompareItem" data-place-id="${escapeHtml(h.googlePlaceId||'')}"><span class="hotelCompareThumb" style="${h.photoUrl?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.22)),url('${String(h.photoUrl).replace(/'/g,'')}')`:''}"></span><span><b>${escapeHtml(h.name||'Hotel')}</b><em>${escapeHtml([h.rating?`${h.rating} ★`:'',h.detourLabel||'',h.address||''].filter(Boolean).join(' · '))}</em></span></button>`).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
+    }
+    el.classList.add('open');
+    toast(hotels.length?'Hotel shortlist geopend':'Nog geen hotels opgeslagen');
+    return false;
+  }
+  function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');return false;}
 
 
   function ensureHotelDetailSheet(){
@@ -164,7 +224,7 @@
       <article class="hotelDetailCard">
         <button class="hotelDetailGrab" data-hotel-action="expand" aria-label="Hotel detail groter maken"></button>
         <button class="hotelDetailClose" data-hotel-action="close" aria-label="Sluiten">×</button>
-        <div class="hotelDetailHero" data-hotel-action="expand"></div>
+        <div class="hotelDetailHero"></div>
         <div class="hotelDetailBody"></div>
       </article>`;
     (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
@@ -188,18 +248,35 @@
     return items.map(a=>`<span><b>${hotelDetailAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
   }
 
+  function hotelPhotosFor(s){
+    const list=[];
+    if(Array.isArray(s?.photoUrls)) list.push(...s.photoUrls);
+    ['photoUrl','photo','imageUrl','image'].forEach(k=>{if(s?.[k]) list.push(s[k]);});
+    return Array.from(new Set(list.filter(Boolean))).slice(0,6);
+  }
+  function renderHotelHero(hero, photos, index=0){
+    const photo=photos[index]||'';
+    RoadoraState.hotelDetailPhotos=photos;
+    RoadoraState.hotelDetailPhotoIndex=index;
+    hero.classList.toggle('has-photo',!!photo);
+    hero.style.backgroundImage=photo?`linear-gradient(180deg,rgba(20,12,6,.05),rgba(20,12,6,.36)), url("${String(photo).replace(/"/g,'')}")`:'';
+    if(photo){
+      const dots=photos.length>1?`<div class="hotelHeroDots">${photos.map((_,i)=>`<button class="${i===index?'active':''}" data-hotel-action="photo-dot" data-photo-index="${i}" aria-label="Foto ${i+1}"></button>`).join('')}</div>`:'';
+      const arrows=photos.length>1?'<button class="hotelHeroArrow prev" data-hotel-action="photo-prev" aria-label="Vorige foto">‹</button><button class="hotelHeroArrow next" data-hotel-action="photo-next" aria-label="Volgende foto">›</button>':'';
+      hero.innerHTML=`${arrows}<button class="hotelHeroExpand" data-hotel-action="expand" aria-label="Bekijk foto groter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/><path d="M8 3 3 8M16 3l5 5M3 16l5 5M21 16l-5 5"/></svg></button><div class="hotelHeroShade"><span>Foto via Google Places</span></div>${dots}`;
+    }else{
+      hero.innerHTML='<div class="hotelDetailFallback">Hotel langs route</div>';
+    }
+  }
+
   function openHotelDetail(){
     const s=selectedStop();
     if(!s || s.type!=='hotel'){openMoreInfo();return false;}
     const el=ensureHotelDetailSheet();
     const hero=qs('.hotelDetailHero',el);
     const body=qs('.hotelDetailBody',el);
-    const photo=s.photoUrl||s.photo||s.imageUrl||s.image||'';
-    if(hero){
-      hero.classList.toggle('has-photo',!!photo);
-      hero.style.backgroundImage=photo?`linear-gradient(180deg,rgba(20,12,6,.05),rgba(20,12,6,.36)), url("${String(photo).replace(/"/g,'')}")`:'';
-      hero.innerHTML=photo?'<div class="hotelHeroShade"><span>Foto via Google Places</span><b>Bekijk groter</b></div><div class="hotelHeroDots"><i></i><i></i><i></i></div>':'<div class="hotelDetailFallback">Hotel langs route</div>';
-    }
+    const photos=hotelPhotosFor(s);
+    if(hero) renderHotelHero(hero,photos,0);
     const rating=s.rating?`${escapeHtml(s.rating)} ★`: 'Google Places';
     const reviews=s.userRatingCount?`${escapeHtml(s.userRatingCount)} reviews`:'reviews bekijken';
     const detour=escapeHtml(s.detourLabel||'± 10 min van route');
@@ -215,7 +292,9 @@
         <button class="hotelGhost" data-hotel-action="navigate">Navigeer</button>
         <button class="hotelGhost" data-hotel-action="save">Opslaan</button>
       </div>
+      <button class="hotelCompareButton" data-hotel-action="compare" hidden>Vergelijk opgeslagen hotels</button>
       <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Je blijft eerst in Roadora om hotels rustig te vergelijken.</div>`;
+    updateHotelCompareButton();
     el.classList.add('open');
     toast('Hotel details geopend');
     return false;
@@ -264,11 +343,26 @@
       const action=hotelAction.dataset.hotelAction;
       if(action==='close') return closeHotelDetail();
       if(action==='expand') { qs('#hotelDetailSheet')?.classList.toggle('expanded'); return false; }
+      if(action==='photo-next' || action==='photo-prev' || action==='photo-dot'){
+        const photos=RoadoraState.hotelDetailPhotos||[];
+        if(photos.length){
+          let idx=RoadoraState.hotelDetailPhotoIndex||0;
+          if(action==='photo-next') idx=(idx+1)%photos.length;
+          if(action==='photo-prev') idx=(idx-1+photos.length)%photos.length;
+          if(action==='photo-dot') idx=Number(hotelAction.dataset.photoIndex)||0;
+          const hero=qs('#hotelDetailSheet .hotelDetailHero');
+          if(hero) renderHotelHero(hero,photos,idx);
+        }
+        return false;
+      }
       if(action==='maps') return openMoreInfo();
       if(action==='navigate') return openMapsStop();
       if(action==='save') return saveSelectedStop();
+      if(action==='compare') return openHotelCompare();
       return false;
     }
+    const compareAction=target.closest('[data-compare-action]');
+    if(compareAction){event.preventDefault(); if(compareAction.dataset.compareAction==='close') return closeHotelCompare(); return false;}
     if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
     if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') return openHotelDetail(); openMapsStop(); return false;}
     if(target.closest('#mapScreen .secondary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMapsStop(); else openMoreInfo(); return false;}
@@ -878,7 +972,9 @@
           googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
+          photoNames:Array.isArray(p.photoNames)?p.photoNames:[],
           photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          photoUrls:Array.isArray(p.photoUrls)?p.photoUrls:[],
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
