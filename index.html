@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Roadora — Central Router v2.4 Screen Navigation</title>
+  <title>Roadora — v2.5 Smart Topbar Pro</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@650;750&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <meta name="roadora-build" content="central-router-v2-1-stable; home-v8-7-locked; google-fuel-v1" />
+  <meta name="roadora-build" content="central-router-v2-5-smart-topbar-pro; home-v8-7-locked; google-fuel-v1" />
   <link rel="stylesheet" href="./styles.css" />
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
@@ -163,11 +163,21 @@
       <div class="roadMapApp">
         <div id="routeLeafletMap"></div>
         <div class="ui">
-          <header class="mapTopbar" aria-label="Kaart navigatie">
+          <header class="mapTopbar smartTopbar" aria-label="Slimme ritstatus">
             <button class="mapNavBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
-            <button class="mapNavBtn" data-action="route" aria-label="Terug naar route setup" type="button">‹</button>
-            <div class="mapTitle"><b>Routekaart</b><span>Rotterdam → Innsbruck</span></div>
-            <button class="mapNavBtn" data-action="home" aria-label="Terug naar home" type="button">⌂</button>
+            <button class="mapNavBtn mapBackBtn" data-action="route" aria-label="Terug naar route setup" type="button">‹</button>
+            <div class="mapLiveStatus" aria-live="polite">
+              <div class="mapLiveMain">
+                <b id="mapStatusTitle">Rotterdam → Innsbruck</b>
+                <span id="mapStatusBadge">Auto</span>
+              </div>
+              <div class="mapLiveSub" id="mapStatusSub">Route laden…</div>
+              <div class="mapLiveChips">
+                <span id="mapStatusEta">ETA —</span>
+                <span id="mapStatusDistance">— km</span>
+                <span id="mapStatusNext">Volgende stop</span>
+              </div>
+            </div>
           </header>
 
           <section class="routePanel">
