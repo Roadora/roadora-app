@@ -619,12 +619,55 @@
       if(!activeFilters.has('hotel')) return;
       liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
-    function currentRouteSamplePoints(maxPoints=9){
+    function currentRouteSamplePoints(maxPoints=14, options={}){
       const latlngs=routeMain.getLatLngs?.()||[];
       const source=latlngs.length?latlngs:route.map(p=>L.latLng(p[0],p[1]));
+      const count=Math.max(3,Math.min(28,Number(maxPoints)||14));
+      const includeEnds=options.includeEnds===true;
       if(!source||source.length<2) return [];
+
+      const distances=[0];
+      let total=0;
+      for(let i=1;i<source.length;i++){
+        const prev=source[i-1];
+        const cur=source[i];
+        total+=map.distance(prev,cur);
+        distances.push(total);
+      }
+      if(!Number.isFinite(total)||total<=0) return [];
+
+      function interpolateAt(target){
+        let idx=1;
+        while(idx<distances.length && distances[idx]<target) idx++;
+        const before=Math.max(0,idx-1);
+        const after=Math.min(source.length-1,idx);
+        const d0=distances[before];
+        const d1=distances[after];
+        const ratio=d1>d0?(target-d0)/(d1-d0):0;
+        const a=source[before];
+        const b=source[after];
+        return {
+          lat:a.lat+(b.lat-a.lat)*ratio,
+          lng:a.lng+(b.lng-a.lng)*ratio,
+          progress:target/total,
+          distanceFromStartMeters:Math.round(target)
+        };
+      }
+
       const points=[];
-      for(let i=1;i<=maxPoints;i++){const idx=Math.floor((source.length-1)*(i/(maxPoints+1)));const p=source[Math.max(0,Math.min(source.length-1,idx))];points.push({lat:p.lat,lng:p.lng});}
+      const usable=count;
+      for(let i=0;i<usable;i++){
+        const fraction=includeEnds
+          ? (usable===1?0.5:i/(usable-1))
+          : ((i+1)/(usable+1));
+        const p=interpolateAt(total*fraction);
+        points.push({
+          lat:Math.round(p.lat*1000000)/1000000,
+          lng:Math.round(p.lng*1000000)/1000000,
+          progress:Math.round(p.progress*1000)/1000,
+          distanceFromStartMeters:p.distanceFromStartMeters
+        });
+      }
       return points;
     }
     function routeSpreadIndex(stop, buckets=10){
@@ -688,7 +731,7 @@
       liveGoogleHotelLoading=true;
       try{
         showToast('Hotels langs route zoeken…');
-        const points=currentRouteSamplePoints(13);
+        const points=currentRouteSamplePoints(18,{includeEnds:false});
         if(!points.length){
           liveGoogleHotelLoading=false;
           showToast('Nog geen routepunten beschikbaar');
@@ -701,7 +744,7 @@
           method:'POST',
           headers:{'Content-Type':'application/json'},
           signal: controller.signal,
-          body:JSON.stringify({points,radiusMeters:7500})
+          body:JSON.stringify({points,radiusMeters:16000,mode:'route_planning'})
         });
         clearTimeout(timer);
 
@@ -742,7 +785,7 @@
       liveGoogleFuelLoading=true;
       try{
         showToast('Tankstations dicht langs route zoeken…');
-        const points=currentRouteSamplePoints(9);
+        const points=currentRouteSamplePoints(14,{includeEnds:false});
         if(!points.length){
           liveGoogleFuelLoading=false;
           showToast('Nog geen routepunten beschikbaar');
@@ -755,7 +798,7 @@
           method:'POST',
           headers:{'Content-Type':'application/json'},
           signal: controller.signal,
-          body:JSON.stringify({points,radiusMeters:8000})
+          body:JSON.stringify({points,radiusMeters:7000,mode:'route_quick'})
         });
         clearTimeout(timer);
 
