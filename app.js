@@ -27,6 +27,10 @@
   }
   window.RoadoraToast=toast;
 
+  function escapeHtml(value){
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
   function closeMenu(){
     const phone=qs('.phone');
     phone?.classList.remove('menuOpen','menuExpanded');
@@ -146,6 +150,81 @@
     }catch(err){console.warn('Opslaan tussenstop fout:',err);toast('Opslaan niet gelukt');}
     return false;
   }
+
+
+  function ensureHotelDetailSheet(){
+    let el=qs('#hotelDetailSheet');
+    if(el) return el;
+    el=document.createElement('section');
+    el.id='hotelDetailSheet';
+    el.className='hotelDetailSheet';
+    el.setAttribute('aria-label','Hotel details');
+    el.innerHTML=`
+      <div class="hotelDetailScrim" data-hotel-action="close"></div>
+      <article class="hotelDetailCard">
+        <div class="hotelDetailGrab"></div>
+        <button class="hotelDetailClose" data-hotel-action="close" aria-label="Sluiten">×</button>
+        <div class="hotelDetailHero"></div>
+        <div class="hotelDetailBody"></div>
+      </article>`;
+    (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
+    return el;
+  }
+
+  function hotelDetailAmenityIcon(label){
+    const v=String(label||'').toLowerCase();
+    if(v.includes('wifi')) return '⌁';
+    if(v.includes('park')) return '🅿️';
+    if(v.includes('ontbijt')||v.includes('breakfast')) return '☕';
+    if(v.includes('familie')||v.includes('kind')) return '👨‍👩‍👧';
+    if(v.includes('hond')||v.includes('huisdier')||v.includes('pet')) return '🐾';
+    if(v.includes('ev')||v.includes('laad')) return '⚡';
+    if(v.includes('wellness')||v.includes('spa')||v.includes('zwembad')) return '♨️';
+    return '✓';
+  }
+
+  function hotelDetailAmenitiesHtml(s){
+    const items=(Array.isArray(s?.amenities)&&s.amenities.length?s.amenities:['Wifi','Parkeren']).slice(0,6);
+    return items.map(a=>`<span><b>${hotelDetailAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
+  }
+
+  function openHotelDetail(){
+    const s=selectedStop();
+    if(!s || s.type!=='hotel'){openMoreInfo();return false;}
+    const el=ensureHotelDetailSheet();
+    const hero=qs('.hotelDetailHero',el);
+    const body=qs('.hotelDetailBody',el);
+    const photo=s.photoUrl||s.photo||s.imageUrl||s.image||'';
+    if(hero){
+      hero.classList.toggle('has-photo',!!photo);
+      hero.style.backgroundImage=photo?`linear-gradient(180deg,rgba(20,12,6,.05),rgba(20,12,6,.36)), url("${String(photo).replace(/"/g,'')}")`:'';
+      hero.innerHTML=photo?'':'<div class="hotelDetailFallback">Hotel langs route</div>';
+    }
+    const rating=s.rating?`${escapeHtml(s.rating)} ★`: 'Google Places';
+    const reviews=s.userRatingCount?`${escapeHtml(s.userRatingCount)} reviews`:'reviews bekijken';
+    const detour=escapeHtml(s.detourLabel||'± 10 min van route');
+    const address=escapeHtml(s.address||s.meta||'Langs je route');
+    body.innerHTML=`
+      <div class="hotelDetailOverline">Hotel langs route</div>
+      <h3>${escapeHtml(s.name||'Hotel')}</h3>
+      <div class="hotelDetailMeta"><span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${detour}</span></div>
+      <p>${address}</p>
+      <div class="hotelDetailAmenities">${hotelDetailAmenitiesHtml(s)}</div>
+      <div class="hotelDetailActions">
+        <button class="hotelPrimary" data-hotel-action="maps">Bekijk op Google</button>
+        <button class="hotelGhost" data-hotel-action="navigate">Navigeer</button>
+        <button class="hotelGhost" data-hotel-action="save">Opslaan</button>
+      </div>
+      <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Nu blijf je eerst in Roadora om hotels te vergelijken.</div>`;
+    el.classList.add('open');
+    toast('Hotel details geopend');
+    return false;
+  }
+
+  function closeHotelDetail(){
+    qs('#hotelDetailSheet')?.classList.remove('open');
+    return false;
+  }
   function setActiveBottomNav(btn){qsa('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.remove('active','is-active'));btn?.classList.add('active','is-active');}
   function setSheet(kind){
     const api=window.RoadoraMapApi;
@@ -179,8 +258,18 @@
     if(setupCat){event.preventDefault();setupCat.classList.toggle('active');toast('Categorie bijgewerkt');return false;}
     const bottomNav=target.closest('#mapScreen .bottomNav .navItem');
     if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){window.RoadoraMapApi?.toggleCategories?.();return false;}if(label.includes('reisgids')){setSheet('guide');return false;}return false;}
+    const hotelAction=target.closest('[data-hotel-action]');
+    if(hotelAction){
+      event.preventDefault();
+      const action=hotelAction.dataset.hotelAction;
+      if(action==='close') return closeHotelDetail();
+      if(action==='maps') return openMoreInfo();
+      if(action==='navigate') return openMapsStop();
+      if(action==='save') return saveSelectedStop();
+      return false;
+    }
     if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
-    if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMoreInfo(); else openMapsStop(); return false;}
+    if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') return openHotelDetail(); openMapsStop(); return false;}
     if(target.closest('#mapScreen .secondary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMapsStop(); else openMoreInfo(); return false;}
   }
 
@@ -391,14 +480,14 @@
     function premiumHotelHtml(s){
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
       const reviews=s?.userRatingCount ? `${escapeHtml(s.userRatingCount)} reviews` : 'reviews';
-      const detour=escapeHtml(s?.detourLabel || '± 10 min van route');
+      const price=escapeHtml(hotelPriceLabel(s));
       const amenitiesList=hotelAmenities(s);
       const visible=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
       const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
       return `
         <div class="hotelPremiumV2 hotelCompactV21">
           <div class="hotelQuickLine">
-            <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${detour}</span>
+            <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${price}</span>
           </div>
           <div class="hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
         </div>`;
