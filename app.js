@@ -913,7 +913,7 @@
           position:absolute;
           left:18px;
           right:18px;
-          top:206px;
+          top:178px;
           z-index:9999;
           display:none;
           align-items:center;
@@ -973,7 +973,7 @@
           #mapScreen .hotelFilterbarClean{
             left:14px;
             right:14px;
-            top:206px;
+            top:178px;
             gap:6px;
           }
           #mapScreen .hotelFilterChipClean{
@@ -985,7 +985,7 @@
         }
         @media(max-height:760px){
           #mapScreen .hotelFilterbarClean{
-            top:184px;
+            top:160px;
           }
           #mapScreen .hotelFilterChipClean{
             height:25px;
@@ -1093,14 +1093,18 @@
 
       const hideOne=(el)=>{
         if(!el) return;
-        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton,.mapControl') || el;
+        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton,.mapControl,.mapControls') || el;
         target.style.display='none';
         target.setAttribute('aria-hidden','true');
       };
 
-      // Verwijder technische kaartlagen/noord controls. Roadora houdt alleen zoom + terug naar route.
-      ['#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle','.layerBtn','.layersBtn','.mapLayers','.map-layer','.map-layers','.leaflet-control-layers'].forEach(sel=>{
-        root.querySelectorAll(sel).forEach(hideOne);
+      // Laag/noord controls eruit. Alleen zoom + terug naar volledige route blijft.
+      [
+        '#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle',
+        '.layerBtn','.layersBtn','.mapLayers','.map-layer','.map-layers','.leaflet-control-layers',
+        '[aria-label*="layer" i]','[aria-label*="lagen" i]','[title*="layer" i]','[title*="lagen" i]'
+      ].forEach(sel=>{
+        try{root.querySelectorAll(sel).forEach(hideOne);}catch(_){}
       });
 
       root.querySelectorAll('button,a,div').forEach(el=>{
@@ -1119,23 +1123,35 @@
         fit.title='Terug naar volledige route';
       }
 
+      // Visuele polish: zoom + centreer in één rustige rechter pil; laagknop blijft verborgen.
       if(!document.getElementById('roadoraMapControlPolish')){
         const style=document.createElement('style');
         style.id='roadoraMapControlPolish';
         style.textContent=`
           #north,#mapNorth,#layerBtn,#layersBtn,#mapLayers,#layerToggle,#layersToggle,
-          .layerBtn,.layersBtn,.mapLayers,.map-layer,.map-layers,.leaflet-control-layers{
+          .layerBtn,.layersBtn,.mapLayers,.map-layer,.map-layers,.leaflet-control-layers,
+          [aria-label*="layer" i],[aria-label*="lagen" i],[title*="layer" i],[title*="lagen" i]{
             display:none!important;
           }
 
-          /* Zoom + route-terug als één rustige verticale Roadora pill */
+          #mapScreen .leaflet-top.leaflet-right,
+          #mapScreen .mapControlsRight,
+          #mapScreen .mapTools{
+            top:300px!important;
+            right:18px!important;
+            display:flex!important;
+            flex-direction:column!important;
+            gap:10px!important;
+            align-items:flex-end!important;
+          }
+
           #mapScreen .leaflet-control-zoom,
           #mapScreen .mapZoomControls,
           #mapScreen .zoomControls{
-            border-radius:22px!important;
+            border-radius:23px!important;
             overflow:hidden!important;
             background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
-            border:1px solid rgba(222,198,168,.48)!important;
+            border:1px solid rgba(222,198,168,.50)!important;
             box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
             backdrop-filter:blur(18px)!important;
             -webkit-backdrop-filter:blur(18px)!important;
@@ -1144,7 +1160,7 @@
           #mapScreen .leaflet-control-zoom a,
           #mapScreen #zoomIn,
           #mapScreen #zoomOut{
-            width:44px!important;
+            width:46px!important;
             height:42px!important;
             line-height:42px!important;
             border-radius:0!important;
@@ -1156,40 +1172,42 @@
           }
 
           #mapScreen .roadoraCenterRouteBtn{
-            width:44px!important;
+            width:46px!important;
             height:44px!important;
-            border-radius:20px!important;
+            border-radius:23px!important;
             background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(239,226,209,.95))!important;
-            border:1px solid rgba(222,198,168,.48)!important;
+            border:1px solid rgba(222,198,168,.50)!important;
             box-shadow:0 14px 30px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.68)!important;
             backdrop-filter:blur(18px)!important;
             -webkit-backdrop-filter:blur(18px)!important;
+            margin:0!important;
           }
 
-          /* Plaats controls iets lager en rustiger rechts */
-          #mapScreen .leaflet-top.leaflet-right,
-          #mapScreen .mapControlsRight,
-          #mapScreen .mapTools{
-            top:300px!important;
-            right:15px!important;
+          /* Als de controls in dezelfde container staan, lijken ze samen als één verticale pil. */
+          #mapScreen .roadoraCenterRouteBtn + .leaflet-control-zoom,
+          #mapScreen .leaflet-control-zoom + .roadoraCenterRouteBtn{
+            margin-top:-10px!important;
           }
 
           @media(max-width:560px){
             #mapScreen .leaflet-top.leaflet-right,
             #mapScreen .mapControlsRight,
             #mapScreen .mapTools{
-              top:292px!important;
-              right:13px!important;
+              top:300px!important;
+              right:14px!important;
+              gap:9px!important;
             }
+
             #mapScreen .leaflet-control-zoom a,
             #mapScreen #zoomIn,
             #mapScreen #zoomOut{
-              width:42px!important;
+              width:44px!important;
               height:40px!important;
               line-height:40px!important;
             }
+
             #mapScreen .roadoraCenterRouteBtn{
-              width:42px!important;
+              width:44px!important;
               height:42px!important;
             }
           }
@@ -1522,7 +1540,8 @@
       mapBooted=true;
       injectHotelFilterbarClean();
       cleanupMapUtilityControls();
-      setTimeout(cleanupMapUtilityControls,350);
+      setTimeout(cleanupMapUtilityControls,250);
+      setTimeout(cleanupMapUtilityControls,800);
       updateSheet(destinationSheet);renderMarkers();syncCatUI();fit('force');loadOrsRoute();
     }
 
