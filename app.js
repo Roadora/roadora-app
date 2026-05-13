@@ -259,6 +259,68 @@
       const meta=String(s?.meta||'').split('·').map(x=>x.trim()).filter(Boolean);
       return meta[0]||fallback;
     }
+    function escapeHtml(value){
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function inferFuelBrand(name=''){
+      const n=String(name).toLowerCase();
+      if(n.includes('shell')) return 'Shell';
+      if(n.includes('esso')||n.includes('exxon')) return 'Esso';
+      if(n.includes('bp')) return 'BP';
+      if(n.includes('total')) return 'TotalEnergies';
+      if(n.includes('texaco')) return 'Texaco';
+      if(n.includes('avia')) return 'AVIA';
+      if(n.includes('aral')) return 'Aral';
+      if(n.includes('q8')) return 'Q8';
+      if(n.includes('tinq')) return 'Tinq';
+      if(n.includes('fastned')) return 'Fastned';
+      return 'Tankstation';
+    }
+    function fuelDetourLabel(s){
+      return s?.detourLabel || s?.detour || s?.distanceFromRoute || '± 2 min van route';
+    }
+    function fuelPriceLabel(s){
+      return s?.fuelPrice || s?.priceLabel || s?.price || 'prijs checken';
+    }
+    function fuelOpenLabel(s){
+      if(s?.openNow===true) return 'Nu open';
+      if(s?.openNow===false) return 'Check openingstijden';
+      return s?.status || 'Openingstijden checken';
+    }
+    function fuelAmenities(s){
+      const source = Array.isArray(s?.amenities) && s.amenities.length ? s.amenities : null;
+      if(source) return source.slice(0,5);
+      const name=String(s?.name||'').toLowerCase();
+      const base=['WC','Shop'];
+      if(name.includes('shell')||name.includes('bp')||name.includes('total')||name.includes('esso')) base.unshift('Koffie');
+      if(s?.rating && Number(s.rating)>=4.2) base.push('Goed beoordeeld');
+      return base.slice(0,5);
+    }
+    function premiumFuelHtml(s){
+      const brand=escapeHtml(s?.brand || inferFuelBrand(s?.name));
+      const detour=escapeHtml(fuelDetourLabel(s));
+      const open=escapeHtml(fuelOpenLabel(s));
+      const price=escapeHtml(fuelPriceLabel(s));
+      const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'rating volgt';
+      const amenities=fuelAmenities(s).map(a=>`<span>${escapeHtml(a)}</span>`).join('');
+      const address=escapeHtml(cleanMetaPart(s,'Langs je route'));
+      const desc=escapeHtml(s?.desc || 'Slimme tankstop langs je route. Handig voor brandstof, koffie en een korte pauze zonder grote omweg.');
+      return `
+        <div class="fuelPremium">
+          <p>${desc}</p>
+          <div class="fuelHeroRow">
+            <span class="fuelBrand">⛽ ${brand}</span>
+            <span class="fuelDetour">${detour}</span>
+          </div>
+          <div class="fuelBadges">${amenities}</div>
+          <div class="sheetList fuelFacts">
+            <div class="sheetRow"><b>Status</b><span>${open}</span></div>
+            <div class="sheetRow"><b>Beoordeling</b><span>${rating}</span></div>
+            <div class="sheetRow"><b>Prijs</b><span>${price}</span></div>
+            <div class="sheetRow"><b>Ligging</b><span>${address}</span></div>
+          </div>
+        </div>`;
+    }
     function routeArrivalLabel(){
       // Simpele lokale ETA-berekening op basis van routeTimeLabel. Wordt later vervangen door live route engine.
       const m=String(routeTimeLabel||'').match(/(\d+)u\s*(\d+)?/);
@@ -294,11 +356,11 @@
       if(type==='fuel') return {
         state:'fuel',
         title:stop?.name||'Tankstation',
-        badge:stop?.openNow===false?'Mogelijk gesloten':'Nu open',
-        sub:`Tankstation · ${cleanMetaPart(stop,'langs je route')} · ${stop?.rating?stop.rating+' ★':'Google Places'}`,
-        eta:'± 2 min omweg',
-        distance:'Langs route',
-        next:'Voorzieningen checken'
+        badge:fuelOpenLabel(stop),
+        sub:`${stop?.brand||inferFuelBrand(stop?.name)} · ${fuelDetourLabel(stop)} · ${stop?.rating?stop.rating+' ★':'Google Places'}`,
+        eta:fuelDetourLabel(stop),
+        distance:fuelPriceLabel(stop),
+        next:fuelAmenities(stop).slice(0,2).join(' · ') || 'Voorzieningen'
       };
 
       if(type==='ev') return {
@@ -386,7 +448,7 @@
       if(secondary){
         if(type==='destination') return 'ⓘ Route info';
         if(type==='hotel') return 'ⓘ Hotel bekijken';
-        if(type==='fuel') return 'ⓘ Openingstijden';
+        if(type==='fuel') return 'ⓘ Voorzieningen';
         if(type==='ev') return 'ⓘ Laadinfo';
         if(type==='food') return 'ⓘ Menu & reviews';
         if(type==='view') return 'ⓘ Bekijk plek';
@@ -394,7 +456,7 @@
       }
       if(type==='destination') return '⌁ Navigeer naar bestemming';
       if(type==='hotel') return '⌁ Navigeer naar hotel';
-      if(type==='fuel') return '⌁ Navigeer naar tankstation';
+      if(type==='fuel') return '⌁ Navigeer naar tankstop';
       if(type==='ev') return '⌁ Navigeer naar laadstation';
       if(type==='food') return '⌁ Navigeer naar restaurant';
       return '⌁ Navigeer naar stop';
@@ -409,14 +471,16 @@
       document.getElementById('stopTitle').textContent=s.name;
       document.getElementById('stopMeta').textContent=s.meta||'';
       const descEl=document.getElementById('stopDesc');
-      if(s.type==='ev'||s.type==='fuel'||s.type==='hotel'){
+      if(s.type==='fuel'){
+        descEl.innerHTML=premiumFuelHtml(s);
+      }else if(s.type==='ev'||s.type==='hotel'){
         const rows=[];
-        rows.push(`<div class="sheetRow"><b>${s.type==='hotel'?'Platform':'Aanbieder'}</b><span>${s.provider||'Google Places'}</span></div>`);
-        if(s.rating) rows.push(`<div class="sheetRow"><b>Beoordeling</b><span>${s.rating} ★</span></div>`);
-        if(s.priceLevel) rows.push(`<div class="sheetRow"><b>Prijsniveau</b><span>${s.priceLevel}</span></div>`);
-        rows.push(`<div class="sheetRow"><b>${s.type==='ev'?'Laadsnelheid':s.type==='hotel'?'Status':'Status'}</b><span>${s.power||s.status||'check live'}</span></div>`);
+        rows.push(`<div class="sheetRow"><b>${s.type==='hotel'?'Platform':'Aanbieder'}</b><span>${escapeHtml(s.provider||'Google Places')}</span></div>`);
+        if(s.rating) rows.push(`<div class="sheetRow"><b>Beoordeling</b><span>${escapeHtml(s.rating)} ★</span></div>`);
+        if(s.priceLevel) rows.push(`<div class="sheetRow"><b>Prijsniveau</b><span>${escapeHtml(s.priceLevel)}</span></div>`);
+        rows.push(`<div class="sheetRow"><b>${s.type==='ev'?'Laadsnelheid':s.type==='hotel'?'Status':'Status'}</b><span>${escapeHtml(s.power||s.status||'check live')}</span></div>`);
         if(s.openNow!==undefined) rows.push(`<div class="sheetRow"><b>Nu</b><span>${s.openNow?'open':'mogelijk gesloten'}</span></div>`);
-        descEl.innerHTML=`${s.desc||''}<div class="sheetList">${rows.join('')}</div>`;
+        descEl.innerHTML=`${escapeHtml(s.desc||'')}<div class="sheetList">${rows.join('')}</div>`;
       }else{descEl.textContent=s.desc||'';}
       const primary=document.querySelector('.sheetActions .primary');
       const secondary=document.querySelector('.sheetActions .secondary');
@@ -492,8 +556,12 @@
           name:p.name||'Tankstation',
           meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.openNow===true?'Nu open':''].filter(Boolean).join(' · '),
           desc:'Echt tankstation gevonden via Google Places langs je route. Open de stop voor navigatie of check openingstijden voordat je afslaat.',
-          type:'fuel',label:'Google tankstation',ll:[p.lat,p.lng],provider:p.provider||'Google Places',
+          type:'fuel',label:'Premium tankstop',ll:[p.lat,p.lng],provider:p.provider||'Google Places',
+          brand:p.brand||inferFuelBrand(p.name),
           status:p.openNow===true?'nu open':'openingstijden checken',openNow:p.openNow,rating:p.rating||null,
+          detourLabel:p.detourLabel||p.detour||'± 2 min van route',
+          fuelPrice:p.fuelPrice||p.priceLabel||p.price||null,
+          amenities:Array.isArray(p.amenities)?p.amenities:[],
           googlePlaceId:p.id||p.place_id||null,photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
           infoUrl:p.url||p.website||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
