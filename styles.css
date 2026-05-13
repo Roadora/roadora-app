@@ -174,3 +174,203 @@
     will-change:transform,opacity;
   }
 }
+
+/* ===== Roadora v2.4 — screen navigation layer =====
+   Consistente navigatie op Home, Route setup en Kaart.
+   Home design blijft locked; kaart krijgt eigen compacte topbar.
+*/
+
+/* Menu moet boven elke screen kunnen openen, ook boven de kaart */
+.phone.menuOpen #sideMenu,
+.phone.menuExpanded #sideMenu{
+  z-index: 1210 !important;
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.phone.menuOpen #menuScrim,
+.phone.menuExpanded #menuScrim{
+  z-index: 1200 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+/* Route setup krijgt hamburger + back zonder de premium stijl te breken */
+.routeSetup .rTopNav{
+  grid-template-columns: 46px 46px 1fr auto !important;
+  gap: 7px !important;
+}
+
+.routeSetup .screenMenuBtn{
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  color: #2b2119 !important;
+}
+
+.routeSetup .rTopNav .rBrand{
+  min-width: 0 !important;
+}
+
+.routeSetup .rTopNav .rBrand span{
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Map eigen topbar: menu, terug naar route, titel, home */
+#mapScreen .mapTopbar{
+  pointer-events: auto !important;
+  position: absolute !important;
+  left: 14px !important;
+  right: 14px !important;
+  top: calc(env(safe-area-inset-top) + 12px) !important;
+  z-index: 860 !important;
+  height: 52px !important;
+  display: grid !important;
+  grid-template-columns: 44px 44px 1fr 44px !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+#mapScreen .mapNavBtn{
+  height: 44px !important;
+  width: 44px !important;
+  border-radius: 17px !important;
+  background: rgba(255,250,242,.92) !important;
+  border: 1px solid rgba(255,255,255,.76) !important;
+  box-shadow: 0 12px 28px rgba(24,18,12,.14), inset 0 1px 0 rgba(255,255,255,.86) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  color: #211914 !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+#mapScreen .mapTitle{
+  min-width: 0 !important;
+  height: 44px !important;
+  border-radius: 17px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  background: rgba(255,250,242,.88) !important;
+  border: 1px solid rgba(255,255,255,.72) !important;
+  box-shadow: 0 12px 28px rgba(24,18,12,.12), inset 0 1px 0 rgba(255,255,255,.86) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+#mapScreen .mapTitle b{
+  font-size: 12.5px !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  letter-spacing: -.15px !important;
+  color: #211914 !important;
+}
+
+#mapScreen .mapTitle span{
+  margin-top: 2px !important;
+  font-size: 9.5px !important;
+  line-height: 1.05 !important;
+  font-weight: 750 !important;
+  color: #766a5f !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Route panel iets lager zodat topbar en kaartcockpit niet vechten */
+#mapScreen .routePanel{
+  top: calc(env(safe-area-inset-top) + 74px) !important;
+  padding-left: 10px !important;
+}
+
+/* Controls iets lager naast cockpit */
+#mapScreen .controls{
+  top: calc(env(safe-area-inset-top) + 258px) !important;
+}
+
+/* Categorieën blijven bereikbaar zonder topbar overlap */
+#mapScreen .cats{
+  bottom: calc(env(safe-area-inset-bottom) + 202px) !important;
+}
+
+/* Compacte devices */
+@media(max-width:520px){
+  #mapScreen .mapTopbar{
+    left: 12px !important;
+    right: 12px !important;
+    top: calc(env(safe-area-inset-top) + 10px) !important;
+    grid-template-columns: 40px 40px 1fr 40px !important;
+    gap: 7px !important;
+    height: 48px !important;
+  }
+
+  #mapScreen .mapNavBtn{
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 15px !important;
+    font-size: 18px !important;
+  }
+
+  #mapScreen .mapTitle{
+    height: 40px !important;
+    border-radius: 15px !important;
+    padding: 0 11px !important;
+  }
+
+  #mapScreen .mapTitle b{
+    font-size: 11.5px !important;
+  }
+
+  #mapScreen .mapTitle span{
+    font-size: 8.8px !important;
+  }
+
+  #mapScreen .routePanel{
+    top: calc(env(safe-area-inset-top) + 64px) !important;
+  }
+
+  #mapScreen .controls{
+    top: calc(env(safe-area-inset-top) + 226px) !important;
+  }
+}
+
+@media(max-height:760px){
+  #mapScreen .mapTopbar{
+    top: 8px !important;
+  }
+
+  #mapScreen .routePanel{
+    top: 58px !important;
+  }
+
+  #mapScreen .controls{
+    top: 206px !important;
+  }
+
+  #mapScreen .cats{
+    bottom: calc(env(safe-area-inset-bottom) + 180px) !important;
+  }
+}
+
+@media(max-width:360px){
+  .routeSetup .rTopNav{
+    grid-template-columns: 42px 42px 1fr auto !important;
+    gap: 5px !important;
+  }
+
+  .routeSetup .rTopNav .rBrand span{
+    font-size: 18px !important;
+  }
+
+  .routeSetup .rActions .rRound:not(.rLang){
+    display: none !important;
+  }
+}
