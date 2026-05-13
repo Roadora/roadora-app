@@ -162,9 +162,9 @@
     el.innerHTML=`
       <div class="hotelDetailScrim" data-hotel-action="close"></div>
       <article class="hotelDetailCard">
-        <div class="hotelDetailGrab"></div>
+        <button class="hotelDetailGrab" data-hotel-action="expand" aria-label="Hotel detail groter maken"></button>
         <button class="hotelDetailClose" data-hotel-action="close" aria-label="Sluiten">×</button>
-        <div class="hotelDetailHero"></div>
+        <div class="hotelDetailHero" data-hotel-action="expand"></div>
         <div class="hotelDetailBody"></div>
       </article>`;
     (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
@@ -198,7 +198,7 @@
     if(hero){
       hero.classList.toggle('has-photo',!!photo);
       hero.style.backgroundImage=photo?`linear-gradient(180deg,rgba(20,12,6,.05),rgba(20,12,6,.36)), url("${String(photo).replace(/"/g,'')}")`:'';
-      hero.innerHTML=photo?'':'<div class="hotelDetailFallback">Hotel langs route</div>';
+      hero.innerHTML=photo?'<div class="hotelHeroShade"><span>Foto via Google Places</span><b>Bekijk groter</b></div><div class="hotelHeroDots"><i></i><i></i><i></i></div>':'<div class="hotelDetailFallback">Hotel langs route</div>';
     }
     const rating=s.rating?`${escapeHtml(s.rating)} ★`: 'Google Places';
     const reviews=s.userRatingCount?`${escapeHtml(s.userRatingCount)} reviews`:'reviews bekijken';
@@ -215,7 +215,7 @@
         <button class="hotelGhost" data-hotel-action="navigate">Navigeer</button>
         <button class="hotelGhost" data-hotel-action="save">Opslaan</button>
       </div>
-      <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Nu blijf je eerst in Roadora om hotels te vergelijken.</div>`;
+      <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Je blijft eerst in Roadora om hotels rustig te vergelijken.</div>`;
     el.classList.add('open');
     toast('Hotel details geopend');
     return false;
@@ -263,6 +263,7 @@
       event.preventDefault();
       const action=hotelAction.dataset.hotelAction;
       if(action==='close') return closeHotelDetail();
+      if(action==='expand') { qs('#hotelDetailSheet')?.classList.toggle('expanded'); return false; }
       if(action==='maps') return openMoreInfo();
       if(action==='navigate') return openMapsStop();
       if(action==='save') return saveSelectedStop();

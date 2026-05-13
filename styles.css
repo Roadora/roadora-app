@@ -2915,3 +2915,231 @@
   .hotelDetailActions .hotelGhost:last-child{grid-column:1 / -1;height:36px;}
   .hotelDetailAmenities span{min-width:48px;height:38px;}
 }
+
+/* ===== Roadora v4.4 Hotel Detail Sheet v3 — Wow Polish =====
+   Geen nieuwe backend-laag: alleen premium micro-UX, betere foto-focus,
+   fullscreen expand, sticky CTA's en rustigere hotel detail compositie. */
+#hotelDetailSheet{
+  z-index:940 !important;
+}
+#hotelDetailSheet .hotelDetailScrim{
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255,250,242,.10), rgba(32,24,16,.20) 46%, rgba(32,24,16,.42) 100%),
+    linear-gradient(180deg,rgba(32,24,16,.06),rgba(32,24,16,.32)) !important;
+  backdrop-filter:blur(5px) saturate(.92) !important;
+  -webkit-backdrop-filter:blur(5px) saturate(.92) !important;
+}
+#hotelDetailSheet .hotelDetailCard{
+  left:20px !important;
+  right:20px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 84px) !important;
+  max-height:min(72vh, 590px) !important;
+  border-radius:28px !important;
+  overflow:hidden !important;
+  box-shadow:
+    0 30px 80px rgba(24,18,12,.30),
+    inset 0 1px 0 rgba(255,255,255,.94) !important;
+  transform:translateY(22px) scale(.975) !important;
+}
+#hotelDetailSheet.open .hotelDetailCard{
+  transform:translateY(0) scale(1) !important;
+}
+#hotelDetailSheet.expanded .hotelDetailCard{
+  top:calc(env(safe-area-inset-top) + 20px) !important;
+  bottom:calc(env(safe-area-inset-bottom) + 18px) !important;
+  max-height:none !important;
+  border-radius:30px !important;
+}
+#hotelDetailSheet.expanded .hotelDetailHero{
+  height:clamp(210px, 34vh, 320px) !important;
+}
+.hotelDetailGrab{
+  position:absolute !important;
+  top:10px !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:52px !important;
+  height:22px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  z-index:4 !important;
+  display:grid !important;
+  place-items:start center !important;
+}
+.hotelDetailGrab:before{
+  content:"";
+  width:42px;
+  height:5px;
+  border-radius:999px;
+  background:rgba(118,106,95,.24);
+  box-shadow:0 1px 0 rgba(255,255,255,.55);
+}
+.hotelDetailClose{
+  width:39px !important;
+  height:39px !important;
+  top:13px !important;
+  right:13px !important;
+  font-size:22px !important;
+  background:rgba(255,250,242,.90) !important;
+  box-shadow:0 10px 24px rgba(33,22,11,.16) !important;
+}
+.hotelDetailHero{
+  height:158px !important;
+  position:relative !important;
+  background-position:center !important;
+  transition:height .28s cubic-bezier(.22,1,.36,1), filter .22s ease !important;
+}
+.hotelDetailHero.has-photo{
+  box-shadow:inset 0 -65px 78px rgba(27,18,12,.24) !important;
+}
+.hotelHeroShade{
+  position:absolute;
+  left:14px;
+  right:58px;
+  bottom:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:white;
+  text-shadow:0 2px 14px rgba(0,0,0,.38);
+  pointer-events:none;
+}
+.hotelHeroShade span{
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.92;
+}
+.hotelHeroShade b{
+  min-width:max-content;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,250,242,.82);
+  color:#3d3027;
+  text-shadow:none;
+  font-size:9px;
+  font-weight:950;
+  box-shadow:0 8px 18px rgba(20,12,6,.14);
+}
+.hotelHeroDots{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:10px;
+  display:flex;
+  gap:4px;
+  pointer-events:none;
+}
+.hotelHeroDots i{
+  width:5px;
+  height:5px;
+  border-radius:999px;
+  background:rgba(255,250,242,.70);
+}
+.hotelHeroDots i:first-child{
+  width:14px;
+  background:#fffaf2;
+}
+.hotelDetailBody{
+  padding:16px 17px 17px !important;
+  gap:9px !important;
+}
+.hotelDetailOverline{
+  color:#a66e31 !important;
+  font-size:8.5px !important;
+}
+.hotelDetailBody h3{
+  font-size:22px !important;
+  letter-spacing:-.75px !important;
+}
+.hotelDetailMeta{
+  font-size:11.3px !important;
+}
+.hotelDetailAmenities{
+  gap:8px !important;
+  overflow-x:auto !important;
+  padding:3px 1px 5px !important;
+  scrollbar-width:none;
+}
+.hotelDetailAmenities::-webkit-scrollbar{display:none;}
+.hotelDetailAmenities span{
+  min-width:60px !important;
+  height:45px !important;
+  border-radius:16px !important;
+  background:rgba(255,255,255,.76) !important;
+}
+.hotelDetailActions{
+  position:sticky;
+  bottom:0;
+  grid-template-columns:1.15fr .85fr .85fr !important;
+  gap:9px !important;
+  margin-top:6px !important;
+  padding-top:4px !important;
+  background:linear-gradient(180deg,rgba(255,250,242,0),rgba(255,250,242,.96) 22%) !important;
+}
+.hotelDetailActions button{
+  height:46px !important;
+  border-radius:16px !important;
+  font-size:10.4px !important;
+  transition:transform .16s ease, box-shadow .16s ease, background .16s ease !important;
+}
+.hotelDetailActions button:active{
+  transform:scale(.975);
+}
+.hotelPrimary{
+  box-shadow:0 14px 28px rgba(196,135,61,.23), inset 0 1px 0 rgba(255,255,255,.45) !important;
+}
+.hotelDetailNote{
+  font-size:9.4px !important;
+  color:#8a7a6c !important;
+}
+#hotelDetailSheet.open .hotelDetailHero,
+#hotelDetailSheet.open .hotelDetailBody > *{
+  animation:hotelDetailIn .34s cubic-bezier(.22,1,.36,1) both;
+}
+#hotelDetailSheet.open .hotelDetailBody > *:nth-child(2){animation-delay:.025s;}
+#hotelDetailSheet.open .hotelDetailBody > *:nth-child(3){animation-delay:.045s;}
+#hotelDetailSheet.open .hotelDetailBody > *:nth-child(4){animation-delay:.065s;}
+#hotelDetailSheet.open .hotelDetailBody > *:nth-child(5){animation-delay:.085s;}
+#hotelDetailSheet.open .hotelDetailBody > *:nth-child(6){animation-delay:.105s;}
+@keyframes hotelDetailIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.stopPin.selected,
+#mapScreen .stopPin.selected{
+  transform:scale(1.18) !important;
+  box-shadow:0 12px 28px rgba(34,22,11,.28),0 0 0 7px rgba(237,201,132,.24) !important;
+}
+@media(max-width:380px){
+  #hotelDetailSheet .hotelDetailCard{
+    left:14px !important;
+    right:14px !important;
+    bottom:calc(env(safe-area-inset-bottom) + 70px) !important;
+    border-radius:24px !important;
+  }
+  #hotelDetailSheet.expanded .hotelDetailCard{
+    top:calc(env(safe-area-inset-top) + 12px) !important;
+    bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
+  }
+  .hotelDetailHero{height:140px !important;}
+  #hotelDetailSheet.expanded .hotelDetailHero{height:220px !important;}
+  .hotelDetailBody{padding:13px 14px 15px !important;gap:8px !important;}
+  .hotelDetailBody h3{font-size:20px !important;}
+  .hotelDetailAmenities span{min-width:54px !important;height:41px !important;}
+  .hotelDetailActions{
+    grid-template-columns:1fr 1fr !important;
+  }
+  .hotelDetailActions .hotelGhost:last-child{
+    grid-column:1 / -1 !important;
+    height:40px !important;
+  }
+  .hotelHeroShade b{display:none;}
+}
+@media (prefers-reduced-motion: reduce){
+  #hotelDetailSheet.open .hotelDetailHero,
+  #hotelDetailSheet.open .hotelDetailBody > *{animation:none !important;}
+}
