@@ -282,11 +282,12 @@
       }).join(''):'<div class="hotelCompareEmpty">Sla eerst een hotel op. Daarna kun je ze hier rustig vergelijken.</div>';
     }
     el.classList.add('open');
+    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     toast(hotels.length?'Hotel shortlist geopend':'Nog geen hotels opgeslagen');
     return false;
   }
 
-  function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');return false;}
+  function closeHotelCompare(){qs('#hotelCompareSheet')?.classList.remove('open');setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);return false;}
   function deleteSavedHotel(id){
     try{
       const before=readSavedStops();
@@ -394,12 +395,14 @@
       <div class="hotelDetailNote">Booking-link en prijzen voegen we later toe. Je blijft eerst in Roadora om hotels rustig te vergelijken.</div>`;
     updateHotelCompareButton();
     el.classList.add('open');
+    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     toast('Hotel details geopend');
     return false;
   }
 
   function closeHotelDetail(){
     qs('#hotelDetailSheet')?.classList.remove('open');
+    setTimeout(()=>window.RoadoraMapApi?.refreshHotelFilters?.(),0);
     return false;
   }
   function setActiveBottomNav(btn){qsa('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.remove('active','is-active'));btn?.classList.add('active','is-active');}
@@ -1059,7 +1062,8 @@
       const bar=document.getElementById('hotelFilterbarClean');
       if(!bar) return;
       const hotelCatActive=!!document.querySelector('.cat[data-filter="hotel"].active,.cat[data-filter="hotel"].is-active,.cat[data-filter="hotel"][aria-pressed="true"]');
-      const visible=activeFilters.has('hotel') || hotelCatActive || selectedStopData?.type==='hotel';
+      const detailOpen=!!document.querySelector('#hotelDetailSheet.open,#hotelCompareSheet.open');
+      const visible=(activeFilters.has('hotel') || hotelCatActive || selectedStopData?.type==='hotel') && !detailOpen;
       bar.classList.toggle('is-visible',visible);
       bar.style.display=visible?'flex':'none';
       bar.style.opacity=visible?'1':'0';
@@ -1083,6 +1087,60 @@
       marker.on('click',()=>selectStop(ref,true));
       return ref;
     }
+    function cleanupMapUtilityControls(){
+      const root=document.querySelector('#mapScreen');
+      if(!root) return;
+
+      const hideOne=(el)=>{
+        if(!el) return;
+        const target=el.closest('button,.leaflet-control,a,.mapTool,.mapButton') || el;
+        target.style.display='none';
+        target.setAttribute('aria-hidden','true');
+      };
+
+      // Roadora houdt alleen zoom + volledige-route/centreer terug.
+      ['#north','#mapNorth','#layerBtn','#layersBtn','#mapLayers','#layerToggle','#layersToggle'].forEach(sel=>{
+        root.querySelectorAll(sel).forEach(hideOne);
+      });
+
+      root.querySelectorAll('button,a').forEach(btn=>{
+        const txt=((btn.textContent||'')+' '+(btn.getAttribute('aria-label')||'')+' '+(btn.title||'')+' '+(btn.id||'')+' '+(btn.className||'')).toLowerCase();
+        const isNorth=txt.includes('north') || txt.includes('noord');
+        const isLayer=txt.includes('layer') || txt.includes('lagen') || txt.includes('kaartlaag');
+        const isZoom=txt.includes('zoom') || txt.trim()==='+' || txt.trim()==='-';
+        const isCenter=txt.includes('center') || txt.includes('centreer') || txt.includes('fit') || txt.includes('route');
+        if((isNorth || isLayer) && !isZoom && !isCenter) hideOne(btn);
+      });
+
+      const fit=document.querySelector('#fitRoute');
+      if(fit){
+        fit.classList.add('roadoraCenterRouteBtn');
+        fit.setAttribute('aria-label','Terug naar volledige route');
+        fit.title='Terug naar volledige route';
+      }
+
+      if(!document.getElementById('roadoraMapControlPolish')){
+        const style=document.createElement('style');
+        style.id='roadoraMapControlPolish';
+        style.textContent=`
+          #north,#mapNorth,#layerBtn,#layersBtn,#mapLayers,#layerToggle,#layersToggle{
+            display:none!important;
+          }
+          .roadoraCenterRouteBtn{
+            width:46px!important;
+            height:46px!important;
+            border-radius:18px!important;
+            background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(240,227,210,.96))!important;
+            border:1px solid rgba(222,198,168,.48)!important;
+            box-shadow:0 12px 28px rgba(31,20,12,.14), inset 0 1px 0 rgba(255,255,255,.70)!important;
+            backdrop-filter:blur(18px)!important;
+            -webkit-backdrop-filter:blur(18px)!important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+
     function renderMarkers(){
       const previous=selectedStopData;
       markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();liveGoogleHotelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
@@ -1406,6 +1464,8 @@
       if(mapBooted){fit('force');return;}
       mapBooted=true;
       injectHotelFilterbarClean();
+      cleanupMapUtilityControls();
+      setTimeout(cleanupMapUtilityControls,350);
       updateSheet(destinationSheet);renderMarkers();syncCatUI();fit('force');loadOrsRoute();
     }
 
@@ -1419,7 +1479,8 @@
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
       getSelectedStop:()=>selectedStopData,
       toggleCategories,
-      closeCategories:()=>setCategoriesOpen(false)
+      closeCategories:()=>setCategoriesOpen(false),
+      refreshHotelFilters:()=>renderHotelFilterbarClean()
     };
 
     window.roadoraLeafletMap=map;
