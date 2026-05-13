@@ -1,20 +1,41 @@
-const CACHE_TTL_MS = 15 * 60 * 1000;
-const REQUEST_TIMEOUT_MS = 9000;
-const MAX_POINTS = 18;
-const MAX_RESULTS_PER_POINT = 5;
-const MAX_TOTAL_RESULTS = 36;
-const DEFAULT_RADIUS_METERS = 16000;
+// Roadora Google Hotels API — v4.1 Route Core Lock
+// Server-side Google Places proxy for hotels/lodging along an ORS route.
+// Safe for Vercel: API key stays in Environment Variables.
 
-const memoryCache = globalThis.__ROADORA_GOOGLE_HOTELS_CACHE__ || new Map();
-globalThis.__ROADORA_GOOGLE_HOTELS_CACHE__ = memoryCache;
+const CONFIG = {
+  cacheName: '__ROADORA_GOOGLE_HOTELS_CACHE_V41__',
+  cacheTtlMs: 15 * 60 * 1000,
+  requestTimeoutMs: 9000,
+  maxPoints: 20,
+  maxResultsPerPoint: 5,
+  maxTotalResults: 38,
+  defaultRadiusMeters: 16000,
+  minRadiusMeters: 5000,
+  maxRadiusMeters: 25000,
+  concurrency: 4,
+  routeEngine: 'route-core-lock-v1',
+  placeMode: 'hotels'
+};
+
+const memoryCache = globalThis[CONFIG.cacheName] || new Map();
+globalThis[CONFIG.cacheName] = memoryCache;
 
 function send(res, status, body) {
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
   res.status(status).json(body);
 }
 
-function roundCoord(value) {
+function trimCache(maxEntries = 80) {
+  if (memoryCache.size <= maxEntries) return;
+  const keys = Array.from(memoryCache.keys());
+  for (const key of keys.slice(0, Math.max(0, keys.length - maxEntries))) memoryCache.delete(key);
+}
+
+function roundCoord(value, digits = 3) {
   const n = Number(value);
-  return Number.isFinite(n) ? Math.round(n * 1000) / 1000 : null;
+  if (!Number.isFinite(n)) return null;
+  const m = 10 ** digits;
+  return Math.round(n * m) / m;
 }
 
 function normalizePoint(point, index = 0) {
@@ -28,14 +49,14 @@ function normalizePoint(point, index = 0) {
     lat,
     lng,
     index,
-    progress: Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : null,
+    progress: Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : index,
     distanceFromStartMeters: Number.isFinite(distanceFromStartMeters) ? Math.max(0, Math.round(distanceFromStartMeters)) : null
   };
 }
 
 function cacheKey(points, radiusMeters, mode) {
   const compact = points.map(p => `${roundCoord(p.lat)},${roundCoord(p.lng)}`).join('|');
-  return `${mode || 'default'}:${radiusMeters}:${compact}`;
+  return `${CONFIG.placeMode}:${mode || 'default'}:${radiusMeters}:${compact}`;
 }
 
 function inferHotelAmenities(place) {
@@ -48,8 +69,8 @@ function inferHotelAmenities(place) {
 
   const amenities = new Set(['Wifi', 'Parkeren']);
   if (text.includes('breakfast') || text.includes('ontbijt')) amenities.add('Ontbijt');
-  if (text.includes('family') || text.includes('familie') || text.includes('children')) amenities.add('Familie');
-  if (text.includes('pet') || text.includes('dog') || text.includes('huisdier')) amenities.add('Hond');
+  if (text.includes('family') || text.includes('familie') || text.includes('children') || text.includes('kids')) amenities.add('Familie');
+  if (text.includes('pet') || text.includes('dog') || text.includes('huisdier') || text.includes('hond')) amenities.add('Hond');
   if (text.includes('charging') || text.includes('ev') || text.includes('electric')) amenities.add('EV');
   if (text.includes('spa') || text.includes('wellness') || text.includes('pool') || text.includes('zwembad')) amenities.add('Wellness');
   return Array.from(amenities).slice(0, 6);
@@ -67,7 +88,7 @@ function normalizePlace(hit) {
     : null;
 
   return {
-    id: place?.id || place?.name || `${lat},${lng}`,
+    id: place?.id || place?.name || `${roundCoord(lat, 5)},${roundCoord(lng, 5)}`,
     name,
     address: place?.formattedAddress || 'Langs je route',
     lat,
@@ -93,7 +114,7 @@ function normalizePlace(hit) {
 
 async function searchHotelsNearPoint({ apiKey, point, radiusMeters }) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), CONFIG.requestTimeoutMs);
 
   try {
     const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
@@ -122,7 +143,7 @@ async function searchHotelsNearPoint({ apiKey, point, radiusMeters }) {
       },
       body: JSON.stringify({
         textQuery: 'hotel OR motel OR lodging',
-        maxResultCount: MAX_RESULTS_PER_POINT,
+        maxResultCount: CONFIG.maxResultsPerPoint,
         languageCode: 'nl',
         locationBias: {
           circle: {
@@ -134,7 +155,6 @@ async function searchHotelsNearPoint({ apiKey, point, radiusMeters }) {
     });
 
     const data = await response.json().catch(() => ({}));
-
     if (!response.ok) {
       const message = data?.error?.message || `Google Places ${response.status}`;
       const code = data?.error?.status || 'GOOGLE_PLACES_ERROR';
@@ -149,6 +169,23 @@ async function searchHotelsNearPoint({ apiKey, point, radiusMeters }) {
   }
 }
 
+async function runLimited(items, limit, worker) {
+  const results = [];
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const current = items[cursor++];
+      try {
+        results.push({ status: 'fulfilled', value: await worker(current) });
+      } catch (reason) {
+        results.push({ status: 'rejected', reason });
+      }
+    }
+  });
+  await Promise.all(workers);
+  return results;
+}
+
 function scoreHotel(place) {
   const rating = Number(place.rating || 0);
   const reviews = Math.min(0.8, Math.log10(Math.max(1, Number(place.userRatingCount || 0))) / 5);
@@ -156,14 +193,14 @@ function scoreHotel(place) {
   return rating + reviews + openBonus;
 }
 
-function dedupeAndSpread(rawHits, maxTotal = MAX_TOTAL_RESULTS) {
+function dedupeAndSpread(rawHits, maxTotal = CONFIG.maxTotalResults) {
   const seen = new Set();
   const normalized = [];
 
   for (const hit of rawHits) {
     const place = normalizePlace(hit);
     if (!place) continue;
-    const id = place.id || `${roundCoord(place.lat)},${roundCoord(place.lng)}`;
+    const id = place.id || `${roundCoord(place.lat, 4)},${roundCoord(place.lng, 4)}`;
     if (seen.has(id)) continue;
     seen.add(id);
     normalized.push(place);
@@ -225,32 +262,32 @@ export default async function handler(req, res) {
   const body = req.body || {};
   const mode = String(body.mode || 'route_planning');
   const points = Array.isArray(body.points)
-    ? body.points.map(normalizePoint).filter(Boolean).slice(0, MAX_POINTS)
+    ? body.points.map(normalizePoint).filter(Boolean).slice(0, CONFIG.maxPoints)
     : [];
-  const radiusMeters = Math.max(5000, Math.min(25000, Number(body.radiusMeters) || DEFAULT_RADIUS_METERS));
+  const radiusMeters = Math.max(CONFIG.minRadiusMeters, Math.min(CONFIG.maxRadiusMeters, Number(body.radiusMeters) || CONFIG.defaultRadiusMeters));
 
   if (!points.length) {
-    return send(res, 200, { ok: true, status: 'no_route_points', source: 'google', places: [] });
+    return send(res, 200, { ok: true, status: 'no_route_points', source: 'google', routeEngine: CONFIG.routeEngine, places: [] });
   }
 
   const key = cacheKey(points, radiusMeters, mode);
   const cached = memoryCache.get(key);
-  if (cached && Date.now() - cached.savedAt < CACHE_TTL_MS) {
+  if (cached && Date.now() - cached.savedAt < CONFIG.cacheTtlMs) {
     return send(res, 200, { ...cached.payload, cached: true });
   }
 
   try {
-    const settled = await Promise.allSettled(points.map(point => searchHotelsNearPoint({ apiKey, point, radiusMeters })));
+    const settled = await runLimited(points, CONFIG.concurrency, point => searchHotelsNearPoint({ apiKey, point, radiusMeters }));
     const rawHits = settled.flatMap(result => result.status === 'fulfilled' ? result.value : []);
-    const errors = settled.filter(result => result.status === 'rejected').map(result => String(result.reason?.message || result.reason)).slice(0, 3);
-    const places = dedupeAndSpread(rawHits, MAX_TOTAL_RESULTS);
+    const errors = settled.filter(result => result.status === 'rejected').map(result => String(result.reason?.message || result.reason)).slice(0, 4);
+    const places = dedupeAndSpread(rawHits, CONFIG.maxTotalResults);
 
     const payload = {
       ok: true,
-      status: places.length ? 'live' : (errors.length ? 'partial_error' : 'empty'),
+      status: places.length ? (errors.length ? 'partial_live' : 'live') : (errors.length ? 'partial_error' : 'empty'),
       source: 'google',
       cached: false,
-      routeEngine: 'along-route-v2',
+      routeEngine: CONFIG.routeEngine,
       searchedPoints: points.length,
       radiusMeters,
       count: places.length,
@@ -258,6 +295,7 @@ export default async function handler(req, res) {
       errors
     };
 
+    trimCache();
     memoryCache.set(key, { savedAt: Date.now(), payload });
     return send(res, 200, payload);
   } catch (error) {
@@ -265,7 +303,7 @@ export default async function handler(req, res) {
       ok: false,
       status: 'error',
       source: 'google',
-      routeEngine: 'along-route-v2',
+      routeEngine: CONFIG.routeEngine,
       message: String(error?.message || error),
       places: []
     });

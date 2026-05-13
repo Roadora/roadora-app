@@ -1,20 +1,41 @@
-const CACHE_TTL_MS = 10 * 60 * 1000;
-const REQUEST_TIMEOUT_MS = 8500;
-const MAX_POINTS = 14;
-const MAX_RESULTS_PER_POINT = 5;
-const MAX_TOTAL_RESULTS = 32;
-const DEFAULT_RADIUS_METERS = 7000;
+// Roadora Google Fuel API — v4.1 Route Core Lock
+// Server-side Google Places proxy for fuel stations along an ORS route.
+// Safe for Vercel: API key stays in Environment Variables.
 
-const memoryCache = globalThis.__ROADORA_GOOGLE_FUEL_CACHE__ || new Map();
-globalThis.__ROADORA_GOOGLE_FUEL_CACHE__ = memoryCache;
+const CONFIG = {
+  cacheName: '__ROADORA_GOOGLE_FUEL_CACHE_V41__',
+  cacheTtlMs: 12 * 60 * 1000,
+  requestTimeoutMs: 8500,
+  maxPoints: 16,
+  maxResultsPerPoint: 5,
+  maxTotalResults: 34,
+  defaultRadiusMeters: 7000,
+  minRadiusMeters: 1500,
+  maxRadiusMeters: 9000,
+  concurrency: 4,
+  routeEngine: 'route-core-lock-v1',
+  placeMode: 'fuel'
+};
+
+const memoryCache = globalThis[CONFIG.cacheName] || new Map();
+globalThis[CONFIG.cacheName] = memoryCache;
 
 function send(res, status, body) {
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
   res.status(status).json(body);
 }
 
-function roundCoord(value) {
+function trimCache(maxEntries = 80) {
+  if (memoryCache.size <= maxEntries) return;
+  const keys = Array.from(memoryCache.keys());
+  for (const key of keys.slice(0, Math.max(0, keys.length - maxEntries))) memoryCache.delete(key);
+}
+
+function roundCoord(value, digits = 3) {
   const n = Number(value);
-  return Number.isFinite(n) ? Math.round(n * 1000) / 1000 : null;
+  if (!Number.isFinite(n)) return null;
+  const m = 10 ** digits;
+  return Math.round(n * m) / m;
 }
 
 function normalizePoint(point, index = 0) {
@@ -28,14 +49,14 @@ function normalizePoint(point, index = 0) {
     lat,
     lng,
     index,
-    progress: Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : null,
+    progress: Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : index,
     distanceFromStartMeters: Number.isFinite(distanceFromStartMeters) ? Math.max(0, Math.round(distanceFromStartMeters)) : null
   };
 }
 
 function cacheKey(points, radiusMeters, mode) {
   const compact = points.map(p => `${roundCoord(p.lat)},${roundCoord(p.lng)}`).join('|');
-  return `${mode || 'default'}:${radiusMeters}:${compact}`;
+  return `${CONFIG.placeMode}:${mode || 'default'}:${radiusMeters}:${compact}`;
 }
 
 function inferBrand(name = '') {
@@ -61,7 +82,7 @@ function inferAmenities(place) {
   ].filter(Boolean).join(' ').toLowerCase();
 
   const amenities = new Set(['WC', 'Shop']);
-  if (text.includes('cafe') || text.includes('coffee') || text.includes('bakery') || text.includes('restaurant')) amenities.add('Koffie');
+  if (text.includes('cafe') || text.includes('café') || text.includes('coffee') || text.includes('bakery') || text.includes('restaurant')) amenities.add('Koffie');
   if (text.includes('charging') || text.includes('ev') || text.includes('electric')) amenities.add('EV');
   if (text.includes('car_wash') || text.includes('wash')) amenities.add('Wasstraat');
   return Array.from(amenities).slice(0, 5);
@@ -79,12 +100,13 @@ function normalizePlace(hit) {
     : null;
 
   return {
-    id: place?.id || place?.name || `${lat},${lng}`,
+    id: place?.id || place?.name || `${roundCoord(lat, 5)},${roundCoord(lng, 5)}`,
     name,
     address: place?.formattedAddress || 'Langs je route',
     lat,
     lng,
     rating: typeof place?.rating === 'number' ? place.rating : null,
+    userRatingCount: typeof place?.userRatingCount === 'number' ? place.userRatingCount : null,
     openNow,
     provider: 'Google Places',
     brand: inferBrand(name),
@@ -103,7 +125,7 @@ function normalizePlace(hit) {
 
 async function searchNearbyFuel({ apiKey, point, radiusMeters }) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), CONFIG.requestTimeoutMs);
 
   try {
     const response = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
@@ -119,6 +141,7 @@ async function searchNearbyFuel({ apiKey, point, radiusMeters }) {
           'places.formattedAddress',
           'places.location',
           'places.rating',
+          'places.userRatingCount',
           'places.regularOpeningHours.openNow',
           'places.googleMapsUri',
           'places.websiteUri',
@@ -129,7 +152,7 @@ async function searchNearbyFuel({ apiKey, point, radiusMeters }) {
       },
       body: JSON.stringify({
         includedTypes: ['gas_station'],
-        maxResultCount: MAX_RESULTS_PER_POINT,
+        maxResultCount: CONFIG.maxResultsPerPoint,
         rankPreference: 'DISTANCE',
         locationRestriction: {
           circle: {
@@ -141,7 +164,6 @@ async function searchNearbyFuel({ apiKey, point, radiusMeters }) {
     });
 
     const data = await response.json().catch(() => ({}));
-
     if (!response.ok) {
       const message = data?.error?.message || `Google Places ${response.status}`;
       const code = data?.error?.status || 'GOOGLE_PLACES_ERROR';
@@ -156,21 +178,39 @@ async function searchNearbyFuel({ apiKey, point, radiusMeters }) {
   }
 }
 
-function scoreFuel(place) {
-  const rating = Number(place.rating || 0);
-  const brandBonus = place.brand && place.brand !== 'Tankstation' ? 0.2 : 0;
-  const openBonus = place.openNow === true ? 0.25 : 0;
-  return rating + brandBonus + openBonus;
+async function runLimited(items, limit, worker) {
+  const results = [];
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const current = items[cursor++];
+      try {
+        results.push({ status: 'fulfilled', value: await worker(current) });
+      } catch (reason) {
+        results.push({ status: 'rejected', reason });
+      }
+    }
+  });
+  await Promise.all(workers);
+  return results;
 }
 
-function dedupeAndSpread(rawHits, maxTotal = MAX_TOTAL_RESULTS) {
+function scoreFuel(place) {
+  const rating = Number(place.rating || 0);
+  const reviews = Math.min(0.5, Math.log10(Math.max(1, Number(place.userRatingCount || 0))) / 6);
+  const brandBonus = place.brand && place.brand !== 'Tankstation' ? 0.2 : 0;
+  const openBonus = place.openNow === true ? 0.25 : 0;
+  return rating + reviews + brandBonus + openBonus;
+}
+
+function dedupeAndSpread(rawHits, maxTotal = CONFIG.maxTotalResults) {
   const seen = new Set();
   const normalized = [];
 
   for (const hit of rawHits) {
     const place = normalizePlace(hit);
     if (!place) continue;
-    const id = place.id || `${roundCoord(place.lat)},${roundCoord(place.lng)}`;
+    const id = place.id || `${roundCoord(place.lat, 4)},${roundCoord(place.lng, 4)}`;
     if (seen.has(id)) continue;
     seen.add(id);
     normalized.push(place);
@@ -232,32 +272,32 @@ export default async function handler(req, res) {
   const body = req.body || {};
   const mode = String(body.mode || 'route_quick');
   const points = Array.isArray(body.points)
-    ? body.points.map(normalizePoint).filter(Boolean).slice(0, MAX_POINTS)
+    ? body.points.map(normalizePoint).filter(Boolean).slice(0, CONFIG.maxPoints)
     : [];
-  const radiusMeters = Math.max(1500, Math.min(9000, Number(body.radiusMeters) || DEFAULT_RADIUS_METERS));
+  const radiusMeters = Math.max(CONFIG.minRadiusMeters, Math.min(CONFIG.maxRadiusMeters, Number(body.radiusMeters) || CONFIG.defaultRadiusMeters));
 
   if (!points.length) {
-    return send(res, 200, { ok: true, status: 'no_route_points', source: 'google', places: [] });
+    return send(res, 200, { ok: true, status: 'no_route_points', source: 'google', routeEngine: CONFIG.routeEngine, places: [] });
   }
 
   const key = cacheKey(points, radiusMeters, mode);
   const cached = memoryCache.get(key);
-  if (cached && Date.now() - cached.savedAt < CACHE_TTL_MS) {
+  if (cached && Date.now() - cached.savedAt < CONFIG.cacheTtlMs) {
     return send(res, 200, { ...cached.payload, cached: true });
   }
 
   try {
-    const settled = await Promise.allSettled(points.map(point => searchNearbyFuel({ apiKey, point, radiusMeters })));
+    const settled = await runLimited(points, CONFIG.concurrency, point => searchNearbyFuel({ apiKey, point, radiusMeters }));
     const rawHits = settled.flatMap(result => result.status === 'fulfilled' ? result.value : []);
-    const errors = settled.filter(result => result.status === 'rejected').map(result => String(result.reason?.message || result.reason)).slice(0, 3);
-    const places = dedupeAndSpread(rawHits, MAX_TOTAL_RESULTS);
+    const errors = settled.filter(result => result.status === 'rejected').map(result => String(result.reason?.message || result.reason)).slice(0, 4);
+    const places = dedupeAndSpread(rawHits, CONFIG.maxTotalResults);
 
     const payload = {
       ok: true,
-      status: places.length ? 'live' : (errors.length ? 'partial_error' : 'empty'),
+      status: places.length ? (errors.length ? 'partial_live' : 'live') : (errors.length ? 'partial_error' : 'empty'),
       source: 'google',
       cached: false,
-      routeEngine: 'along-route-v2',
+      routeEngine: CONFIG.routeEngine,
       searchedPoints: points.length,
       radiusMeters,
       count: places.length,
@@ -265,6 +305,7 @@ export default async function handler(req, res) {
       errors
     };
 
+    trimCache();
     memoryCache.set(key, { savedAt: Date.now(), payload });
     return send(res, 200, payload);
   } catch (error) {
@@ -272,7 +313,7 @@ export default async function handler(req, res) {
       ok: false,
       status: 'error',
       source: 'google',
-      routeEngine: 'along-route-v2',
+      routeEngine: CONFIG.routeEngine,
       message: String(error?.message || error),
       places: []
     });
