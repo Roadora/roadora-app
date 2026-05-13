@@ -112,7 +112,7 @@
   function selectedStopInfoUrl(){
     const s=selectedStop();
     if(s?.infoUrl) return s.infoUrl;
-    if(s?.type==='hotel') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' hotel boeken');
+    if(s?.type==='hotel') return s.googleMapsUri || ('https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' hotel'));
     if(s?.type==='fuel') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' tankstation openingstijden');
     if(s?.type==='ev') return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' laadstation');
     return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' informatie');
@@ -124,7 +124,7 @@
   function openMapsStop(){
     window.open(selectedStopMapsUrl(),'_blank','noopener');
     const s=selectedStop();
-    toast(s?.type==='fuel'?'Tankstation geopend in Maps':s?.type==='ev'?'Laadstation geopend in Maps':'Stop geopend in Maps');
+    toast(s?.type==='hotel'?'Hotel geopend':s?.type==='fuel'?'Tankstation geopend in Maps':s?.type==='ev'?'Laadstation geopend in Maps':'Stop geopend in Maps');
   }
   function openMoreInfo(){
     window.open(selectedStopInfoUrl(),'_blank','noopener');
@@ -180,8 +180,8 @@
     const bottomNav=target.closest('#mapScreen .bottomNav .navItem');
     if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){window.RoadoraMapApi?.toggleCategories?.();return false;}if(label.includes('reisgids')){setSheet('guide');return false;}return false;}
     if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
-    if(target.closest('#mapScreen .primary')){event.preventDefault();openMapsStop();return false;}
-    if(target.closest('#mapScreen .secondary')){event.preventDefault();openMoreInfo();return false;}
+    if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMoreInfo(); else openMapsStop(); return false;}
+    if(target.closest('#mapScreen .secondary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMapsStop(); else openMoreInfo(); return false;}
   }
 
   window.RoadoraApp={showHome:()=>setScreen('home'),showRoute:()=>setScreen('route'),showMap:()=>setScreen('map'),closeMenu,setVehicle};
@@ -380,20 +380,29 @@
       if(v.includes('wellness')||v.includes('spa')||v.includes('zwembad')) return '♨️';
       return '✓';
     }
+    function hotelPriceLabel(s){
+      const raw=String(s?.priceLevel||'').replace('PRICE_LEVEL_','');
+      if(raw==='INEXPENSIVE') return '€';
+      if(raw==='MODERATE') return '€€';
+      if(raw==='EXPENSIVE') return '€€€';
+      if(raw==='VERY_EXPENSIVE') return '€€€€';
+      return 'Prijs via hotel';
+    }
     function premiumHotelHtml(s){
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
-      const status=escapeHtml(s?.status || 'Beschikbaarheid checken');
+      const reviews=s?.userRatingCount ? `${escapeHtml(s.userRatingCount)} reviews` : 'reviews';
+      const detour=escapeHtml(s?.detourLabel || '± 10 min van route');
+      const price=escapeHtml(hotelPriceLabel(s));
       const amenitiesList=hotelAmenities(s);
-      const visible=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
-      const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
+      const visible=amenitiesList.slice(0,5).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
+      const more=amenitiesList.length>5?`<span class="moreAmenity"><b>+${amenitiesList.length-5}</b><em>Meer</em></span>`:'';
       return `
-        <div class="fuelPremium hotelPremiumV1">
-          <div class="fuelQuickLine">
-            <span>${rating}</span>
-            <i></i>
-            <span>${status}</span>
+        <div class="hotelPremiumV2">
+          <div class="hotelQuickLine">
+            <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${detour}</span><i></i><span>${price}</span>
           </div>
-          <div class="fuelAmenitiesStrip hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
+          <div class="hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
+          <div class="hotelHint">Bekijk eerst foto’s en reviews in Roadora, boek later gericht via affiliate.</div>
         </div>`;
     }
     function routeArrivalLabel(){
@@ -450,12 +459,12 @@
 
       if(type==='hotel') return {
         state:'hotel',
-        title:'Volgende hoteloptie',
-        badge:stop?.rating ? `${stop.rating} ★` : 'Hotel langs route',
-        sub:'Hotel cockpit · Booking-ready later',
-        eta:stop?.detourLabel || '± 5 min van route',
+        title:'Hotels langs route',
+        badge:stop?.rating ? `${stop.rating} ★` : 'Hotel optie',
+        sub:'Overnachting · foto’s · reviews',
+        eta:stop?.detourLabel || '± 10 min van route',
         distance:'langs route',
-        next:'Overnachting bewaren'
+        next:'Hotel bekijken'
       };
 
       if(type==='food') return {
@@ -522,7 +531,7 @@
       const type=s?.type||'stop';
       if(secondary){
         if(type==='destination') return 'ⓘ Route info';
-        if(type==='hotel') return 'ⓘ Hotel bekijken';
+        if(type==='hotel') return '⌁ Navigeer';
         if(type==='fuel') return 'ⓘ Reviews';
         if(type==='ev') return 'ⓘ Laadinfo';
         if(type==='food') return 'ⓘ Menu & reviews';
@@ -530,7 +539,7 @@
         return 'ⓘ Meer informatie';
       }
       if(type==='destination') return '⌁ Navigeer naar bestemming';
-      if(type==='hotel') return '⌁ Navigeer naar hotel';
+      if(type==='hotel') return 'Bekijk hotel';
       if(type==='fuel') return '➤ Navigeer';
       if(type==='ev') return '⌁ Navigeer naar laadstation';
       if(type==='food') return '⌁ Navigeer naar restaurant';
@@ -782,7 +791,7 @@
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
           photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          infoUrl:p.url||p.website||p.websiteUri||null
+          infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
         liveGoogleHotelLoaded=true;
@@ -848,7 +857,7 @@
           googleMapsUri:p.googleMapsUri||null,
           photoName:p.photoName||null,
           photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          infoUrl:p.url||p.website||p.websiteUri||null
+          infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
 
         liveGoogleFuelLoaded=true;

@@ -2442,3 +2442,149 @@
     max-width:52px;
   }
 }
+
+
+/* ===== Roadora v4.2 Hotel UX v2 =====
+   Hotels voelen als premium discovery-cards: echte Places foto’s, duidelijke hotel-info,
+   grotere voorzieningeniconen en geen overvolle travel-site layout.
+*/
+#mapScreen .sheet[data-type="hotel"]{
+  padding:10px 10px 10px !important;
+}
+#mapScreen .sheet[data-type="hotel"] .sheetGrid{
+  grid-template-columns:72px minmax(0,1fr) 92px !important;
+  gap:10px !important;
+  align-items:center !important;
+}
+#mapScreen .sheet[data-type="hotel"] .thumb{
+  width:72px !important;
+  height:72px !important;
+  border-radius:15px !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+#mapScreen .thumb-hotel.has-photo{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 22px rgba(33,22,11,.14) !important;
+}
+#mapScreen .sheet[data-type="hotel"] .overline{
+  font-size:7.4px !important;
+  letter-spacing:.13em !important;
+  color:#a66e31 !important;
+}
+#mapScreen .sheet[data-type="hotel"] h2{
+  font-size:13.4px !important;
+  line-height:1.05 !important;
+  margin:3px 0 4px !important;
+  max-width:100% !important;
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
+  overflow:hidden !important;
+}
+#mapScreen .sheet[data-type="hotel"] .meta{
+  font-size:8.6px !important;
+  line-height:1.22 !important;
+  color:#6c5f53 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+#mapScreen .hotelPremiumV2{
+  display:grid !important;
+  gap:6px !important;
+  margin-top:6px !important;
+  min-width:0 !important;
+}
+#mapScreen .hotelQuickLine{
+  display:flex !important;
+  align-items:center !important;
+  gap:5px !important;
+  min-width:0 !important;
+  font-size:8.6px !important;
+  font-weight:850 !important;
+  color:#5d5148 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+#mapScreen .hotelQuickLine span{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+#mapScreen .hotelQuickLine i{
+  width:3px !important;
+  height:3px !important;
+  border-radius:999px !important;
+  background:rgba(118,106,95,.34) !important;
+  flex:0 0 auto !important;
+}
+#mapScreen .hotelAmenitiesStrip{
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  flex-wrap:nowrap !important;
+  overflow:hidden !important;
+}
+#mapScreen .hotelAmenitiesStrip span{
+  min-width:32px !important;
+  height:32px !important;
+  border-radius:12px !important;
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(70,47,24,.07) !important;
+  display:grid !important;
+  place-items:center !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(33,22,11,.045) !important;
+}
+#mapScreen .hotelAmenitiesStrip b{
+  font-size:15px !important;
+  line-height:1 !important;
+}
+#mapScreen .hotelAmenitiesStrip em{
+  display:none !important;
+}
+#mapScreen .hotelHint{
+  font-size:8.2px !important;
+  color:#88786a !important;
+  font-weight:700 !important;
+  line-height:1.25 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+#mapScreen .sheet[data-type="hotel"] .sheetActions{
+  gap:6px !important;
+  align-self:center !important;
+}
+#mapScreen .sheet[data-type="hotel"] .primary,
+#mapScreen .sheet[data-type="hotel"] .secondary,
+#mapScreen .sheet[data-type="hotel"] .saveStop{
+  height:30px !important;
+  border-radius:11px !important;
+  font-size:8.4px !important;
+  width:100% !important;
+}
+#mapScreen .sheet[data-type="hotel"] .primary{
+  background:linear-gradient(135deg,#ead0a0,#c88b43) !important;
+  color:#241914 !important;
+}
+#mapScreen .sheet[data-type="hotel"] .secondary,
+#mapScreen .sheet[data-type="hotel"] .saveStop{
+  background:rgba(255,255,255,.68) !important;
+  color:#8a5f2e !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="hotel"] #mapStatusNext{
+  max-width:96px !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+@media(max-width:380px){
+  #mapScreen .sheet[data-type="hotel"] .sheetGrid{grid-template-columns:64px minmax(0,1fr) 84px !important;gap:8px !important;}
+  #mapScreen .sheet[data-type="hotel"] .thumb{width:64px !important;height:64px !important;}
+  #mapScreen .hotelAmenitiesStrip span{min-width:29px !important;height:29px !important;border-radius:10px !important;}
+  #mapScreen .hotelAmenitiesStrip b{font-size:14px !important;}
+  #mapScreen .hotelHint{display:none !important;}
+  #mapScreen .sheet[data-type="hotel"] .primary,
+  #mapScreen .sheet[data-type="hotel"] .secondary,
+  #mapScreen .sheet[data-type="hotel"] .saveStop{height:27px !important;font-size:7.7px !important;}
+}
