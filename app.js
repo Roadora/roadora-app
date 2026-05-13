@@ -1,10 +1,10 @@
-/* Roadora Central Router v2.4 screen navigation
+/* Roadora v2.5 Smart Topbar Pro
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
    - Google fuel pins selectable
    - Maps opent met exacte coordinaten / place id waar mogelijk
-   - v2.4: consistente hamburger/back navigatie op Home, Route en Kaart
+   - v2.5: kaarttopbar is slimme ritstatus; Home-knop verwijderd
 */
 (function(){
   'use strict';
@@ -88,6 +88,7 @@
     qsa('.rVehicle,.vehicle').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.vehicle===RoadoraState.vehicle);
     });
+    window.RoadoraMapApi?.updateTopbar?.();
   }
 
   function syncRouteSetupFiltersToMap(){
@@ -179,6 +180,8 @@
   let activeFilters=new Set(['all','ev']);
   let selectedMarker=null;
   let selectedStopData=null;
+  let routeDistanceLabel='— km';
+  let routeTimeLabel='Route laden…';
 
   window.initRoadoraMapSubpage=function(){
     if(roadoraMapInitialized){
@@ -245,6 +248,47 @@
       if(type==='view') return 'linear-gradient(135deg,#dce9e0,#789273 52%,#1f3629)';
       return 'linear-gradient(135deg,#dfe4d8,#657866 52%,#1f2d27)';
     }
+    function vehicleBadge(){
+      const v=window.RoadoraState?.vehicle||'car';
+      if(v==='ev') return 'EV';
+      if(v==='camper') return 'Camper';
+      if(v==='motor') return 'Motor';
+      return 'Auto';
+    }
+    function nextLabelFor(s){
+      const type=s?.type||'destination';
+      if(type==='fuel') return 'Google tankstation';
+      if(type==='ev') return 'Laadstop';
+      if(type==='hotel') return 'Overnachten';
+      if(type==='food') return 'Eten dichtbij';
+      if(type==='view') return 'Scenic stop';
+      if(type==='overview') return 'Alle stops';
+      if(type==='stops') return 'Slimme stops';
+      if(type==='guide') return 'Reisgids';
+      return 'Volgende stop';
+    }
+    function updateSmartTopbar(s){
+      const stop=s||selectedStopData||destinationSheet;
+      const title=document.getElementById('mapStatusTitle');
+      const badge=document.getElementById('mapStatusBadge');
+      const sub=document.getElementById('mapStatusSub');
+      const eta=document.getElementById('mapStatusEta');
+      const dist=document.getElementById('mapStatusDistance');
+      const next=document.getElementById('mapStatusNext');
+      if(!title||!badge||!sub||!eta||!dist||!next) return;
+
+      const type=stop?.type||'destination';
+      const isRoute=type==='destination'||type==='overview'||type==='stops'||type==='guide';
+      title.textContent=isRoute?'Rotterdam → Innsbruck':(stop?.name||'Volgende stop');
+      badge.textContent=type==='fuel'?'Tank':type==='ev'?'EV':type==='hotel'?'Hotel':vehicleBadge();
+      sub.textContent=isRoute
+        ? (routeTimeLabel && routeTimeLabel!=='Route laden…' ? `${routeTimeLabel} · echte route` : 'Slimme route-status · live assist voorbereid')
+        : (stop?.meta||'Details geopend in de bottom sheet');
+      eta.textContent=routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'ETA —';
+      dist.textContent=routeDistanceLabel||'— km';
+      next.textContent=isRoute ? 'Volgende: laadstop' : nextLabelFor(stop);
+    }
+
     function setSheetThumb(s){
       const thumb=document.querySelector('#mapScreen .thumb');
       if(!thumb) return;
@@ -303,6 +347,7 @@
       const secondary=document.querySelector('.sheetActions .secondary');
       if(primary) primary.textContent=actionText(s,false);
       if(secondary) secondary.textContent=actionText(s,true);
+      updateSmartTopbar(s);
     }
     function resetSelectedIcon(){if(selectedMarker?.marker && selectedMarker?.stop) selectedMarker.marker.setIcon(makeStopIcon(selectedMarker.stop,false,!isVisible(selectedMarker.stop)));}
     function focusStop(s,animated=true){
@@ -416,7 +461,9 @@
         const min=summary.duration?Math.round(summary.duration/60):null;
         const time=min?(Math.floor(min/60)+'u '+String(min%60).padStart(2,'0')+'m'):null;
         const statKm=document.querySelector('.routePanel .stat:nth-child(2) b'); if(statKm&&km) statKm.textContent=km;
-        if(km||time){destinationSheet.meta=[km,time].filter(Boolean).join(' · ');destinationSheet.desc='Je echte ORS-route naar Innsbruck is geladen. Onderweg kun je hotels, laadstops en eten als context in dit blok openen.';if(!selectedMarker) updateSheet(destinationSheet);}
+        if(km) routeDistanceLabel=km;
+        if(time) routeTimeLabel=time;
+        if(km||time){destinationSheet.meta=[km,time].filter(Boolean).join(' · ');destinationSheet.desc='Je echte ORS-route naar Innsbruck is geladen. Onderweg kun je hotels, laadstops en eten als context in dit blok openen.';if(!selectedMarker) updateSheet(destinationSheet);else updateSmartTopbar(selectedStopData);}
         fit();showToast('Echte ORS route geladen');
       }catch(err){console.warn('ORS fallback route:',err);showToast('Fallback route actief');}
     }
@@ -434,6 +481,7 @@
       focusSelected:()=>selectedMarker?selectStop(selectedMarker,true):(selectedStopData?.ll?focusStop(selectedStopData,true):fit('force')),
       clearSelection:()=>{resetSelectedIcon();selectedMarker=null;updateSheet(destinationSheet);fit('force');},
       showPanel:(data)=>{resetSelectedIcon();selectedMarker=null;updateSheet(data);},
+      updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
       getSelectedStop:()=>selectedStopData
     };
 
