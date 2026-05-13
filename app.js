@@ -581,31 +581,70 @@
       for(let i=1;i<=maxPoints;i++){const idx=Math.floor((source.length-1)*(i/(maxPoints+1)));const p=source[Math.max(0,Math.min(source.length-1,idx))];points.push({lat:p.lat,lng:p.lng});}
       return points;
     }
+    function googleFuelMessage(data, count){
+      if(data?.cached) return count ? `${count} tankstations uit cache` : 'Geen tankstations in cache';
+      if(data?.status==='misconfigured') return 'Google key ontbreekt in backend';
+      if(data?.status==='partial_error') return count ? `${count} tankstations geladen` : 'Google Places gaf geen resultaten';
+      if(data?.status==='empty') return 'Geen tankstations langs route gevonden';
+      if(data?.status==='live') return `${count} live tankstations langs route`;
+      return count ? `${count} tankstations langs route` : 'Geen tankstations langs route gevonden';
+    }
+
     async function loadLiveGoogleFuelStations(){
       if(liveGoogleFuelLoaded||liveGoogleFuelLoading) return;
       liveGoogleFuelLoading=true;
       try{
         showToast('Tankstations dicht langs route zoeken…');
         const points=currentRouteSamplePoints(9);
-        if(!points.length){liveGoogleFuelLoading=false;showToast('Nog geen routepunten beschikbaar');return;}
-        const res=await fetch('/api/google-fuel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({points,radiusMeters:8000})});
-        const data=await res.json().catch(()=>({}));
-        if(!res.ok) throw new Error(data.error||'Google Fuel API fout');
+        if(!points.length){
+          liveGoogleFuelLoading=false;
+          showToast('Nog geen routepunten beschikbaar');
+          return;
+        }
+
+        const controller = new AbortController();
+        const timer = setTimeout(()=>controller.abort(), 11000);
+        const res=await fetch('/api/google-fuel',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          signal: controller.signal,
+          body:JSON.stringify({points,radiusMeters:8000})
+        });
+        clearTimeout(timer);
+
+        const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
+        if(!res.ok) throw new Error(data.error||data.message||'Google Fuel API fout');
+
+        if(data.ok===false){
+          console.warn('Google fuel backend status:', data.status, data.message || data.errors || '');
+        }
+
         liveGoogleFuelStops=(data.places||[]).map(p=>({
           name:p.name||'Tankstation',
           meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.openNow===true?'Nu open':''].filter(Boolean).join(' · '),
-          desc:'Echt tankstation gevonden via Google Places langs je route. Open de stop voor navigatie of check openingstijden voordat je afslaat.',
-          type:'fuel',label:'Premium tankstop',ll:[p.lat,p.lng],provider:p.provider||'Google Places',
+          desc:'',
+          type:'fuel',label:'Premium tankstop',ll:[Number(p.lat),Number(p.lng)],provider:p.provider||'Google Places',
           brand:p.brand||inferFuelBrand(p.name),
-          status:p.openNow===true?'nu open':'openingstijden checken',openNow:p.openNow,rating:p.rating||null,
+          status:p.status||(p.openNow===true?'nu open':p.openNow===false?'mogelijk gesloten':'openingstijden checken'),openNow:p.openNow,rating:p.rating||null,
           detourLabel:p.detourLabel||p.detour||'± 2 min van route',
           fuelPrice:p.fuelPrice||p.priceLabel||p.price||null,
           amenities:Array.isArray(p.amenities)?p.amenities:[],
-          googlePlaceId:p.id||p.place_id||null,photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          infoUrl:p.url||p.website||null
+          googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
+          googleMapsUri:p.googleMapsUri||null,
+          photoName:p.photoName||null,
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          infoUrl:p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
-        liveGoogleFuelLoaded=true;liveGoogleFuelLoading=false;renderLiveGoogleFuelMarkers();showToast(liveGoogleFuelStops.length?`${liveGoogleFuelStops.length} tankstations langs route`:'Geen tankstations langs route gevonden');
-      }catch(err){liveGoogleFuelLoading=false;console.warn('Live Google tankstations fout:',err);showToast('Google tankstations niet geladen');}
+
+        liveGoogleFuelLoaded=true;
+        liveGoogleFuelLoading=false;
+        renderLiveGoogleFuelMarkers();
+        showToast(googleFuelMessage(data, liveGoogleFuelStops.length));
+      }catch(err){
+        liveGoogleFuelLoading=false;
+        console.warn('Live Google tankstations fout:',err);
+        showToast(err?.name==='AbortError'?'Google tankstations timeout':'Google tankstations niet geladen');
+      }
     }
     function fit(reason='route'){
       const now=Date.now();
