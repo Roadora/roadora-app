@@ -2396,3 +2396,49 @@
     height:28px !important;
   }
 }
+
+/* ===== Roadora v3.9 Hotels v1 ===== */
+#mapScreen .sheet[data-type="hotel"] .thumb{
+  background:linear-gradient(135deg,#f3dfbf,#a98255 52%,#3b2a1d) !important;
+}
+#mapScreen .sheet[data-type="hotel"] .overline{
+  color:#9b6429 !important;
+}
+#mapScreen .hotelPremiumV1 .fuelQuickLine{
+  color:#5e5147;
+}
+#mapScreen .hotelAmenitiesStrip span{
+  min-width:48px;
+}
+#mapScreen .hotelAmenitiesStrip span b{
+  font-size:17px;
+}
+#mapScreen .hotelAmenitiesStrip span em{
+  max-width:62px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.stopPin[data-stop-type="hotel"]{
+  background:linear-gradient(135deg,#fff4dc,#a98255) !important;
+  color:#25180f !important;
+}
+.stopPin[data-stop-type="hotel"].selected{
+  background:linear-gradient(135deg,#fff8eb,#9b6429) !important;
+  box-shadow:0 12px 26px rgba(46,30,14,.25),0 0 0 6px rgba(237,201,132,.22) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="hotel"] .mapStatusBadge{
+  background:rgba(196,134,61,.18);
+  color:#8a5a28;
+}
+@media(max-width:520px){
+  #mapScreen .hotelAmenitiesStrip span{
+    min-width:42px;
+  }
+  #mapScreen .hotelAmenitiesStrip span b{
+    font-size:16px;
+  }
+  #mapScreen .hotelAmenitiesStrip span em{
+    max-width:52px;
+  }
+}

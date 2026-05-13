@@ -227,10 +227,14 @@
     const routeHighlight=L.polyline(route,{color:'#fff4d8',weight:1.05,opacity:.52,lineCap:'round',lineJoin:'round'}).addTo(map);
     const markerLayer=L.layerGroup().addTo(map);
     const liveGoogleFuelLayer=L.layerGroup().addTo(map);
+    const liveGoogleHotelLayer=L.layerGroup().addTo(map);
     const markerRefs=[];
     let liveGoogleFuelStops=[];
     let liveGoogleFuelLoaded=false;
     let liveGoogleFuelLoading=false;
+    let liveGoogleHotelStops=[];
+    let liveGoogleHotelLoaded=false;
+    let liveGoogleHotelLoading=false;
     let lastFocusKey='destination:Innsbruck, Oostenrijk';
     let mapProgrammaticMove=false;
     let userTouchedMap=false;
@@ -354,6 +358,38 @@
           <div class="fuelAmenitiesStrip" aria-label="Voorzieningen">${visibleAmenities}${more}</div>
         </div>`;
     }
+
+    function hotelAmenities(s){
+      const source = Array.isArray(s?.amenities) && s.amenities.length ? s.amenities : ['Wifi','Parkeren'];
+      return source.map(x=>String(x||'').trim()).filter(Boolean).slice(0,6);
+    }
+    function hotelAmenityIcon(label){
+      const v=String(label||'').toLowerCase();
+      if(v.includes('wifi')) return '⌁';
+      if(v.includes('park')) return '🅿️';
+      if(v.includes('ontbijt')||v.includes('breakfast')) return '☕';
+      if(v.includes('familie')||v.includes('kind')) return '👨‍👩‍👧';
+      if(v.includes('hond')||v.includes('huisdier')||v.includes('pet')) return '🐾';
+      if(v.includes('ev')||v.includes('laad')) return '⚡';
+      if(v.includes('wellness')||v.includes('spa')||v.includes('zwembad')) return '♨️';
+      return '✓';
+    }
+    function premiumHotelHtml(s){
+      const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
+      const status=escapeHtml(s?.status || 'Beschikbaarheid checken');
+      const amenitiesList=hotelAmenities(s);
+      const visible=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
+      const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
+      return `
+        <div class="fuelPremium hotelPremiumV1">
+          <div class="fuelQuickLine">
+            <span>${rating}</span>
+            <i></i>
+            <span>${status}</span>
+          </div>
+          <div class="fuelAmenitiesStrip hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
+        </div>`;
+    }
     function routeArrivalLabel(){
       // Simpele lokale ETA-berekening op basis van routeTimeLabel. Wordt later vervangen door live route engine.
       const m=String(routeTimeLabel||'').match(/(\d+)u\s*(\d+)?/);
@@ -408,12 +444,12 @@
 
       if(type==='hotel') return {
         state:'hotel',
-        title:stop?.name||'Hotel langs route',
-        badge:'Hotel',
-        sub:`Overnachting · ${cleanMetaPart(stop,'dagstop')} · rustig plannen`,
-        eta:'Nachtstop',
-        distance:'Dicht bij route',
-        next:'Kamers bekijken'
+        title:'Volgende hoteloptie',
+        badge:stop?.rating ? `${stop.rating} ★` : 'Hotel langs route',
+        sub:'Hotel cockpit · Booking-ready later',
+        eta:stop?.detourLabel || '± 5 min van route',
+        distance:'langs route',
+        next:'Overnachting bewaren'
       };
 
       if(type==='food') return {
@@ -506,12 +542,13 @@
       const descEl=document.getElementById('stopDesc');
       if(s.type==='fuel'){
         descEl.innerHTML=premiumFuelHtml(s);
-      }else if(s.type==='ev'||s.type==='hotel'){
+      }else if(s.type==='hotel'){
+        descEl.innerHTML=premiumHotelHtml(s);
+      }else if(s.type==='ev'){
         const rows=[];
-        rows.push(`<div class="sheetRow"><b>${s.type==='hotel'?'Platform':'Aanbieder'}</b><span>${escapeHtml(s.provider||'Google Places')}</span></div>`);
+        rows.push(`<div class="sheetRow"><b>Aanbieder</b><span>${escapeHtml(s.provider||'Google Places')}</span></div>`);
         if(s.rating) rows.push(`<div class="sheetRow"><b>Beoordeling</b><span>${escapeHtml(s.rating)} ★</span></div>`);
-        if(s.priceLevel) rows.push(`<div class="sheetRow"><b>Prijsniveau</b><span>${escapeHtml(s.priceLevel)}</span></div>`);
-        rows.push(`<div class="sheetRow"><b>${s.type==='ev'?'Laadsnelheid':s.type==='hotel'?'Status':'Status'}</b><span>${escapeHtml(s.power||s.status||'check live')}</span></div>`);
+        rows.push(`<div class="sheetRow"><b>Laadsnelheid</b><span>${escapeHtml(s.power||s.status||'check live')}</span></div>`);
         if(s.openNow!==undefined) rows.push(`<div class="sheetRow"><b>Nu</b><span>${s.openNow?'open':'mogelijk gesloten'}</span></div>`);
         descEl.innerHTML=`${escapeHtml(s.desc||'')}<div class="sheetList">${rows.join('')}</div>`;
       }else{descEl.textContent=s.desc||'';}
@@ -556,9 +593,10 @@
     }
     function renderMarkers(){
       const previous=selectedStopData;
-      markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
+      markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();liveGoogleHotelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
+      if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         updateSheet(destinationSheet);
@@ -567,11 +605,18 @@
         selectedMarker.marker.setIcon(makeStopIcon(selectedMarker.stop,true,false));
       }
       if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();
+      if(activeFilters.has('hotel')) loadLiveGoogleHotels();
     }
     function renderLiveGoogleFuelMarkers(){
       liveGoogleFuelLayer.clearLayers();
       if(!activeFilters.has('fuel')) return;
       liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
+    }
+
+    function renderLiveGoogleHotelMarkers(){
+      liveGoogleHotelLayer.clearLayers();
+      if(!activeFilters.has('hotel')) return;
+      liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
     function currentRouteSamplePoints(maxPoints=9){
       const latlngs=routeMain.getLatLngs?.()||[];
@@ -588,6 +633,70 @@
       if(data?.status==='empty') return 'Geen tankstations langs route gevonden';
       if(data?.status==='live') return `${count} live tankstations langs route`;
       return count ? `${count} tankstations langs route` : 'Geen tankstations langs route gevonden';
+    }
+
+
+    function googleHotelMessage(data, count){
+      if(data?.cached) return count ? `${count} hotels uit cache` : 'Geen hotels in cache';
+      if(data?.status==='misconfigured') return 'Google key ontbreekt in backend';
+      if(data?.status==='partial_error') return count ? `${count} hotels geladen` : 'Google Places gaf geen hotels';
+      if(data?.status==='empty') return 'Geen hotels langs route gevonden';
+      if(data?.status==='live') return `${count} live hotels langs route`;
+      return count ? `${count} hotels langs route` : 'Geen hotels langs route gevonden';
+    }
+
+    async function loadLiveGoogleHotels(){
+      if(liveGoogleHotelLoaded||liveGoogleHotelLoading) return;
+      liveGoogleHotelLoading=true;
+      try{
+        showToast('Hotels langs route zoeken…');
+        const points=currentRouteSamplePoints(9);
+        if(!points.length){
+          liveGoogleHotelLoading=false;
+          showToast('Nog geen routepunten beschikbaar');
+          return;
+        }
+
+        const controller = new AbortController();
+        const timer = setTimeout(()=>controller.abort(), 12000);
+        const res=await fetch('/api/google-hotels',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          signal: controller.signal,
+          body:JSON.stringify({points,radiusMeters:10000})
+        });
+        clearTimeout(timer);
+
+        const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
+        if(!res.ok) throw new Error(data.error||data.message||'Google Hotels API fout');
+        if(data.ok===false){
+          console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
+        }
+
+        liveGoogleHotelStops=(data.places||[]).map(p=>({
+          name:p.name||'Hotel langs route',
+          meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.detourLabel||'± 5 min van route'].filter(Boolean).join(' · '),
+          desc:'',
+          type:'hotel',label:'Hotel langs route',ll:[Number(p.lat),Number(p.lng)],provider:p.provider||'Google Places',
+          status:p.status||'beschikbaarheid checken',openNow:p.openNow,rating:p.rating||null,userRatingCount:p.userRatingCount||null,
+          detourLabel:p.detourLabel||'± 5 min van route',priceLevel:p.priceLevel||null,
+          amenities:Array.isArray(p.amenities)?p.amenities:[],
+          googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
+          googleMapsUri:p.googleMapsUri||null,
+          photoName:p.photoName||null,
+          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
+          infoUrl:p.url||p.website||p.websiteUri||null
+        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
+
+        liveGoogleHotelLoaded=true;
+        liveGoogleHotelLoading=false;
+        renderLiveGoogleHotelMarkers();
+        showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
+      }catch(err){
+        liveGoogleHotelLoading=false;
+        console.warn('Live Google hotels fout:',err);
+        showToast(err?.name==='AbortError'?'Google hotels timeout':'Google hotels niet geladen');
+      }
     }
 
     async function loadLiveGoogleFuelStations(){
@@ -659,9 +768,9 @@
     function setFilters(filters){
       if(!Array.isArray(filters)||!filters.length){activeFilters=new Set();}
       else{activeFilters=new Set(filters);activeFilters.delete('all');}
-      syncCatUI();renderMarkers();if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();
+      syncCatUI();renderMarkers();if(activeFilters.has('fuel')) loadLiveGoogleFuelStations();if(activeFilters.has('hotel')) loadLiveGoogleHotels();
     }
-    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
+    document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'&&activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
     document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
     async function loadOrsRoute(){
@@ -677,7 +786,10 @@
         if(!Array.isArray(coords)||coords.length<2) throw new Error('Geen route geometry');
         const latlngs=coords.map(c=>[c[1],c[0]]);
         routeShadow.setLatLngs(latlngs);routeMain.setLatLngs(latlngs);routeHighlight.setLatLngs(latlngs);
-        liveGoogleFuelLoaded=false;liveGoogleFuelStops=[];liveGoogleFuelLayer.clearLayers();if(activeFilters.has('fuel')) setTimeout(loadLiveGoogleFuelStations,250);
+        liveGoogleFuelLoaded=false;liveGoogleFuelStops=[];liveGoogleFuelLayer.clearLayers();
+        liveGoogleHotelLoaded=false;liveGoogleHotelStops=[];liveGoogleHotelLayer.clearLayers();
+        if(activeFilters.has('fuel')) setTimeout(loadLiveGoogleFuelStations,250);
+        if(activeFilters.has('hotel')) setTimeout(loadLiveGoogleHotels,300);
         const summary=feature.properties?.summary||data.routes?.[0]?.summary||{};
         const km=summary.distance?Math.round(summary.distance/1000).toLocaleString('nl-NL')+' km':null;
         const min=summary.duration?Math.round(summary.duration/60):null;
