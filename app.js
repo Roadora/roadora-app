@@ -290,23 +290,37 @@
     }
     function fuelAmenities(s){
       const source = Array.isArray(s?.amenities) && s.amenities.length ? s.amenities : null;
-      if(source) return source.slice(0,5);
+      const normalize = (item) => String(item || '').trim();
       const name=String(s?.name||'').toLowerCase();
-      const base=['WC','Shop'];
-      if(name.includes('shell')||name.includes('bp')||name.includes('total')||name.includes('esso')) base.unshift('Koffie');
-      if(s?.rating && Number(s.rating)>=4.2) base.push('Goed beoordeeld');
-      return base.slice(0,5);
+      let base = source ? source.map(normalize).filter(Boolean) : ['WC','Shop'];
+      if(!source && (name.includes('shell')||name.includes('bp')||name.includes('total')||name.includes('esso')||name.includes('aral'))) base.unshift('Koffie');
+      if(!source && s?.rating && Number(s.rating)>=4.2) base.push('Goed beoordeeld');
+      return base.slice(0,6);
+    }
+    function amenityIcon(label){
+      const v=String(label||'').toLowerCase();
+      if(v.includes('wc')||v.includes('toilet')) return '🚻';
+      if(v.includes('koffie')||v.includes('coffee')||v.includes('cafe')||v.includes('café')) return '☕';
+      if(v.includes('shop')||v.includes('winkel')) return '🛒';
+      if(v.includes('wifi')||v.includes('wi-fi')) return '⌁';
+      if(v.includes('ev')||v.includes('laad')||v.includes('charge')) return '⚡';
+      if(v.includes('snack')||v.includes('eten')||v.includes('food')) return '🍔';
+      if(v.includes('diesel')||v.includes('fuel')||v.includes('benzine')) return '⛽';
+      if(v.includes('goed')||v.includes('rating')) return '★';
+      return '•';
     }
     function premiumFuelHtml(s){
       const brand=escapeHtml(s?.brand || inferFuelBrand(s?.name));
       const detour=escapeHtml(fuelDetourLabel(s));
       const open=escapeHtml(fuelOpenLabel(s));
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
-      const amenities=fuelAmenities(s).map(a=>`<span>${escapeHtml(a)}</span>`).join('');
+      const amenitiesList=fuelAmenities(s);
+      const visibleAmenities=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}">${amenityIcon(a)}</span>`).join('');
+      const more=amenitiesList.length>4?`<span class="moreAmenity">+${amenitiesList.length-4}</span>`:'';
       const address=escapeHtml(cleanMetaPart(s,'Langs je route'));
       const desc=escapeHtml(s?.desc || 'Slimme tankstop langs je route. Handig voor brandstof, koffie en een korte pauze zonder grote omweg.');
       return `
-        <div class="fuelPremium fuelPremiumV3">
+        <div class="fuelPremium fuelPremiumV3 fuelCompactV31">
           <div class="fuelQuickLine">
             <span>${rating}</span>
             <i></i>
@@ -315,11 +329,13 @@
             <span>${detour}</span>
           </div>
           <p>${desc}</p>
-          <div class="fuelHeroRow">
-            <span class="fuelBrand">⛽ ${brand}</span>
-            <span class="fuelDetour">${detour}</span>
+          <div class="fuelFooterRow">
+            <div class="fuelHeroRow">
+              <span class="fuelBrand">⛽ ${brand}</span>
+              <span class="fuelDetour">${detour}</span>
+            </div>
+            <div class="fuelAmenitiesStrip" aria-label="Voorzieningen">${visibleAmenities}${more}</div>
           </div>
-          <div class="fuelBadges">${amenities}</div>
           <div class="fuelAddress">${address}</div>
         </div>`;
     }
