@@ -1,4 +1,4 @@
-/* Roadora v2.8 Smart Copilot Pro
+/* Roadora v3.5 Compact Smart Sheet Pro
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -339,29 +339,19 @@
       return '•';
     }
     function premiumFuelHtml(s){
-      const brand=escapeHtml(s?.brand || inferFuelBrand(s?.name));
-      const detour=escapeHtml(fuelDetourLabel(s));
       const open=escapeHtml(fuelOpenLabel(s));
       const rating=s?.rating ? `${escapeHtml(s.rating)} ★` : 'Google Places';
       const amenitiesList=fuelAmenities(s);
       const visibleAmenities=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${amenityIcon(a)}</b><em>${escapeHtml(String(a).replace('Goed beoordeeld','Top'))}</em></span>`).join('');
       const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
       return `
-        <div class="fuelPremium fuelPremiumV3 fuelCleanV32">
+        <div class="fuelPremium fuelPremiumV35">
           <div class="fuelQuickLine">
             <span>${rating}</span>
             <i></i>
             <span>${open}</span>
-            <i></i>
-            <span>${detour}</span>
           </div>
           <div class="fuelAmenitiesStrip" aria-label="Voorzieningen">${visibleAmenities}${more}</div>
-          <div class="fuelFooterRow">
-            <div class="fuelHeroRow">
-              <span class="fuelBrand">⛽ ${brand}</span>
-              <span class="fuelDetour">${detour}</span>
-            </div>
-          </div>
         </div>`;
     }
     function routeArrivalLabel(){
@@ -491,7 +481,7 @@
       if(secondary){
         if(type==='destination') return 'ⓘ Route info';
         if(type==='hotel') return 'ⓘ Hotel bekijken';
-        if(type==='fuel') return 'ⓘ Voorzieningen';
+        if(type==='fuel') return 'ⓘ Reviews';
         if(type==='ev') return 'ⓘ Laadinfo';
         if(type==='food') return 'ⓘ Menu & reviews';
         if(type==='view') return 'ⓘ Bekijk plek';
@@ -529,7 +519,11 @@
       const secondary=document.querySelector('.sheetActions .secondary');
       const save=document.querySelector('.sheetActions .saveStop');
       if(primary) primary.textContent=actionText(s,false);
-      if(secondary) secondary.textContent=actionText(s,true);
+      if(secondary){
+        secondary.textContent=actionText(s,true);
+        secondary.hidden = s.type === 'fuel';
+        secondary.classList.toggle('is-hidden', s.type === 'fuel');
+      }
       if(save){const canSave=s.type&& !['destination','overview','stops','guide'].includes(s.type);save.textContent=canSave?'＋ Opslaan als stop':'＋ Tussenstop';save.disabled=!canSave;save.classList.toggle('is-disabled',!canSave);}
       updateSmartTopbar(s);
     }
