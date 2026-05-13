@@ -232,9 +232,14 @@
     let liveGoogleFuelStops=[];
     let liveGoogleFuelLoaded=false;
     let liveGoogleFuelLoading=false;
+    let liveGoogleFuelKey='';
+    let liveGoogleFuelRequestId=0;
     let liveGoogleHotelStops=[];
     let liveGoogleHotelLoaded=false;
     let liveGoogleHotelLoading=false;
+    let liveGoogleHotelKey='';
+    let liveGoogleHotelRequestId=0;
+    let routeRequestId=0;
     let lastFocusKey='destination:Innsbruck, Oostenrijk';
     let mapProgrammaticMove=false;
     let userTouchedMap=false;
@@ -670,6 +675,9 @@
       }
       return points;
     }
+    function placesRequestKey(points, radiusMeters, mode){
+      return [mode||'route', radiusMeters, ...points.map(p=>`${Math.round(p.lat*1000)/1000},${Math.round(p.lng*1000)/1000}`)].join('|');
+    }
     function routeSpreadIndex(stop, buckets=10){
       const latlngs=routeMain.getLatLngs?.()||[];
       const source=latlngs.length?latlngs:route.map(p=>L.latLng(p[0],p[1]));
@@ -732,12 +740,19 @@
       try{
         showToast('Hotels langs route zoeken…');
         const points=currentRouteSamplePoints(18,{includeEnds:false});
+        const requestKey=placesRequestKey(points,16000,'route_planning');
+        if(liveGoogleHotelLoaded && liveGoogleHotelKey===requestKey){
+          liveGoogleHotelLoading=false;
+          renderLiveGoogleHotelMarkers();
+          return;
+        }
         if(!points.length){
           liveGoogleHotelLoading=false;
           showToast('Nog geen routepunten beschikbaar');
           return;
         }
 
+        const requestId=++liveGoogleHotelRequestId;
         const controller = new AbortController();
         const timer = setTimeout(()=>controller.abort(), 12000);
         const res=await fetch('/api/google-hotels',{
@@ -749,6 +764,7 @@
         clearTimeout(timer);
 
         const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
+        if(requestId!==liveGoogleHotelRequestId) return;
         if(!res.ok) throw new Error(data.error||data.message||'Google Hotels API fout');
         if(data.ok===false){
           console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
@@ -770,6 +786,7 @@
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
         liveGoogleHotelLoaded=true;
+        liveGoogleHotelKey=requestKey;
         liveGoogleHotelLoading=false;
         renderLiveGoogleHotelMarkers();
         showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
@@ -786,12 +803,19 @@
       try{
         showToast('Tankstations dicht langs route zoeken…');
         const points=currentRouteSamplePoints(14,{includeEnds:false});
+        const requestKey=placesRequestKey(points,7000,'route_quick');
+        if(liveGoogleFuelLoaded && liveGoogleFuelKey===requestKey){
+          liveGoogleFuelLoading=false;
+          renderLiveGoogleFuelMarkers();
+          return;
+        }
         if(!points.length){
           liveGoogleFuelLoading=false;
           showToast('Nog geen routepunten beschikbaar');
           return;
         }
 
+        const requestId=++liveGoogleFuelRequestId;
         const controller = new AbortController();
         const timer = setTimeout(()=>controller.abort(), 11000);
         const res=await fetch('/api/google-fuel',{
@@ -803,6 +827,7 @@
         clearTimeout(timer);
 
         const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
+        if(requestId!==liveGoogleFuelRequestId) return;
         if(!res.ok) throw new Error(data.error||data.message||'Google Fuel API fout');
 
         if(data.ok===false){
@@ -827,6 +852,7 @@
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
 
         liveGoogleFuelLoaded=true;
+        liveGoogleFuelKey=requestKey;
         liveGoogleFuelLoading=false;
         renderLiveGoogleFuelMarkers();
         showToast(googleFuelMessage(data, liveGoogleFuelStops.length));
@@ -855,6 +881,7 @@
     document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
     async function loadOrsRoute(){
+      const requestId=++routeRequestId;
       try{
         showToast('Echte route laden…');
         const profile=window.RoadoraState?.profile||document.querySelector('.rVehicle.active')?.dataset.profile||document.querySelector('.vehicle.active')?.dataset.profile||'driving-car';
@@ -862,13 +889,14 @@
         const res=await fetch('/api/route?'+params.toString(),{headers:{Accept:'application/json'}});
         if(!res.ok) throw new Error('ORS '+res.status);
         const data=await res.json();
+        if(requestId!==routeRequestId) return;
         const feature=data.features&&data.features[0];
         const coords=feature?.geometry?.coordinates;
         if(!Array.isArray(coords)||coords.length<2) throw new Error('Geen route geometry');
         const latlngs=coords.map(c=>[c[1],c[0]]);
         routeShadow.setLatLngs(latlngs);routeMain.setLatLngs(latlngs);routeHighlight.setLatLngs(latlngs);
-        liveGoogleFuelLoaded=false;liveGoogleFuelStops=[];liveGoogleFuelLayer.clearLayers();
-        liveGoogleHotelLoaded=false;liveGoogleHotelStops=[];liveGoogleHotelLayer.clearLayers();
+        liveGoogleFuelLoaded=false;liveGoogleFuelKey='';liveGoogleFuelStops=[];liveGoogleFuelLayer.clearLayers();
+        liveGoogleHotelLoaded=false;liveGoogleHotelKey='';liveGoogleHotelStops=[];liveGoogleHotelLayer.clearLayers();
         if(activeFilters.has('fuel')) setTimeout(loadLiveGoogleFuelStations,250);
         if(activeFilters.has('hotel')) setTimeout(loadLiveGoogleHotels,300);
         const summary=feature.properties?.summary||data.routes?.[0]?.summary||{};
