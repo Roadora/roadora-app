@@ -1,10 +1,10 @@
-/* Roadora v2.5 Smart Topbar Pro
+/* Roadora v2.8 Smart Copilot Pro
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
    - Google fuel pins selectable
    - Maps opent met exacte coordinaten / place id waar mogelijk
-   - v2.5: kaarttopbar is slimme ritstatus; Home-knop verwijderd
+   - v2.8: Smart Copilot Layer; cockpit reageert op route, voertuig en geselecteerde stop
 */
 (function(){
   'use strict';
@@ -248,24 +248,100 @@
       if(type==='view') return 'linear-gradient(135deg,#dce9e0,#789273 52%,#1f3629)';
       return 'linear-gradient(135deg,#dfe4d8,#657866 52%,#1f2d27)';
     }
-    function vehicleBadge(){
+    function vehicleInfo(){
       const v=window.RoadoraState?.vehicle||'car';
-      if(v==='ev') return 'EV';
-      if(v==='camper') return 'Camper';
-      if(v==='motor') return 'Motor';
-      return 'Auto';
+      if(v==='ev') return {short:'EV', mode:'EV route', assist:'laadstop gepland'};
+      if(v==='camper') return {short:'Camper', mode:'Camper route', assist:'overnachting slim plannen'};
+      if(v==='motor') return {short:'Motor', mode:'Scenic route', assist:'mooie wegen focus'};
+      return {short:'Auto', mode:'Auto route', assist:'pauze slim plannen'};
     }
-    function nextLabelFor(s){
-      const type=s?.type||'destination';
-      if(type==='fuel') return 'Google tankstation';
-      if(type==='ev') return 'Laadstop';
-      if(type==='hotel') return 'Overnachten';
-      if(type==='food') return 'Eten dichtbij';
-      if(type==='view') return 'Scenic stop';
-      if(type==='overview') return 'Alle stops';
-      if(type==='stops') return 'Slimme stops';
-      if(type==='guide') return 'Reisgids';
-      return 'Volgende stop';
+    function cleanMetaPart(s, fallback){
+      const meta=String(s?.meta||'').split('·').map(x=>x.trim()).filter(Boolean);
+      return meta[0]||fallback;
+    }
+    function routeArrivalLabel(){
+      // Simpele lokale ETA-berekening op basis van routeTimeLabel. Wordt later vervangen door live route engine.
+      const m=String(routeTimeLabel||'').match(/(\d+)u\s*(\d+)?/);
+      if(!m) return 'Aankomst —';
+      const mins=(parseInt(m[1],10)*60)+(parseInt(m[2]||'0',10));
+      const d=new Date(Date.now()+mins*60000);
+      return 'Aankomst '+d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+    }
+    function routeMood(){
+      const v=vehicleInfo();
+      if(v.short==='EV') return '⚡ Laadroute';
+      if(v.short==='Camper') return '🏕 Camperproof';
+      if(v.short==='Motor') return '🏍 Scenic';
+      return '🟢 Rustige route';
+    }
+    function copilotStateFor(stop){
+      const type=stop?.type||'destination';
+      const v=vehicleInfo();
+      const base={
+        state:'route',
+        title:'Rotterdam → Innsbruck',
+        badge:routeMood(),
+        sub:`${v.mode} · ${routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'route laden'} · ${routeDistanceLabel||'afstand berekenen'}`,
+        eta:routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'ETA —',
+        distance:routeDistanceLabel||'— km',
+        next:v.short==='EV'?'Volgende: laadstop':'Pauze over 45 min'
+      };
+
+      if(type==='overview') return {...base,state:'overview',badge:'Trip overzicht',next:'Alle stops'};
+      if(type==='stops') return {...base,state:'stops',badge:'Slimme stops',next:'Stops langs route'};
+      if(type==='guide') return {...base,state:'guide',badge:'Reisgids',next:'Highlights'};
+
+      if(type==='fuel') return {
+        state:'fuel',
+        title:stop?.name||'Tankstation',
+        badge:stop?.openNow===false?'Mogelijk gesloten':'Nu open',
+        sub:`Tankstation · ${cleanMetaPart(stop,'langs je route')} · ${stop?.rating?stop.rating+' ★':'Google Places'}`,
+        eta:'± 2 min omweg',
+        distance:'Langs route',
+        next:'Voorzieningen checken'
+      };
+
+      if(type==='ev') return {
+        state:'ev',
+        title:stop?.name||'Laadstation',
+        badge:stop?.status||'Laadstop',
+        sub:`${stop?.provider||'Laadnetwerk'} · ${stop?.power||'snellader'} · ${cleanMetaPart(stop,'langs route')}`,
+        eta:cleanMetaPart(stop,'Volgende stop'),
+        distance:stop?.power||'snellader',
+        next:stop?.status||'beschikbaarheid'
+      };
+
+      if(type==='hotel') return {
+        state:'hotel',
+        title:stop?.name||'Hotel langs route',
+        badge:'Hotel',
+        sub:`Overnachting · ${cleanMetaPart(stop,'dagstop')} · rustig plannen`,
+        eta:'Nachtstop',
+        distance:'Dicht bij route',
+        next:'Kamers bekijken'
+      };
+
+      if(type==='food') return {
+        state:'food',
+        title:stop?.name||'Eten & drinken',
+        badge:'Pauzeplek',
+        sub:`Eten & drinken · ${cleanMetaPart(stop,'langs route')}`,
+        eta:'Korte pauze',
+        distance:'Langs route',
+        next:'Reviews bekijken'
+      };
+
+      if(type==='view') return {
+        state:'view',
+        title:stop?.name||'Mooie plek',
+        badge:'Scenic',
+        sub:`Uitkijkpunt · ${cleanMetaPart(stop,'route highlight')}`,
+        eta:'Fotostop',
+        distance:'Scenic route',
+        next:'Bekijken'
+      };
+
+      return base;
     }
     function updateSmartTopbar(s){
       const stop=s||selectedStopData||destinationSheet;
@@ -275,18 +351,17 @@
       const eta=document.getElementById('mapStatusEta');
       const dist=document.getElementById('mapStatusDistance');
       const next=document.getElementById('mapStatusNext');
+      const cockpit=document.querySelector('#mapScreen .mapCockpit');
       if(!title||!badge||!sub||!eta||!dist||!next) return;
 
-      const type=stop?.type||'destination';
-      const isRoute=type==='destination'||type==='overview'||type==='stops'||type==='guide';
-      title.textContent=isRoute?'Rotterdam → Innsbruck':(stop?.name||'Volgende stop');
-      badge.textContent=type==='fuel'?'Tank':type==='ev'?'EV':type==='hotel'?'Hotel':vehicleBadge();
-      sub.textContent=isRoute
-        ? (routeTimeLabel && routeTimeLabel!=='Route laden…' ? `${routeTimeLabel} · echte route` : 'Slimme route-status · live assist voorbereid')
-        : (stop?.meta||'Details geopend in de bottom sheet');
-      eta.textContent=routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'ETA —';
-      dist.textContent=routeDistanceLabel||'— km';
-      next.textContent=isRoute ? 'Volgende: laadstop' : nextLabelFor(stop);
+      const state=copilotStateFor(stop);
+      cockpit?.setAttribute('data-copilot-state',state.state);
+      title.textContent=state.title;
+      badge.textContent=state.badge;
+      sub.textContent=state.sub;
+      eta.textContent=state.eta;
+      dist.textContent=state.distance;
+      next.textContent=state.next;
     }
 
     function setSheetThumb(s){

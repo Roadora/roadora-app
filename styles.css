@@ -1106,3 +1106,85 @@
     top:176px !important;
   }
 }
+
+
+/* ===== Roadora v2.8 Smart Copilot Pro =====
+   De unified cockpit is nu context-aware: route, voertuig, tankstation, EV, hotel en pauze-states.
+   Geen extra blokken; alleen slimmere informatie binnen hetzelfde rustige cockpitvlak.
+*/
+#mapScreen .mapCockpit{
+  transition: box-shadow .22s ease, background .22s ease, transform .22s ease !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"],
+#mapScreen .mapCockpit[data-copilot-state="ev"],
+#mapScreen .mapCockpit[data-copilot-state="hotel"],
+#mapScreen .mapCockpit[data-copilot-state="food"],
+#mapScreen .mapCockpit[data-copilot-state="view"]{
+  background:rgba(255,250,242,.92) !important;
+  box-shadow:0 20px 54px rgba(24,18,12,.18), inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+#mapScreen .mapCockpit .mapLiveMain{
+  min-width:0 !important;
+}
+#mapScreen .mapCockpit #mapStatusBadge{
+  flex:0 0 auto !important;
+  max-width:112px !important;
+  height:21px !important;
+  padding:0 8px !important;
+  border-radius:999px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  font-size:8.2px !important;
+  font-weight:900 !important;
+  color:#7a5228 !important;
+  background:linear-gradient(135deg,rgba(237,201,132,.40),rgba(196,134,61,.16)) !important;
+  border:1px solid rgba(196,134,61,.14) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusBadge{
+  color:#5d451d !important;
+  background:linear-gradient(135deg,rgba(244,211,144,.54),rgba(196,134,61,.22)) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="ev"] #mapStatusBadge{
+  color:#2f653d !important;
+  background:linear-gradient(135deg,rgba(210,238,205,.70),rgba(125,169,103,.22)) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="hotel"] #mapStatusBadge{
+  color:#6c4f33 !important;
+  background:linear-gradient(135deg,rgba(237,222,195,.72),rgba(169,130,85,.20)) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="food"] #mapStatusBadge{
+  color:#804922 !important;
+  background:linear-gradient(135deg,rgba(247,218,190,.72),rgba(187,113,64,.18)) !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="view"] #mapStatusBadge{
+  color:#315c40 !important;
+  background:linear-gradient(135deg,rgba(217,235,222,.72),rgba(95,137,104,.18)) !important;
+}
+#mapScreen .mapCockpit .mapLiveChips span{
+  max-width:33% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+#mapScreen .mapCockpit #mapStatusNext{
+  background:rgba(255,255,255,.62) !important;
+  color:#7a5228 !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="fuel"] #mapStatusNext,
+#mapScreen .mapCockpit[data-copilot-state="ev"] #mapStatusNext,
+#mapScreen .mapCockpit[data-copilot-state="hotel"] #mapStatusNext{
+  background:rgba(255,255,255,.72) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+#mapScreen .mapCockpit .mapLiveSub,
+#mapScreen .mapCockpit .mapLiveChips span,
+#mapScreen .mapCockpit #mapStatusBadge{
+  transition:opacity .18s ease, transform .18s ease, background .18s ease, color .18s ease !important;
+}
+@media(max-width:380px){
+  #mapScreen .mapCockpit #mapStatusBadge{max-width:88px !important;font-size:7.6px !important;padding:0 6px !important;}
+  #mapScreen .mapCockpit .mapLiveChips span{max-width:50% !important;}
+}
