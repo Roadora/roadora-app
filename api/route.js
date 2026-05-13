@@ -1,57 +1,54 @@
+const REQUEST_TIMEOUT_MS = 9500;
+
+function send(res, status, body) {
+  res.status(status).json(body);
+}
+
+function isLngLat(value) {
+  if (!value || typeof value !== 'string') return false;
+  const [lng, lat] = value.split(',').map(Number);
+  return Number.isFinite(lng) && Number.isFinite(lat) && lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90;
+}
+
 export default async function handler(req, res) {
-  // Roadora ORS proxy — keeps ORS_API_KEY safely on Vercel.
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 
-  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method === 'OPTIONS') return send(res, 204, {});
+  if (req.method !== 'GET') return send(res, 405, { ok: false, error: 'method_not_allowed' });
+
+  const apiKey = process.env.ORS_API_KEY;
+  if (!apiKey) return send(res, 500, { ok: false, error: 'ORS_API_KEY ontbreekt in Vercel Environment Variables.' });
+
+  const start = String(req.query.start || '');
+  const end = String(req.query.end || '');
+  const profile = String(req.query.profile || 'driving-car');
+  const allowedProfiles = new Set(['driving-car', 'driving-hgv', 'cycling-regular', 'foot-walking']);
+
+  if (!isLngLat(start) || !isLngLat(end)) return send(res, 400, { ok: false, error: 'Ongeldige start/end coördinaten.' });
+  if (!allowedProfiles.has(profile)) return send(res, 400, { ok: false, error: 'Ongeldig ORS profiel.' });
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
-    const body = req.method === 'POST' ? req.body : req.query;
-    const start = body.start || '4.4777,51.9244'; // lon,lat Rotterdam
-    const end = body.end || '11.4041,47.2692';   // lon,lat Innsbruck
-    const profile = body.profile || 'driving-car';
+    const url = new URL(`https://api.openrouteservice.org/v2/directions/${profile}`);
+    url.searchParams.set('api_key', apiKey);
+    url.searchParams.set('start', start);
+    url.searchParams.set('end', end);
 
-    if (!process.env.ORS_API_KEY) {
-      return res.status(500).json({ error: 'Missing ORS_API_KEY environment variable' });
-    }
-
-    const startCoords = String(start).split(',').map(Number);
-    const endCoords = String(end).split(',').map(Number);
-
-    if (startCoords.length !== 2 || endCoords.length !== 2 || startCoords.some(Number.isNaN) || endCoords.some(Number.isNaN)) {
-      return res.status(400).json({ error: 'Invalid coordinates. Use lon,lat format.' });
-    }
-
-    const safeProfile = encodeURIComponent(profile);
-    const endpoints = [
-      `https://api.openrouteservice.org/v2/directions/${safeProfile}/geojson`,
-      `https://api.heigit.org/v2/directions/${safeProfile}/geojson`
-    ];
-
-    let lastError = null;
-
-    for (const url of endpoints) {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: process.env.ORS_API_KEY,
-          'Content-Type': 'application/json',
-          Accept: 'application/geo+json, application/json'
-        },
-        body: JSON.stringify({ coordinates: [startCoords, endCoords] })
-      });
-
-      const data = await response.json().catch(() => ({}));
-      if (response.ok) return res.status(200).json(data);
-      lastError = { status: response.status, data };
-    }
-
-    return res.status(lastError?.status || 502).json({
-      error: 'ORS request failed',
-      details: lastError?.data || null
+    const response = await fetch(url.toString(), {
+      signal: controller.signal,
+      headers: { Accept: 'application/json' }
     });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) return send(res, response.status, { ok: false, error: data?.error?.message || `ORS ${response.status}` });
+    return send(res, 200, data);
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Unknown server error' });
+    return send(res, 504, { ok: false, error: String(error?.message || error) });
+  } finally {
+    clearTimeout(timer);
   }
 }
