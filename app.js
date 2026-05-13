@@ -884,6 +884,7 @@
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
       if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
+      updateHotelFilterBarVisibility();
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         updateSheet(destinationSheet);
@@ -898,6 +899,118 @@
       liveGoogleFuelLayer.clearLayers();
       if(!activeFilters.has('fuel')) return;
       liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
+    }
+
+
+    function injectHotelFilterBarV1(){
+      if(document.getElementById('roadoraHotelFiltersV1')) return;
+
+      const style=document.createElement('style');
+      style.id='roadoraHotelFiltersV1';
+      style.textContent=`
+        #mapScreen .hotelFilterBar{
+          position:absolute;
+          top:calc(env(safe-area-inset-top) + 146px);
+          left:14px;
+          right:14px;
+          z-index:820;
+          display:flex;
+          gap:8px;
+          overflow-x:auto;
+          padding:2px 2px 6px;
+          opacity:0;
+          transform:translateY(-6px);
+          pointer-events:none;
+          transition:opacity .18s ease,transform .18s ease;
+          scrollbar-width:none;
+        }
+
+        #mapScreen .hotelFilterBar::-webkit-scrollbar{
+          display:none;
+        }
+
+        #mapScreen .hotelFilterBar.visible{
+          opacity:1;
+          transform:translateY(0);
+          pointer-events:auto;
+        }
+
+        #mapScreen .hotelFilterChip{
+          height:31px;
+          border:none;
+          border-radius:999px;
+          padding:0 12px;
+          display:flex;
+          align-items:center;
+          gap:6px;
+          flex:0 0 auto;
+
+          background:rgba(255,248,240,.58);
+          backdrop-filter:blur(18px);
+          -webkit-backdrop-filter:blur(18px);
+
+          border:1px solid rgba(255,255,255,.55);
+
+          color:#3d2c1f;
+          font-size:11px;
+          font-weight:700;
+
+          box-shadow:
+            0 8px 24px rgba(31,20,12,.08),
+            inset 0 1px 0 rgba(255,255,255,.55);
+        }
+
+        #mapScreen .hotelFilterChip b{
+          font-size:13px;
+          line-height:1;
+        }
+
+        @media(max-width:560px){
+          #mapScreen .hotelFilterBar{
+            top:calc(env(safe-area-inset-top) + 136px);
+          }
+
+          #mapScreen .hotelFilterChip{
+            height:29px;
+            padding:0 10px;
+            font-size:10px;
+          }
+        }
+      `;
+
+      document.head.appendChild(style);
+
+      const bar=document.createElement('div');
+      bar.className='hotelFilterBar';
+      bar.id='hotelFilterBar';
+
+      const chips=[
+        ['🐶','Huisdieren'],
+        ['👨‍👩‍👧','Familie'],
+        ['⚡','EV laden'],
+        ['🍳','Ontbijt'],
+        ['♨️','Wellness'],
+        ['€','Budget'],
+        ['★','Premium']
+      ];
+
+      bar.innerHTML=chips.map(c=>`
+        <button class="hotelFilterChip" type="button">
+          <b>${c[0]}</b>
+          <span>${c[1]}</span>
+        </button>
+      `).join('');
+
+      (document.querySelector('#mapScreen .ui') || document.querySelector('#mapScreen .roadMapApp') || document.body).appendChild(bar);
+    }
+
+    function updateHotelFilterBarVisibility(){
+      injectHotelFilterBarV1();
+      const bar=document.getElementById('hotelFilterBar');
+      if(!bar) return;
+
+      const visible=activeFilters.has('hotel');
+      bar.classList.toggle('visible',visible);
     }
 
     function renderLiveGoogleHotelMarkers(){
@@ -1197,6 +1310,7 @@
       safeInvalidate();
       if(mapBooted){fit('force');return;}
       mapBooted=true;
+      injectHotelFilterBarV1();
       updateSheet(destinationSheet);renderMarkers();syncCatUI();fit('force');loadOrsRoute();
     }
 
