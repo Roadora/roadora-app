@@ -939,14 +939,14 @@
           display:inline-flex;
           align-items:center;
           gap:6px;
-          background:rgba(255,250,242,.58);
-          border:1px solid rgba(255,255,255,.52);
+          background:linear-gradient(180deg,rgba(255,248,242,.94),rgba(241,229,214,.92));
+          border:1px solid rgba(221,196,164,.38);
           color:rgba(45,34,25,.82);
-          box-shadow:0 8px 20px rgba(24,18,12,.08), inset 0 1px 0 rgba(255,255,255,.62);
+          box-shadow:0 10px 24px rgba(38,26,12,.10), inset 0 1px 0 rgba(255,255,255,.72);
           backdrop-filter:blur(18px);
           -webkit-backdrop-filter:blur(18px);
-          font-size:10px;
-          font-weight:850;
+          font-size:10.5px;
+          font-weight:800;
           white-space:nowrap;
           transition:transform .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
         }
@@ -957,7 +957,7 @@
           font-weight:900;
         }
         #mapScreen .hotelFilterChipClean.active{
-          background:linear-gradient(135deg,rgba(241,217,178,.96),rgba(200,139,67,.88));
+          background:linear-gradient(135deg,#E7C38E,#D9A95E);
           color:#211914;
           box-shadow:0 10px 23px rgba(196,134,61,.20), inset 0 1px 0 rgba(255,255,255,.58);
         }
@@ -991,6 +991,30 @@
         }
       `;
       document.head.appendChild(style);
+
+      const mapToolsStyle=document.createElement('style');
+      mapToolsStyle.textContent=`
+        .leaflet-control-layers,
+        .leaflet-control-compass,
+        .leaflet-control-reset,
+        .leaflet-control-bearing{
+          display:none!important;
+        }
+
+        .leaflet-control-custom-center,
+        .mapCenterButton{
+          width:46px!important;
+          height:46px!important;
+          border-radius:18px!important;
+          background:linear-gradient(180deg,rgba(255,248,242,.96),rgba(240,227,210,.96))!important;
+          box-shadow:0 12px 28px rgba(31,20,12,.14)!important;
+          border:1px solid rgba(222,198,168,.44)!important;
+          backdrop-filter:blur(18px)!important;
+          -webkit-backdrop-filter:blur(18px)!important;
+        }
+      `;
+      document.head.appendChild(mapToolsStyle);
+
 
       const bar=document.createElement('div');
       bar.id='hotelFilterbarClean';
