@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@650;750&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <meta name="roadora-build" content="central-router-v2-6-cockpit-fix; home-v8-7-locked; google-fuel-v1" />
+  <meta name="roadora-build" content="central-router-v2-7-unified-cockpit; home-v8-7-locked; google-fuel-v1" />
   <link rel="stylesheet" href="./styles.css" />
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
@@ -163,6 +163,7 @@
       <div class="roadMapApp">
         <div id="routeLeafletMap"></div>
         <div class="ui">
+          <section class="mapCockpit" aria-label="Roadora routecockpit">
           <header class="mapTopbar smartTopbar" aria-label="Slimme ritstatus">
             <button class="mapNavBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
             <button class="mapNavBtn mapBackBtn" data-action="route" aria-label="Terug naar route setup" type="button">‹</button>
@@ -192,6 +193,7 @@
               </div>
             </div>
             <div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>2.340 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>6–8</b><small>Stops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
+          </section>
           </section>
 
           <div class="cats">
