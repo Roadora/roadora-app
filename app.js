@@ -1,4 +1,4 @@
-/* Roadora v3.5 Compact Smart Sheet Pro
+/* Roadora v4.8 Hotel Filters + Preferences v1
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -17,9 +17,20 @@
     vehicle:'car',
     profile:'driving-car',
     hotelDetailPhotos:[],
-    hotelDetailPhotoIndex:0
+    hotelDetailPhotoIndex:0,
+    hotelFilters:{
+      pets:false,
+      family:false,
+      ev:false,
+      breakfast:false,
+      wellness:false,
+      budget:false,
+      premium:false
+    }
   };
   window.RoadoraState=RoadoraState;
+
+  RoadoraState.hotelFilters=readHotelPreferences();
 
   function setButtonType(){qsa('button').forEach(b=>{if(!b.hasAttribute('type')) b.type='button';});}
   function toast(message){
@@ -180,6 +191,17 @@
     try{return JSON.parse(localStorage.getItem(savedStopsKey())||'[]').filter(Boolean);}
     catch(_){return [];}
   }
+  function hotelPreferencesKey(){return 'roadoraHotelPreferencesV1';}
+  function readHotelPreferences(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(hotelPreferencesKey())||'{}');
+      return {...(window.RoadoraState?.hotelFilters||{}),...saved};
+    }catch(_){return window.RoadoraState?.hotelFilters||{};}
+  }
+  function saveHotelPreferences(filters){
+    try{localStorage.setItem(hotelPreferencesKey(),JSON.stringify(filters||{}));}catch(_){}
+  }
+
   function stopIdentity(s){return s?.googlePlaceId || `${s?.type||'stop'}:${s?.name||''}:${Array.isArray(s?.ll)?s.ll.join(','):''}`;}
   function normalizeSavedStop(s){
     return {
@@ -663,12 +685,15 @@
       const amenitiesList=hotelAmenities(s);
       const visible=amenitiesList.slice(0,4).map(a=>`<span title="${escapeHtml(a)}"><b>${hotelAmenityIcon(a)}</b><em>${escapeHtml(a)}</em></span>`).join('');
       const more=amenitiesList.length>4?`<span class="moreAmenity"><b>+${amenitiesList.length-4}</b><em>Meer</em></span>`:'';
+      const matches=activeHotelFilterKeys().filter(k=>hotelMatchesFilter(s,k));
+      const matchLine=matches.length?`<div class="hotelMatchLine">${matches.slice(0,3).map(k=>{const def=hotelFilterDefs.find(x=>x.key===k);return `<span>${def?.icon||'✓'} ${def?.label||k}</span>`;}).join('')}</div>`:'';
       return `
         <div class="hotelPremiumV2 hotelCompactV21">
           <div class="hotelQuickLine">
             <span>${rating}</span><i></i><span>${reviews}</span><i></i><span>${price}</span>
           </div>
           <div class="hotelAmenitiesStrip" aria-label="Hotelvoorzieningen">${visible}${more}</div>
+          ${matchLine}
         </div>`;
     }
     function routeArrivalLabel(){
@@ -883,7 +908,8 @@
       markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();liveGoogleHotelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
-      if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
+      if(activeFilters.has('hotel')) filteredHotelStops().forEach(s=>registerMarker(s,liveGoogleHotelLayer));
+      renderHotelFiltersBar();
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         updateSheet(destinationSheet);
@@ -902,8 +928,9 @@
 
     function renderLiveGoogleHotelMarkers(){
       liveGoogleHotelLayer.clearLayers();
+      renderHotelFiltersBar();
       if(!activeFilters.has('hotel')) return;
-      liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
+      filteredHotelStops().forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
     function currentRouteSamplePoints(maxPoints=14, options={}){
       const latlngs=routeMain.getLatLngs?.()||[];
@@ -1013,6 +1040,194 @@
       if(data?.status==='empty') return 'Geen hotels langs route gevonden';
       if(data?.status==='live') return `${count} live hotels langs route`;
       return count ? `${count} hotels langs route` : 'Geen hotels langs route gevonden';
+    }
+
+    const hotelFilterDefs=[
+      {key:'pets',label:'Huisdieren',icon:'🐶'},
+      {key:'family',label:'Familie',icon:'👨‍👩‍👧'},
+      {key:'ev',label:'EV laden',icon:'⚡'},
+      {key:'breakfast',label:'Ontbijt',icon:'☕'},
+      {key:'wellness',label:'Wellness',icon:'♨️'},
+      {key:'budget',label:'Budget',icon:'€'},
+      {key:'premium',label:'Premium',icon:'★'}
+    ];
+
+    function injectHotelFilterStyles(){
+      if(document.getElementById('roadoraHotelFiltersV1Styles')) return;
+      const style=document.createElement('style');
+      style.id='roadoraHotelFiltersV1Styles';
+      style.textContent=`
+        #mapScreen .hotelFiltersBar{
+          position:absolute;
+          left:18px;
+          right:18px;
+          top:calc(env(safe-area-inset-top) + 166px);
+          z-index:815;
+          display:flex;
+          gap:8px;
+          overflow-x:auto;
+          padding:2px 2px 8px;
+          scrollbar-width:none;
+          pointer-events:auto;
+          opacity:0;
+          transform:translateY(-6px);
+          transition:opacity .18s ease, transform .18s ease;
+        }
+        #mapScreen .hotelFiltersBar::-webkit-scrollbar{display:none}
+        #mapScreen .hotelFiltersBar.is-visible{opacity:1;transform:translateY(0)}
+        #mapScreen .hotelChip{
+          height:35px;
+          flex:0 0 auto;
+          border-radius:999px;
+          padding:0 12px;
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+          color:#3a2b20;
+          background:rgba(255,250,242,.82);
+          border:1px solid rgba(255,255,255,.72);
+          box-shadow:0 8px 20px rgba(24,18,12,.10), inset 0 1px 0 rgba(255,255,255,.84);
+          backdrop-filter:blur(20px);
+          -webkit-backdrop-filter:blur(20px);
+          font-size:10.8px;
+          font-weight:850;
+          white-space:nowrap;
+        }
+        #mapScreen .hotelChip.active{
+          background:linear-gradient(135deg,#f1d9b2,#c88b43);
+          color:#211914;
+          box-shadow:0 10px 24px rgba(196,134,61,.22), inset 0 1px 0 rgba(255,255,255,.55);
+        }
+        #mapScreen .hotelChip b{font-size:13px;line-height:1}
+        #mapScreen .hotelChipReset{
+          padding:0 10px;
+          color:#7a6758;
+        }
+        #mapScreen .hotelChipReset.active{
+          color:#211914;
+        }
+        #mapScreen .hotelMatchLine{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+        #mapScreen .hotelMatchLine span{height:24px;border-radius:999px;padding:0 8px;display:inline-flex;align-items:center;background:rgba(196,134,61,.12);color:#7a552c;font-size:9px;font-weight:850}
+        @media(max-width:520px){
+          #mapScreen .hotelFiltersBar{
+            left:14px;
+            right:14px;
+            top:calc(env(safe-area-inset-top) + 148px);
+          }
+          #mapScreen .hotelChip{
+            height:32px;
+            padding:0 10px;
+            font-size:9.6px;
+          }
+          #mapScreen .hotelChip b{font-size:12px}
+        }
+        @media(max-height:760px){
+          #mapScreen .hotelFiltersBar{
+            top:calc(env(safe-area-inset-top) + 132px);
+          }
+          #mapScreen .hotelChip{
+            height:30px;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function currentHotelFilters(){
+      return window.RoadoraState?.hotelFilters || {};
+    }
+
+    function activeHotelFilterKeys(){
+      const f=currentHotelFilters();
+      return hotelFilterDefs.map(x=>x.key).filter(k=>!!f[k]);
+    }
+
+    function saveCurrentHotelFilters(){
+      try{localStorage.setItem('roadoraHotelPreferencesV1',JSON.stringify(currentHotelFilters()));}catch(_){}
+    }
+
+    function hotelText(h){
+      return [
+        h?.name,h?.address,h?.meta,h?.priceLevel,
+        ...(Array.isArray(h?.amenities)?h.amenities:[])
+      ].filter(Boolean).join(' ').toLowerCase();
+    }
+
+    function hotelMatchesFilter(h,key){
+      const text=hotelText(h);
+      const rating=Number(h?.rating||0);
+      const price=String(h?.priceLevel||'').toLowerCase();
+      if(key==='premium') return rating>=4.3 || price.includes('expensive') || text.includes('premium') || text.includes('spa') || text.includes('wellness');
+      if(key==='budget') return price.includes('inexpensive') || price.includes('moderate') || text.includes('budget') || text.includes('campanile') || text.includes('ibis') || text.includes('b&b');
+      if(key==='ev') return text.includes('ev') || text.includes('laad') || text.includes('charge') || text.includes('parking');
+      if(key==='breakfast') return text.includes('ontbijt') || text.includes('breakfast') || text.includes('café') || text.includes('coffee');
+      if(key==='wellness') return text.includes('wellness') || text.includes('spa') || text.includes('sauna') || text.includes('pool') || text.includes('zwembad');
+      if(key==='family') return text.includes('family') || text.includes('familie') || text.includes('kind') || text.includes('parking') || rating>=4.1;
+      if(key==='pets') return text.includes('pet') || text.includes('huisdier') || text.includes('hond') || text.includes('dog');
+      return true;
+    }
+
+    function hotelFilterScore(h){
+      const keys=activeHotelFilterKeys();
+      if(!keys.length) return 0;
+      return keys.reduce((sum,k)=>sum+(hotelMatchesFilter(h,k)?1:0),0);
+    }
+
+    function filteredHotelStops(){
+      const keys=activeHotelFilterKeys();
+      if(!keys.length) return liveGoogleHotelStops;
+      const filtered=liveGoogleHotelStops.filter(h=>keys.every(k=>hotelMatchesFilter(h,k)));
+      // Als Places niet genoeg specifieke amenity data geeft, toon de beste matches i.p.v. een lege kaart.
+      return filtered.length ? filtered : liveGoogleHotelStops
+        .slice()
+        .sort((a,b)=>(hotelFilterScore(b)-hotelFilterScore(a)) || (Number(b.rating||0)-Number(a.rating||0)))
+        .slice(0,Math.min(8,liveGoogleHotelStops.length));
+    }
+
+    function ensureHotelFiltersBar(){
+      injectHotelFilterStyles();
+      let bar=document.getElementById('hotelFiltersBar');
+      if(bar) return bar;
+      bar=document.createElement('div');
+      bar.id='hotelFiltersBar';
+      bar.className='hotelFiltersBar';
+      bar.setAttribute('aria-label','Hotel filters');
+      bar.innerHTML=hotelFilterDefs.map(def=>`<button class="hotelChip" data-hotel-filter="${def.key}" type="button"><b>${def.icon}</b><span>${def.label}</span></button>`).join('') + '<button class="hotelChip hotelChipReset" data-hotel-filter-reset type="button">Reset</button>';
+      (document.querySelector('#mapScreen .ui')||document.querySelector('#mapScreen .roadMapApp')||document.body).appendChild(bar);
+      bar.addEventListener('click',(event)=>{
+        const reset=event.target.closest('[data-hotel-filter-reset]');
+        if(reset){
+          hotelFilterDefs.forEach(def=>{window.RoadoraState.hotelFilters[def.key]=false;});
+          saveCurrentHotelFilters();
+          renderHotelFiltersBar();
+          renderMarkers();
+          showToast('Hotelfilters gereset');
+          return;
+        }
+        const btn=event.target.closest('[data-hotel-filter]');
+        if(!btn) return;
+        const key=btn.dataset.hotelFilter;
+        window.RoadoraState.hotelFilters[key]=!window.RoadoraState.hotelFilters[key];
+        saveCurrentHotelFilters();
+        renderHotelFiltersBar();
+        renderMarkers();
+        const count=filteredHotelStops().length;
+        showToast(window.RoadoraState.hotelFilters[key] ? `${btn.textContent.trim()} filter actief` : 'Hotelfilter uit');
+        if(activeFilters.has('hotel') && count) updateSmartTopbar({type:'hotel',name:'Hotels langs route',rating:null,detourLabel:`${count} matches`,label:'Hotels'});
+      });
+      return bar;
+    }
+
+    function renderHotelFiltersBar(){
+      const bar=ensureHotelFiltersBar();
+      const visible=activeFilters.has('hotel') || selectedStopData?.type==='hotel';
+      bar.classList.toggle('is-visible',visible);
+      bar.querySelectorAll('[data-hotel-filter]').forEach(btn=>{
+        btn.classList.toggle('active',!!currentHotelFilters()[btn.dataset.hotelFilter]);
+      });
+      const hasActive=activeHotelFilterKeys().length>0;
+      const reset=bar.querySelector('[data-hotel-filter-reset]');
+      if(reset){reset.classList.toggle('active',hasActive);reset.hidden=!hasActive;}
     }
 
     async function loadLiveGoogleHotels(){
