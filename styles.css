@@ -4609,3 +4609,39 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 .roadtripV63Empty{padding:18px 14px;border-radius:20px;background:rgba(255,255,255,.55);border:1px dashed rgba(112,80,44,.20);display:grid;gap:5px;text-align:center}.roadtripV63Empty b{font-size:14px}.roadtripV63Empty span{font-size:11px;line-height:1.35;color:#766a5f;font-weight:700}.roadtripV63Footer{display:grid!important;grid-template-columns:1fr 1.45fr!important;gap:9px!important}.roadtripV63Footer button{height:45px!important;border-radius:17px!important;font-size:12px!important;font-weight:900!important}.roadtripV63Ghost{background:rgba(255,255,255,.66)!important;color:#6f6257!important;border:1px solid rgba(70,47,24,.07)!important}.roadtripV63Ghost:disabled{opacity:.45!important}.roadtripV63Primary{background:linear-gradient(135deg,#ead0a0,#c88b43)!important;color:#211914!important;box-shadow:0 13px 28px rgba(196,135,61,.22),inset 0 1px 0 rgba(255,255,255,.42)!important}
 #mapScreen .bottomNav .navItem[data-nav="roadtrip"].roadtripHasStops{color:#8a5f2e!important;position:relative!important}#mapScreen .bottomNav .navItem[data-nav="roadtrip"].roadtripHasStops::after{content:attr(data-roadtrip-count);position:absolute;top:5px;right:14px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914;font-size:9px;font-weight:900;box-shadow:0 6px 14px rgba(196,135,61,.22)}
 @media(max-width:380px){.roadtripV63Card{left:12px!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom) + 66px)!important;border-radius:24px!important;padding:12px!important}.roadtripV63Head b{font-size:15px!important}.roadtripV63Stop{grid-template-columns:22px 30px minmax(0,1fr) 31px!important;gap:6px!important;min-height:54px!important}.roadtripV63Icon{width:30px;height:30px;border-radius:11px}.roadtripV63Main b{font-size:11.5px}.roadtripV63Main small{font-size:8.6px}.roadtripV63Footer button{height:42px!important;font-size:11px!important}}
+
+
+/* ===== Roadora v6.4 Route Core Functionality — Goed ===== */
+.roadtripMapPinV64{
+  width:34px;height:34px;border-radius:999px;
+  display:grid;place-items:center;position:relative;
+  background:linear-gradient(135deg,rgba(255,248,234,.98),rgba(207,151,79,.92));
+  border:2px solid rgba(255,255,255,.95);
+  box-shadow:0 10px 24px rgba(42,28,14,.24),0 0 0 5px rgba(237,201,132,.16);
+  color:#2b2119;
+}
+.roadtripMapPinV64 span{
+  position:absolute;left:-3px;top:-4px;width:17px;height:17px;border-radius:999px;
+  display:grid;place-items:center;background:#2b2119;color:#fff7e9;
+  font-size:9px;font-weight:900;border:1px solid rgba(255,255,255,.72);
+}
+.roadtripMapPinV64 b{font-size:14px;line-height:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.4));}
+.roadtripMapPinV64[data-roadtrip-type="hotel"]{background:linear-gradient(135deg,#fff4dc,#a98255)}
+.roadtripMapPinV64[data-roadtrip-type="fuel"]{background:linear-gradient(135deg,#fff0ce,#c4863d)}
+.roadtripMapPinV64[data-roadtrip-type="ev"]{background:linear-gradient(135deg,#ecf8dd,#8fae6f)}
+.roadtripMapPinV64[data-roadtrip-type="wc"]{background:linear-gradient(135deg,#eef5ff,#7b9fc9)}
+#mapScreen .bottomNav .navItem[data-nav="roadtrip"].roadtripHasStops::after{
+  content:attr(data-roadtrip-count);
+  position:absolute;top:5px;right:8px;min-width:16px;height:16px;padding:0 4px;
+  border-radius:999px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#edc984,#c4863d);color:white;
+  font-size:8.5px;font-weight:900;box-shadow:0 5px 12px rgba(196,134,61,.28);
+}
+#mapScreen .bottomNav .navItem{position:relative;}
+#mapScreen.roadtripPanelOpenV63 .sheet,
+#mapScreen.stopOverlayOpenV57 .sheet{opacity:0;transform:translateY(10px) scale(.98);pointer-events:none;transition:.22s ease;}
+@media(max-width:380px){
+  .roadtripMapPinV64{width:31px;height:31px;}
+  .roadtripMapPinV64 span{width:16px;height:16px;font-size:8px;}
+  .roadtripMapPinV64 b{font-size:13px;}
+}

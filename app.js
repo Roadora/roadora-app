@@ -3377,3 +3377,144 @@
 
   window.RoadoraMapsExport={url:mapsUrl,open:openMaps};
 })();
+
+
+/* Roadora v6.4 Route Core Functionality — Goed
+   - Mijn Roadtrip-stops zijn zichtbaar op de kaart
+   - Route-tab focust op de volledige route inclusief gekozen stops
+   - Eén centrale stoplijst uit localStorage blijft de bron voor kaart + Maps-export
+   - Veilige standalone laag: geen wijzigingen aan map-init of ORS flow
+*/
+(function(){
+  'use strict';
+  const KEY='roadoraRoadtripV1';
+  const ORIGIN_LL=[51.9244,4.4777];
+  const DEST_LL=[47.2692,11.4041];
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let layer=null;
+  let bootTimer=null;
+
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function read(){
+    try{
+      const data=JSON.parse(localStorage.getItem(KEY)||'{}');
+      return Array.isArray(data.stops)?data.stops.filter(Boolean):[];
+    }catch(_){ return []; }
+  }
+  function isPoint(stop){
+    return Array.isArray(stop?.ll) && Number.isFinite(Number(stop.ll[0])) && Number.isFinite(Number(stop.ll[1]));
+  }
+  function iconFor(type){
+    const t=String(type||'').toLowerCase();
+    if(t==='hotel') return '🏨';
+    if(t==='fuel') return '⛽';
+    if(t==='ev') return '⚡';
+    if(t==='food') return '🍽️';
+    if(t==='view') return '⛰️';
+    if(t==='wc') return '🚻';
+    return '📍';
+  }
+  function ensureLayer(){
+    const map=window.roadoraLeafletMap;
+    if(!map || !window.L) return null;
+    if(!layer){
+      layer=window.L.layerGroup().addTo(map);
+    }
+    return layer;
+  }
+  function makeIcon(stop,index){
+    const html=`<div class="roadtripMapPinV64" data-roadtrip-type="${String(stop?.type||'stop').replace(/"/g,'')}"><span>${index+1}</span><b>${iconFor(stop?.type)}</b></div>`;
+    return window.L.divIcon({html,iconSize:[34,34],iconAnchor:[17,17],className:''});
+  }
+  function routePoints(stops=read()){
+    const pts=[ORIGIN_LL];
+    stops.forEach(s=>{ if(isPoint(s)) pts.push([Number(s.ll[0]),Number(s.ll[1])]); });
+    pts.push(DEST_LL);
+    return pts;
+  }
+  function render(){
+    const map=window.roadoraLeafletMap;
+    const L=window.L;
+    const group=ensureLayer();
+    if(!map || !L || !group) return false;
+    group.clearLayers();
+    const stops=read().filter(isPoint);
+
+    if(stops.length){
+      L.polyline(routePoints(stops),{
+        color:'#6e4b25',
+        weight:2.4,
+        opacity:.46,
+        dashArray:'7 9',
+        lineCap:'round',
+        lineJoin:'round',
+        interactive:false
+      }).addTo(group);
+    }
+
+    stops.forEach((stop,index)=>{
+      const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
+      marker.on('click',()=>{
+        try{
+          window.RoadoraMapApi?.showPanel?.(stop);
+          setTimeout(()=>window.RoadoraMapApi?.focusSelected?.(),60);
+          toast('Roadtrip-stop geopend');
+        }catch(err){
+          console.warn('Roadtrip marker open:',err);
+        }
+      });
+    });
+    document.body.classList.toggle('roadoraHasTripStopsV64',stops.length>0);
+    return true;
+  }
+  function fitTripRoute(reason='route'){
+    const map=window.roadoraLeafletMap;
+    const L=window.L;
+    if(!map || !L) return;
+    const stops=read().filter(isPoint);
+    const pts=routePoints(stops);
+    const bounds=L.latLngBounds(pts.map(p=>L.latLng(p[0],p[1])));
+    const small=window.matchMedia?.('(max-width: 560px)')?.matches;
+    try{
+      render();
+      map.invalidateSize(false);
+      map.fitBounds(bounds, small?{paddingTopLeft:[26,118],paddingBottomRight:[26,148],maxZoom:8}:{paddingTopLeft:[48,150],paddingBottomRight:[48,182],maxZoom:8});
+      toast(stops.length?`Volledige roadtrip in beeld · ${stops.length} stop${stops.length===1?'':'s'}`:'Volledige route in beeld');
+    }catch(err){ console.warn('Roadtrip fit:',err); }
+  }
+  function scheduleRender(){
+    clearTimeout(bootTimer);
+    bootTimer=setTimeout(()=>{
+      if(!render()) scheduleRender();
+    },180);
+  }
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const routeNav=t.closest('#mapScreen .bottomNav .navItem[data-nav="route"]');
+    if(routeNav){
+      setTimeout(()=>fitTripRoute('bottom-nav'),90);
+      return;
+    }
+  },true);
+
+  window.addEventListener('roadora:roadtrip:update',()=>{ scheduleRender(); });
+  window.addEventListener('storage',e=>{ if(!e.key || e.key===KEY) scheduleRender(); });
+  window.addEventListener('resize',()=>scheduleRender());
+
+  const oldInit=window.initRoadoraMapSubpage;
+  if(typeof oldInit==='function' && !oldInit.__roadoraV64Wrapped){
+    const wrapped=function(){
+      const res=oldInit.apply(this,arguments);
+      scheduleRender();
+      return res;
+    };
+    wrapped.__roadoraV64Wrapped=true;
+    window.initRoadoraMapSubpage=wrapped;
+  }
+
+  window.RoadoraTripMap={render,fit:fitTripRoute};
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleRender,{once:true}); else scheduleRender();
+})();
