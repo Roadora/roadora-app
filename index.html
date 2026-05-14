@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@650;750&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <meta name="roadora-build" content="roadora-core-cleanup-v1; hotels-tab-v1; home-v8-7-locked; map-core-stable" />
+  <meta name="roadora-build" content="roadora-v4-9-2-hotels-in-hamburger; home-v8-7-locked; map-first; smart-copilot" />
   <link rel="stylesheet" href="./styles.css" />
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
@@ -172,7 +172,7 @@
         <section class="hotelHeroPanel">
           <small>Plan rustig vóór vertrek</small>
           <h1>Vind je overnachting langs de route.</h1>
-          <p>Zoek straks op plaats, na zoveel kilometer of na zoveel uur rijden. Voor nu staat de premium hotel-laag klaar als veilige app-basis.</p>
+          <p>Zoek straks op plaats, na zoveel kilometer of na zoveel uur rijden. Deze hotel-planner staat rustig in het menu. Onderweg blijven hotels gewoon als kaartfilter beschikbaar.</p>
         </section>
 
         <section class="hotelSearchPanel">
@@ -186,7 +186,7 @@
         </section>
 
         <section class="hotelListPanel">
-          <div class="hotelSectionHead"><b>Aanbevolen hotels</b><span>Demo shortlist</span></div>
+          <div class="hotelSectionHead"><b>Aanbevolen hotels</b><span>Menu planner</span></div>
           <button class="hotelResult" type="button" data-open-map data-hotel-filter="true">
             <i class="hotelThumb hotelThumbOne"></i>
             <span><b>Hotel bij Ulm</b><em>640 km · dag 1 · ± 10 min van route</em><small>Perfect voor een tweedaagse rit naar Oostenrijk.</small></span>
@@ -255,7 +255,7 @@
 
           <nav class="bottomNav">
             <button class="navItem active" type="button"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>
-            <button class="navItem" data-action="hotels" type="button"><svg viewBox="0 0 24 24"><path d="M4 11h16v9M4 20V7M20 20v-5H4M7 11V8h5v3"></path></svg>Hotels</button>
+            <button class="navItem" type="button"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>Overzicht</button>
             <button class="navItem navCenter" type="button"><span class="round"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>Navigeer</button>
             <button class="navItem" type="button"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>Stops</button>
             <button class="navItem" type="button"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4v15.5A2.5 2.5 0 0 1 6.5 22H20V6H6.5A2.5 2.5 0 0 0 4 8.5"></path></svg>Reisgids</button>
