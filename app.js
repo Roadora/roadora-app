@@ -1692,3 +1692,168 @@
   else init();
   document.addEventListener('click',handleClick,true);
 })();
+
+/* Roadora v5.4.1 — Hotel Ecosystem Polish
+   - Hotelplanner bewaart zoekmodus/filters tijdelijk
+   - Overnachten-kaartmodus gebruikt dezelfde context
+   - Categorieën blijven compact; alleen bottom-nav Stops triggert ze
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const KEY='roadoraHotelPlanningContext';
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+
+  function readContext(){
+    try{return JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};}catch(_){return {};}
+  }
+  function writeContext(){
+    const screen=qs('#hotelPlannerScreen');
+    if(!screen) return;
+    const context={
+      place:(qs('#hotelPlaceInput')?.value||'').trim(),
+      mode:qs('#hotelPlannerScreen [data-hotel-mode].active')?.dataset.hotelMode||'route',
+      time:qs('#hotelPlannerScreen [data-chip-group="time"] .active')?.dataset.time||'5',
+      km:qs('#hotelPlannerScreen [data-chip-group="km"] .active')?.dataset.km||'600',
+      filters:qsa('#hotelPlannerScreen [data-hotel-filter].active').map(b=>b.dataset.hotelFilter),
+      updatedAt:Date.now()
+    };
+    sessionStorage.setItem(KEY,JSON.stringify(context));
+  }
+  function contextLabel(){
+    const c=readContext();
+    if(c.place) return `Hotels rond ${c.place}`;
+    if(c.mode==='time') return `Hotels na ±${c.time||5}u rijden`;
+    if(c.mode==='km') return `Hotels rond ${c.km||600} km`;
+    return 'Hotels langs je route';
+  }
+
+  function syncPlannerFromContext(){
+    const c=readContext();
+    if(!qs('#hotelPlannerScreen') || !c.updatedAt) return;
+    const input=qs('#hotelPlaceInput');
+    if(input && c.place!==undefined) input.value=c.place;
+    if(c.mode){
+      qsa('#hotelPlannerScreen [data-hotel-mode]').forEach(b=>b.classList.toggle('active',b.dataset.hotelMode===c.mode));
+    }
+    if(c.time){
+      qsa('#hotelPlannerScreen [data-chip-group="time"] button').forEach(b=>b.classList.toggle('active',b.dataset.time===String(c.time)));
+    }
+    if(c.km){
+      qsa('#hotelPlannerScreen [data-chip-group="km"] button').forEach(b=>b.classList.toggle('active',b.dataset.km===String(c.km)));
+    }
+    if(Array.isArray(c.filters)){
+      qsa('#hotelPlannerScreen [data-hotel-filter]').forEach(b=>b.classList.toggle('active',c.filters.includes(b.dataset.hotelFilter)));
+    }
+  }
+
+  function improveHotelMapCockpit(){
+    const map=qs('#mapScreen');
+    if(!map?.classList.contains('fromHotelsMap')) return;
+    const title=qs('#mapStatusTitle');
+    const badge=qs('#mapStatusBadge');
+    const sub=qs('#mapStatusSub');
+    const next=qs('#mapStatusNext');
+    if(title) title.textContent=contextLabel();
+    if(badge) badge.textContent='Hotelmodus';
+    if(sub) sub.textContent='Overnachten · zelf kiezen langs je route';
+    if(next) next.textContent='Vergelijk in Hotels';
+  }
+
+  function openHotelsMapPolished(){
+    writeContext();
+    sessionStorage.setItem('roadoraReturnToHotels','1');
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{
+      qs('#mapScreen')?.classList.add('fromHotelsMap');
+      try{
+        window.RoadoraMapApi?.setFilters?.(['hotel']);
+        window.RoadoraMapApi?.closeCategories?.();
+        window.RoadoraMapApi?.updateTopbar?.();
+      }catch(err){console.warn('Hotel ecosystem map:',err);}
+      improveHotelMapCockpit();
+      toast('Overnachten op de kaart');
+    },360);
+    setTimeout(improveHotelMapCockpit,700);
+    return false;
+  }
+
+  function backToPlannerPolished(){
+    qs('#mapScreen')?.classList.remove('fromHotelsMap');
+    sessionStorage.removeItem('roadoraReturnToHotels');
+    if(window.RoadoraHotelPlanner?.show){
+      window.RoadoraHotelPlanner.show();
+      setTimeout(()=>{syncPlannerFromContext();},80);
+    }
+    return false;
+  }
+
+  function patchPlanner(){
+    const api=window.RoadoraHotelPlanner;
+    if(!api || api.__ecosystemPolished) return;
+    const originalShow=api.show;
+    api.show=function(){
+      const r=originalShow.apply(this,arguments);
+      setTimeout(()=>{syncPlannerFromContext();},80);
+      return r;
+    };
+    api.openHotelsOnMap=openHotelsMapPolished;
+    api.__ecosystemPolished=true;
+  }
+
+  function handleClick(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    if(target.closest('#hotelMapBackBtn')){
+      event.preventDefault();
+      event.stopPropagation();
+      return backToPlannerPolished();
+    }
+
+    if(target.closest('#hotelPlannerScreen [data-hotel-mode], #hotelPlannerScreen [data-chip-group] button, #hotelPlannerScreen [data-hotel-filter], #hotelPlannerScreen [data-hotel-planner-action="search"]')){
+      setTimeout(writeContext,30);
+    }
+
+    if(target.closest('#hotelPlannerScreen [data-hotel-planner-action="map-hotels"]')){
+      event.preventDefault();
+      event.stopPropagation();
+      return openHotelsMapPolished();
+    }
+
+    const nav=target.closest('#mapScreen .bottomNav .navItem');
+    if(nav){
+      const label=(nav.textContent||'').trim().toLowerCase();
+      if(!label.includes('stops')){
+        qs('#mapScreen')?.classList.remove('fromHotelsMap');
+      }
+    }
+
+    const cat=target.closest('#mapScreen .cat[data-filter]');
+    if(cat){
+      const f=cat.dataset.filter;
+      if(f==='hotel'){
+        sessionStorage.setItem('roadoraReturnToHotels','1');
+        qs('#mapScreen')?.classList.add('fromHotelsMap');
+        setTimeout(improveHotelMapCockpit,120);
+      }else{
+        qs('#mapScreen')?.classList.remove('fromHotelsMap');
+        sessionStorage.removeItem('roadoraReturnToHotels');
+      }
+    }
+  }
+
+  function init(){
+    patchPlanner();
+    syncPlannerFromContext();
+    setTimeout(patchPlanner,600);
+    setTimeout(()=>{ if(sessionStorage.getItem('roadoraReturnToHotels')==='1') improveHotelMapCockpit(); },700);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+  document.addEventListener('click',handleClick,true);
+  document.addEventListener('input',e=>{if(e.target?.id==='hotelPlaceInput') setTimeout(writeContext,80);},false);
+})();

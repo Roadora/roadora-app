@@ -3615,3 +3615,159 @@
     top:172px !important;
   }
 }
+
+/* ===== Roadora v5.4.1 — Hotel Ecosystem Polish =====
+   Doel: hotelplanner en Overnachten-kaartmodus voelen als één systeem,
+   zonder de kaart drukker te maken. Categorieën terug compact zoals de goede basis. */
+
+/* Compacte verticale categorieën: geen grote blokken meer */
+#mapScreen .cats{
+  left:14px !important;
+  right:auto !important;
+  bottom:calc(env(safe-area-inset-bottom) + 202px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:5px !important;
+  width:auto !important;
+  max-width:140px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  z-index:764 !important;
+  transform-origin:left bottom !important;
+}
+#mapScreen .cat{
+  min-width:116px !important;
+  width:auto !important;
+  height:31px !important;
+  border-radius:11px !important;
+  padding:0 9px !important;
+  gap:6px !important;
+  justify-content:flex-start !important;
+  background:rgba(255,250,242,.90) !important;
+  border:1px solid rgba(255,255,255,.76) !important;
+  box-shadow:0 10px 22px rgba(24,18,12,.11), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(24px) !important;
+  -webkit-backdrop-filter:blur(24px) !important;
+  font-size:9px !important;
+  font-weight:820 !important;
+  color:#2b2119 !important;
+  white-space:nowrap !important;
+}
+#mapScreen .cat svg{
+  width:13px !important;
+  height:13px !important;
+  flex:0 0 auto !important;
+}
+#mapScreen .cat span{
+  display:block !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+#mapScreen .cat.active{
+  background:linear-gradient(135deg,#f1debc,#c88b43) !important;
+  color:#211914 !important;
+  box-shadow:0 11px 24px rgba(196,134,61,.18), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+#mapScreen .cat:active{transform:scale(.97) !important;}
+
+/* Als de gebruiker vanuit Hotels naar kaart gaat: kleine rustige terug-chip */
+#mapScreen .hotelMapBackBtn{
+  left:14px !important;
+  top:calc(env(safe-area-inset-top) + 190px) !important;
+  height:34px !important;
+  padding:0 11px !important;
+  border-radius:13px !important;
+  gap:6px !important;
+  font-size:9.3px !important;
+  background:rgba(255,250,242,.91) !important;
+  box-shadow:0 11px 24px rgba(24,18,12,.13), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+#mapScreen .hotelMapBackBtn span{
+  width:18px !important;
+  height:18px !important;
+  font-size:13px !important;
+}
+#mapScreen.fromHotelsMap .cats.is-open{
+  /* hotel-terugknop en categorieën mogen niet visueel botsen */
+  transform:translateY(0) scale(1) !important;
+}
+
+/* Hotelplanner compacter en rustiger, zodat hij thuis/desktop én mobiel fijn blijft */
+.hotelPlannerInner{
+  gap:12px !important;
+  padding-left:clamp(14px,4vw,20px) !important;
+  padding-right:clamp(14px,4vw,20px) !important;
+}
+.hotelPlannerHero h1{
+  font-size:clamp(29px,7vw,39px) !important;
+  max-width:390px !important;
+}
+.hotelPlannerCard{
+  gap:10px !important;
+}
+.hotelPlannerFilters button.active::after{
+  content:'✓';
+  margin-left:6px;
+  font-weight:950;
+}
+.hotelPlannerSuggestion{
+  position:relative;
+  overflow:hidden;
+}
+.hotelPlannerSuggestion:before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#edc984,#c4863d);
+  opacity:.75;
+}
+.hotelPlannerResultCard{
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.hotelPlannerResultCard:active{transform:scale(.985);}
+
+/* Hotelmodus op kaart: bottom sheet blijft de snelle route-context, niet een tweede hotelpagina */
+#mapScreen.fromHotelsMap .sheet[data-type="hotel"],
+#mapScreen .sheet[data-type="hotel"]{
+  box-shadow:0 18px 46px rgba(24,18,12,.16), inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+#mapScreen.fromHotelsMap .mapCockpit #mapStatusBadge{
+  background:linear-gradient(135deg,rgba(237,201,132,.54),rgba(196,134,61,.24)) !important;
+  color:#7a5228 !important;
+}
+
+@media(max-width:520px){
+  #mapScreen .cats{
+    left:12px !important;
+    bottom:calc(env(safe-area-inset-bottom) + 204px) !important;
+    gap:5px !important;
+    max-width:132px !important;
+  }
+  #mapScreen .cat{
+    min-width:112px !important;
+    height:30px !important;
+    border-radius:11px !important;
+    padding:0 8px !important;
+    font-size:8.5px !important;
+  }
+  #mapScreen .cat svg{width:12.5px !important;height:12.5px !important;}
+  #mapScreen .hotelMapBackBtn{
+    left:12px !important;
+    top:calc(env(safe-area-inset-top) + 178px) !important;
+    height:32px !important;
+    padding:0 10px !important;
+    font-size:8.8px !important;
+  }
+}
+@media(max-width:380px){
+  #mapScreen .cats{left:10px !important;bottom:calc(env(safe-area-inset-bottom) + 198px) !important;}
+  #mapScreen .cat{min-width:104px !important;height:29px !important;font-size:8px !important;}
+}
+@media(min-width:700px){
+  /* Als Roadora later breder draait op desktop/tablet, blijft de hotelplanner mooi gecentreerd */
+  #hotelPlannerScreen .hotelPlannerInner{max-width:760px;margin:0 auto;width:100%;}
+  .hotelPlannerResults{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
