@@ -483,10 +483,12 @@
       {name:'Allego Füssen / Fernpass',meta:'820 km · 8u 35m · 4 laders',desc:'Laatste praktische laadstop vóór Oostenrijk. Slim moment om te laden voordat je de Alpen in rijdt.',type:'ev',label:'Laadstation',ll:[47.57,10.70],provider:'Allego',power:'tot 150 kW',status:'2 vrij'},
       {name:'Stuttgart Mitte',meta:'320 km · 3u 15m',desc:'Goede tussenstop met restaurants, koffie en snelle doorreis naar Zuid-Duitsland.',type:'food',label:'Eten & drinken',ll:[48.77,9.18]},
       {name:'Hotel bij Ulm',meta:'640 km · dag 1',desc:'Rustige overnachtingsplek dichtbij de route, handig voor een tweedaagse rit naar Innsbruck.',type:'hotel',label:'Overnachten',ll:[48.40,10.00]},
+      {name:'Raststätte Sindelfinger Wald',meta:'430 km · 4u 35m · WC · koffie',desc:'Comfortstop langs de route met toiletten, parkeren en snelle pauzemogelijkheden. Handig voor gezinnen of een korte noodstop.',type:'wc',label:'WC stop',ll:[48.71,8.98]},
+      {name:'Raststätte Allgäuer Tor',meta:'760 km · 8u 05m · WC · eten',desc:'Praktische rustplaats richting Oostenrijk met toiletten en eten dichtbij de route.',type:'wc',label:'WC stop',ll:[47.88,10.31]},
       {name:'Alpen uitzicht',meta:'900 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
     ];
     const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Route wordt geladen…',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
-    const svgs={fuel:'<svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"/></svg>',ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>'};
+    const svgs={fuel:'<svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"/></svg>',ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>',wc:'<svg viewBox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"/></svg>'};
 
     const map=L.map('routeLeafletMap',{zoomControl:false,attributionControl:false,preferCanvas:true,scrollWheelZoom:true,tap:true,zoomSnap:.25,zoomDelta:.5}).setView([49.2,8.1],6);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,crossOrigin:true}).addTo(map);
@@ -753,6 +755,16 @@
         next:'Bekijken'
       };
 
+      if(type==='wc') return {
+        state:'wc',
+        title:stop?.name||'WC stop',
+        badge:'WC dichtbij',
+        sub:`Comfortstop · ${cleanMetaPart(stop,'langs route')}`,
+        eta:'Korte stop',
+        distance:'Langs route',
+        next:'Toilet / pauze'
+      };
+
       return base;
     }
     function updateSmartTopbar(s){
@@ -807,6 +819,7 @@
         if(type==='fuel') return 'ⓘ Reviews';
         if(type==='ev') return 'ⓘ Laadinfo';
         if(type==='food') return 'ⓘ Menu & reviews';
+        if(type==='wc') return 'ⓘ Details';
         if(type==='view') return 'ⓘ Bekijk plek';
         return 'ⓘ Meer informatie';
       }
@@ -815,6 +828,7 @@
       if(type==='fuel') return '➤ Navigeer';
       if(type==='ev') return '⌁ Navigeer naar laadstation';
       if(type==='food') return '⌁ Navigeer naar restaurant';
+      if(type==='wc') return '⌁ Navigeer naar WC';
       return '⌁ Navigeer naar stop';
     }
     function updateSheet(s){
@@ -3017,4 +3031,46 @@
   window.addEventListener('roadora:roadtrip:update',updateRoadtripCount);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',updateRoadtripCount,{once:true});
   else updateRoadtripCount();
+})();
+
+
+/* Roadora v6.0 UX Polish v2 final
+   - Profielhint op Home zichtbaar en subtiel
+   - WC categorie werkt als simpele comfortstop
+   - Geen grote nieuwe systemen; alleen polish/state hardening
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function closeMapOverlays(){
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+  }
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const hint=t.closest('.profileHintV60,[data-action="profile-hint"]');
+    if(hint){
+      e.preventDefault();
+      toast('Profiel komt later: minder filters, betere hotels en stops');
+      return false;
+    }
+    const cat=t.closest('#mapScreen .cat[data-filter="wc"]');
+    if(cat){
+      // Laat de bestaande categorie-handler zijn werk doen, maar geef een duidelijke context-toast.
+      setTimeout(()=>toast('WC-stops langs je route'),80);
+    }
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav]');
+    if(nav && nav.dataset.nav!=='roadtrip'){
+      closeMapOverlays();
+    }
+  },true);
+  function init(){
+    qsa('#mapScreen .cat[data-filter="wc"]').forEach(btn=>{
+      if(!btn.getAttribute('aria-label')) btn.setAttribute('aria-label','WC-stops tonen');
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();

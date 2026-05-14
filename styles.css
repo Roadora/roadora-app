@@ -4372,3 +4372,87 @@
   #mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"]{font-size:7px;}
   #mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"].roadtripHasStops:after{right:10px;top:3px;}
 }
+
+
+/* ===== Roadora v6.0 UX Polish v2 final =====
+   Zichtbare subtiele profielhint + WC comfortstop + compactere overlay polish. */
+.profileHintV60{
+  width:min(342px,100%);
+  min-height:46px;
+  margin:12px 0 0;
+  padding:8px 10px;
+  display:grid;
+  grid-template-columns:30px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  border-radius:18px;
+  background:rgba(255,249,239,.70);
+  border:1px solid rgba(255,255,255,.58);
+  box-shadow:0 14px 32px rgba(25,16,8,.13), inset 0 1px 0 rgba(255,255,255,.66);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  color:#211914;
+  text-align:left;
+}
+.profileHintV60 span{
+  width:30px;height:30px;border-radius:999px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(237,201,132,.52),rgba(196,134,61,.22));
+  font-size:14px;
+}
+.profileHintV60 div{min-width:0;display:grid;gap:2px;}
+.profileHintV60 b{font-size:12.2px;line-height:1.05;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.profileHintV60 small{font-size:9.2px;line-height:1.1;font-weight:750;color:#6f6257;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.profileHintV60 em{
+  height:26px;padding:0 9px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.58);
+  border:1px solid rgba(70,47,24,.06);
+  font-style:normal;font-size:9px;font-weight:900;color:#8a5f2e;
+}
+@media(max-height:760px){.profileHintV60{min-height:40px;margin-top:8px;padding:7px 9px}.profileHintV60 small{display:none}.profileHintV60 em{height:24px}}
+@media(max-width:370px){.profileHintV60 em{display:none}.profileHintV60{grid-template-columns:30px minmax(0,1fr)}}
+
+#mapScreen .cat[data-filter="wc"]{
+  background:rgba(255,250,242,.93)!important;
+}
+#mapScreen .cat[data-filter="wc"].active{
+  background:linear-gradient(135deg,#f1debc,#c88b43)!important;
+  color:#211914!important;
+}
+#mapScreen .stopPin[data-stop-type="wc"]{
+  background:linear-gradient(135deg,#fff6e4,#d3a15e)!important;
+  color:#241914!important;
+}
+#mapScreen .stopPin[data-stop-type="wc"].selected{
+  transform:scale(1.18)!important;
+  box-shadow:0 12px 26px rgba(46,30,14,.25),0 0 0 6px rgba(237,201,132,.22)!important;
+}
+#mapScreen .sheet[data-type="wc"] .thumb{
+  background:linear-gradient(135deg,#f4dfbb,#b98542 52%,#3a2a1f)!important;
+}
+#mapScreen .sheet[data-type="wc"] .thumb::before{content:"🚻"!important;font-size:10px!important;}
+#mapScreen .sheet[data-type="wc"] .overline{color:#9a6429!important;}
+#mapScreen .sheet[data-type="wc"] .primary{
+  background:linear-gradient(135deg,#ead0a0,#c88b43)!important;
+  color:#211914!important;
+}
+/* Compacte Stops-overlay: houdt de kaart zichtbaar en minder zwaar. */
+#mapScreen .cats{
+  gap:5px!important;
+  max-width:132px!important;
+}
+#mapScreen .cat{
+  min-width:108px!important;
+  height:30px!important;
+  border-radius:11px!important;
+  font-size:8.5px!important;
+  padding:0 9px!important;
+}
+#mapScreen .cat svg{width:12.5px!important;height:12.5px!important;}
+#mapScreen .cat span{max-width:84px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+@media(max-width:380px){
+  #mapScreen .cats{left:12px!important;bottom:calc(env(safe-area-inset-bottom) + 198px)!important;}
+  #mapScreen .cat{min-width:102px!important;height:28px!important;font-size:7.9px!important;}
+  #mapScreen .cat span{max-width:76px!important;}
+}
