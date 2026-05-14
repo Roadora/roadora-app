@@ -1562,3 +1562,133 @@
   else initFixes();
   document.addEventListener('click',handlePlannerNav,true);
 })();
+
+/* Roadora v5.3.2 — Hotel ↔ Kaart Switch
+   - Hotels-planner naar kaart onthoudt context
+   - Kaart toont compacte knop: Terug naar Hotels
+   - Geen extra bottom-nav tab nodig
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const KEY='roadoraReturnToHotels';
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+
+  function ensureReturnButton(){
+    let btn=qs('#hotelMapBackBtn');
+    if(btn) return btn;
+    const ui=qs('#mapScreen .ui') || qs('#mapScreen .roadMapApp') || qs('#mapScreen');
+    if(!ui) return null;
+    btn=document.createElement('button');
+    btn.id='hotelMapBackBtn';
+    btn.className='hotelMapBackBtn';
+    btn.type='button';
+    btn.setAttribute('aria-label','Terug naar Hotels');
+    btn.innerHTML='<span>‹</span><b>Terug naar Hotels</b>';
+    ui.appendChild(btn);
+    return btn;
+  }
+
+  function setHotelMapMode(active){
+    const map=qs('#mapScreen');
+    if(active){
+      sessionStorage.setItem(KEY,'1');
+      map?.classList.add('fromHotelsMap');
+      ensureReturnButton();
+    }else{
+      sessionStorage.removeItem(KEY);
+      map?.classList.remove('fromHotelsMap');
+    }
+  }
+
+  function activateHotelMapMode(){
+    setHotelMapMode(true);
+    setTimeout(()=>{
+      ensureReturnButton();
+      qs('#mapScreen')?.classList.add('fromHotelsMap');
+      try{
+        window.RoadoraMapApi?.setFilters?.(['hotel']);
+        window.RoadoraMapApi?.closeCategories?.();
+      }catch(err){console.warn('Hotel map mode:',err);}
+    },420);
+  }
+
+  function backToHotels(){
+    setHotelMapMode(false);
+    if(window.RoadoraHotelPlanner?.show){
+      window.RoadoraHotelPlanner.show();
+    }else{
+      qsa('.appScreen').forEach(s=>s.classList.remove('active'));
+      qs('.phone')?.classList.remove('mapActive');
+      qs('#hotelPlannerScreen')?.classList.add('active');
+    }
+    toast('Terug naar Hotels');
+    return false;
+  }
+
+  function patchHotelPlannerApi(){
+    const api=window.RoadoraHotelPlanner;
+    if(!api || api.__hotelMapSwitchPatched) return;
+    const originalOpen=api.openHotelsOnMap;
+    api.openHotelsOnMap=function(){
+      setHotelMapMode(true);
+      const result=originalOpen ? originalOpen.apply(this,arguments) : window.RoadoraApp?.showMap?.();
+      activateHotelMapMode();
+      return result;
+    };
+    api.__hotelMapSwitchPatched=true;
+  }
+
+  function patchRoadoraApp(){
+    const api=window.RoadoraApp;
+    if(!api || api.__hotelMapSwitchPatched) return;
+    const original={...api};
+    api.showHome=function(){setHotelMapMode(false);return original.showHome?.apply(this,arguments);};
+    api.showRoute=function(){setHotelMapMode(false);return original.showRoute?.apply(this,arguments);};
+    api.showMap=function(){const r=original.showMap?.apply(this,arguments);setTimeout(()=>{if(sessionStorage.getItem(KEY)==='1') qs('#mapScreen')?.classList.add('fromHotelsMap');},180);return r;};
+    api.__hotelMapSwitchPatched=true;
+  }
+
+  function handleClick(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    if(target.closest('#hotelMapBackBtn')){
+      event.preventDefault();
+      event.stopPropagation();
+      return backToHotels();
+    }
+
+    if(target.closest('#hotelPlannerScreen [data-hotel-planner-action="map-hotels"]')){
+      setHotelMapMode(true);
+      setTimeout(activateHotelMapMode,40);
+      return;
+    }
+
+    const nav=itemFromBottomNav(target);
+    if(nav && !nav.includes('stops')){
+      // Houd de terugknop alleen zichtbaar tijdens de hotel-kaartcontext.
+      if(nav.includes('route')||nav.includes('overzicht')||nav.includes('reisgids')||nav.includes('navigeer')) setHotelMapMode(false);
+    }
+  }
+
+  function itemFromBottomNav(target){
+    const btn=target.closest?.('#mapScreen .bottomNav .navItem');
+    return btn ? (btn.textContent||'').trim().toLowerCase() : '';
+  }
+
+  function init(){
+    ensureReturnButton();
+    patchHotelPlannerApi();
+    patchRoadoraApp();
+    if(sessionStorage.getItem(KEY)==='1') qs('#mapScreen')?.classList.add('fromHotelsMap');
+    setTimeout(patchHotelPlannerApi,500);
+    setTimeout(patchRoadoraApp,500);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+  document.addEventListener('click',handleClick,true);
+})();

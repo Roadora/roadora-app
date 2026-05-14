@@ -3557,3 +3557,61 @@
   #mapScreen .cats{left:12px !important;bottom:calc(env(safe-area-inset-bottom) + 196px) !important;gap:7px !important;}
   #mapScreen .cat{min-width:138px !important;height:44px !important;border-radius:16px !important;font-size:11px !important;padding:0 13px !important;}
 }
+
+/* ===== Roadora v5.3.2 — Hotel ↔ Kaart Switch =====
+   Kleine terugknop op de kaart wanneer de gebruiker vanuit de Hotels-planner
+   naar hotelresultaten op de kaart gaat. Geen extra bottom-tab, geen dubbele UX. */
+#mapScreen .hotelMapBackBtn{
+  position:absolute !important;
+  left:22px !important;
+  top:calc(env(safe-area-inset-top) + 198px) !important;
+  z-index:925 !important;
+  height:40px !important;
+  padding:0 14px !important;
+  border-radius:999px !important;
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  background:rgba(255,250,242,.94) !important;
+  border:1px solid rgba(255,255,255,.82) !important;
+  box-shadow:0 14px 30px rgba(24,18,12,.16), inset 0 1px 0 rgba(255,255,255,.90) !important;
+  backdrop-filter:blur(26px) !important;
+  -webkit-backdrop-filter:blur(26px) !important;
+  color:#2b2119 !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  letter-spacing:-.1px !important;
+}
+#mapScreen.fromHotelsMap .hotelMapBackBtn{
+  display:flex !important;
+}
+#mapScreen .hotelMapBackBtn span{
+  width:20px !important;
+  height:20px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;
+  color:#fff !important;
+  font-size:14px !important;
+  line-height:1 !important;
+  box-shadow:0 7px 14px rgba(196,134,61,.22) !important;
+}
+#mapScreen .hotelMapBackBtn:active{
+  transform:scale(.965) !important;
+}
+@media(max-width:520px){
+  #mapScreen .hotelMapBackBtn{
+    left:18px !important;
+    top:calc(env(safe-area-inset-top) + 184px) !important;
+    height:38px !important;
+    padding:0 12px !important;
+    font-size:10.4px !important;
+  }
+}
+@media(max-height:760px){
+  #mapScreen .hotelMapBackBtn{
+    top:172px !important;
+  }
+}
