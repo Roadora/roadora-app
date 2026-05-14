@@ -2557,3 +2557,165 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
   window.addEventListener('resize',forceMobilePlanner,{passive:true});
 })();
+
+/* Roadora v5.7 Interactielaag v1
+   - Nieuwe compacte Stops-overlay boven de bottom nav
+   - Eén actieve kaartmodus tegelijk
+   - Oude zwevende stops/categorie-states opgeschoond
+   - Voorbereid op Mijn Roadtrip v2
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  const MODES={
+    fuel:{label:'Tankstations',hint:'Tankstations langs je route',toast:'Tankstations langs route'},
+    hotel:{label:'Overnachten',hint:'Hotels langs je route',toast:'Hotels langs route'},
+    ev:{label:'Laadstations',hint:'Laadstations langs je route',toast:'Laadstations langs route'},
+    food:{label:'Eten & drinken',hint:'Eten en pauzeplekken langs je route',toast:'Eten & drinken langs route'},
+    view:{label:'Activiteiten',hint:'Uitjes en mooie plekken langs je route',toast:'Activiteiten langs route'}
+  };
+
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function phone(){ return qs('.phone'); }
+  function mapScreen(){ return qs('#mapScreen'); }
+
+  function ensureStopOverlay(){
+    let el=qs('#roadoraStopOverlayV57');
+    if(el) return el;
+    el=document.createElement('section');
+    el.id='roadoraStopOverlayV57';
+    el.className='roadoraStopOverlayV57';
+    el.setAttribute('aria-label','Stop toevoegen');
+    el.innerHTML=`
+      <div class="stopOverlayScrimV57" data-stop-overlay-action="close"></div>
+      <article class="stopOverlayCardV57">
+        <div class="stopOverlayGrabV57"></div>
+        <header class="stopOverlayHeadV57">
+          <div><span>Stop toevoegen</span><b>Waar ben je naar op zoek?</b></div>
+          <button data-stop-overlay-action="close" aria-label="Sluiten" type="button">×</button>
+        </header>
+        <div class="stopOverlayGridV57">
+          <button data-stop-filter="fuel" type="button"><span>⛽</span><b>Tankstation</b><small>Langs route</small></button>
+          <button data-stop-filter="hotel" type="button"><span>🛏️</span><b>Overnachten</b><small>Hotels</small></button>
+          <button data-stop-filter="ev" type="button"><span>⚡</span><b>Laadpunt</b><small>EV laden</small></button>
+          <button data-stop-filter="food" type="button"><span>🍽️</span><b>Eten</b><small>Restaurants</small></button>
+          <button data-stop-filter="view" type="button"><span>⛰️</span><b>Uitjes</b><small>Highlights</small></button>
+          <button data-stop-overlay-action="clear" type="button"><span>⌁</span><b>Route</b><small>Alles resetten</small></button>
+        </div>
+      </article>`;
+    (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
+    return el;
+  }
+
+  function closeOverlay(){
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    mapScreen()?.classList.remove('stopOverlayOpenV57');
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
+      if((btn.textContent||'').toLowerCase().includes('stops')) btn.classList.remove('active','is-active');
+    });
+  }
+
+  function openOverlay(){
+    ensureStopOverlay().classList.add('open');
+    mapScreen()?.classList.add('stopOverlayOpenV57');
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
+      const isStops=(btn.textContent||'').toLowerCase().includes('stops');
+      btn.classList.toggle('active',isStops);
+      btn.classList.toggle('is-active',isStops);
+    });
+  }
+
+  function toggleOverlay(){
+    const open=qs('#roadoraStopOverlayV57')?.classList.contains('open');
+    open ? closeOverlay() : openOverlay();
+  }
+
+  function setMapMode(filter){
+    const api=window.RoadoraMapApi;
+    const meta=MODES[filter];
+    if(!meta || !api) return false;
+
+    closeOverlay();
+    qsa('#mapCats .cat').forEach(btn=>btn.classList.toggle('active',btn.dataset.filter===filter));
+    qsa('#roadoraStopOverlayV57 [data-stop-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.stopFilter===filter));
+
+    mapScreen()?.setAttribute('data-roadora-mode',filter);
+    mapScreen()?.classList.remove('hotelMapActive','hotelNearbyActive','hotelRouteActive','fromHotelsMap');
+    qsa('#hotelMapBackBtn,#hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapMiniActions,.hotelMapRouteToggle').forEach(el=>el.remove());
+
+    try{ api.setFilters?.([filter]); }catch(_){ }
+    try{
+      const title=qs('#mapStatusTitle');
+      const sub=qs('#mapStatusSub');
+      const next=qs('#mapStatusNext');
+      if(title) title.textContent=meta.label;
+      if(sub) sub.textContent=meta.hint;
+      if(next) next.textContent='Kies een stop op de kaart';
+    }catch(_){ }
+    toast(meta.toast);
+    return false;
+  }
+
+  function clearMapMode(){
+    closeOverlay();
+    mapScreen()?.removeAttribute('data-roadora-mode');
+    qsa('#roadoraStopOverlayV57 [data-stop-filter], #mapCats .cat').forEach(btn=>btn.classList.remove('active'));
+    try{ window.RoadoraMapApi?.setFilters?.([]); window.RoadoraMapApi?.clearSelection?.(); }catch(_){ }
+    qsa('#hotelMapBackBtn,#hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapMiniActions,.hotelMapRouteToggle').forEach(el=>el.remove());
+    toast('Routekaart opgeschoond');
+    return false;
+  }
+
+  // Intercept bottom-nav Stops before older handlers toggle the old vertical category list.
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+
+    const bottomNav=t.closest('#mapScreen .bottomNav .navItem');
+    if(bottomNav && (bottomNav.textContent||'').trim().toLowerCase().includes('stops')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      toggleOverlay();
+      return false;
+    }
+
+    const action=t.closest('[data-stop-overlay-action]');
+    if(action){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if(action.dataset.stopOverlayAction==='close') return closeOverlay();
+      if(action.dataset.stopOverlayAction==='clear') return clearMapMode();
+    }
+
+    const filter=t.closest('[data-stop-filter]');
+    if(filter){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return setMapMode(filter.dataset.stopFilter);
+    }
+
+    // Keep direct clicks on the legacy category buttons compact and single-mode.
+    const legacy=t.closest('#mapCats .cat[data-filter]');
+    if(legacy){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return setMapMode(legacy.dataset.filter);
+    }
+
+    // Any major screen navigation should clean temporary map UI.
+    if(t.closest('[data-action="home"], [data-action="route"], [data-action="hotels"], .adjust')){
+      closeOverlay();
+      qsa('#hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapMiniActions,.hotelMapRouteToggle').forEach(el=>el.remove());
+    }
+  },true);
+
+  function init(){
+    ensureStopOverlay();
+    phone()?.classList.add('interactionLayerV57');
+    qs('#stopsCta')?.setAttribute('hidden','hidden');
+    qsa('#mapCats .cat').forEach(btn=>btn.setAttribute('aria-label',btn.textContent.trim()));
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
