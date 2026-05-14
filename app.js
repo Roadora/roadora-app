@@ -1224,3 +1224,88 @@
     window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{safeInvalidate();if(!userTouchedMap) fit('force');},140);});
   };
 })();
+
+/* =========================================================
+   Roadora Core Cleanup v1 — Hotels Tab Safe Layer
+   Veilig toegevoegd bovenop bestaande Roadora core.
+   - Home v8.7 blijft intact
+   - Route setup blijft intact
+   - Map core blijft intact
+   - Hotels krijgt eigen appScreen zonder extra map-instance
+   ========================================================= */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function closeMenu(){
+    const phone=qs('.phone');
+    phone?.classList.remove('menuOpen','menuExpanded');
+    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  }
+
+  function setSideActive(action){
+    qsa('.sideItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action===action));
+  }
+
+  function showHotels(){
+    const phone=qs('.phone');
+    const route=qs('#routeSetupScreen');
+    const map=qs('#mapScreen');
+    const hotels=qs('#hotelScreen');
+    closeMenu();
+    phone?.classList.remove('mapActive');
+    phone?.classList.add('hotelActive');
+    route?.classList.remove('active');
+    map?.classList.remove('active');
+    hotels?.classList.add('active');
+    setSideActive('hotels');
+    window.RoadoraToast?.('Hotels geopend');
+    return false;
+  }
+
+  function leaveHotels(){
+    const phone=qs('.phone');
+    const hotels=qs('#hotelScreen');
+    phone?.classList.remove('hotelActive');
+    hotels?.classList.remove('active');
+  }
+
+  function openMapWithHotels(){
+    leaveHotels();
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{
+      try{
+        window.RoadoraMapApi?.setFilters?.(['hotel']);
+        window.RoadoraMapApi?.toggleCategories?.();
+      }catch(_){/* safe fallback */}
+    },420);
+    return false;
+  }
+
+  document.addEventListener('click',function(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    const hotelOpen=target.closest('[data-action="hotels"]');
+    if(hotelOpen){
+      event.preventDefault();
+      event.stopPropagation();
+      return showHotels();
+    }
+
+    const hotelMap=target.closest('#hotelScreen [data-open-map]');
+    if(hotelMap){
+      event.preventDefault();
+      event.stopPropagation();
+      return openMapWithHotels();
+    }
+
+    const homeOrRoute=target.closest('#hotelScreen [data-action="home"], #hotelScreen [data-action="route"]');
+    if(homeOrRoute){
+      leaveHotels();
+    }
+  },true);
+
+  window.RoadoraHotels={show:showHotels,openMap:openMapWithHotels};
+})();
