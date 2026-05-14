@@ -2634,6 +2634,11 @@
   }
 
   function openOverlay(){
+    // v6.1: één actieve layer tegelijk. Stops-overlay opent schoon.
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+    qs('#roadtripMiniPanelV584')?.classList.remove('open');
+    qsa('#hotelMapBackBtn,#hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapMiniActions,.hotelMapRouteToggle').forEach(el=>el.remove());
     ensureStopOverlay().classList.add('open');
     mapScreen()?.classList.add('stopOverlayOpenV57');
     qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
@@ -2649,6 +2654,9 @@
   }
 
   function setMapMode(filter){
+    qs('#roadtripMiniPanelV584')?.classList.remove('open');
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
     const api=window.RoadoraMapApi;
     const meta=MODES[filter];
     if(!meta || !api) return false;
@@ -2851,6 +2859,11 @@
     dock.innerHTML=`<span>⌁</span><b>Mijn Roadtrip</b><em>${count} stop${count===1?'':'s'}</em>`;
   }
   function renderPanel(){
+    // v6.1: Mijn Roadtrip krijgt focus; andere layers dicht.
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
     const data=read();
     const panel=ensurePanel();
     const list=qs('.roadtripPanelListV584',panel);
@@ -2972,6 +2985,8 @@
     });
   }
   function closeTransientPanels(){
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
     qs('#roadtripMiniPanelV584')?.classList.remove('open');
     qs('#hotelDetailSheet')?.classList.remove('open');
     qs('#hotelCompareSheet')?.classList.remove('open');
@@ -3075,6 +3090,61 @@
     qsa('#mapScreen .cat[data-filter="wc"]').forEach(btn=>{
       if(!btn.getAttribute('aria-label')) btn.setAttribute('aria-label','WC-stops tonen');
     });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
+
+
+/* Roadora v6.1 Layer Focus Polish Goed
+   - Home terug naar cinematic: geen profielkaart op Home
+   - Eén actieve kaartlaag tegelijk: Stops / Hotel detail / Mijn Roadtrip
+   - WC blijft onderdeel van Stops-overlay
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function closeStopOverlay(){
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
+  }
+  function closeRoadtrip(){ qs('#roadtripMiniPanelV584')?.classList.remove('open'); }
+  function closeHotelSheets(){
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+  }
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    if(t.closest('#mapScreen .bottomNav .navItem[data-nav="stops"]')){
+      closeRoadtrip();
+      closeHotelSheets();
+      return;
+    }
+    if(t.closest('#roadtripMiniDockV584, #mapScreen .bottomNav .navItem[data-nav="roadtrip"]')){
+      closeStopOverlay();
+      closeHotelSheets();
+      return;
+    }
+    if(t.closest('[data-stop-filter], #mapCats .cat[data-filter]')){
+      closeRoadtrip();
+      closeHotelSheets();
+      return;
+    }
+    if(t.closest('#mapScreen .sheetActions .primary, #mapScreen .sheetActions .secondary')){
+      closeStopOverlay();
+      closeRoadtrip();
+    }
+    if(t.closest('[data-action="home"], [data-action="route"], [data-action="hotels"], .adjust, #backHomeBtn')){
+      closeStopOverlay();
+      closeRoadtrip();
+      closeHotelSheets();
+      qsa('#hotelMapBackBtn,#hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapMiniActions,.hotelMapRouteToggle').forEach(el=>el.remove());
+    }
+  },true);
+  function init(){
+    qsa('.profileHintV59,.profileHintV60').forEach(el=>el.remove());
+    document.body.classList.add('roadoraV61LayerFocusGoed');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();

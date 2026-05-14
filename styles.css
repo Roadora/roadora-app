@@ -4456,3 +4456,43 @@
   #mapScreen .cat{min-width:102px!important;height:28px!important;font-size:7.9px!important;}
   #mapScreen .cat span{max-width:76px!important;}
 }
+
+
+/* Roadora v6.1 Layer Focus Polish Goed */
+.profileHintV59,.profileHintV60{display:none!important;}
+.roadoraV61LayerFocusGoed #mapScreen.stopOverlayOpenV57 .sheet{
+  opacity:.58!important;
+  transform:translateY(8px) scale(.985)!important;
+  pointer-events:none!important;
+  transition:opacity .18s ease, transform .18s ease!important;
+}
+.roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayCardV57{
+  border-radius:24px!important;
+  background:rgba(255,250,242,.92)!important;
+  box-shadow:0 22px 58px rgba(24,18,12,.20), inset 0 1px 0 rgba(255,255,255,.88)!important;
+}
+.roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57{
+  gap:8px!important;
+}
+.roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button{
+  min-height:58px!important;
+  border-radius:18px!important;
+}
+.roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button span{
+  width:30px!important;height:30px!important;font-size:15px!important;
+}
+.roadoraV61LayerFocusGoed #mapScreen .bottomNav .navItem[data-nav="roadtrip"].roadtripHasStops::after{
+  content:attr(data-roadtrip-count);
+  position:absolute;top:5px;right:16px;
+  min-width:15px;height:15px;border-radius:99px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#edc984,#c4863d);
+  color:#fff;font-size:8px;font-weight:900;
+  box-shadow:0 5px 12px rgba(196,134,61,.28);
+}
+.roadoraV61LayerFocusGoed #mapScreen .bottomNav .navItem{position:relative;}
+@media(max-width:520px){
+  .roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button{min-height:52px!important;padding:8px!important;}
+  .roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button b{font-size:10px!important;}
+  .roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button small{font-size:7.7px!important;}
+}
