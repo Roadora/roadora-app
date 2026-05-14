@@ -3967,3 +3967,119 @@
   #mapScreen .cat span{max-width:78px !important;}
   #mapScreen.fromHotelsMap #hotelMapBackBtn{left:12px !important;top:calc(env(safe-area-inset-top) + 178px) !important;height:30px !important;font-size:8.4px !important;}
 }
+
+/* ===== Roadora v5.6.2 — Hard mobile hotel planner fix ===== */
+@media (max-width:1100px), (pointer:coarse){
+  .phone.hotelPlannerWide,
+  .phone.hotelPlannerMobileHard{
+    width:100vw !important;
+    max-width:480px !important;
+    border-radius:0 !important;
+  }
+  #hotelPlannerScreen.active{
+    overflow:auto !important;
+  }
+  #hotelPlannerScreen .hotelDashShell{
+    width:100% !important;
+    max-width:480px !important;
+    margin:0 auto !important;
+    padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 22px) !important;
+    display:grid !important;
+    gap:12px !important;
+  }
+  #hotelPlannerScreen .hotelDashTop{
+    grid-template-columns:42px 42px minmax(0,1fr) 42px !important;
+    gap:7px !important;
+  }
+  #hotelPlannerScreen .hotelDashTitle{
+    min-width:0 !important;
+    height:48px !important;
+    padding:0 10px !important;
+  }
+  #hotelPlannerScreen .hotelDashTitle b{font-size:20px !important;}
+  #hotelPlannerScreen .hotelDashTitle small{font-size:10px !important;}
+  #hotelPlannerScreen .hotelRouteCardV55{
+    border-radius:22px !important;
+    padding:12px 14px !important;
+  }
+  #hotelPlannerScreen .hotelRouteCardV55 b{font-size:14px !important;}
+  #hotelPlannerScreen .hotelRouteCardV55 small{font-size:11px !important;}
+  #hotelPlannerScreen .hotelControlsV55{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:8px !important;
+    padding:10px !important;
+    border-radius:24px !important;
+  }
+  #hotelPlannerScreen .hotelPrefButton{display:none !important;}
+  #hotelPlannerScreen .hotelControlBox{
+    min-height:58px !important;
+    padding:9px 8px !important;
+    border-radius:17px !important;
+  }
+  #hotelPlannerScreen .hotelControlBox small{font-size:8px !important;}
+  #hotelPlannerScreen .hotelControlBox b{font-size:11px !important;}
+  #hotelPlannerScreen .hotelDashGrid{
+    display:block !important;
+    grid-template-columns:none !important;
+  }
+  #hotelPlannerScreen .hotelNightsPanel{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    margin:0 0 12px !important;
+  }
+  #hotelPlannerScreen .nightCard{
+    padding:13px !important;
+    border-radius:24px !important;
+  }
+  #hotelPlannerScreen .hotelListPanel{
+    margin-top:12px !important;
+    padding:12px !important;
+    border-radius:24px !important;
+  }
+  #hotelPlannerScreen .hotelMapPanelV55,
+  #hotelPlannerScreen .hotelShortlistV55{
+    display:none !important;
+  }
+  #hotelPlannerScreen .hotelTabsV55{
+    height:40px !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+  #hotelPlannerScreen .hotelTabsV55 button{
+    font-size:11px !important;
+    white-space:nowrap !important;
+  }
+  #hotelPlannerScreen .hotelRecommendNote{
+    grid-template-columns:1fr !important;
+    padding:12px !important;
+    border-radius:18px !important;
+  }
+  #hotelPlannerScreen .hotelRecommendNote a{margin-top:4px !important;}
+  #hotelPlannerScreen .hotelCardV55{
+    grid-template-columns:74px minmax(0,1fr) 64px !important;
+    gap:8px !important;
+    padding:9px !important;
+    border-radius:18px !important;
+  }
+  #hotelPlannerScreen .hotelPhotoV55{height:72px !important;border-radius:15px !important;}
+  #hotelPlannerScreen .hotelPhotoV55 span{font-size:8px !important;padding:4px 6px !important;}
+  #hotelPlannerScreen .hotelInfoV55 b{font-size:12px !important;line-height:1.08 !important;}
+  #hotelPlannerScreen .hotelInfoV55 small,
+  #hotelPlannerScreen .hotelInfoV55 p{font-size:9px !important;line-height:1.2 !important;}
+  #hotelPlannerScreen .hotelInfoV55 div span{width:20px !important;height:20px !important;font-size:10px !important;}
+  #hotelPlannerScreen .hotelMapBtnV55{
+    height:54px !important;
+    font-size:9px !important;
+    border-radius:13px !important;
+    padding:0 6px !important;
+  }
+}
+@media (max-width:380px){
+  #hotelPlannerScreen .hotelDashShell{padding-left:12px !important;padding-right:12px !important;}
+  #hotelPlannerScreen .hotelDashTop{grid-template-columns:40px 40px minmax(0,1fr) 40px !important;gap:6px !important;}
+  #hotelPlannerScreen .hotelDashIcon,
+  #hotelPlannerScreen .hotelDashSmall.hotelSettingsIconV56{width:40px !important;height:40px !important;border-radius:15px !important;}
+  #hotelPlannerScreen .hotelControlsV55{grid-template-columns:1fr !important;}
+  #hotelPlannerScreen .hotelCardV55{grid-template-columns:66px minmax(0,1fr) !important;}
+  #hotelPlannerScreen .hotelMapBtnV55{grid-column:1/-1;height:36px !important;}
+}

@@ -2461,3 +2461,99 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
   document.addEventListener('click',handleClick,true);
 })();
+
+/* Roadora v5.6.2 — Hard Mobile Hotel Planner + Back Fix
+   - Mobiel nooit desktop/split hotelplanner
+   - Hotelplanner terugknop gebruikt echte vorige schermcontext
+   - Terug uit Hotels vanaf kaart gaat terug naar kaart, niet Home
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const SOURCE_KEY='roadoraHotelPlannerSourceV562';
+
+  function currentScreen(){
+    if(qs('#mapScreen.active')) return 'map';
+    if(qs('#routeSetupScreen.active')) return 'route';
+    if(qs('#hotelPlannerScreen.active')) return sessionStorage.getItem(SOURCE_KEY)||'home';
+    return 'home';
+  }
+  function rememberSource(src){ sessionStorage.setItem(SOURCE_KEY, src || currentScreen() || 'home'); }
+  function forceMobilePlanner(){
+    const phone=qs('.phone');
+    const screen=qs('#hotelPlannerScreen');
+    if(!phone||!screen) return;
+    const mobile = (window.matchMedia && (matchMedia('(max-width: 1100px)').matches || matchMedia('(pointer: coarse)').matches));
+    phone.classList.toggle('hotelPlannerMobileHard', !!mobile && screen.classList.contains('active'));
+    if(mobile) phone.classList.remove('hotelPlannerWide');
+  }
+  function showMapFromPlanner(){
+    qsa('.appScreen').forEach(s=>s.classList.remove('active'));
+    qs('#mapScreen')?.classList.add('active');
+    qs('.phone')?.classList.add('mapActive');
+    qs('.phone')?.classList.remove('hotelPlannerWide','hotelPlannerMobileHard');
+    setTimeout(()=>{
+      try{ window.initRoadoraMapSubpage?.(); window.roadoraLeafletMap?.invalidateSize(false); }catch(_){ }
+    },80);
+  }
+  function showRouteFromPlanner(){
+    qs('#hotelPlannerScreen')?.classList.remove('active');
+    qs('.phone')?.classList.remove('hotelPlannerWide','hotelPlannerMobileHard','mapActive');
+    window.RoadoraApp?.showRoute?.();
+  }
+  function showHomeFromPlanner(){
+    qs('#hotelPlannerScreen')?.classList.remove('active');
+    qs('.phone')?.classList.remove('hotelPlannerWide','hotelPlannerMobileHard','mapActive');
+    window.RoadoraApp?.showHome?.();
+  }
+  function backFromHotelPlanner(){
+    const src=sessionStorage.getItem(SOURCE_KEY)||'home';
+    if(src==='map') return showMapFromPlanner();
+    if(src==='route') return showRouteFromPlanner();
+    return showHomeFromPlanner();
+  }
+  function patchPlannerApi(){
+    const hp=window.RoadoraHotelPlanner;
+    if(!hp || hp.__v562HardPatch) return;
+    const oldShow=hp.show;
+    hp.show=function(source){
+      rememberSource(source || currentScreen());
+      const result=oldShow ? oldShow.apply(this,arguments) : false;
+      setTimeout(forceMobilePlanner,30);
+      return result;
+    };
+    hp.__v562HardPatch=true;
+  }
+
+  document.addEventListener('pointerdown',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    if(t.closest('[data-action="hotels"], .card[data-action="hotels"], .sideItem[data-action="hotels"]')){
+      rememberSource(currentScreen());
+    }
+    if(t.closest('[data-hotel-map-action="planner"], #hotelMapBackBtn')){
+      rememberSource('map');
+    }
+  },true);
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    if(t.closest('#hotelPlannerScreen [data-hotel-planner-action="back"], #hotelPlannerScreen .hotelDashIcon[aria-label="Terug"]')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return backFromHotelPlanner();
+    }
+    setTimeout(forceMobilePlanner,60);
+  },true);
+
+  function init(){
+    patchPlannerApi();
+    forceMobilePlanner();
+    setTimeout(patchPlannerApi,400);
+    setTimeout(forceMobilePlanner,500);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  window.addEventListener('resize',forceMobilePlanner,{passive:true});
+})();
