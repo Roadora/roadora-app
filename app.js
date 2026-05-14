@@ -1857,3 +1857,231 @@
   document.addEventListener('click',handleClick,true);
   document.addEventListener('input',e=>{if(e.target?.id==='hotelPlaceInput') setTimeout(writeContext,80);},false);
 })();
+
+/* Roadora v5.5 — Hotel Planner Dashboard v1
+   - Hotels-tab krijgt echte meerwaarde als rustige overnachtingsplanner
+   - Reisvoorkeuren in instellingenknop i.p.v. losse filterchaos
+   - Desktop-friendly dashboard + mobile-friendly compact layout
+   - Overnachten op kaart blijft gewone kaartfiltermodus, tenzij je vanuit Hotels komt
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const PREF_KEY='roadoraHotelPreferencesV1';
+  const MAP_KEY='roadoraReturnToHotels';
+  const PLANNER_MAP_KEY='roadoraHotelPlannerOpenedMap';
+
+  const hotels=[
+    {name:'Holiday Inn Express Nürnberg',loc:'Nürnberg, Duitsland',night:1,km:'± 580 km',time:'± 5u 30m',price:'€94',rating:'8,4',tag:'Ideale tussenstop',features:['parking','breakfast','family','late'],photo:'linear-gradient(135deg,#b88945,#2f261d)'},
+    {name:'Best Western Nürnberg City West',loc:'Nürnberg, Duitsland',night:1,km:'± 590 km',time:'± 5u 40m',price:'€89',rating:'8,2',tag:'Top match',features:['parking','pet','breakfast'],photo:'linear-gradient(135deg,#9aa58e,#334231)'},
+    {name:'ARCOTEL Camino Stuttgart',loc:'Stuttgart, Duitsland',night:1,km:'± 530 km',time:'± 5u 10m',price:'€102',rating:'8,5',tag:'Dicht bij route',features:['charger','parking','late'],photo:'linear-gradient(135deg,#d5b47a,#493220)'},
+    {name:'AC Hotel by Marriott Innsbruck',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.000 km',time:'aankomstzone',price:'€129',rating:'8,9',tag:'Dichtbij bestemming',features:['parking','family','breakfast'],photo:'linear-gradient(135deg,#8b9aa8,#1d2933)'},
+    {name:'Hotel Grauer Bär',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.005 km',time:'centrum',price:'€118',rating:'8,6',tag:'Shortlist waard',features:['parking','pet','breakfast'],photo:'linear-gradient(135deg,#cda66a,#3b281d)'},
+    {name:'MEININGER Hotel Innsbruck Zentrum',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.008 km',time:'centrum',price:'€99',rating:'8,3',tag:'Praktisch',features:['family','late','parking'],photo:'linear-gradient(135deg,#a17854,#2b2018)'}
+  ];
+
+  const prefLabels={
+    charger:['⚡','Laadpaal'], parking:['🅿️','Parkeren'], pet:['🐾','Huisdieren'], family:['👨‍👩‍👧','Familie'], breakfast:['☕','Ontbijt'], late:['🌙','Late check-in']
+  };
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+  function readPrefs(){try{return JSON.parse(localStorage.getItem(PREF_KEY)||'{}')||{};}catch(_){return {};}}
+  function writePrefs(p){localStorage.setItem(PREF_KEY,JSON.stringify(p||{}));}
+  function activePrefs(){const p=readPrefs();return Object.keys(prefLabels).filter(k=>p[k]);}
+
+  function ensureHotelScreen(){
+    let screen=qs('#hotelPlannerScreen');
+    if(!screen){
+      window.RoadoraHotelPlanner?.show?.();
+      screen=qs('#hotelPlannerScreen');
+    }
+    if(!screen || screen.dataset.v55==='1') return screen;
+    screen.dataset.v55='1';
+    screen.classList.add('hotelDashboardV55');
+    screen.innerHTML=`
+      <div class="hotelDashShell">
+        <header class="hotelDashTop">
+          <button class="hotelDashIcon" data-menu-open type="button" aria-label="Menu openen">☰</button>
+          <button class="hotelDashIcon" data-hotel-planner-action="back" type="button" aria-label="Terug">‹</button>
+          <div class="hotelDashTitle"><span>🏨</span><div><b>Hotels</b><small>Plan je overnachtingen</small></div></div>
+          <button class="hotelDashSmall" data-hotel-planner-action="preferences" type="button">⚙️ Wensen</button>
+        </header>
+
+        <section class="hotelRouteCardV55">
+          <div><b>Rotterdam → Innsbruck</b><small>1.005 km · ± 9u 03m</small></div>
+          <button data-action="route" type="button">Wijzig route</button>
+        </section>
+
+        <section class="hotelControlsV55">
+          <div class="hotelControlBox"><small>Reis opdelen</small><div><button data-night-minus type="button">−</button><b id="hotelNightCount">2 nachten</b><button data-night-plus type="button">+</button></div></div>
+          <button class="hotelControlBox active" data-drive="6" type="button"><small>Max. rijtijd</small><b>6u 00m</b></button>
+          <button class="hotelControlBox" data-arrival="18" type="button"><small>Aankomst</small><b>Voor 18:00</b></button>
+          <button class="hotelPrefButton" data-hotel-planner-action="preferences" type="button">Instellingen</button>
+        </section>
+
+        <main class="hotelDashGrid">
+          <aside class="hotelNightsPanel">
+            <article class="nightCard active" data-night="1">
+              <header><b>Dag 1</b><button type="button">✎</button></header>
+              <p>Rotterdam → Zuid-Duitsland</p><strong>± 540 km · ± 5u 10m</strong>
+              <button data-night-search="1" type="button">Zoek hotels voor dag 1</button>
+              <div class="zoneLine"><span></span><em>Aanbevolen zone</em><b>Stuttgart → Ulm</b><small>± 540 km van start</small></div>
+            </article>
+            <article class="nightCard" data-night="2">
+              <header><b>Dag 2</b><button type="button">✎</button></header>
+              <p>Zuid-Duitsland → Innsbruck</p><strong>± 465 km · ± 3u 50m</strong>
+              <button data-night-search="2" type="button">Zoek hotels voor dag 2</button>
+              <div class="zoneLine"><span></span><em>Aanbevolen zone</em><b>München → Kufstein</b><small>± 465 km van dag 1</small></div>
+            </article>
+            <button class="addNight" type="button">＋ Nacht toevoegen</button>
+          </aside>
+
+          <section class="hotelListPanel">
+            <nav class="hotelTabsV55"><button class="active" data-hotel-tab="recommended" type="button">Aanbevolen</button><button data-hotel-tab="map" type="button">Zoek op kaart</button><button data-hotel-tab="shortlist" type="button">Mijn shortlist</button></nav>
+            <div class="hotelRecommendNote"><b>🌙 Aanbevolen voor dag 1</b><a href="#" data-hotel-planner-action="why">Waarom deze?</a><small>Gebaseerd op je route, rijtijd en opgeslagen wensen.</small></div>
+            <div class="hotelCardsV55" id="hotelCardsV55"></div>
+            <button class="hotelLoadMore" type="button">Toon meer hotels</button>
+          </section>
+
+          <aside class="hotelMapPanelV55">
+            <div class="hotelMiniMap">
+              <span class="startPin">Rotterdam</span><i class="routeStroke"></i><span class="hotelPin p1">1</span><span class="hotelPin p2">2</span><span class="endPin">Innsbruck</span>
+            </div>
+            <button data-hotel-planner-action="map-hotels" type="button">Bekijk alles op kaart</button>
+          </aside>
+        </main>
+
+        <section class="hotelShortlistV55">
+          <header><b>Jouw shortlist</b><span id="hotelShortlistCount">3 hotels</span><button data-hotel-planner-action="compare" type="button">Vergelijk</button><button data-hotel-planner-action="save-trip" type="button">Opslaan als reis</button></header>
+          <div class="shortRows" id="hotelShortRows"></div>
+        </section>
+      </div>
+
+      <section class="hotelPrefsSheet" id="hotelPrefsSheet" aria-label="Hotel wensen">
+        <div class="hotelPrefsScrim" data-hotel-planner-action="close-preferences"></div>
+        <article class="hotelPrefsCard">
+          <header><div><small>Reisprofiel</small><b>Jouw hotelwensen</b></div><button data-hotel-planner-action="close-preferences" type="button">×</button></header>
+          <p>Stel dit één keer in. Roadora gebruikt deze wensen voor hotels, kaart-highlights en aanbevelingen.</p>
+          <div class="hotelPrefsGrid">
+            ${Object.entries(prefLabels).map(([key,[icon,label]])=>`<button data-pref-key="${key}" type="button"><span>${icon}</span><b>${label}</b><small>${prefHelp(key)}</small></button>`).join('')}
+          </div>
+          <footer><button class="hotelPrefsGhost" data-hotel-planner-action="reset-preferences" type="button">Reset</button><button class="hotelPrefsPrimary" data-hotel-planner-action="save-preferences" type="button">Voorkeuren opslaan</button></footer>
+        </article>
+      </section>`;
+    renderCards();
+    syncPrefButtons();
+    return screen;
+  }
+
+  function prefHelp(key){
+    return ({charger:'hotel of parking met laadpunt',parking:'makkelijk parkeren bij aankomst',pet:'geschikt met hond/huisdier',family:'handig met kinderen',breakfast:'ontbijt bij vertrek',late:'veilig later aankomen'}[key]||'');
+  }
+
+  function renderCards(){
+    const prefs=activePrefs();
+    const sorted=hotels.slice().sort((a,b)=>scoreHotel(b,prefs)-scoreHotel(a,prefs));
+    const wrap=qs('#hotelCardsV55');
+    if(wrap){
+      wrap.innerHTML=sorted.slice(0,4).map(h=>cardHtml(h,prefs)).join('');
+    }
+    const rows=qs('#hotelShortRows');
+    if(rows){
+      rows.innerHTML=sorted.slice(0,3).map(h=>`<div><span style="background:${h.photo}"></span><b>${h.name}</b><em>${h.loc}</em><strong>${h.price}</strong><button type="button">♡</button></div>`).join('');
+    }
+  }
+
+  function scoreHotel(h,prefs){return 10 + prefs.filter(p=>h.features.includes(p)).length*4 + (h.tag.includes('match')?3:0) + Number(String(h.rating).replace(',','.'));}
+  function cardHtml(h,prefs){
+    const match=prefs.length?prefs.filter(p=>h.features.includes(p)).length:prefs.length;
+    const pct=Math.min(98,76+match*7);
+    return `<article class="hotelCardV55">
+      <div class="hotelPhotoV55" style="background:${h.photo}"><span>${match?pct+'% match':'Top match'}</span></div>
+      <div class="hotelInfoV55"><header><b>${h.name}</b><button type="button">♡</button></header><small>${h.loc} · ${h.km}</small><p>${h.rating} ★ · ${h.price} per nacht</p><div>${h.features.slice(0,4).map(f=>`<span title="${prefLabels[f]?.[1]||f}">${prefLabels[f]?.[0]||'✓'}</span>`).join('')}</div></div>
+      <button class="hotelMapBtnV55" data-hotel-planner-action="map-hotels" type="button">Bekijk op kaart</button>
+    </article>`;
+  }
+
+  function syncPrefButtons(){
+    const p=readPrefs();
+    qsa('#hotelPrefsSheet [data-pref-key]').forEach(btn=>btn.classList.toggle('active',!!p[btn.dataset.prefKey]));
+  }
+
+  function show(){
+    const screen=ensureHotelScreen();
+    if(!screen) return false;
+    qs('.phone')?.classList.add('hotelPlannerWide');
+    qs('.phone')?.classList.remove('mapActive','menuOpen','menuExpanded');
+    qsa('.appScreen').forEach(s=>s.classList.remove('active'));
+    screen.classList.add('active');
+    qsa('.sideItem').forEach(b=>b.classList.toggle('active',b.dataset.action==='hotels'));
+    renderCards();
+    return false;
+  }
+
+  function leavePlanner(){qs('.phone')?.classList.remove('hotelPlannerWide');}
+  function openMapFromPlanner(){
+    sessionStorage.setItem(MAP_KEY,'1');
+    sessionStorage.setItem(PLANNER_MAP_KEY,'1');
+    leavePlanner();
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{try{window.RoadoraMapApi?.setFilters?.(['hotel']);window.RoadoraMapApi?.closeCategories?.();}catch(_){ } qs('#mapScreen')?.classList.add('fromHotelsMap');},350);
+    return false;
+  }
+  function openPrefs(){qs('#hotelPrefsSheet')?.classList.add('open');syncPrefButtons();return false;}
+  function closePrefs(){qs('#hotelPrefsSheet')?.classList.remove('open');return false;}
+
+  function handleClick(e){
+    const t=e.target;
+    if(!t?.closest) return;
+
+    if(t.closest('[data-action="hotels"], .card[data-action="hotels"]')){e.preventDefault();e.stopPropagation();return show();}
+
+    const action=t.closest('#hotelPlannerScreen [data-hotel-planner-action]');
+    if(action){
+      const a=action.dataset.hotelPlannerAction;
+      if(['preferences','close-preferences','save-preferences','reset-preferences','map-hotels','back','compare','save-trip','why'].includes(a)){
+        e.preventDefault();e.stopPropagation();
+        if(a==='back'){leavePlanner();return window.RoadoraApp?.showHome?.();}
+        if(a==='map-hotels') return openMapFromPlanner();
+        if(a==='preferences') return openPrefs();
+        if(a==='close-preferences') return closePrefs();
+        if(a==='reset-preferences'){writePrefs({});syncPrefButtons();renderCards();toast('Hotelwensen gereset');return false;}
+        if(a==='save-preferences'){closePrefs();renderCards();toast('Hotelwensen opgeslagen');return false;}
+        if(a==='compare'){toast('Vergelijkmodus voorbereid');return false;}
+        if(a==='save-trip'){toast('Reis opslaan vraagt later om account/sync');return false;}
+        if(a==='why'){toast('Aanbevelingen gebruiken route + wensen');return false;}
+      }
+    }
+
+    const pref=t.closest('#hotelPrefsSheet [data-pref-key]');
+    if(pref){
+      e.preventDefault();e.stopPropagation();
+      const p=readPrefs();p[pref.dataset.prefKey]=!p[pref.dataset.prefKey];writePrefs(p);syncPrefButtons();renderCards();return false;
+    }
+
+    if(t.closest('#mapScreen .cat[data-filter="hotel"]')){
+      // Gewoon op Overnachten in de kaart drukken = normale kaartfilter, geen terug naar Hotels.
+      if(sessionStorage.getItem(PLANNER_MAP_KEY)!=='1'){
+        setTimeout(()=>{qs('#mapScreen')?.classList.remove('fromHotelsMap');sessionStorage.removeItem(MAP_KEY);},30);
+      }
+    }
+    const nav=t.closest('#mapScreen .bottomNav .navItem');
+    if(nav && !(nav.textContent||'').toLowerCase().includes('stops')){
+      sessionStorage.removeItem(PLANNER_MAP_KEY);
+    }
+  }
+
+  function patch(){
+    ensureHotelScreen();
+    const old=window.RoadoraHotelPlanner||{};
+    window.RoadoraHotelPlanner={...old,show,openHotelsOnMap:openMapFromPlanner};
+    const app=window.RoadoraApp;
+    if(app && !app.__v55WidePatched){
+      ['showHome','showRoute','showMap'].forEach(k=>{const orig=app[k];app[k]=function(){leavePlanner();return orig?.apply(this,arguments);};});
+      app.__v55WidePatched=true;
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',patch,{once:true}); else patch();
+  document.addEventListener('click',handleClick,true);
+})();
