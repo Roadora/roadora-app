@@ -4283,3 +4283,29 @@
     transform:translateX(-50%) translateY(0) scale(1);
   }
 }
+
+/* ===== Roadora v5.8.4 Roadtrip Foundation Safe ===== */
+#roadtripMiniDockV584{
+  position:absolute!important;left:50%!important;bottom:calc(env(safe-area-inset-bottom) + 70px)!important;z-index:835!important;
+  transform:translateX(-50%)!important;height:34px!important;min-width:154px!important;padding:0 12px!important;border-radius:999px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  background:rgba(255,250,242,.94)!important;border:1px solid rgba(255,255,255,.78)!important;
+  box-shadow:0 12px 28px rgba(24,18,12,.14),inset 0 1px 0 rgba(255,255,255,.88)!important;
+  backdrop-filter:blur(24px)!important;-webkit-backdrop-filter:blur(24px)!important;color:#211914!important;
+}
+#roadtripMiniDockV584[hidden]{display:none!important}
+#roadtripMiniDockV584 span{width:20px;height:20px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#edc984,#c4863d);color:#fff;font-weight:900;font-size:12px;box-shadow:0 7px 14px rgba(196,134,61,.22)}
+#roadtripMiniDockV584 b{font-size:10px;font-weight:900;white-space:nowrap}
+#roadtripMiniDockV584 em{font-style:normal;font-size:9px;font-weight:850;color:#7a6a5b;white-space:nowrap}
+#roadtripMiniDockV584:active{transform:translateX(-50%) scale(.97)!important}
+.roadtripMiniPanelV584{position:absolute;inset:0;z-index:1200;pointer-events:none;opacity:0;transition:.22s ease}
+.roadtripMiniPanelV584.open{opacity:1;pointer-events:auto}
+.roadtripPanelScrimV584{position:absolute;inset:0;background:rgba(18,13,8,.22)}
+.roadtripPanelCardV584{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 78px);max-height:min(58vh,430px);display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;padding:14px;border-radius:26px;background:rgba(255,250,242,.96);border:1px solid rgba(255,255,255,.78);box-shadow:0 24px 70px rgba(24,18,12,.24);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);transform:translateY(18px) scale(.98);transition:.24s cubic-bezier(.22,1,.36,1)}
+.roadtripMiniPanelV584.open .roadtripPanelCardV584{transform:translateY(0) scale(1)}
+.roadtripPanelCardV584 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.roadtripPanelCardV584 header span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9a6429;font-weight:900}.roadtripPanelCardV584 header b{font-size:17px}.roadtripPanelCardV584 header button{width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.66);font-size:23px;line-height:1}
+.roadtripPanelListV584{display:grid;gap:8px;overflow:auto;padding-right:2px}.roadtripPanelItemV584{display:grid;grid-template-columns:28px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:9px;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(70,47,24,.07)}
+.roadtripPanelItemV584 i{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#f0d9b2,#ca8d44);font-style:normal;font-size:11px;font-weight:900}.roadtripPanelItemV584 b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.roadtripPanelItemV584 small{display:block;margin-top:2px;font-size:10px;color:#776a5f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.roadtripPanelItemV584 button{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.72);font-size:21px;color:#8a5f2e}
+.roadtripPanelEmptyV584{margin:4px 2px 8px;font-size:13px;line-height:1.4;color:#706256}.roadtripPanelCardV584 footer{display:flex;gap:8px}.roadtripPanelCardV584 footer button{flex:1;height:42px;border-radius:16px;background:rgba(255,255,255,.65);font-size:12px;font-weight:900}.roadtripPanelCardV584 footer button:last-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914}
+@media(max-width:380px){#roadtripMiniDockV584{bottom:calc(env(safe-area-inset-bottom) + 66px)!important;min-width:142px!important;height:32px!important}#roadtripMiniDockV584 b{font-size:9.4px}#roadtripMiniDockV584 em{font-size:8.4px}.roadtripPanelCardV584{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 72px)}}
