@@ -3788,3 +3788,106 @@
 .hotelPrefsSheet{position:absolute;inset:0;z-index:1500;display:none}.hotelPrefsSheet.open{display:block}.hotelPrefsScrim{position:absolute;inset:0;background:rgba(20,14,9,.26);backdrop-filter:blur(8px)}.hotelPrefsCard{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 28px));border-radius:28px;padding:18px}.hotelPrefsCard header{display:flex;align-items:center;justify-content:space-between}.hotelPrefsCard header small{text-transform:uppercase;letter-spacing:.08em;color:#9b6429;font-weight:900}.hotelPrefsCard header b{display:block;font-size:24px;font-family:"Playfair Display",serif}.hotelPrefsCard header button{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.72);font-size:24px}.hotelPrefsCard p{color:#6f6258;font-size:13px;line-height:1.4}.hotelPrefsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.hotelPrefsGrid button{border-radius:18px;text-align:left;padding:13px;background:rgba(255,255,255,.62);border:1px solid rgba(70,47,24,.07)}.hotelPrefsGrid button.active{background:linear-gradient(135deg,rgba(237,201,132,.48),rgba(255,255,255,.70));box-shadow:inset 0 0 0 1px rgba(196,134,61,.18)}.hotelPrefsGrid span{font-size:20px}.hotelPrefsGrid b{display:block;margin-top:5px}.hotelPrefsGrid small{display:block;color:#7a6b5d;font-size:11px;margin-top:2px}.hotelPrefsCard footer{display:flex;gap:10px}.hotelPrefsCard footer button{height:46px;border-radius:16px;font-weight:900;flex:1}.hotelPrefsGhost{background:rgba(255,255,255,.62)}.hotelPrefsPrimary{background:linear-gradient(135deg,#edc984,#c4863d)}
 @media(max-width:899px){.phone.hotelPlannerWide{max-width:480px !important;width:100vw !important;border-radius:0 !important}.hotelDashShell{padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 20px);gap:12px}.hotelDashTop{grid-template-columns:42px 42px minmax(0,1fr);}.hotelDashSmall{display:none}.hotelControlsV55{grid-template-columns:repeat(3,1fr);gap:8px;padding:10px}.hotelPrefButton{grid-column:1/-1;height:42px}.hotelControlBox{min-height:58px;padding:9px}.hotelControlBox small{font-size:8px}.hotelControlBox b{font-size:11px}.hotelDashGrid{display:block}.hotelNightsPanel{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}.nightCard{padding:13px}.hotelMapPanelV55{display:none}.hotelListPanel{padding:12px}.hotelTabsV55{height:40px}.hotelCardV55{grid-template-columns:76px minmax(0,1fr) 64px;gap:8px;padding:9px}.hotelPhotoV55{height:74px}.hotelInfoV55 b{font-size:12.5px}.hotelInfoV55 small,.hotelInfoV55 p{font-size:9.5px}.hotelInfoV55 div span{width:21px;height:21px;font-size:10px}.hotelMapBtnV55{height:56px;font-size:10px}.hotelShortlistV55{display:none}.hotelPrefsGrid{grid-template-columns:1fr}.shortRows div{grid-template-columns:32px 1fr auto}.shortRows em{display:none}}
 @media(max-width:380px){.hotelDashTitle b{font-size:20px}.hotelDashTitle small{font-size:10px}.hotelControlsV55{grid-template-columns:1fr}.hotelPrefButton{grid-column:auto}.hotelCardV55{grid-template-columns:66px minmax(0,1fr);}.hotelMapBtnV55{grid-column:1/-1;height:36px}.hotelPhotoV55{height:66px}}
+
+/* ===== Roadora v5.6 — Hotel Flow + GPS Overnachten Polish ===== */
+/* Compacte categorieën terug naar de rustige oude verhouding. */
+#mapScreen .cats{
+  left:14px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 206px) !important;
+  gap:5px !important;
+  max-width:170px !important;
+}
+#mapScreen .cat{
+  min-width:116px !important;
+  height:31px !important;
+  border-radius:11px !important;
+  padding:0 9px !important;
+  gap:6px !important;
+  font-size:9px !important;
+  font-weight:800 !important;
+  background:rgba(255,250,242,.91) !important;
+  box-shadow:0 10px 22px rgba(24,18,12,.12), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+#mapScreen .cat svg{width:13px !important;height:13px !important;}
+#mapScreen .cat.active{background:linear-gradient(135deg,#f1debc,#c88b43) !important;}
+
+/* Hotelkaart mini-acties: alleen zichtbaar in hotelmodus. */
+#mapScreen .hotelMapMiniActions{
+  position:absolute;
+  left:14px;
+  bottom:calc(env(safe-area-inset-bottom) + 244px);
+  z-index:790;
+  display:flex;
+  gap:6px;
+  opacity:0;
+  transform:translateY(8px) scale(.98);
+  pointer-events:none;
+  transition:opacity .2s ease, transform .22s cubic-bezier(.22,1,.36,1);
+}
+#mapScreen.hotelMapActive .hotelMapMiniActions{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+#mapScreen .hotelMapMiniActions button{
+  height:30px;
+  border-radius:999px;
+  padding:0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  color:#2b2119;
+  background:rgba(255,250,242,.94);
+  border:1px solid rgba(255,255,255,.78);
+  box-shadow:0 10px 22px rgba(24,18,12,.13), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(26px);
+  -webkit-backdrop-filter:blur(26px);
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+#mapScreen .hotelMapMiniActions .hotelNearMeBtn{background:linear-gradient(135deg,rgba(237,201,132,.78),rgba(255,250,242,.92));}
+#mapScreen.fromHotelsMap .hotelMapMiniActions .hotelPlannerMiniBtn{display:none;}
+#mapScreen:not(.fromHotelsMap) #hotelMapBackBtn{display:none !important;}
+
+.gpsPulsePin{
+  width:34px;height:34px;border-radius:999px;display:grid;place-items:center;
+  color:#fff;background:#2f241b;border:4px solid rgba(255,250,242,.96);
+  box-shadow:0 0 0 7px rgba(196,134,61,.20),0 12px 26px rgba(24,18,12,.24);
+  font-size:14px;font-weight:950;
+}
+
+/* Hotelplanner instellingen: grote CTA weg, klein icoon rechtsboven. */
+#hotelPlannerScreen .hotelPrefButton,
+#hotelPlannerScreen .hotelPrefButtonHiddenV56{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+#hotelPlannerScreen .hotelDashTop{grid-template-columns:44px 44px minmax(0,1fr) 44px !important;}
+#hotelPlannerScreen .hotelDashSmall.hotelSettingsIconV56{
+  width:44px !important;
+  height:44px !important;
+  padding:0 !important;
+  border-radius:17px !important;
+  display:grid !important;
+  place-items:center !important;
+  font-size:18px !important;
+}
+#hotelPlannerScreen .hotelControlsV55{grid-template-columns:1.1fr 1fr 1fr !important;}
+@media(max-width:899px){
+  #hotelPlannerScreen .hotelDashTop{grid-template-columns:42px 42px minmax(0,1fr) 42px !important;}
+  #hotelPlannerScreen .hotelDashSmall.hotelSettingsIconV56{display:grid !important;width:42px !important;height:42px !important;border-radius:16px !important;}
+  #hotelPlannerScreen .hotelControlsV55{grid-template-columns:repeat(3,1fr) !important;}
+  #mapScreen .hotelMapMiniActions{bottom:calc(env(safe-area-inset-bottom) + 244px);}
+}
+@media(max-width:420px){
+  #mapScreen .cats{bottom:calc(env(safe-area-inset-bottom) + 202px) !important;}
+  #mapScreen .hotelMapMiniActions{left:14px;bottom:calc(env(safe-area-inset-bottom) + 238px);gap:5px;}
+  #mapScreen .hotelMapMiniActions button{height:28px;padding:0 8px;font-size:8.2px;}
+}
+@media(max-width:360px){
+  #hotelPlannerScreen .hotelDashTop{grid-template-columns:40px 40px minmax(0,1fr) 40px !important;gap:6px !important;}
+  #hotelPlannerScreen .hotelDashSmall.hotelSettingsIconV56{width:40px !important;height:40px !important;}
+}

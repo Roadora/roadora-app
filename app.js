@@ -2085,3 +2085,193 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',patch,{once:true}); else patch();
   document.addEventListener('click',handleClick,true);
 })();
+
+/* Roadora v5.6 — Hotel Flow + GPS Overnachten
+   - Grote Instellingen-knop in Hotels-tab vervangen door subtiel icon
+   - Overnachten op kaart = gewone kaartmodus, geen Terug naar Hotels
+   - Vanuit Hotels-tab naar kaart = planner-context met Terug naar Hotels
+   - GPS-knop voor hotels dichtbij huidige locatie
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const PLANNER_KEY='roadoraHotelPlannerOpenedMap';
+  const RETURN_KEY='roadoraReturnToHotels';
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+
+  function ensureHotelMapActions(){
+    const ui=qs('#mapScreen .ui') || qs('#mapScreen .roadMapApp') || qs('#mapScreen');
+    if(!ui) return null;
+    let dock=qs('#hotelMapMiniActions');
+    if(!dock){
+      dock=document.createElement('div');
+      dock.id='hotelMapMiniActions';
+      dock.className='hotelMapMiniActions';
+      dock.innerHTML=`
+        <button class="hotelNearMeBtn" data-hotel-map-action="nearby" type="button">📍 Dichtbij mij</button>
+        <button class="hotelPlannerMiniBtn" data-hotel-map-action="planner" type="button">Hotels plannen</button>`;
+      ui.appendChild(dock);
+    }
+    return dock;
+  }
+
+  function setHotelMapContext(fromPlanner){
+    const map=qs('#mapScreen');
+    ensureHotelMapActions();
+    map?.classList.add('hotelMapActive');
+    if(fromPlanner){
+      sessionStorage.setItem(PLANNER_KEY,'1');
+      sessionStorage.setItem(RETURN_KEY,'1');
+      map?.classList.add('fromHotelsMap');
+    }else{
+      sessionStorage.removeItem(PLANNER_KEY);
+      sessionStorage.removeItem(RETURN_KEY);
+      map?.classList.remove('fromHotelsMap');
+    }
+    updateHotelCockpit(fromPlanner);
+  }
+
+  function clearHotelMapContext(){
+    qs('#mapScreen')?.classList.remove('hotelMapActive','fromHotelsMap');
+    sessionStorage.removeItem(PLANNER_KEY);
+    sessionStorage.removeItem(RETURN_KEY);
+  }
+
+  function updateHotelCockpit(fromPlanner){
+    const title=qs('#mapStatusTitle');
+    const badge=qs('#mapStatusBadge');
+    const sub=qs('#mapStatusSub');
+    const next=qs('#mapStatusNext');
+    if(title) title.textContent=fromPlanner?'Hotels uit je planner':'Hotels langs je route';
+    if(badge) badge.textContent=fromPlanner?'Planner':'Overnachten';
+    if(sub) sub.textContent=fromPlanner?'Planner gekoppeld aan kaart · zelf kiezen':'Routefilter · hotels langs de route';
+    if(next) next.textContent=fromPlanner?'Terug naar Hotels mogelijk':'GPS dichtbij mogelijk';
+  }
+
+  function requestNearbyHotels(){
+    if(!navigator.geolocation){toast('GPS is niet beschikbaar');return false;}
+    toast('Huidige locatie zoeken…');
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const lat=pos.coords.latitude;
+      const lng=pos.coords.longitude;
+      try{
+        const map=window.roadoraLeafletMap;
+        if(map && window.L){
+          map.setView([lat,lng],13,{animate:true});
+          if(window.__roadoraGpsMarker){map.removeLayer(window.__roadoraGpsMarker);}
+          window.__roadoraGpsMarker=window.L.marker([lat,lng],{
+            icon:window.L.divIcon({className:'',iconSize:[34,34],iconAnchor:[17,17],html:'<div class="gpsPulsePin">⌖</div>'})
+          }).addTo(map);
+        }
+        window.RoadoraMapApi?.showPanel?.({
+          name:'Hotels dichtbij jou',
+          label:'GPS overnachten',
+          meta:'Rond je huidige locatie',
+          desc:'Roadora zoekt hier later live hotels rond jouw GPS-locatie met je opgeslagen hotelwensen. Voor nu kun je direct zoeken in Google Maps.',
+          type:'hotel',
+          ll:[lat,lng],
+          infoUrl:'https://www.google.com/maps/search/hotels/@'+lat+','+lng+',14z'
+        });
+        qs('#mapScreen')?.classList.add('hotelMapActive');
+        updateHotelCockpit(false);
+        toast('GPS hotelmodus actief');
+      }catch(err){console.warn('GPS hotel mode:',err);toast('GPS gevonden, kaart kon niet focussen');}
+    },err=>{
+      console.warn('GPS permission:',err);
+      toast('Geef locatie-toegang voor hotels dichtbij');
+    },{enableHighAccuracy:true,timeout:9000,maximumAge:60000});
+    return false;
+  }
+
+  function openHotelPlanner(){
+    clearHotelMapContext();
+    window.RoadoraHotelPlanner?.show?.();
+    return false;
+  }
+
+  function patchPlannerMapOpen(){
+    const api=window.RoadoraHotelPlanner;
+    if(!api || api.__v56HotelFlowPatched) return;
+    const original=api.openHotelsOnMap;
+    api.openHotelsOnMap=function(){
+      sessionStorage.setItem(PLANNER_KEY,'1');
+      sessionStorage.setItem(RETURN_KEY,'1');
+      const result=original?original.apply(this,arguments):window.RoadoraApp?.showMap?.();
+      setTimeout(()=>setHotelMapContext(true),420);
+      return result;
+    };
+    api.__v56HotelFlowPatched=true;
+  }
+
+  function patchHotelSettingsButton(){
+    const screen=qs('#hotelPlannerScreen');
+    if(!screen) return;
+    const big=qs('.hotelPrefButton',screen);
+    if(big){
+      big.classList.add('hotelPrefButtonHiddenV56');
+      big.setAttribute('aria-hidden','true');
+      big.tabIndex=-1;
+    }
+    const small=qs('.hotelDashSmall',screen);
+    if(small){
+      small.classList.add('hotelSettingsIconV56');
+      small.textContent='⚙️';
+      small.setAttribute('aria-label','Hotelwensen openen');
+      small.title='Hotelwensen';
+    }
+  }
+
+  function handleClick(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    if(target.closest('#hotelPlannerScreen [data-hotel-planner-action="map-hotels"], #hotelPlannerScreen .hotelMapBtnV55')){
+      sessionStorage.setItem(PLANNER_KEY,'1');
+      sessionStorage.setItem(RETURN_KEY,'1');
+      setTimeout(()=>setHotelMapContext(true),520);
+      return;
+    }
+
+    const hotelCat=target.closest('#mapScreen .cat[data-filter="hotel"]');
+    if(hotelCat){
+      const fromPlanner=sessionStorage.getItem(PLANNER_KEY)==='1';
+      setTimeout(()=>setHotelMapContext(fromPlanner),120);
+      return;
+    }
+
+    const otherCat=target.closest('#mapScreen .cat[data-filter]');
+    if(otherCat && otherCat.dataset.filter!=='hotel'){
+      setTimeout(()=>{qs('#mapScreen')?.classList.remove('hotelMapActive','fromHotelsMap');sessionStorage.removeItem(PLANNER_KEY);sessionStorage.removeItem(RETURN_KEY);},80);
+    }
+
+    const nav=target.closest('#mapScreen .bottomNav .navItem');
+    if(nav){
+      const label=(nav.textContent||'').trim().toLowerCase();
+      if(!label.includes('stops')) clearHotelMapContext();
+    }
+
+    const act=target.closest('[data-hotel-map-action]');
+    if(act){
+      event.preventDefault();
+      event.stopPropagation();
+      const a=act.dataset.hotelMapAction;
+      if(a==='nearby') return requestNearbyHotels();
+      if(a==='planner') return openHotelPlanner();
+    }
+  }
+
+  function init(){
+    ensureHotelMapActions();
+    patchPlannerMapOpen();
+    patchHotelSettingsButton();
+    setTimeout(patchPlannerMapOpen,700);
+    setTimeout(patchHotelSettingsButton,700);
+    if(sessionStorage.getItem(PLANNER_KEY)==='1') setHotelMapContext(true);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  document.addEventListener('click',handleClick,true);
+  document.addEventListener('click',()=>setTimeout(patchHotelSettingsButton,120),true);
+})();
