@@ -1310,3 +1310,79 @@
 
   window.RoadoraHotels={show:showHotels,openMap:openMapWithHotels};
 })();
+
+
+/* =========================================================
+   Roadora v4.9.3 — Hotels + Uitjes in Hamburger Menu
+   Veilig toegevoegd bovenop bestaande Roadora core.
+   - Hotels en Uitjes zijn rustige planners in hamburger menu
+   - Kaart blijft live routeflow met filters Overnachten/Activiteiten
+   ========================================================= */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function closeMenu(){
+    const phone=qs('.phone');
+    phone?.classList.remove('menuOpen','menuExpanded');
+    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  }
+  function setSideActive(action){qsa('.sideItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action===action));}
+  function hidePlannerScreens(){
+    const phone=qs('.phone');
+    phone?.classList.remove('hotelActive','exploreActive');
+    qs('#hotelScreen')?.classList.remove('active');
+    qs('#exploreScreen')?.classList.remove('active');
+  }
+  function showPlanner(kind){
+    const phone=qs('.phone');
+    const route=qs('#routeSetupScreen');
+    const map=qs('#mapScreen');
+    closeMenu();
+    hidePlannerScreens();
+    phone?.classList.remove('mapActive');
+    phone?.classList.add(kind==='hotels'?'hotelActive':'exploreActive');
+    route?.classList.remove('active');
+    map?.classList.remove('active');
+    qs(kind==='hotels'?'#hotelScreen':'#exploreScreen')?.classList.add('active');
+    setSideActive(kind==='hotels'?'hotels':'explore');
+    window.RoadoraToast?.(kind==='hotels'?'Hotels planner geopend':'Uitjes planner geopend');
+    return false;
+  }
+  function openMapWithFilter(filter){
+    hidePlannerScreens();
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{
+      try{
+        window.RoadoraMapApi?.setFilters?.([filter]);
+        window.RoadoraMapApi?.closeCategories?.();
+        window.RoadoraToast?.(filter==='hotel'?'Hotels op de kaart geopend':'Uitjes op de kaart geopend');
+      }catch(_){ window.RoadoraToast?.(filter==='hotel'?'Hotels worden geladen':'Uitjes worden geladen'); }
+    },420);
+    return false;
+  }
+
+  document.addEventListener('click',function(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    const hotelsOpen=target.closest('[data-action="hotels"]');
+    if(hotelsOpen){event.preventDefault();event.stopPropagation();return showPlanner('hotels');}
+
+    const exploreOpen=target.closest('[data-action="explore"]');
+    if(exploreOpen){event.preventDefault();event.stopPropagation();return showPlanner('explore');}
+
+    const hotelMap=target.closest('#hotelScreen [data-open-map]');
+    if(hotelMap){event.preventDefault();event.stopPropagation();return openMapWithFilter('hotel');}
+
+    const exploreMap=target.closest('#exploreScreen [data-open-map]');
+    if(exploreMap){event.preventDefault();event.stopPropagation();return openMapWithFilter('view');}
+
+    const plannerHomeRoute=target.closest('#hotelScreen [data-action="home"], #hotelScreen [data-action="route"], #exploreScreen [data-action="home"], #exploreScreen [data-action="route"]');
+    if(plannerHomeRoute){hidePlannerScreens();}
+  },true);
+
+  window.RoadoraHotels={show:()=>showPlanner('hotels'),openMap:()=>openMapWithFilter('hotel')};
+  window.RoadoraExplore={show:()=>showPlanner('explore'),openMap:()=>openMapWithFilter('view')};
+})();

@@ -200,6 +200,46 @@
       </div>
     </section>
 
+    <section aria-label="Uitjes ontdekken" class="appScreen exploreScreen" id="exploreScreen">
+      <div class="exploreApp">
+        <header class="exploreTopbar">
+          <button class="exploreIconBtn" data-action="home" aria-label="Terug naar home" type="button">‹</button>
+          <div class="exploreBrand"><span>Roadora</span><b>Uitjes</b></div>
+          <button class="exploreIconBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
+        </header>
+
+        <section class="exploreHeroPanel">
+          <small>Ontdek vóór vertrek</small>
+          <h1>Vind mooie plekken langs je route.</h1>
+          <p>Plan highlights, uitzichtpunten, steden en korte pauzes rustig via het menu. Onderweg blijven uitjes beschikbaar als kaartfilter “Activiteiten”.</p>
+        </section>
+
+        <section class="exploreSearchPanel">
+          <label>Route of bestemming</label>
+          <div class="exploreSearchInput"><span>Rotterdam → Innsbruck</span><b>⌕</b></div>
+          <div class="exploreModeGrid">
+            <button class="exploreMode active" type="button"><b>Langs route</b><small>Highlights onderweg</small></button>
+            <button class="exploreMode" type="button"><b>Scenic</b><small>Uitzicht & natuur</small></button>
+            <button class="exploreMode" type="button"><b>Steden</b><small>Korte city stops</small></button>
+          </div>
+        </section>
+
+        <section class="exploreListPanel">
+          <div class="exploreSectionHead"><b>Aanbevolen uitjes</b><span>Menu planner</span></div>
+          <button class="exploreResult" type="button" data-open-map data-explore-filter="true">
+            <i class="exploreThumb exploreThumbOne"></i>
+            <span><b>Alpen uitzicht</b><em>900 km · dag 2 · fotostop</em><small>Scenic stop richting Oostenrijk, ideaal voor korte pauze en vakantiefoto’s.</small></span>
+          </button>
+          <button class="exploreResult" type="button" data-open-map data-explore-filter="true">
+            <i class="exploreThumb exploreThumbTwo"></i>
+            <span><b>Heidelberg oude stad</b><em>356 km · 3u 55m · stad dichtbij</em><small>Combineer lunch, wandeling en overnachting zonder grote omweg.</small></span>
+          </button>
+          <button class="explorePrimaryCta" type="button" data-open-map data-explore-filter="true">Bekijk uitjes op de kaart</button>
+        </section>
+      </div>
+    </section>
+
+
     <section aria-label="Routekaart" class="appScreen mapScreen" id="mapScreen">
       <div class="roadMapApp">
         <div id="routeLeafletMap"></div>
