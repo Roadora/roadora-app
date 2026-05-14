@@ -3240,16 +3240,19 @@
     params.set('travelmode','driving');
 
     if(mode==='overview'){
-      // Volledige planning/overview: vaste origin + alle waypoints, géén dir_action.
-      // Dit is bedoeld om de hele roadtrip in Maps te bekijken.
+      // Volledige planning/overview: vaste origin + alle waypoints, géén navigeer-intent.
+      // Dit is bedoeld om de hele roadtrip rustig te bekijken.
       params.set('origin',data.origin||ORIGIN);
       if(waypoints.length) params.set('waypoints',waypoints.join('|'));
       return `https://www.google.com/maps/dir/?${params.toString()}`;
     }
 
-    // Startmodus: mobiel-first. Geen vaste origin, zodat Google Maps huidige locatie gebruikt
-    // en de echte Start-flow vaker beschikbaar is. Bij tussenstops kan Maps alsnog focussen op de eerste leg.
-    if(!isMobileDevice()) params.set('origin',data.origin||ORIGIN);
+    // v6.6.1 Full Route Start Flow:
+    // Open Maps met de VOLLEDIGE route zichtbaar én met dir_action=navigate.
+    // Op mobiel gebruiken we 'Current Location' als origin, zodat Maps de actuele GPS-start pakt.
+    // De eerste Roadora-stop blijft de eerste waypoint; na Start leidt Maps dus eerst daarheen,
+    // terwijl de volledige route met alle stops in de route-opbouw blijft staan.
+    params.set('origin',isMobileDevice() ? 'Current Location' : (data.origin||ORIGIN));
     if(waypoints.length) params.set('waypoints',waypoints.join('|'));
     params.set('dir_action','navigate');
     return `https://www.google.com/maps/dir/?${params.toString()}`;
@@ -3314,7 +3317,7 @@
         <footer class="roadtripV63Footer roadtripV66Footer">
           <button type="button" class="roadtripV63Ghost" data-tripv63-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
           <button type="button" class="roadtripV63Ghost roadtripV66Overview" data-tripv63-action="maps-overview">Bekijk volledige route</button>
-          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps-start">Start in Maps</button>
+          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps-start">Start volledige route</button>
         </footer>
       </article>`;
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621','roadtripPanelOpenV63');
@@ -3362,7 +3365,7 @@
     if(viewMode==='overview'){
       toast(count ? `Volledige roadtrip geopend met ${count} tussenstop${count===1?'':'s'}` : 'Volledige route geopend');
     }else{
-      toast(count ? `Maps startmodus geopend · ${count} tussenstop${count===1?'':'s'}` : 'Maps startmodus geopend');
+      toast(count ? `Volledige route in Maps geopend · ${count} tussenstop${count===1?'':'s'}` : 'Volledige route in Maps geopend');
     }
   }
 
@@ -3572,4 +3575,15 @@
     start:'Start in Maps gebruikt huidige locatie op mobiel en opent de echte navigeerflow waar mogelijk.',
     overview:'Bekijk volledige route opent de hele roadtrip met vertrekpunt, stops en bestemming als overzicht.'
   };
+})();
+
+
+/* Roadora v6.6.1 Full Route Start Flow marker
+   Start opent nu dezelfde complete roadtrip-route met waypoints en navigeer-intent,
+   zodat gebruiker de hele route ziet en daarna in Maps kan starten richting stop 1.
+*/
+(function(){
+  'use strict';
+  function mark(){document.body.classList.add('roadoraV661FullRouteStartFlow');}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mark,{once:true}); else mark();
 })();
