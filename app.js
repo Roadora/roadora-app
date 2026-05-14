@@ -162,7 +162,12 @@
     return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' informatie');
   }
   function openMapsRoute(){
-    const url='https://www.google.com/maps/dir/?api=1&origin=Rotterdam&destination=Innsbruck&travelmode=driving';
+    // v6.5: gebruik de centrale Roadora Maps-export zodat Navigeer altijd dezelfde roadtrip-stops gebruikt.
+    if(window.RoadoraMapsExport?.open){
+      window.RoadoraMapsExport.open('nav');
+      return;
+    }
+    const url='https://www.google.com/maps/dir/?api=1&destination=Innsbruck&travelmode=driving&dir_action=navigate';
     window.open(url,'_blank','noopener');toast('Google Maps route geopend');
   }
   function openMapsStop(){
@@ -3223,15 +3228,22 @@
     }
     return item?.name || '';
   }
-  function mapsUrl(){
+  function isMobileDevice(){
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'') || (window.matchMedia?.('(max-width: 760px)')?.matches);
+  }
+  function mapsUrl(mode='auto'){
     const data=read();
+    const mobile = mode==='mobile' || (mode==='auto' && isMobileDevice());
     const params=new URLSearchParams();
     params.set('api','1');
-    params.set('origin',data.origin||ORIGIN);
     params.set('destination',data.destination||DESTINATION);
     params.set('travelmode','driving');
+    // Belangrijk: op mobiel géén vaste origin meesturen. Dan gebruikt Maps de huidige locatie
+    // en kom je veel vaker in de echte Start-flow in plaats van een statische Voorbeeld-route.
+    if(!mobile) params.set('origin',data.origin||ORIGIN);
     const waypoints=data.stops.map(pointQuery).filter(Boolean).slice(0,9);
     if(waypoints.length) params.set('waypoints',waypoints.join('|'));
+    params.set('dir_action','navigate');
     return `https://www.google.com/maps/dir/?${params.toString()}`;
   }
   function ensurePanel(){
@@ -3293,7 +3305,7 @@
         </div>
         <footer class="roadtripV63Footer">
           <button type="button" class="roadtripV63Ghost" data-tripv63-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
-          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps">Start in Google Maps</button>
+          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps">Start volledige route in Maps</button>
         </footer>
       </article>`;
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621','roadtripPanelOpenV63');
@@ -3333,10 +3345,14 @@
       toast('Openen op kaart lukt niet');
     }
   }
-  function openMaps(){
-    window.open(mapsUrl(),'_blank','noopener');
+  function openMaps(source='panel'){
+    const url=mapsUrl('auto');
+    window.open(url,'_blank','noopener');
     const count=read().stops.length;
-    toast(count ? `Google Maps geopend met ${count} tussenstop${count===1?'':'s'}` : 'Google Maps route geopend');
+    const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'') || (window.matchMedia?.('(max-width: 760px)')?.matches);
+    toast(count
+      ? (mobile ? `Maps geopend met ${count} tussenstop${count===1?'':'s'} · druk Start` : `Geplande route geopend met ${count} tussenstop${count===1?'':'s'}`)
+      : (mobile ? 'Maps geopend · druk Start' : 'Google Maps route geopend'));
   }
 
   document.addEventListener('click',function(e){
@@ -3517,4 +3533,31 @@
 
   window.RoadoraTripMap={render,fit:fitTripRoute};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleRender,{once:true}); else scheduleRender();
+})();
+
+
+/* Roadora v6.5 Real Maps Start Export
+   - Navigeer gebruikt voortaan de volledige roadtrip-stoplijst
+   - Mobiel: geen vaste origin, zodat Google Maps huidige locatie gebruikt en de Start-knop beschikbaar blijft
+   - Desktop: geplande route blijft met origin zichtbaar
+*/
+(function(){
+  'use strict';
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav="navigate"]');
+    if(nav && window.RoadoraMapsExport?.open){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      document.querySelectorAll('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.toggle('active',b===nav));
+      window.RoadoraMapsExport.open('bottom-nav');
+      return false;
+    }
+  },true);
+  window.RoadoraMapsExportNotes={
+    mobile:'Google Maps gebruikt op mobiel de huidige locatie als startpunt. Daardoor verschijnt meestal de echte Start-knop in plaats van alleen Voorbeeld.',
+    desktop:'Op desktop blijft de geplande route met vertrekpunt zichtbaar.'
+  };
 })();
