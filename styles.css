@@ -4283,3 +4283,85 @@
     transform:translateX(-50%) translateY(0) scale(1);
   }
 }
+
+/* ===== Roadora v5.8.2 Mini Roadtrip Builder Safe ===== */
+#miniRoadtripBarV582{
+  position:absolute !important;
+  left:50% !important;
+  bottom:calc(env(safe-area-inset-bottom) + 130px) !important;
+  z-index:845 !important;
+  transform:translateX(-50%) translateY(12px) scale(.98) !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  height:38px !important;
+  min-width:156px !important;
+  padding:0 12px !important;
+  border-radius:999px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  background:rgba(255,250,242,.94) !important;
+  border:1px solid rgba(255,255,255,.80) !important;
+  box-shadow:0 14px 32px rgba(24,18,12,.16), inset 0 1px 0 rgba(255,255,255,.9) !important;
+  backdrop-filter:blur(28px) !important;
+  -webkit-backdrop-filter:blur(28px) !important;
+  color:#2b2119 !important;
+  transition:opacity .22s ease, transform .22s ease !important;
+}
+#miniRoadtripBarV582.show{
+  opacity:1 !important;
+  pointer-events:auto !important;
+  transform:translateX(-50%) translateY(0) scale(1) !important;
+}
+#miniRoadtripBarV582 span{
+  width:22px !important;height:22px !important;border-radius:999px !important;
+  display:grid !important;place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;color:#fff !important;
+  font-weight:900 !important;font-size:12px !important;
+}
+#miniRoadtripBarV582 b{font-size:10.4px !important;font-weight:900 !important;white-space:nowrap !important;}
+#miniRoadtripBarV582 em{font-style:normal !important;font-size:9px !important;font-weight:800 !important;color:#8a735f !important;white-space:nowrap !important;}
+
+#miniRoadtripSheetV582{position:absolute;inset:0;z-index:1300;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+#miniRoadtripSheetV582.open{opacity:1;pointer-events:auto;}
+#miniRoadtripSheetV582 .miniTripScrim{position:absolute;inset:0;background:rgba(18,13,9,.28);}
+#miniRoadtripSheetV582 .miniTripCard{
+  position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 14px);
+  max-height:min(76vh,620px);overflow:auto;border-radius:28px;padding:18px 14px 16px;
+  background:rgba(255,250,242,.96);border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 28px 70px rgba(18,13,9,.28), inset 0 1px 0 rgba(255,255,255,.92);
+  backdrop-filter:blur(34px);-webkit-backdrop-filter:blur(34px);
+  transform:translateY(18px) scale(.98);transition:transform .24s cubic-bezier(.22,1,.36,1);
+}
+#miniRoadtripSheetV582.open .miniTripCard{transform:translateY(0) scale(1);}
+#miniRoadtripSheetV582 .miniTripClose{position:absolute;right:12px;top:12px;width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.68);font-size:24px;font-weight:700;color:#5a4638;}
+#miniRoadtripSheetV582 .miniTripHead{padding-right:44px;margin-bottom:12px;}
+#miniRoadtripSheetV582 .miniTripHead span{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#a66e31;margin-bottom:4px;}
+#miniRoadtripSheetV582 .miniTripHead b{display:block;font-size:22px;letter-spacing:-.6px;color:#241914;}
+#miniRoadtripSheetV582 .miniTripHead small{display:block;margin-top:4px;font-size:11px;line-height:1.35;color:#7b6b5d;font-weight:650;}
+#miniRoadtripSheetV582 .miniTripRoute{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;min-height:38px;padding:8px 10px;border-radius:16px;background:rgba(255,255,255,.50);border:1px solid rgba(70,47,24,.06);}
+#miniRoadtripSheetV582 .miniTripRoute i{width:14px;height:14px;border-radius:999px;background:#2b2119;border:3px solid #ead0a0;justify-self:center;}
+#miniRoadtripSheetV582 .miniTripRoute.end i{background:#c4863d;}
+#miniRoadtripSheetV582 .miniTripRoute b{font-size:13px;font-weight:900;}
+#miniRoadtripSheetV582 .miniTripRoute small{font-size:10px;color:#8b7969;font-weight:800;}
+#miniRoadtripSheetV582 .miniTripList{display:grid;gap:8px;margin:8px 0;}
+#miniRoadtripSheetV582 .miniTripItem{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:9px;border-radius:18px;background:rgba(255,255,255,.66);border:1px solid rgba(70,47,24,.07);}
+#miniRoadtripSheetV582 .miniTripItem>span{width:34px;height:34px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(237,201,132,.46),rgba(196,134,61,.18));}
+#miniRoadtripSheetV582 .miniTripItem b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#miniRoadtripSheetV582 .miniTripItem small{display:block;margin-top:2px;font-size:10px;color:#7b6b5d;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#miniRoadtripSheetV582 .miniTripItem button{width:32px;height:32px;border-radius:999px;background:rgba(255,250,242,.8);font-size:21px;color:#80644f;}
+#miniRoadtripSheetV582 .miniTripEmpty{padding:14px;border-radius:18px;background:rgba(255,255,255,.58);font-size:12px;line-height:1.45;color:#67584c;font-weight:650;}
+#miniRoadtripSheetV582 .miniTripClear{margin-top:12px;width:100%;height:42px;border-radius:16px;background:rgba(255,255,255,.64);border:1px solid rgba(70,47,24,.07);color:#8a5f2e;font-weight:900;font-size:12px;}
+
+#mapScreen .sheetActions .saveStop:not(:disabled){
+  background:rgba(255,255,255,.78) !important;
+  color:#8a5f2e !important;
+  border:1px solid rgba(196,134,61,.14) !important;
+}
+@media(max-width:380px){
+  #miniRoadtripBarV582{bottom:calc(env(safe-area-inset-bottom) + 124px) !important;min-width:142px !important;height:36px !important;}
+  #miniRoadtripBarV582 b{font-size:9.8px !important;}
+  #miniRoadtripBarV582 em{font-size:8.4px !important;}
+  #miniRoadtripSheetV582 .miniTripCard{left:12px;right:12px;border-radius:26px;}
+}
