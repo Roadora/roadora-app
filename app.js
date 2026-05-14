@@ -3231,17 +3231,25 @@
   function isMobileDevice(){
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'') || (window.matchMedia?.('(max-width: 760px)')?.matches);
   }
-  function mapsUrl(mode='auto'){
+  function mapsUrl(mode='start'){
     const data=read();
-    const mobile = mode==='mobile' || (mode==='auto' && isMobileDevice());
     const params=new URLSearchParams();
+    const waypoints=data.stops.map(pointQuery).filter(Boolean).slice(0,9);
     params.set('api','1');
     params.set('destination',data.destination||DESTINATION);
     params.set('travelmode','driving');
-    // Belangrijk: op mobiel géén vaste origin meesturen. Dan gebruikt Maps de huidige locatie
-    // en kom je veel vaker in de echte Start-flow in plaats van een statische Voorbeeld-route.
-    if(!mobile) params.set('origin',data.origin||ORIGIN);
-    const waypoints=data.stops.map(pointQuery).filter(Boolean).slice(0,9);
+
+    if(mode==='overview'){
+      // Volledige planning/overview: vaste origin + alle waypoints, géén dir_action.
+      // Dit is bedoeld om de hele roadtrip in Maps te bekijken.
+      params.set('origin',data.origin||ORIGIN);
+      if(waypoints.length) params.set('waypoints',waypoints.join('|'));
+      return `https://www.google.com/maps/dir/?${params.toString()}`;
+    }
+
+    // Startmodus: mobiel-first. Geen vaste origin, zodat Google Maps huidige locatie gebruikt
+    // en de echte Start-flow vaker beschikbaar is. Bij tussenstops kan Maps alsnog focussen op de eerste leg.
+    if(!isMobileDevice()) params.set('origin',data.origin||ORIGIN);
     if(waypoints.length) params.set('waypoints',waypoints.join('|'));
     params.set('dir_action','navigate');
     return `https://www.google.com/maps/dir/?${params.toString()}`;
@@ -3303,9 +3311,10 @@
           ${stopRows}
           <div class="roadtripV63Endpoint"><i>Eind</i><b>${escapeHtml(data.destination)}</b></div>
         </div>
-        <footer class="roadtripV63Footer">
+        <footer class="roadtripV63Footer roadtripV66Footer">
           <button type="button" class="roadtripV63Ghost" data-tripv63-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
-          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps">Start volledige route in Maps</button>
+          <button type="button" class="roadtripV63Ghost roadtripV66Overview" data-tripv63-action="maps-overview">Bekijk volledige route</button>
+          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps-start">Start in Maps</button>
         </footer>
       </article>`;
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621','roadtripPanelOpenV63');
@@ -3345,14 +3354,16 @@
       toast('Openen op kaart lukt niet');
     }
   }
-  function openMaps(source='panel'){
-    const url=mapsUrl('auto');
+  function openMaps(mode='start'){
+    const viewMode = mode==='overview' ? 'overview' : 'start';
+    const url=mapsUrl(viewMode);
     window.open(url,'_blank','noopener');
     const count=read().stops.length;
-    const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'') || (window.matchMedia?.('(max-width: 760px)')?.matches);
-    toast(count
-      ? (mobile ? `Maps geopend met ${count} tussenstop${count===1?'':'s'} · druk Start` : `Geplande route geopend met ${count} tussenstop${count===1?'':'s'}`)
-      : (mobile ? 'Maps geopend · druk Start' : 'Google Maps route geopend'));
+    if(viewMode==='overview'){
+      toast(count ? `Volledige roadtrip geopend met ${count} tussenstop${count===1?'':'s'}` : 'Volledige route geopend');
+    }else{
+      toast(count ? `Maps startmodus geopend · ${count} tussenstop${count===1?'':'s'}` : 'Maps startmodus geopend');
+    }
   }
 
   document.addEventListener('click',function(e){
@@ -3377,7 +3388,8 @@
       if(a==='remove') return removeStop(action.dataset.tripId);
       if(a==='clear') return clearStops();
       if(a==='focus') return focusStop(action.dataset.tripId);
-      if(a==='maps') return openMaps();
+      if(a==='maps' || a==='maps-start') return openMaps('start');
+      if(a==='maps-overview') return openMaps('overview');
     }
   },true);
 
@@ -3391,7 +3403,7 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 
-  window.RoadoraMapsExport={url:mapsUrl,open:openMaps};
+  window.RoadoraMapsExport={url:mapsUrl,open:openMaps,overview:()=>openMaps('overview'),start:()=>openMaps('start')};
 })();
 
 
@@ -3536,7 +3548,7 @@
 })();
 
 
-/* Roadora v6.5 Real Maps Start Export
+/* Roadora v6.6 Dual Maps Export
    - Navigeer gebruikt voortaan de volledige roadtrip-stoplijst
    - Mobiel: geen vaste origin, zodat Google Maps huidige locatie gebruikt en de Start-knop beschikbaar blijft
    - Desktop: geplande route blijft met origin zichtbaar
@@ -3552,12 +3564,12 @@
       e.preventDefault();
       e.stopImmediatePropagation();
       document.querySelectorAll('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.toggle('active',b===nav));
-      window.RoadoraMapsExport.open('bottom-nav');
+      window.RoadoraMapsExport.open('start');
       return false;
     }
   },true);
   window.RoadoraMapsExportNotes={
-    mobile:'Google Maps gebruikt op mobiel de huidige locatie als startpunt. Daardoor verschijnt meestal de echte Start-knop in plaats van alleen Voorbeeld.',
-    desktop:'Op desktop blijft de geplande route met vertrekpunt zichtbaar.'
+    start:'Start in Maps gebruikt huidige locatie op mobiel en opent de echte navigeerflow waar mogelijk.',
+    overview:'Bekijk volledige route opent de hele roadtrip met vertrekpunt, stops en bestemming als overzicht.'
   };
 })();

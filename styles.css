@@ -4645,3 +4645,28 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .roadtripMapPinV64 span{width:16px;height:16px;font-size:8px;}
   .roadtripMapPinV64 b{font-size:13px;}
 }
+
+/* ===== Roadora v6.6 Dual Maps Export =====
+   Twee duidelijke flows: volledige route bekijken óf direct starten in Maps. */
+.roadtripV66Footer{
+  grid-template-columns:1fr 1.18fr 1.18fr!important;
+  gap:7px!important;
+}
+.roadtripV66Footer button{
+  height:43px!important;
+  padding:0 8px!important;
+  line-height:1.05!important;
+}
+.roadtripV66Overview{
+  color:#7b552b!important;
+  background:rgba(255,255,255,.72)!important;
+}
+@media(max-width:390px){
+  .roadtripV66Footer{
+    grid-template-columns:1fr!important;
+    gap:7px!important;
+  }
+  .roadtripV66Footer button{
+    height:40px!important;
+  }
+}
