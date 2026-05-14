@@ -2719,3 +2719,204 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+
+/* Roadora v5.8 Interactielaag v2 — Mijn Roadtrip Timeline */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const KEY='roadoraMijnRoadtripStopsV1';
+  const HOME={id:'start:rotterdam',name:'Rotterdam, Nederland',label:'Start',type:'start',ll:[51.9244,4.4777]};
+  const DEST={id:'destination:innsbruck',name:'Innsbruck, Oostenrijk',label:'Bestemming',type:'destination',ll:[47.2692,11.4041]};
+  let lastMapContext='map';
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'[]').filter(Boolean);}catch(_){return [];}}
+  function write(list){localStorage.setItem(KEY,JSON.stringify(list.slice(0,18)));updateTripMini();}
+  function identity(s){return s?.googlePlaceId||s?.id||`${s?.type||'stop'}:${s?.name||''}:${Array.isArray(s?.ll)?s.ll.join(','):''}`;}
+  function selectedStop(){return window.RoadoraMapApi?.getSelectedStop?.()||window.RoadoraState?.selectedStop||null;}
+  function normalizeStop(s){
+    return {id:identity(s),name:s?.name||'Roadora stop',label:s?.label||labelFor(s?.type),type:s?.type||'stop',meta:s?.meta||'',ll:Array.isArray(s?.ll)?s.ll:null,googlePlaceId:s?.googlePlaceId||null,googleMapsUri:s?.googleMapsUri||s?.infoUrl||null,photoUrl:s?.photoUrl||s?.photo||s?.imageUrl||s?.image||'',addedAt:new Date().toISOString()};
+  }
+  function labelFor(type){return ({fuel:'Tankstop',hotel:'Overnachting',ev:'Laadstop',food:'Eten',view:'Uitje'})[type]||'Tussenstop';}
+  function iconFor(type){return ({fuel:'⛽',hotel:'🏨',ev:'⚡',food:'🍽️',view:'⛰️',start:'●',destination:'⌁'})[type]||'📍';}
+  function canAdd(s){return s && !['destination','overview','stops','guide','start'].includes(s.type);}
+
+  function ensureTripButton(){
+    const actions=qs('#mapScreen .sheetActions');
+    if(!actions||qs('#mapScreen .tripAddStop')) return;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='tripAddStop';
+    btn.textContent='＋ Voeg toe aan roadtrip';
+    actions.insertBefore(btn,actions.firstChild?.nextSibling||null);
+  }
+
+  function updateTripButton(){
+    ensureTripButton();
+    const btn=qs('#mapScreen .tripAddStop');
+    if(!btn) return;
+    const s=selectedStop();
+    const enabled=canAdd(s);
+    const exists=enabled && read().some(x=>x.id===identity(s));
+    btn.disabled=!enabled;
+    btn.classList.toggle('is-disabled',!enabled);
+    btn.textContent=exists?'✓ In roadtrip':'＋ Voeg toe aan roadtrip';
+  }
+
+  function addSelected(){
+    const s=selectedStop();
+    if(!canAdd(s)){toast('Kies eerst een stop op de kaart');return false;}
+    const item=normalizeStop(s);
+    const list=read();
+    if(list.some(x=>x.id===item.id)){toast('Stop staat al in je roadtrip');openTripPanel();return false;}
+    write([...list,item]);
+    updateTripButton();
+    toast('Toegevoegd aan Mijn Roadtrip');
+    openTripPanel(false);
+    return false;
+  }
+
+  function ensurePanel(){
+    let el=qs('#roadtripTimelinePanel');
+    if(el) return el;
+    el=document.createElement('section');
+    el.id='roadtripTimelinePanel';
+    el.className='roadtripTimelinePanel';
+    el.innerHTML=`
+      <div class="roadtripScrim" data-trip-action="close"></div>
+      <article class="roadtripCard">
+        <header class="roadtripHead">
+          <button class="roadtripBack" data-trip-action="close" type="button">‹</button>
+          <div><span>Mijn Roadtrip</span><b>Route & tussenstops</b></div>
+          <button class="roadtripClear" data-trip-action="clear" type="button">Wis</button>
+        </header>
+        <div class="roadtripRouteHint">Plan thuis je stops. Stuur daarna je route met tussenstops naar Google Maps.</div>
+        <div class="roadtripList"></div>
+        <div class="roadtripActions">
+          <button class="roadtripPrimary" data-trip-action="maps" type="button">Start roadtrip in Google Maps</button>
+          <button class="roadtripGhost" data-trip-action="add-current" type="button">＋ Huidige stop toevoegen</button>
+        </div>
+      </article>`;
+    (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
+    return el;
+  }
+
+  function routeItems(){return [HOME,...read(),DEST];}
+  function renderPanel(){
+    const el=ensurePanel();
+    const list=qs('.roadtripList',el);
+    const stops=routeItems();
+    list.innerHTML=stops.map((s,i)=>{
+      const fixed=i===0||i===stops.length-1;
+      const midIndex=i-1;
+      return `<div class="roadtripItem ${fixed?'is-fixed':''}" data-trip-index="${midIndex}" data-stop-id="${esc(s.id)}">
+        <div class="roadtripDot"><span>${iconFor(s.type)}</span><i></i></div>
+        <button class="roadtripOpen" data-trip-action="open" data-trip-index="${midIndex}" type="button">
+          <em>${esc(s.label||labelFor(s.type))}</em>
+          <b>${esc(s.name)}</b>
+          <small>${esc(s.meta|| (fixed?'Basisroute':'Toegevoegd aan je roadtrip'))}</small>
+        </button>
+        <div class="roadtripTools">
+          ${fixed?'':`<button data-trip-action="up" data-trip-index="${midIndex}" type="button">↑</button><button data-trip-action="down" data-trip-index="${midIndex}" type="button">↓</button><button data-trip-action="delete" data-trip-index="${midIndex}" type="button">×</button>`}
+        </div>
+      </div>`;
+    }).join('');
+    qs('.roadtripPrimary',el).disabled=read().length===0;
+    qs('.roadtripPrimary',el).classList.toggle('is-disabled',read().length===0);
+  }
+
+  function openTripPanel(mark=true){
+    renderPanel();
+    ensurePanel().classList.add('open');
+    if(mark) lastMapContext='trip';
+  }
+  function closeTripPanel(){qs('#roadtripTimelinePanel')?.classList.remove('open');lastMapContext='map';}
+  function moveStop(index,dir){
+    const list=read();
+    const i=Number(index);
+    const j=i+dir;
+    if(i<0||j<0||i>=list.length||j>=list.length) return;
+    [list[i],list[j]]=[list[j],list[i]];
+    write(list);renderPanel();toast('Volgorde bijgewerkt');
+  }
+  function deleteStop(index){
+    const list=read();
+    list.splice(Number(index),1);
+    write(list);renderPanel();toast('Stop verwijderd');
+  }
+  function openStop(index){
+    const list=read();
+    const s=list[Number(index)];
+    if(!s) return;
+    qs('#roadtripTimelinePanel')?.classList.remove('open');
+    if(window.RoadoraState) window.RoadoraState.selectedStop=s;
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{window.RoadoraMapApi?.showPanel?.(s);window.RoadoraMapApi?.focusSelected?.();},160);
+    toast('Stop geopend op de kaart');
+  }
+  function mapsCoord(s){return Array.isArray(s.ll)?`${s.ll[0]},${s.ll[1]}`:s.name;}
+  function exportMaps(){
+    const stops=read();
+    if(!stops.length){toast('Voeg eerst stops toe aan je roadtrip');return;}
+    const params=new URLSearchParams({api:'1',origin:mapsCoord(HOME),destination:mapsCoord(DEST),travelmode:'driving'});
+    params.set('waypoints',stops.slice(0,9).map(mapsCoord).join('|'));
+    window.open('https://www.google.com/maps/dir/?'+params.toString(),'_blank','noopener');
+    toast('Roadtrip geopend in Google Maps');
+  }
+  function clearTrip(){if(confirm('Alle tussenstops uit Mijn Roadtrip verwijderen?')){write([]);renderPanel();updateTripButton();toast('Roadtrip geleegd');}}
+
+  function updateTripMini(){
+    let mini=qs('#roadtripMiniBar');
+    const map=qs('#mapScreen .roadMapApp');
+    if(!map) return;
+    if(!mini){
+      mini=document.createElement('button');
+      mini.id='roadtripMiniBar';
+      mini.type='button';
+      mini.dataset.tripAction='open-panel';
+      mini.className='roadtripMiniBar';
+      map.appendChild(mini);
+    }
+    const count=read().length;
+    mini.hidden=count===0;
+    mini.innerHTML=`<span>${count}</span><b>Mijn Roadtrip</b><em>Google Maps klaar</em>`;
+  }
+
+  function maybeObserveSheet(){
+    const sheet=qs('#mapScreen .sheet');
+    if(!sheet||sheet.dataset.tripObserved) return;
+    sheet.dataset.tripObserved='true';
+    const obs=new MutationObserver(()=>updateTripButton());
+    obs.observe(sheet,{childList:true,subtree:true,attributes:true,attributeFilter:['data-type']});
+  }
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const trip=t.closest('[data-trip-action]');
+    if(trip){
+      const action=trip.dataset.tripAction;
+      e.preventDefault();e.stopImmediatePropagation();
+      if(action==='open-panel') return openTripPanel();
+      if(action==='close') return closeTripPanel();
+      if(action==='add-current') return addSelected();
+      if(action==='maps') return exportMaps();
+      if(action==='clear') return clearTrip();
+      if(action==='up') return moveStop(trip.dataset.tripIndex,-1);
+      if(action==='down') return moveStop(trip.dataset.tripIndex,1);
+      if(action==='delete') return deleteStop(trip.dataset.tripIndex);
+      if(action==='open') return openStop(trip.dataset.tripIndex);
+    }
+    if(t.closest('#mapScreen .tripAddStop')){e.preventDefault();e.stopImmediatePropagation();return addSelected();}
+    const nav=t.closest('#mapScreen .bottomNav .navItem');
+    if(nav && /overzicht/i.test(nav.textContent||'')){
+      e.preventDefault();e.stopImmediatePropagation();return openTripPanel();
+    }
+  },true);
+
+  document.addEventListener('DOMContentLoaded',()=>{ensureTripButton();maybeObserveSheet();updateTripMini();setInterval(()=>{ensureTripButton();maybeObserveSheet();updateTripButton();},900);},{once:true});
+  if(document.readyState!=='loading'){ensureTripButton();maybeObserveSheet();updateTripMini();setInterval(()=>{ensureTripButton();maybeObserveSheet();updateTripButton();},900);}
+})();
