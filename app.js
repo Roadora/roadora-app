@@ -531,7 +531,7 @@
     function toggleCategories(){
       const cats=document.getElementById('mapCats');
       setCategoriesOpen(!(cats?.classList.contains('is-open')));
-      showToast(cats?.classList.contains('is-open')?'Kies je stops':'Stops verborgen');
+      showToast(cats?.classList.contains('is-open')?'Stops verschenen':'Stops verborgen');
     }
     function isVisible(s){return activeFilters.has(s.type);}
     function stopKey(s){return (s?.googlePlaceId?('place:'+s.googlePlaceId):((s?.type||'stop')+':'+(s?.name||'unknown')));}
