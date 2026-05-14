@@ -1386,3 +1386,54 @@
   window.RoadoraHotels={show:()=>showPlanner('hotels'),openMap:()=>openMapWithFilter('hotel')};
   window.RoadoraExplore={show:()=>showPlanner('explore'),openMap:()=>openMapWithFilter('view')};
 })();
+
+/* =========================================================
+   Roadora v5.0 — Smart Copilot Flow helper
+   Houdt de Magic Stops state en cockpit-hint subtiel synchroon.
+   ========================================================= */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function activeCategoryLabels(){
+    return qsa('#mapCats .cat.active').map(btn=>(btn.textContent||'').trim()).filter(Boolean);
+  }
+
+  function smartHint(){
+    const labels=activeCategoryLabels().join(' · ');
+    if(!labels) return 'Pauze over 45 min';
+    if(labels.includes('Tank')) return 'Beste tankstops langs route';
+    if(labels.includes('Overnachten')) return 'Hotels slim rond dag 1';
+    if(labels.includes('Laad')) return 'Laadstops aanbevolen';
+    if(labels.includes('Eten')) return 'Eetpauzes langs route';
+    if(labels.includes('Activiteiten')) return 'Uitjes langs route';
+    return 'Stops langs route';
+  }
+
+  function syncStopsState(){
+    const cats=qs('#mapCats');
+    const stopsBtn=qsa('#mapScreen .bottomNav .navItem').find(btn=>(btn.textContent||'').toLowerCase().includes('stops'));
+    const cockpit=qs('#mapScreen .mapCockpit');
+    const badge=qs('#mapStatusBadge');
+    const next=qs('#mapStatusNext');
+    const open=!!cats?.classList.contains('is-open');
+    const hasActive=activeCategoryLabels().length>0;
+    stopsBtn?.classList.toggle('is-stops-open',open||hasActive);
+    cockpit?.setAttribute('data-smart-flow',(open||hasActive)?'active':'idle');
+    if(next && (open||hasActive)) next.textContent=smartHint();
+    if(badge && open) badge.textContent='Stops kiezen';
+  }
+
+  document.addEventListener('click',function(event){
+    const t=event.target;
+    if(!t?.closest) return;
+    if(t.closest('#mapScreen .bottomNav .navItem') || t.closest('#mapCats .cat')){
+      setTimeout(syncStopsState,80);
+      setTimeout(syncStopsState,360);
+    }
+  },true);
+
+  window.addEventListener('load',()=>setTimeout(syncStopsState,600));
+  window.RoadoraSmartCopilot={syncStopsState};
+})();

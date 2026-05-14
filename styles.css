@@ -3830,3 +3830,130 @@
     bottom:calc(env(safe-area-inset-bottom) + 66px) !important;
   }
 }
+
+/* =========================================================
+   Roadora v5.0 — Smart Copilot Flow + Magic Stops Vertical
+   - Fix: categorieën weer links boven elkaar
+   - Bottom-nav Stops blijft de enige trigger
+   - Zwevende +Stops knop blijft weg
+   - Cockpit iets compacter en cleaner
+   ========================================================= */
+#mapScreen .stopsCta{
+  display:none !important;
+}
+#mapScreen .cats{
+  left:14px !important;
+  right:auto !important;
+  bottom:calc(env(safe-area-inset-bottom) + 204px) !important;
+  z-index:835 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:6px !important;
+  width:auto !important;
+  max-width:none !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  transform-origin:left bottom !important;
+  transition:opacity .22s ease, transform .28s cubic-bezier(.22,1,.36,1), filter .22s ease !important;
+}
+#mapScreen .cats.is-collapsed{
+  opacity:0 !important;
+  pointer-events:none !important;
+  transform:translateY(12px) scale(.94) !important;
+  filter:blur(1px) saturate(.92) !important;
+}
+#mapScreen .cats.is-open{
+  opacity:1 !important;
+  pointer-events:auto !important;
+  transform:translateY(0) scale(1) !important;
+  filter:none !important;
+}
+#mapScreen .cat{
+  flex:0 0 auto !important;
+  min-width:118px !important;
+  width:max-content !important;
+  max-width:160px !important;
+  height:33px !important;
+  padding:0 10px !important;
+  border-radius:12px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  font-size:8.8px !important;
+  font-weight:850 !important;
+  background:rgba(255,250,242,.93) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 12px 26px rgba(24,18,12,.13), inset 0 1px 0 rgba(255,255,255,.86) !important;
+  backdrop-filter:blur(28px) !important;
+  -webkit-backdrop-filter:blur(28px) !important;
+  color:#2b2119 !important;
+}
+#mapScreen .cat svg{
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 auto !important;
+}
+#mapScreen .cat.active{
+  background:linear-gradient(135deg,#f1debc,#c88b43) !important;
+  color:#211914 !important;
+  box-shadow:0 13px 28px rgba(196,134,61,.22), inset 0 1px 0 rgba(255,255,255,.70) !important;
+}
+#mapScreen .bottomNav .navItem.is-stops-open,
+#mapScreen .bottomNav .navItem.active.is-stops-open{
+  background:linear-gradient(135deg,rgba(237,201,132,.34),rgba(196,134,61,.16)) !important;
+  color:#8a5f2e !important;
+}
+#mapScreen .mapCockpit{
+  border-radius:26px !important;
+  padding:7px !important;
+}
+#mapScreen .mapCockpit .routePanel .stats{
+  margin-top:7px !important;
+  padding-top:7px !important;
+}
+#mapScreen .mapCockpit .routePanel .vehicle{
+  height:30px !important;
+}
+#mapScreen .mapCockpit #mapStatusNext{
+  color:#7a552e !important;
+}
+#mapScreen .mapCockpit[data-smart-flow="active"]{
+  box-shadow:0 20px 54px rgba(24,18,12,.18), inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+#mapScreen .mapCockpit[data-smart-flow="active"] #mapStatusBadge{
+  background:linear-gradient(135deg,rgba(237,201,132,.52),rgba(196,134,61,.20)) !important;
+  color:#7a552e !important;
+}
+@media(max-width:520px){
+  #mapScreen .cats{
+    left:12px !important;
+    bottom:calc(env(safe-area-inset-bottom) + 202px) !important;
+    gap:5px !important;
+  }
+  #mapScreen .cat{
+    min-width:112px !important;
+    height:31px !important;
+    padding:0 9px !important;
+    font-size:8.4px !important;
+    border-radius:11px !important;
+  }
+  #mapScreen .cat svg{width:13px !important;height:13px !important;}
+  #mapScreen .mapCockpit{padding:6px !important;border-radius:24px !important;}
+}
+@media(max-height:760px){
+  #mapScreen .cats{
+    bottom:calc(env(safe-area-inset-bottom) + 184px) !important;
+  }
+  #mapScreen .cat{
+    height:29px !important;
+    font-size:8.1px !important;
+  }
+}
