@@ -3148,3 +3148,11 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+/* Roadora v6.2 Focus & Calm marker */
+(function(){
+  'use strict';
+  function mark(){document.body.classList.add('roadoraV62FocusCalm');}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mark,{once:true});
+  else mark();
+})();

@@ -4496,3 +4496,64 @@
   .roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button b{font-size:10px!important;}
   .roadoraV61LayerFocusGoed #roadoraStopOverlayV57 .stopOverlayGridV57 button small{font-size:7.7px!important;}
 }
+
+/* ===== Roadora v6.2 Focus & Calm Goed =====
+   Stops kiezen is nu een volledige focusmodus: kaart eronder uit beeld,
+   topbar blijft als route-context zichtbaar, overlay is de enige interactie.
+*/
+.roadoraV62FocusCalm #roadoraStopOverlayV57{
+  z-index:895!important;
+}
+.roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayScrimV57{
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,250,242,.12), transparent 34%),
+    linear-gradient(180deg, rgba(39,31,23,.72), rgba(31,25,19,.78) 48%, rgba(22,18,14,.84))!important;
+  backdrop-filter:blur(26px) saturate(.62)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(.62)!important;
+}
+.roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 #routeLeafletMap,
+.roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .controls,
+.roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .sheet,
+.roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .bottomNav{
+  filter:blur(10px) saturate(.55) brightness(.62)!important;
+  opacity:.10!important;
+  pointer-events:none!important;
+  transition:opacity .22s ease, filter .22s ease, transform .22s ease!important;
+}
+.roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .mapCockpit{
+  z-index:930!important;
+  opacity:.96!important;
+  filter:none!important;
+}
+.roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayCardV57{
+  z-index:2!important;
+  background:rgba(255,250,242,.96)!important;
+  border:1px solid rgba(255,255,255,.86)!important;
+  box-shadow:0 30px 80px rgba(10,7,4,.28), inset 0 1px 0 rgba(255,255,255,.94)!important;
+}
+.roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayGridV57 button{
+  background:rgba(255,255,255,.72)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.84),0 8px 22px rgba(33,22,11,.055)!important;
+}
+.roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayGridV57 button.active,
+.roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayGridV57 button:active{
+  background:linear-gradient(135deg,#f3dfbb,#cf9856)!important;
+}
+/* Home moet cinematic blijven; profielhint blijft contextueel en niet als blok op Home. */
+.roadoraV62FocusCalm .profileHintV59,
+.roadoraV62FocusCalm .profileHintV60{
+  display:none!important;
+}
+@media(max-width:520px){
+  .roadoraV62FocusCalm #roadoraStopOverlayV57 .stopOverlayScrimV57{
+    backdrop-filter:blur(22px) saturate(.62)!important;
+    -webkit-backdrop-filter:blur(22px) saturate(.62)!important;
+  }
+  .roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 #routeLeafletMap,
+  .roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .controls,
+  .roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .sheet,
+  .roadoraV62FocusCalm #mapScreen.stopOverlayOpenV57 .bottomNav{
+    opacity:.07!important;
+    filter:blur(12px) saturate(.50) brightness(.56)!important;
+  }
+}
