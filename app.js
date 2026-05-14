@@ -2588,7 +2588,8 @@
     hotel:{label:'Overnachten',hint:'Hotels langs je route',toast:'Hotels langs route'},
     ev:{label:'Laadstations',hint:'Laadstations langs je route',toast:'Laadstations langs route'},
     food:{label:'Eten & drinken',hint:'Eten en pauzeplekken langs je route',toast:'Eten & drinken langs route'},
-    view:{label:'Activiteiten',hint:'Uitjes en mooie plekken langs je route',toast:'Activiteiten langs route'}
+    view:{label:'Activiteiten',hint:'Uitjes en mooie plekken langs je route',toast:'Activiteiten langs route'},
+    wc:{label:'WC-stops',hint:'Toiletten en comfortstops langs je route',toast:'WC-stops langs route'}
   };
 
   function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
@@ -2616,6 +2617,7 @@
           <button data-stop-filter="ev" type="button"><span>⚡</span><b>Laadpunt</b><small>EV laden</small></button>
           <button data-stop-filter="food" type="button"><span>🍽️</span><b>Eten</b><small>Restaurants</small></button>
           <button data-stop-filter="view" type="button"><span>⛰️</span><b>Uitjes</b><small>Highlights</small></button>
+          <button data-stop-filter="wc" type="button"><span>🚻</span><b>WC’s</b><small>Comfortstop</small></button>
           <button data-stop-overlay-action="clear" type="button"><span>⌁</span><b>Route</b><small>Alles resetten</small></button>
         </div>
       </article>`;
@@ -2805,12 +2807,14 @@
     const data=read();
     data.stops=data.stops.filter(s=>String(s.id)!==String(id));
     write(data);
+    if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) renderPanel();
     toast('Stop verwijderd');
   }
   function clear(){
     const data=read();
     data.stops=[];
     write(data);
+    if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) renderPanel();
     toast('Roadtrip geleegd');
   }
   function ensureDock(){
