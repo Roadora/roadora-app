@@ -4309,3 +4309,66 @@
 .roadtripPanelItemV584 i{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#f0d9b2,#ca8d44);font-style:normal;font-size:11px;font-weight:900}.roadtripPanelItemV584 b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.roadtripPanelItemV584 small{display:block;margin-top:2px;font-size:10px;color:#776a5f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.roadtripPanelItemV584 button{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.72);font-size:21px;color:#8a5f2e}
 .roadtripPanelEmptyV584{margin:4px 2px 8px;font-size:13px;line-height:1.4;color:#706256}.roadtripPanelCardV584 footer{display:flex;gap:8px}.roadtripPanelCardV584 footer button{flex:1;height:42px;border-radius:16px;background:rgba(255,255,255,.65);font-size:12px;font-weight:900}.roadtripPanelCardV584 footer button:last-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914}
 @media(max-width:380px){#roadtripMiniDockV584{bottom:calc(env(safe-area-inset-bottom) + 66px)!important;min-width:142px!important;height:32px!important}#roadtripMiniDockV584 b{font-size:9.4px}#roadtripMiniDockV584 em{font-size:8.4px}.roadtripPanelCardV584{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 72px)}}
+
+
+/* ===== Roadora v5.9 Flow Polish =====
+   Bottom bar definitief: Route / Stops / Navigeer / Mijn Roadtrip / Meer.
+   Reisgids en Overzicht zijn geen primaire tabs meer.
+*/
+.profileHintV59{
+  width:min(342px,100%);
+  min-height:46px;
+  margin-top:10px;
+  border-radius:22px;
+  padding:9px 12px;
+  display:grid;
+  grid-template-columns:28px minmax(0,auto) 1fr;
+  align-items:center;
+  gap:8px;
+  text-align:left;
+  background:rgba(255,249,239,.66);
+  border:1px solid rgba(255,255,255,.50);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:0 14px 34px rgba(25,16,8,.13);
+  color:#251b14;
+}
+.profileHintV59 span{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.62);font-size:13px;}
+.profileHintV59 b{font-size:12px;font-weight:900;white-space:nowrap;color:#2a2018;}
+.profileHintV59 small{min-width:0;font-size:9.3px;font-weight:750;color:#6f6257;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media(max-height:760px){.profileHintV59{display:none!important}}
+
+#mapScreen .bottomNavV59 .navItem{position:relative;}
+#mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"]{font-size:7.6px;}
+#mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"] svg{width:16px;height:16px;}
+#mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"] .roadtripCountDotV59,
+#mapScreen .bottomNavV59 .navItem.roadtripHasStops:after{
+  content:attr(data-roadtrip-count);
+  position:absolute;
+  top:4px;
+  right:14px;
+  min-width:16px;
+  height:16px;
+  padding:0 4px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#edc984,#c4863d);
+  color:#fff;
+  font-size:8px;
+  font-weight:900;
+  box-shadow:0 6px 14px rgba(196,134,61,.28);
+}
+/* De oude zwevende roadtrip-pill wordt vervangen door de vaste bottom-nav knop. */
+#roadtripMiniDockV584{display:none!important;}
+
+/* Stops-overlay blijft compact en map-first. */
+#mapScreen .stopOverlayV57,
+#mapScreen .cats{max-width:150px!important;}
+#mapScreen .cat{min-width:112px!important;height:30px!important;border-radius:11px!important;font-size:8.7px!important;padding:0 9px!important;}
+#mapScreen .cat svg{width:13px!important;height:13px!important;}
+
+@media(max-width:380px){
+  #mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"]{font-size:7px;}
+  #mapScreen .bottomNavV59 .navItem[data-nav="roadtrip"].roadtripHasStops:after{right:10px;top:3px;}
+}

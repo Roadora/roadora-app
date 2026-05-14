@@ -2912,3 +2912,109 @@
 
   window.RoadoraRoadtrip={read,write,addSelected:()=>add(selectedStop()),add,remove,clear};
 })();
+
+
+/* Roadora v5.9 Flow Polish
+   - Bottom nav: Route / Stops / Navigeer / Mijn Roadtrip / Meer
+   - Overzicht/Reisgids uit primaire flow
+   - Mijn Roadtrip opent bestaand compact paneel
+   - Profile hint op home blijft subtiel
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const KEY='roadoraRoadtripV1';
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function readTrip(){
+    try{return JSON.parse(localStorage.getItem(KEY)||'{"stops":[]}')||{stops:[]};}
+    catch(_){return {stops:[]};}
+  }
+  function setBottomActive(nav){
+    qsa('#mapScreen .bottomNav .navItem').forEach(b=>{
+      const is=(b.dataset.nav||'').toLowerCase()===nav;
+      b.classList.toggle('active',is);
+      b.classList.toggle('is-active',is);
+    });
+  }
+  function openRoadtripPanel(){
+    const dock=qs('#roadtripMiniDockV584');
+    if(dock){ dock.click(); return true; }
+    const panel=qs('#roadtripMiniPanelV584');
+    if(panel){ panel.classList.add('open'); return true; }
+    toast('Voeg eerst een stop toe aan je roadtrip');
+    return false;
+  }
+  function updateRoadtripCount(){
+    const data=readTrip();
+    const count=Array.isArray(data.stops)?data.stops.length:0;
+    qsa('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]').forEach(btn=>{
+      btn.dataset.roadtripCount=String(count);
+      btn.classList.toggle('roadtripHasStops',count>0);
+    });
+  }
+  function closeTransientPanels(){
+    qs('#roadtripMiniPanelV584')?.classList.remove('open');
+    qs('#hotelDetailSheet')?.classList.remove('open');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+  }
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+
+    const profile=t.closest('.profileHintV59');
+    if(profile){
+      e.preventDefault();
+      toast('Profiel komt later: voorkeuren worden straks opgeslagen voor betere matches');
+      return false;
+    }
+
+    const item=t.closest('#mapScreen .bottomNav .navItem[data-nav]');
+    if(!item) return;
+    const nav=(item.dataset.nav||'').toLowerCase();
+    if(!nav) return;
+
+    if(nav==='route'){
+      e.preventDefault();
+      setBottomActive('route');
+      closeTransientPanels();
+      window.RoadoraMapApi?.fitRoute?.('nav');
+      toast('Route in beeld');
+      return false;
+    }
+
+    if(nav==='roadtrip'){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      setBottomActive('roadtrip');
+      openRoadtripPanel();
+      return false;
+    }
+
+    if(nav==='more'){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      setBottomActive('more');
+      closeTransientPanels();
+      const btn=qs('#mapScreen [data-menu-open], #menuToggle');
+      if(btn) btn.click();
+      else document.querySelector('.phone')?.classList.add('menuOpen','menuExpanded');
+      toast('Menu geopend');
+      return false;
+    }
+
+    if(nav==='navigate'){
+      setBottomActive('navigate');
+      return;
+    }
+    if(nav==='stops'){
+      setBottomActive('stops');
+      return;
+    }
+  },true);
+
+  window.addEventListener('storage',updateRoadtripCount);
+  window.addEventListener('roadora:roadtrip:update',updateRoadtripCount);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',updateRoadtripCount,{once:true});
+  else updateRoadtripCount();
+})();
