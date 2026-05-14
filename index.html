@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Roadora — Core Cleanup v1</title>
+  <title>Roadora — v5.2 Smart Stop Zones</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@650;750&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <meta name="roadora-build" content="roadora-v4-9-2-hotels-in-hamburger; home-v8-7-locked; map-first; smart-copilot" />
+  <meta name="roadora-build" content="roadora-v5-2-smart-stop-zones-upgrade; vertical-stops; hotels-uitjes-menu; planning-engine-v1" />
   <link rel="stylesheet" href="./styles.css" />
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
@@ -107,7 +107,6 @@
       <button class="sideItem active" data-action="home" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" stroke="currentColor"></path></svg><span>Home</span></button>
       <button class="sideItem" data-action="route" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="M6 17h12l1 4H5l1-4Z M7 17 9 7h6l2 10 M8 11h8" stroke="currentColor"></path></svg><span>Route</span></button>
       <button class="sideItem" data-action="explore" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15" stroke="currentColor"></path></svg><span>Uitjes</span></button>
-      <button class="sideItem" data-action="hotels" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="M4 11h16v9M4 20V7M20 20v-5H4M7 11V8h5v3" stroke="currentColor"></path></svg><span>Hotels</span></button>
       <button class="sideItem" data-action="routes" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="M5 6h6v14H5zM13 4h6v14h-6z" stroke="currentColor"></path></svg><span>Routes</span></button>
       <button class="sideItem" data-action="account" type="button"><svg fill="none" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c1.5-4 14.5-4 16 0" stroke="currentColor"></path></svg><span>Account</span></button>
     </aside>
@@ -160,86 +159,6 @@
       </div>
     </section>
 
-
-    <section aria-label="Hotels zoeken" class="appScreen hotelScreen" id="hotelScreen">
-      <div class="hotelApp">
-        <header class="hotelTopbar">
-          <button class="hotelIconBtn" data-action="home" aria-label="Terug naar home" type="button">‹</button>
-          <div class="hotelBrand"><span>Roadora</span><b>Hotels</b></div>
-          <button class="hotelIconBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
-        </header>
-
-        <section class="hotelHeroPanel">
-          <small>Plan rustig vóór vertrek</small>
-          <h1>Vind je overnachting langs de route.</h1>
-          <p>Zoek straks op plaats, na zoveel kilometer of na zoveel uur rijden. Deze hotel-planner staat rustig in het menu. Onderweg blijven hotels gewoon als kaartfilter beschikbaar.</p>
-        </section>
-
-        <section class="hotelSearchPanel">
-          <label>Bestemming of route</label>
-          <div class="hotelSearchInput"><span>Rotterdam → Innsbruck</span><b>⌕</b></div>
-          <div class="hotelModeGrid">
-            <button class="hotelMode active" type="button"><b>Langs route</b><small>Hotels onderweg</small></button>
-            <button class="hotelMode" type="button"><b>Na km</b><small>Bijv. na 600 km</small></button>
-            <button class="hotelMode" type="button"><b>Na tijd</b><small>Bijv. na 6 uur</small></button>
-          </div>
-        </section>
-
-        <section class="hotelListPanel">
-          <div class="hotelSectionHead"><b>Aanbevolen hotels</b><span>Menu planner</span></div>
-          <button class="hotelResult" type="button" data-open-map data-hotel-filter="true">
-            <i class="hotelThumb hotelThumbOne"></i>
-            <span><b>Hotel bij Ulm</b><em>640 km · dag 1 · ± 10 min van route</em><small>Perfect voor een tweedaagse rit naar Oostenrijk.</small></span>
-          </button>
-          <button class="hotelResult" type="button" data-open-map data-hotel-filter="true">
-            <i class="hotelThumb hotelThumbTwo"></i>
-            <span><b>Heidelberg stopover</b><em>356 km · 3u 55m · stad dichtbij</em><small>Rustiger plannen, eten en overnachten combineren.</small></span>
-          </button>
-          <button class="hotelPrimaryCta" type="button" data-open-map data-hotel-filter="true">Bekijk hotels op de kaart</button>
-        </section>
-      </div>
-    </section>
-
-    <section aria-label="Uitjes ontdekken" class="appScreen exploreScreen" id="exploreScreen">
-      <div class="exploreApp">
-        <header class="exploreTopbar">
-          <button class="exploreIconBtn" data-action="home" aria-label="Terug naar home" type="button">‹</button>
-          <div class="exploreBrand"><span>Roadora</span><b>Uitjes</b></div>
-          <button class="exploreIconBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
-        </header>
-
-        <section class="exploreHeroPanel">
-          <small>Ontdek vóór vertrek</small>
-          <h1>Vind mooie plekken langs je route.</h1>
-          <p>Plan highlights, uitzichtpunten, steden en korte pauzes rustig via het menu. Onderweg blijven uitjes beschikbaar als kaartfilter “Activiteiten”.</p>
-        </section>
-
-        <section class="exploreSearchPanel">
-          <label>Route of bestemming</label>
-          <div class="exploreSearchInput"><span>Rotterdam → Innsbruck</span><b>⌕</b></div>
-          <div class="exploreModeGrid">
-            <button class="exploreMode active" type="button"><b>Langs route</b><small>Highlights onderweg</small></button>
-            <button class="exploreMode" type="button"><b>Scenic</b><small>Uitzicht & natuur</small></button>
-            <button class="exploreMode" type="button"><b>Steden</b><small>Korte city stops</small></button>
-          </div>
-        </section>
-
-        <section class="exploreListPanel">
-          <div class="exploreSectionHead"><b>Aanbevolen uitjes</b><span>Menu planner</span></div>
-          <button class="exploreResult" type="button" data-open-map data-explore-filter="true">
-            <i class="exploreThumb exploreThumbOne"></i>
-            <span><b>Alpen uitzicht</b><em>900 km · dag 2 · fotostop</em><small>Scenic stop richting Oostenrijk, ideaal voor korte pauze en vakantiefoto’s.</small></span>
-          </button>
-          <button class="exploreResult" type="button" data-open-map data-explore-filter="true">
-            <i class="exploreThumb exploreThumbTwo"></i>
-            <span><b>Heidelberg oude stad</b><em>356 km · 3u 55m · stad dichtbij</em><small>Combineer lunch, wandeling en overnachting zonder grote omweg.</small></span>
-          </button>
-          <button class="explorePrimaryCta" type="button" data-open-map data-explore-filter="true">Bekijk uitjes op de kaart</button>
-        </section>
-      </div>
-    </section>
-
-
     <section aria-label="Routekaart" class="appScreen mapScreen" id="mapScreen">
       <div class="roadMapApp">
         <div id="routeLeafletMap"></div>
@@ -276,6 +195,10 @@
             <div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>2.340 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>6–8</b><small>Stops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
           </section>
           </section>
+
+          <button class="stopsCta" id="stopsCta" type="button" aria-expanded="false" aria-controls="mapCats">
+            <span>＋</span><b>Stops</b>
+          </button>
 
           <div class="cats is-collapsed" id="mapCats" aria-label="Stopcategorieën">
             <button class="cat" data-filter="fuel" type="button"><svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"></path></svg><span>Tankstations</span></button>

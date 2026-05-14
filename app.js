@@ -531,7 +531,7 @@
     function toggleCategories(){
       const cats=document.getElementById('mapCats');
       setCategoriesOpen(!(cats?.classList.contains('is-open')));
-      showToast(cats?.classList.contains('is-open')?'Stops verschenen':'Stops verborgen');
+      showToast(cats?.classList.contains('is-open')?'Kies je stops':'Stops verborgen');
     }
     function isVisible(s){return activeFilters.has(s.type);}
     function stopKey(s){return (s?.googlePlaceId?('place:'+s.googlePlaceId):((s?.type||'stop')+':'+(s?.name||'unknown')));}
@@ -1225,215 +1225,108 @@
   };
 })();
 
-/* =========================================================
-   Roadora v4.9.2 — Hotels in Hamburger Menu
-   Veilig toegevoegd bovenop bestaande Roadora core.
-   - Home v8.7 blijft intact
-   - Route setup blijft intact
-   - Map core blijft intact
-   - Hotels zit als rustige planner in hamburger menu, niet in bottom nav
-   ========================================================= */
+
+/* Roadora v5.2 Smart Stop Zones Upgrade
+   - Hotels/Uitjes als rustige planner via hamburger/home
+   - Bottom-nav Stops opent verticale categorieën
+   - Smart Stop Zones zichtbaar als planning-laag boven de kaart
+*/
 (function(){
   'use strict';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
-
-  function closeMenu(){
-    const phone=qs('.phone');
-    phone?.classList.remove('menuOpen','menuExpanded');
-    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  const zoneData={
+    car:[
+      {type:'fuel',title:'Pauze + tanken',region:'Heidelberg / Stuttgart',range:'na ±3–4 uur'},
+      {type:'hotel',title:'Overnachten',region:'Ulm → Füssen',range:'550–700 km'},
+      {type:'food',title:'Eten onderweg',region:'Stuttgart',range:'goede timing'}
+    ],
+    ev:[
+      {type:'ev',title:'Laadregio 1',region:'Heidelberg',range:'snelladers'},
+      {type:'ev',title:'Laadregio 2',region:'Ulm Süd',range:'voor Alpen'},
+      {type:'hotel',title:'EV-hotelzone',region:'Ulm → Füssen',range:'met laadoptie'}
+    ],
+    camper:[
+      {type:'fuel',title:'Ruime pauze',region:'Köln / Heidelberg',range:'grote stops'},
+      {type:'hotel',title:'Rustige nachtzone',region:'Ulm omgeving',range:'campervriendelijk'},
+      {type:'view',title:'Scenic stop',region:'Fernpass',range:'mooie route'}
+    ],
+    motor:[
+      {type:'food',title:'Korte pauze',region:'Köln → Frankfurt',range:'na ±2 uur'},
+      {type:'view',title:'Scenic zone',region:'Zuid-Duitsland',range:'mooie wegen'},
+      {type:'hotel',title:'Nachtstop',region:'Ulm / Allgäu',range:'voor Alpen'}
+    ]
+  };
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+  function vehicle(){return window.RoadoraState?.vehicle||'car';}
+  function closeMenu(){const phone=qs('.phone'); phone?.classList.remove('menuOpen','menuExpanded'); qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));}
+  function ensurePlanner(kind){
+    const id=kind==='hotels'?'hotelsPlannerScreen':'explorePlannerScreen';
+    let el=qs('#'+id); if(el) return el;
+    el=document.createElement('section'); el.id=id; el.className='plannerScreen';
+    const isHotel=kind==='hotels';
+    el.innerHTML=`
+      <div class="plannerTop"><button class="plannerBack" data-planner-close type="button">‹</button><div class="plannerTitle"><span>${isHotel?'Overnachten':'Uitjes'}</span><b>${isHotel?'Hotels plannen':'Uitjes ontdekken'}</b></div></div>
+      <section class="plannerHero"><h2>${isHotel?'Vind een logische overnachting':'Ontdek plekken langs je route'}</h2><p>${isHotel?'Plan niet zomaar een hotel, maar kies een slimme regio langs je rit. Perfect voor desktop plannen en later openen op je telefoon.':'Gebruik Roadora om leuke pauzes, uitzichtpunten en activiteiten langs je route te vinden zonder je kaart vol te maken.'}</p><div class="plannerChips"><button class="plannerChip active">Langs route</button><button class="plannerChip">Na km</button><button class="plannerChip">Na tijd</button></div></section>
+      <div class="plannerCards">
+        ${isHotel?`<article class="plannerCard"><b>Aanbevolen hotelzone</b><span>Ulm → Füssen is logisch voor een rit richting Innsbruck. Niet te vroeg, niet te laat en nog vóór het Alpenstuk.</span><small>550–700 km vanaf vertrek</small></article><article class="plannerCard"><b>Shortlist bewaren</b><span>Sla hotels op tijdens het plannen. Later kun je ze vergelijken of op je telefoon openen.</span><small>sync-ready flow</small></article>`:`<article class="plannerCard"><b>Scenic pauzezone</b><span>Richting Zuid-Duitsland en Oostenrijk kun je uitjes gebruiken als rustige pauze, niet als extra drukte op je route.</span><small>kaartfilter Activiteiten</small></article><article class="plannerCard"><b>Memories later</b><span>Uitjes worden later onderdeel van je reisverhaal: stops, foto’s en deelbare roadtrip herinneringen.</span><small>Roadora memories</small></article>`}
+      </div>
+      <button class="plannerAction" data-planner-map="${isHotel?'hotel':'view'}" type="button">Bekijk ${isHotel?'hotels':'uitjes'} op de kaart</button>`;
+    qs('.phone')?.appendChild(el); return el;
   }
-
-  function setSideActive(action){
-    qsa('.sideItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action===action));
-  }
-
-  function showHotels(){
-    const phone=qs('.phone');
-    const route=qs('#routeSetupScreen');
-    const map=qs('#mapScreen');
-    const hotels=qs('#hotelScreen');
+  function openPlanner(kind){
     closeMenu();
-    phone?.classList.remove('mapActive');
-    phone?.classList.add('hotelActive');
-    route?.classList.remove('active');
-    map?.classList.remove('active');
-    hotels?.classList.add('active');
-    setSideActive('hotels');
-    window.RoadoraToast?.('Hotels planner geopend');
-    return false;
+    qsa('.plannerScreen').forEach(x=>x.classList.remove('active'));
+    qs('.phone')?.classList.remove('mapActive');
+    qs('#routeSetupScreen')?.classList.remove('active');
+    qs('#mapScreen')?.classList.remove('active');
+    ensurePlanner(kind).classList.add('active');
+    qsa('.sideItem').forEach(b=>b.classList.toggle('active', b.dataset.action===kind || (kind==='explore' && b.dataset.action==='explore')));
+    toast(kind==='hotels'?'Hotels planner geopend':'Uitjes planner geopend');
   }
-
-  function leaveHotels(){
-    const phone=qs('.phone');
-    const hotels=qs('#hotelScreen');
-    phone?.classList.remove('hotelActive');
-    hotels?.classList.remove('active');
-  }
-
-  function openMapWithHotels(){
-    leaveHotels();
-    window.RoadoraApp?.showMap?.();
-    setTimeout(()=>{
-      try{
-        window.RoadoraMapApi?.setFilters?.(['hotel']);
-        window.RoadoraMapApi?.closeCategories?.();
-        window.RoadoraToast?.('Hotels op de kaart geopend');
-      }catch(_){ window.RoadoraToast?.('Hotels worden geladen'); }
-    },420);
-    return false;
-  }
-
-  document.addEventListener('click',function(event){
-    const target=event.target;
-    if(!target?.closest) return;
-
-    const hotelOpen=target.closest('[data-action="hotels"]');
-    if(hotelOpen){
-      event.preventDefault();
-      event.stopPropagation();
-      return showHotels();
-    }
-
-    const hotelMap=target.closest('#hotelScreen [data-open-map]');
-    if(hotelMap){
-      event.preventDefault();
-      event.stopPropagation();
-      return openMapWithHotels();
-    }
-
-    const homeOrRoute=target.closest('#hotelScreen [data-action="home"], #hotelScreen [data-action="route"]');
-    if(homeOrRoute){
-      leaveHotels();
-    }
-  },true);
-
-  window.RoadoraHotels={show:showHotels,openMap:openMapWithHotels};
-})();
-
-
-/* =========================================================
-   Roadora v4.9.3 — Hotels + Uitjes in Hamburger Menu
-   Veilig toegevoegd bovenop bestaande Roadora core.
-   - Hotels en Uitjes zijn rustige planners in hamburger menu
-   - Kaart blijft live routeflow met filters Overnachten/Activiteiten
-   ========================================================= */
-(function(){
-  'use strict';
-  const qs=(s,r=document)=>r.querySelector(s);
-  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
-
-  function closeMenu(){
-    const phone=qs('.phone');
-    phone?.classList.remove('menuOpen','menuExpanded');
-    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
-  }
-  function setSideActive(action){qsa('.sideItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action===action));}
-  function hidePlannerScreens(){
-    const phone=qs('.phone');
-    phone?.classList.remove('hotelActive','exploreActive');
-    qs('#hotelScreen')?.classList.remove('active');
-    qs('#exploreScreen')?.classList.remove('active');
-  }
-  function showPlanner(kind){
-    const phone=qs('.phone');
-    const route=qs('#routeSetupScreen');
-    const map=qs('#mapScreen');
-    closeMenu();
-    hidePlannerScreens();
-    phone?.classList.remove('mapActive');
-    phone?.classList.add(kind==='hotels'?'hotelActive':'exploreActive');
-    route?.classList.remove('active');
-    map?.classList.remove('active');
-    qs(kind==='hotels'?'#hotelScreen':'#exploreScreen')?.classList.add('active');
-    setSideActive(kind==='hotels'?'hotels':'explore');
-    window.RoadoraToast?.(kind==='hotels'?'Hotels planner geopend':'Uitjes planner geopend');
-    return false;
-  }
-  function openMapWithFilter(filter){
-    hidePlannerScreens();
+  function closePlanners(){qsa('.plannerScreen').forEach(x=>x.classList.remove('active'));}
+  function showRoute(){closePlanners(); window.RoadoraApp?.showRoute?.();}
+  function showMapWithFilter(filter){
+    closePlanners();
     window.RoadoraApp?.showMap?.();
     setTimeout(()=>{
       try{
         window.RoadoraMapApi?.setFilters?.([filter]);
-        window.RoadoraMapApi?.closeCategories?.();
-        window.RoadoraToast?.(filter==='hotel'?'Hotels op de kaart geopend':'Uitjes op de kaart geopend');
-      }catch(_){ window.RoadoraToast?.(filter==='hotel'?'Hotels worden geladen':'Uitjes worden geladen'); }
-    },420);
-    return false;
+        const cats=qs('#mapCats'); cats?.classList.remove('is-collapsed'); cats?.classList.add('is-open');
+        openZones(filter);
+      }catch(e){console.warn('Roadora v5.2 filter:',e)}
+    },360);
   }
-
-  document.addEventListener('click',function(event){
-    const target=event.target;
-    if(!target?.closest) return;
-
-    const hotelsOpen=target.closest('[data-action="hotels"]');
-    if(hotelsOpen){event.preventDefault();event.stopPropagation();return showPlanner('hotels');}
-
-    const exploreOpen=target.closest('[data-action="explore"]');
-    if(exploreOpen){event.preventDefault();event.stopPropagation();return showPlanner('explore');}
-
-    const hotelMap=target.closest('#hotelScreen [data-open-map]');
-    if(hotelMap){event.preventDefault();event.stopPropagation();return openMapWithFilter('hotel');}
-
-    const exploreMap=target.closest('#exploreScreen [data-open-map]');
-    if(exploreMap){event.preventDefault();event.stopPropagation();return openMapWithFilter('view');}
-
-    const plannerHomeRoute=target.closest('#hotelScreen [data-action="home"], #hotelScreen [data-action="route"], #exploreScreen [data-action="home"], #exploreScreen [data-action="route"]');
-    if(plannerHomeRoute){hidePlannerScreens();}
+  function ensureZones(){
+    let el=qs('#smartZonesPanel'); if(el) return el;
+    el=document.createElement('section'); el.id='smartZonesPanel'; el.className='smartZonesPanel';
+    el.innerHTML='<div class="smartZonesHead"><div><span>Smart Stop Zones</span><b>Slimme regio’s langs je route</b></div><button class="smartZonesClose" data-zones-close type="button">×</button></div><div class="smartZonesList"></div><div class="smartZoneFoot">Roadora kiest geen verplichte stop, maar helpt je de rit logisch opdelen.</div>';
+    qs('#mapScreen .ui')?.appendChild(el); return el;
+  }
+  function openZones(activeType){
+    const el=ensureZones(); const list=qs('.smartZonesList',el); const v=vehicle(); const zones=zoneData[v]||zoneData.car;
+    if(list){list.innerHTML=zones.map(z=>`<button class="smartZoneCard ${activeType===z.type?'active':''}" data-zone-filter="${z.type}" type="button"><strong>${z.title}</strong><em>${z.region}</em><small>${z.range}</small></button>`).join('');}
+    const head=qs('.smartZonesHead b',el); if(head) head.textContent = v==='ev'?'Laad- en hotelzones':v==='camper'?'Campervriendelijke stopzones':v==='motor'?'Scenic stopzones':'Slimme regio’s langs je route';
+    el.classList.add('open');
+  }
+  function closeZones(){qs('#smartZonesPanel')?.classList.remove('open');}
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    const act=t.closest?.('[data-action="hotels"], [data-action="explore"]');
+    if(act){e.preventDefault(); e.stopPropagation(); openPlanner(act.dataset.action==='hotels'?'hotels':'explore'); return false;}
+    if(t.closest?.('[data-planner-close]')){e.preventDefault(); showRoute(); return false;}
+    const mapBtn=t.closest?.('[data-planner-map]');
+    if(mapBtn){e.preventDefault(); showMapWithFilter(mapBtn.dataset.plannerMap); return false;}
+    if(t.closest?.('[data-zones-close]')){e.preventDefault(); closeZones(); return false;}
+    const zone=t.closest?.('[data-zone-filter]');
+    if(zone){e.preventDefault(); const f=zone.dataset.zoneFilter; window.RoadoraMapApi?.setFilters?.([f]); openZones(f); toast(f==='hotel'?'Hotelzone actief':f==='ev'?'Laadzone actief':f==='fuel'?'Tankzone actief':'Stopzone actief'); return false;}
   },true);
-
-  window.RoadoraHotels={show:()=>showPlanner('hotels'),openMap:()=>openMapWithFilter('hotel')};
-  window.RoadoraExplore={show:()=>showPlanner('explore'),openMap:()=>openMapWithFilter('view')};
-})();
-
-/* =========================================================
-   Roadora v5.0 — Smart Copilot Flow helper
-   Houdt de Magic Stops state en cockpit-hint subtiel synchroon.
-   ========================================================= */
-(function(){
-  'use strict';
-  const qs=(s,r=document)=>r.querySelector(s);
-  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
-
-  function activeCategoryLabels(){
-    return qsa('#mapCats .cat.active').map(btn=>(btn.textContent||'').trim()).filter(Boolean);
-  }
-
-  function smartHint(){
-    const labels=activeCategoryLabels().join(' · ');
-    if(!labels) return 'Pauze over 45 min';
-    if(labels.includes('Tank')) return 'Beste tankstops langs route';
-    if(labels.includes('Overnachten')) return 'Hotels slim rond dag 1';
-    if(labels.includes('Laad')) return 'Laadstops aanbevolen';
-    if(labels.includes('Eten')) return 'Eetpauzes langs route';
-    if(labels.includes('Activiteiten')) return 'Uitjes langs route';
-    return 'Stops langs route';
-  }
-
-  function syncStopsState(){
-    const cats=qs('#mapCats');
-    const stopsBtn=qsa('#mapScreen .bottomNav .navItem').find(btn=>(btn.textContent||'').toLowerCase().includes('stops'));
-    const cockpit=qs('#mapScreen .mapCockpit');
-    const badge=qs('#mapStatusBadge');
-    const next=qs('#mapStatusNext');
-    const open=!!cats?.classList.contains('is-open');
-    const hasActive=activeCategoryLabels().length>0;
-    stopsBtn?.classList.toggle('is-stops-open',open||hasActive);
-    cockpit?.setAttribute('data-smart-flow',(open||hasActive)?'active':'idle');
-    if(next && (open||hasActive)) next.textContent=smartHint();
-    if(badge && open) badge.textContent='Stops kiezen';
-  }
-
-  document.addEventListener('click',function(event){
-    const t=event.target;
-    if(!t?.closest) return;
-    if(t.closest('#mapScreen .bottomNav .navItem') || t.closest('#mapCats .cat')){
-      setTimeout(syncStopsState,80);
-      setTimeout(syncStopsState,360);
-    }
-  },true);
-
-  window.addEventListener('load',()=>setTimeout(syncStopsState,600));
-  window.RoadoraSmartCopilot={syncStopsState};
+  document.addEventListener('click',function(e){
+    const nav=e.target.closest?.('#mapScreen .bottomNav .navItem'); if(!nav) return;
+    const label=(nav.textContent||'').trim().toLowerCase();
+    if(label.includes('stops')) setTimeout(()=>{const cats=qs('#mapCats'); if(cats?.classList.contains('is-open')) openZones(); else closeZones();},60);
+    else if(!label.includes('route')) closeZones();
+  },false);
+  const boot=()=>{ensurePlanner('hotels');ensurePlanner('explore');ensureZones();};
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();
