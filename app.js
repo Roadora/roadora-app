@@ -1465,3 +1465,100 @@
   document.addEventListener('input',handleInput,false);
   window.RoadoraHotelPlanner={show:showHotelPlanner,openHotelsOnMap};
 })();
+
+/* Roadora v5.3.1 — Planner Navigation + Calm Stops Fix
+   - Back buttons on planner screens work again
+   - Dynamic planner screens are hidden when going Home/Route/Map
+   - Floating Stops CTA stays removed; bottom nav remains the only trigger
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function hidePlannerScreens(){
+    qsa('#hotelPlannerScreen,#explorePlannerScreen,.hotelPlannerScreen,.explorePlannerScreen').forEach(s=>s.classList.remove('active'));
+  }
+
+  function showHomeSafe(){
+    hidePlannerScreens();
+    const phone=qs('.phone');
+    phone?.classList.remove('mapActive','menuOpen','menuExpanded');
+    qsa('#routeSetupScreen,#mapScreen').forEach(s=>s.classList.remove('active'));
+    qsa('.sideItem').forEach(b=>b.classList.toggle('active',b.dataset.action==='home'));
+    return false;
+  }
+
+  function showRouteSafe(){
+    hidePlannerScreens();
+    window.RoadoraApp?.showRoute?.();
+    return false;
+  }
+
+  function showMapSafe(){
+    hidePlannerScreens();
+    window.RoadoraApp?.showMap?.();
+    return false;
+  }
+
+  function hideFloatingStopsCta(){
+    const cta=qs('#stopsCta');
+    if(cta){
+      cta.hidden=true;
+      cta.setAttribute('aria-hidden','true');
+      cta.style.display='none';
+    }
+  }
+
+  function patchRoadoraApp(){
+    if(!window.RoadoraApp || window.RoadoraApp.__plannerNavPatched) return;
+    const original={...window.RoadoraApp};
+    window.RoadoraApp.showHome=function(){ hidePlannerScreens(); return original.showHome?.(); };
+    window.RoadoraApp.showRoute=function(){ hidePlannerScreens(); return original.showRoute?.(); };
+    window.RoadoraApp.showMap=function(){ hidePlannerScreens(); return original.showMap?.(); };
+    window.RoadoraApp.__plannerNavPatched=true;
+  }
+
+  function handlePlannerNav(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    const plannerBack=target.closest('#hotelPlannerScreen [data-hotel-planner-action="back"], #explorePlannerScreen [data-explore-planner-action="back"], .hotelPlannerIcon[data-hotel-planner-action="back"], .explorePlannerIcon[data-explore-planner-action="back"]');
+    if(plannerBack){
+      event.preventDefault();
+      event.stopPropagation();
+      return showHomeSafe();
+    }
+
+    const item=target.closest('.sideItem[data-action]');
+    if(item){
+      const action=item.dataset.action;
+      if(action==='home'){
+        event.preventDefault();
+        event.stopPropagation();
+        return showHomeSafe();
+      }
+      if(action==='route'){
+        event.preventDefault();
+        event.stopPropagation();
+        return showRouteSafe();
+      }
+    }
+
+    const backHome=target.closest('#backHomeBtn,[data-action="home"]');
+    if(backHome && !target.closest('#hotelPlannerScreen,#explorePlannerScreen')){
+      hidePlannerScreens();
+    }
+  }
+
+  function initFixes(){
+    patchRoadoraApp();
+    hideFloatingStopsCta();
+    setTimeout(hideFloatingStopsCta,400);
+    setTimeout(patchRoadoraApp,400);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFixes,{once:true});
+  else initFixes();
+  document.addEventListener('click',handlePlannerNav,true);
+})();

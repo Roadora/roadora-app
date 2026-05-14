@@ -3470,3 +3470,90 @@
 .hotelPlannerCardActions button{border-radius:14px;background:rgba(255,255,255,.68);border:1px solid rgba(70,47,24,.07);font-size:9px;font-weight:950;color:#7a552e;}
 .hotelPlannerCardActions button:first-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#241914;}
 @media(max-width:380px){.hotelPlannerInner{padding-left:13px;padding-right:13px;gap:11px}.hotelPlannerCard{padding:12px;border-radius:24px}.hotelPlannerRows{grid-template-columns:1fr}.hotelPlannerResultCard{grid-template-columns:64px minmax(0,1fr);gap:9px}.hotelPlannerPhoto{height:78px;border-radius:16px}.hotelPlannerInfo{padding-right:62px}.hotelPlannerCardActions{width:56px}.hotelPlannerResultTop b{font-size:12.5px}.hotelPlannerActions button{height:43px;font-size:11px}}
+
+/* ===== Roadora v5.3.1 — Calm Stops + Planner Back Fix ===== */
+#mapScreen #stopsCta,
+#mapScreen .stopsCta{
+  display:none !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  visibility:hidden !important;
+}
+
+/* Stops-categorieën blijven verticaal links, zoals de oude goede kaartbasis. */
+#mapScreen .cats{
+  position:absolute !important;
+  left:14px !important;
+  right:auto !important;
+  bottom:calc(env(safe-area-inset-bottom) + 202px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+  width:auto !important;
+  max-width:220px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  z-index:765 !important;
+  transform-origin:left bottom !important;
+}
+#mapScreen .cats.is-collapsed{
+  opacity:0 !important;
+  transform:translateY(10px) scale(.96) !important;
+  pointer-events:none !important;
+}
+#mapScreen .cats.is-open{
+  opacity:1 !important;
+  transform:translateY(0) scale(1) !important;
+  pointer-events:auto !important;
+}
+#mapScreen .cat{
+  width:auto !important;
+  min-width:150px !important;
+  height:48px !important;
+  border-radius:18px !important;
+  padding:0 16px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:10px !important;
+  background:rgba(255,250,242,.93) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 12px 26px rgba(24,18,12,.14), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(28px) !important;
+  -webkit-backdrop-filter:blur(28px) !important;
+  font-size:12px !important;
+  font-weight:900 !important;
+  color:#2b2119 !important;
+  white-space:nowrap !important;
+}
+#mapScreen .cat svg{
+  width:17px !important;
+  height:17px !important;
+  flex:0 0 auto !important;
+}
+#mapScreen .cat.active{
+  background:linear-gradient(135deg,#f1debc,#c88b43) !important;
+  color:#211914 !important;
+}
+
+/* Planner schermen mogen de route/map niet blijven blokkeren na terug. */
+#hotelPlannerScreen:not(.active),
+#explorePlannerScreen:not(.active){
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+#hotelPlannerScreen.active,
+#explorePlannerScreen.active{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+
+@media(max-width:380px){
+  #mapScreen .cats{left:12px !important;bottom:calc(env(safe-area-inset-bottom) + 196px) !important;gap:7px !important;}
+  #mapScreen .cat{min-width:138px !important;height:44px !important;border-radius:16px !important;font-size:11px !important;padding:0 13px !important;}
+}
