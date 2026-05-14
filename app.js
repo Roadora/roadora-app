@@ -2720,7 +2720,7 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
 
-/* Roadora v5.8.4 Roadtrip Foundation Safe
+/* Roadora v5.8.4.1 Roadtrip Foundation Stop Select Fix
    - Kleine, future-proof basis voor Mijn Roadtrip
    - Geen map-init wijzigingen
    - Geen timeline/reorder/export complexiteit
@@ -2855,9 +2855,10 @@
     if(!btn) return;
     const stop=selectedStop();
     if(canAdd(stop)){
-      btn.disabled=false;
-      btn.classList.remove('is-disabled');
-      btn.textContent='＋ Voeg toe aan roadtrip';
+      const wanted='＋ Voeg toe aan roadtrip';
+      if(btn.disabled) btn.disabled=false;
+      if(btn.classList.contains('is-disabled')) btn.classList.remove('is-disabled');
+      if((btn.textContent||'').trim()!==wanted) btn.textContent=wanted;
     }
   }
 
@@ -2891,14 +2892,21 @@
     }
   },true);
 
-  const observer=new MutationObserver(()=>updateSaveButton());
+  let updateQueued=false;
+  const observer=new MutationObserver(()=>{
+    if(updateQueued) return;
+    updateQueued=true;
+    requestAnimationFrame(()=>{ updateQueued=false; updateSaveButton(); });
+  });
   function init(){
     ensureDock();
     ensurePanel();
     renderDock();
     updateSaveButton();
     const sheet=qs('#mapScreen .sheet');
-    if(sheet) observer.observe(sheet,{childList:true,subtree:true,attributes:true});
+    // Alleen tekst/inhoud observeren, geen attributes. Dit voorkomt een mutation-loop
+    // zodra de save-knop zelf wordt aangepast na het kiezen van een stop.
+    if(sheet) observer.observe(sheet,{childList:true,subtree:true});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 
