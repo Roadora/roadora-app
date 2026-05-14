@@ -3415,97 +3415,58 @@
   overflow:hidden;
 }
 
-
-/* ===== Roadora v5.2 Smart Stop Zones Upgrade =====
-   Focus: planning above navigation, vertical magic stops, smart stop zones. */
-#mapScreen #stopsCta{display:none !important;}
-#mapScreen .cats{
-  left:14px !important;
-  right:auto !important;
-  bottom:calc(env(safe-area-inset-bottom) + 214px) !important;
-  z-index:805 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:6px !important;
-  transform-origin:left bottom !important;
-  transition:opacity .22s ease, transform .26s cubic-bezier(.22,1,.36,1) !important;
-}
-#mapScreen .cats.is-collapsed{opacity:0 !important;transform:translateX(-8px) translateY(8px) scale(.97) !important;pointer-events:none !important;}
-#mapScreen .cats.is-open{opacity:1 !important;transform:translateX(0) translateY(0) scale(1) !important;pointer-events:auto !important;}
-#mapScreen .cat{
-  min-width:124px !important;
-  height:34px !important;
-  border-radius:13px !important;
-  justify-content:flex-start !important;
-  padding:0 11px !important;
-  font-size:9.4px !important;
-  background:rgba(255,250,242,.93) !important;
-}
-#mapScreen .cat.active{background:linear-gradient(135deg,#f1debc,#c88b43) !important;color:#211914 !important;}
-#mapScreen .bottomNav .navItem.is-active,
-#mapScreen .bottomNav .navItem.active{transition:background .18s ease,color .18s ease,transform .18s ease;}
-#mapScreen .bottomNav .navItem:active{transform:scale(.97);}
-
-.smartZonesPanel{
-  position:absolute;
-  left:14px;
-  right:14px;
-  bottom:calc(env(safe-area-inset-bottom) + 132px);
-  z-index:790;
-  pointer-events:auto;
-  border-radius:22px;
-  padding:11px;
-  background:rgba(255,250,242,.94);
-  border:1px solid rgba(255,255,255,.78);
-  box-shadow:0 18px 44px rgba(24,18,12,.16),inset 0 1px 0 rgba(255,255,255,.90);
-  backdrop-filter:blur(30px);
-  -webkit-backdrop-filter:blur(30px);
-  opacity:0;
-  transform:translateY(14px) scale(.985);
-  pointer-events:none;
-  transition:opacity .22s ease, transform .26s cubic-bezier(.22,1,.36,1);
-}
-.smartZonesPanel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
-.smartZonesHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;}
-.smartZonesHead span{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:#a66e31;font-weight:950;}
-.smartZonesHead b{font-size:13px;color:#231912;}
-.smartZonesClose{width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.72);font-size:18px;font-weight:900;color:#6f5e50;display:grid;place-items:center;}
-.smartZonesList{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
-.smartZoneCard{min-width:0;border-radius:17px;padding:10px 8px;background:rgba(255,255,255,.66);border:1px solid rgba(70,47,24,.075);box-shadow:inset 0 1px 0 rgba(255,255,255,.82);text-align:left;}
-.smartZoneCard strong{display:block;font-size:10.4px;line-height:1.12;color:#211914;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.smartZoneCard em{display:block;margin-top:4px;font-style:normal;font-size:8.3px;line-height:1.2;color:#766a5f;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.smartZoneCard small{display:block;margin-top:5px;font-size:7.6px;line-height:1.2;color:#9a6429;font-weight:900;}
-.smartZoneCard.active{background:linear-gradient(135deg,rgba(237,201,132,.48),rgba(196,134,61,.20));border-color:rgba(196,134,61,.18);}
-.smartZoneFoot{margin-top:8px;font-size:8.5px;color:#827365;font-weight:760;line-height:1.28;}
-
-.plannerScreen{
-  position:absolute;inset:0;z-index:740;opacity:0;visibility:hidden;pointer-events:none;
-  padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 24px);
-  overflow:auto;background:linear-gradient(180deg,#fbf5ec,#efe1cf 56%,#dcc8ac);color:#211914;
-  transition:opacity .16s ease,visibility 0s linear .16s;
-}
-.plannerScreen.active{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .16s ease,visibility 0s;}
-.plannerTop{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
-.plannerBack{width:44px;height:44px;border-radius:17px;background:rgba(255,255,255,.72);box-shadow:0 10px 24px rgba(54,34,14,.08);font-size:24px;font-weight:900;}
-.plannerTitle span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#a66e31;font-weight:950;}
-.plannerTitle b{font-family:"Playfair Display",serif;font-size:28px;letter-spacing:-.8px;}
-.plannerHero{border-radius:30px;padding:22px 18px;background:rgba(255,250,242,.78);border:1px solid rgba(255,255,255,.74);box-shadow:0 24px 64px rgba(54,34,14,.12);backdrop-filter:blur(28px);}
-.plannerHero h2{margin:0 0 8px;font-size:27px;line-height:1.02;letter-spacing:-.9px;}
-.plannerHero p{margin:0;color:#6f6257;font-size:13px;line-height:1.45;font-weight:650;}
-.plannerChips{display:flex;gap:8px;overflow:auto;margin:15px 0 0;padding-bottom:2px;}
-.plannerChip{height:36px;padding:0 13px;border-radius:999px;background:rgba(255,255,255,.68);font-size:11px;font-weight:900;color:#6d5845;white-space:nowrap;}
-.plannerChip.active{background:linear-gradient(135deg,#edc984,#c4863d);color:#241914;}
-.plannerCards{display:grid;gap:11px;margin-top:14px;}
-.plannerCard{border-radius:22px;padding:14px;background:rgba(255,250,242,.78);border:1px solid rgba(255,255,255,.74);box-shadow:0 14px 34px rgba(54,34,14,.09);}
-.plannerCard b{font-size:15px;display:block;}.plannerCard span{display:block;margin-top:5px;font-size:12px;color:#706257;line-height:1.35;font-weight:650;}.plannerCard small{display:block;margin-top:9px;color:#a66e31;font-size:10px;font-weight:900;}
-.plannerAction{margin-top:14px;width:100%;height:52px;border-radius:20px;background:linear-gradient(135deg,#edc984,#c4863d);font-weight:950;color:#241914;box-shadow:0 16px 34px rgba(196,134,61,.22);}
-
-@media(max-width:520px){
-  .smartZonesPanel{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 130px);padding:10px;border-radius:21px;}
-  .smartZonesList{grid-template-columns:1fr;gap:6px;}
-  .smartZoneCard{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:9px;padding:9px 10px;}
-  .smartZoneCard em{margin-top:0;}.smartZoneCard small{margin-top:0;white-space:nowrap;}
-  .smartZoneFoot{font-size:8px;}
-  #mapScreen .cats{bottom:calc(env(safe-area-inset-bottom) + 214px) !important;}
-}
-@media(max-height:760px){.smartZonesPanel{bottom:calc(env(safe-area-inset-bottom) + 118px);}#mapScreen .cats{bottom:calc(env(safe-area-inset-bottom) + 198px) !important;}.smartZonesHead{margin-bottom:7px}.smartZoneFoot{display:none;}}
+/* ===== Roadora v5.3 — Hotel Tab Overnachtingsplanner ===== */
+#hotelPlannerScreen{background:#f5ecdf;overflow:hidden;z-index:760;}
+#hotelPlannerScreen:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 7%,rgba(255,255,255,.92),rgba(255,255,255,.46) 30%,transparent 58%),radial-gradient(circle at 92% 18%,rgba(196,134,61,.16),transparent 34%),linear-gradient(180deg,#fbf4ea,#eee0ce);pointer-events:none;}
+.hotelPlannerInner{position:relative;z-index:2;height:100%;overflow:auto;padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 26px);display:grid;gap:13px;align-content:start;scrollbar-width:none;}
+.hotelPlannerInner::-webkit-scrollbar{display:none;}
+.hotelPlannerTop{display:grid;grid-template-columns:44px 44px minmax(0,1fr);gap:8px;align-items:center;}
+.hotelPlannerIcon{width:44px;height:44px;border-radius:17px;background:rgba(255,250,242,.74);border:1px solid rgba(255,255,255,.72);box-shadow:0 12px 28px rgba(45,30,14,.08);font-size:22px;font-weight:900;display:grid;place-items:center;}
+.hotelPlannerBrand{min-width:0;height:50px;border-radius:20px;background:rgba(255,250,242,.68);border:1px solid rgba(255,255,255,.68);box-shadow:0 12px 30px rgba(45,30,14,.08);display:grid;grid-template-columns:34px 1fr;grid-template-rows:1fr 1fr;align-items:center;padding:7px 12px;column-gap:8px;}
+.hotelPlannerBrand span{grid-row:1/3;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#edc984,#c4863d);}
+.hotelPlannerBrand b{font-family:"Playfair Display",serif;font-size:19px;line-height:1;}
+.hotelPlannerBrand small{font-size:10px;font-weight:800;color:#776a5f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hotelPlannerHero{padding:4px 3px 0;}
+.hotelPlannerHero small{display:block;font-size:9px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;color:#a66e31;margin-bottom:7px;}
+.hotelPlannerHero h1{margin:0;font-family:"Playfair Display",serif;font-size:clamp(28px,7.4vw,38px);line-height:.98;letter-spacing:-1.2px;color:#211914;}
+.hotelPlannerHero p{margin:10px 0 0;max-width:340px;font-size:12.5px;line-height:1.44;color:#67584c;font-weight:650;}
+.hotelPlannerCard,.hotelPlannerSuggestion,.hotelPlannerResultCard{background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 48px rgba(54,34,14,.10),inset 0 1px 0 rgba(255,255,255,.86);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);}
+.hotelPlannerCard{border-radius:28px;padding:14px;display:grid;gap:11px;}
+.hotelPlannerLabel,.hotelPlannerMiniLabel{font-size:10px;font-weight:950;letter-spacing:.10em;text-transform:uppercase;color:#8a796b;}
+.hotelPlannerSearch{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:8px;}
+.hotelPlannerSearch input{min-width:0;height:48px;border:0;outline:0;border-radius:18px;background:rgba(255,255,255,.68);box-shadow:inset 0 1px 0 rgba(255,255,255,.72),inset 0 0 0 1px rgba(70,47,24,.06);padding:0 14px;font-size:13px;font-weight:800;color:#211914;}
+.hotelPlannerSearch button,.hotelPlannerPrimary{border-radius:18px;background:linear-gradient(135deg,#ead0a0,#c88b43);box-shadow:0 12px 24px rgba(196,135,61,.20),inset 0 1px 0 rgba(255,255,255,.42);font-size:12px;font-weight:950;color:#241914;}
+.hotelPlannerModes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.hotelPlannerModes button,.hotelPlannerChips button,.hotelPlannerFilters button{height:36px;border-radius:999px;background:rgba(255,255,255,.58);border:1px solid rgba(70,47,24,.06);font-size:10.5px;font-weight:900;color:#5d5148;white-space:nowrap;}
+.hotelPlannerModes button.active,.hotelPlannerChips button.active,.hotelPlannerFilters button.active{background:linear-gradient(135deg,#f1debc,#c88b43);color:#211914;box-shadow:0 10px 22px rgba(196,134,61,.15);}
+.hotelPlannerRows{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hotelPlannerChips{display:flex;gap:5px;margin-top:6px;overflow:auto;scrollbar-width:none;}
+.hotelPlannerChips::-webkit-scrollbar{display:none;}
+.hotelPlannerChips button{height:32px;padding:0 10px;font-size:9.5px;flex:0 0 auto;}
+.hotelPlannerFilters{display:flex;gap:7px;overflow:auto;padding:1px 0 3px;scrollbar-width:none;}
+.hotelPlannerFilters::-webkit-scrollbar{display:none;}
+.hotelPlannerFilters button{height:34px;padding:0 12px;flex:0 0 auto;}
+.hotelPlannerSuggestion{border-radius:22px;padding:13px 14px;display:grid;gap:4px;}
+.hotelPlannerSuggestion span{font-size:9px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;color:#a66e31;}
+.hotelPlannerSuggestion b{font-size:13px;line-height:1.2;color:#211914;}
+.hotelPlannerSuggestion small{font-size:11px;line-height:1.35;color:#75675b;font-weight:700;}
+.hotelPlannerActions{display:grid;grid-template-columns:1.2fr .8fr;gap:9px;}
+.hotelPlannerActions button{height:46px;border-radius:18px;font-weight:950;font-size:12px;}
+.hotelPlannerGhost{background:rgba(255,250,242,.76);border:1px solid rgba(255,255,255,.72);box-shadow:0 12px 28px rgba(45,30,14,.07);color:#8a5f2e;}
+.hotelPlannerResults{display:grid;gap:10px;padding-bottom:14px;}
+.hotelPlannerResultCard{border-radius:24px;padding:10px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:11px;position:relative;overflow:hidden;}
+.hotelPlannerPhoto{height:86px;border-radius:18px;background:linear-gradient(135deg,#f0d7aa,#a98255 55%,#3d2c20);display:flex;align-items:flex-end;padding:8px;color:white;box-shadow:inset 0 -42px 50px rgba(24,16,10,.22);}
+.hotelPlannerPhoto span{font-size:10px;font-weight:950;text-shadow:0 2px 10px rgba(0,0,0,.32);}
+.hotelPlannerInfo{min-width:0;display:grid;gap:6px;padding-right:70px;}
+.hotelPlannerResultTop{min-width:0;display:grid;gap:3px;}
+.hotelPlannerResultTop b{font-size:13.5px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#211914;}
+.hotelPlannerResultTop em{font-style:normal;font-size:10px;font-weight:850;color:#8a5f2e;}
+.hotelPlannerInfo p{margin:0;font-size:10.5px;line-height:1.3;color:#6f6257;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hotelPlannerMeta{display:flex;gap:5px;overflow:hidden;}
+.hotelPlannerMeta span{height:22px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.62);display:flex;align-items:center;font-size:8.5px;font-weight:900;color:#5d5148;white-space:nowrap;}
+.hotelPlannerTagRow{display:flex;gap:5px;overflow:hidden;}
+.hotelPlannerTagRow span{height:22px;padding:0 7px;border-radius:999px;background:rgba(237,201,132,.20);display:flex;align-items:center;font-size:8px;font-weight:900;color:#7a552e;white-space:nowrap;}
+.hotelPlannerCardActions{position:absolute;right:10px;top:10px;bottom:10px;width:62px;display:grid;gap:6px;}
+.hotelPlannerCardActions button{border-radius:14px;background:rgba(255,255,255,.68);border:1px solid rgba(70,47,24,.07);font-size:9px;font-weight:950;color:#7a552e;}
+.hotelPlannerCardActions button:first-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#241914;}
+@media(max-width:380px){.hotelPlannerInner{padding-left:13px;padding-right:13px;gap:11px}.hotelPlannerCard{padding:12px;border-radius:24px}.hotelPlannerRows{grid-template-columns:1fr}.hotelPlannerResultCard{grid-template-columns:64px minmax(0,1fr);gap:9px}.hotelPlannerPhoto{height:78px;border-radius:16px}.hotelPlannerInfo{padding-right:62px}.hotelPlannerCardActions{width:56px}.hotelPlannerResultTop b{font-size:12.5px}.hotelPlannerActions button{height:43px;font-size:11px}}
