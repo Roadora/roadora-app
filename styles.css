@@ -3891,3 +3891,79 @@
   #hotelPlannerScreen .hotelDashTop{grid-template-columns:40px 40px minmax(0,1fr) 40px !important;gap:6px !important;}
   #hotelPlannerScreen .hotelDashSmall.hotelSettingsIconV56{width:40px !important;height:40px !important;}
 }
+
+/* ===== Roadora v5.6.1 — Navigation & State Cleanup CSS ===== */
+/* De blijvende GPS/route CTA's worden voorlopig uitgezet; GPS komt later als nette sheet in Overnachten. */
+#mapScreen .hotelMapMiniActions,
+#mapScreen.hotelMapActive .hotelMapMiniActions,
+#hotelMapRouteToggle,
+.hotelMapRouteToggle{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+/* Terug naar Hotels alleen zichtbaar wanneer de kaart écht vanuit de Hotels-tab is geopend. */
+#hotelMapBackBtn{display:none !important;}
+#mapScreen.fromHotelsMap #hotelMapBackBtn{
+  display:flex !important;
+  position:absolute !important;
+  left:14px !important;
+  top:calc(env(safe-area-inset-top) + 190px) !important;
+  z-index:805 !important;
+  height:31px !important;
+  padding:0 10px !important;
+  border-radius:13px !important;
+  align-items:center !important;
+  gap:6px !important;
+  background:rgba(255,250,242,.92) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 10px 22px rgba(24,18,12,.13),inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(24px) !important;
+  -webkit-backdrop-filter:blur(24px) !important;
+  color:#2b2119 !important;
+  font-size:8.8px !important;
+  font-weight:900 !important;
+}
+#mapScreen.fromHotelsMap #hotelMapBackBtn span{
+  width:17px !important;height:17px !important;border-radius:999px !important;
+  display:grid !important;place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;color:#fff !important;
+  font-size:12px !important;line-height:1 !important;
+}
+
+/* Categorieën terug compact houden. */
+#mapScreen .cats{
+  left:14px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 206px) !important;
+  gap:5px !important;
+  max-width:132px !important;
+}
+#mapScreen .cat{
+  min-width:108px !important;
+  width:108px !important;
+  height:29px !important;
+  border-radius:11px !important;
+  padding:0 8px !important;
+  gap:6px !important;
+  font-size:8.2px !important;
+  font-weight:820 !important;
+}
+#mapScreen .cat svg{width:12px !important;height:12px !important;}
+#mapScreen .cat span{max-width:82px !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;}
+
+/* Mobiele hotelplanner: één focus tegelijk, geen desktop split-view op telefoon/tabletbreedtes. */
+@media(max-width:960px){
+  .phone.hotelPlannerWide{max-width:480px !important;width:100vw !important;border-radius:0 !important;}
+  #hotelPlannerScreen .hotelDashGrid{display:block !important;}
+  #hotelPlannerScreen .hotelMapPanelV55{display:none !important;}
+  #hotelPlannerScreen .hotelShortlistV55{display:none !important;}
+  #hotelPlannerScreen .hotelNightsPanel{display:grid !important;grid-template-columns:1fr !important;gap:10px !important;margin-bottom:12px !important;}
+  #hotelPlannerScreen .hotelListPanel{margin-top:12px !important;}
+}
+@media(max-width:420px){
+  #mapScreen .cats{left:12px !important;bottom:calc(env(safe-area-inset-bottom) + 198px) !important;}
+  #mapScreen .cat{width:104px !important;min-width:104px !important;height:28px !important;font-size:7.9px !important;}
+  #mapScreen .cat span{max-width:78px !important;}
+  #mapScreen.fromHotelsMap #hotelMapBackBtn{left:12px !important;top:calc(env(safe-area-inset-top) + 178px) !important;height:30px !important;font-size:8.4px !important;}
+}

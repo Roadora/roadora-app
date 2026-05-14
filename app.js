@@ -2275,3 +2275,189 @@
   document.addEventListener('click',handleClick,true);
   document.addEventListener('click',()=>setTimeout(patchHotelSettingsButton,120),true);
 })();
+
+/* Roadora v5.6.1 — Navigation & State Cleanup
+   - Hotelplanner back gebruikt echte vorige context: map -> hotels -> terug naar map, menu -> hotels -> terug home
+   - Hotelkaart context alleen wanneer je vanuit Hotels-tab naar kaart gaat
+   - Overnachten-filter op kaart toont géén terug/extra CTA's
+   - Dichtbij/route CTA's worden niet meer als blijvende floating laag getoond
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const SOURCE_KEY='roadoraHotelPlannerSourceV561';
+  const RETURN_KEY='roadoraReturnToHotels';
+  const PLANNER_MAP_KEY='roadoraHotelPlannerOpenedMap';
+
+  function toast(msg){window.RoadoraToast?window.RoadoraToast(msg):console.log(msg);}
+  function activeScreen(){
+    if(qs('#mapScreen.active')) return 'map';
+    if(qs('#routeSetupScreen.active')) return 'route';
+    if(qs('#hotelPlannerScreen.active')) return sessionStorage.getItem(SOURCE_KEY)||'home';
+    return 'home';
+  }
+  function markPlannerSource(source){sessionStorage.setItem(SOURCE_KEY,source||activeScreen()||'home');}
+  function clearHotelMapState(){
+    const map=qs('#mapScreen');
+    map?.classList.remove('hotelMapActive','fromHotelsMap','hotelNearbyActive','hotelRouteActive');
+    sessionStorage.removeItem(RETURN_KEY);
+    sessionStorage.removeItem(PLANNER_MAP_KEY);
+    sessionStorage.removeItem('roadoraHotelPlannerOpenedMap');
+    qsa('#hotelMapMiniActions,.hotelMapMiniActions,#hotelMapRouteToggle,.hotelMapRouteToggle').forEach(el=>{
+      el.classList.remove('open','show','active');
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function setPlannerMapState(){
+    const map=qs('#mapScreen');
+    sessionStorage.setItem(RETURN_KEY,'1');
+    sessionStorage.setItem(PLANNER_MAP_KEY,'1');
+    map?.classList.add('fromHotelsMap');
+    map?.classList.remove('hotelMapActive','hotelNearbyActive','hotelRouteActive');
+    ensureBackChip();
+  }
+  function ensureBackChip(){
+    let btn=qs('#hotelMapBackBtn');
+    if(btn) return btn;
+    const ui=qs('#mapScreen .ui')||qs('#mapScreen .roadMapApp')||qs('#mapScreen');
+    if(!ui) return null;
+    btn=document.createElement('button');
+    btn.id='hotelMapBackBtn';
+    btn.className='hotelMapBackBtn';
+    btn.type='button';
+    btn.innerHTML='<span>‹</span><b>Terug naar Hotels</b>';
+    btn.setAttribute('aria-label','Terug naar Hotels');
+    ui.appendChild(btn);
+    return btn;
+  }
+  function showPlannerFromMap(){
+    markPlannerSource('map');
+    clearHotelMapState();
+    if(window.RoadoraHotelPlanner?.show){ window.RoadoraHotelPlanner.show(); }
+    else{
+      qsa('.appScreen').forEach(s=>s.classList.remove('active'));
+      qs('#hotelPlannerScreen')?.classList.add('active');
+      qs('.phone')?.classList.remove('mapActive');
+    }
+    return false;
+  }
+  function backFromPlanner(){
+    const source=sessionStorage.getItem(SOURCE_KEY)||'home';
+    const screen=qs('#hotelPlannerScreen');
+    screen?.classList.remove('active');
+    qs('.phone')?.classList.remove('hotelPlannerWide');
+    if(source==='map'){
+      window.RoadoraApp?.showMap?.();
+      setTimeout(()=>{
+        if(sessionStorage.getItem(RETURN_KEY)==='1') setPlannerMapState();
+        else clearHotelMapState();
+      },220);
+      return false;
+    }
+    if(source==='route') return window.RoadoraApp?.showRoute?.();
+    return window.RoadoraApp?.showHome?.();
+  }
+  function openHotelsOnMapClean(){
+    markPlannerSource('map');
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{
+      setPlannerMapState();
+      try{
+        window.RoadoraMapApi?.setFilters?.(['hotel']);
+        window.RoadoraMapApi?.closeCategories?.();
+      }catch(err){console.warn('Hotel map clean open:',err);}
+      toast('Hotels op de kaart');
+    },360);
+    return false;
+  }
+  function patchPublicApis(){
+    const app=window.RoadoraApp;
+    if(app && !app.__v561StateCleanup){
+      const oldHome=app.showHome, oldRoute=app.showRoute, oldMap=app.showMap;
+      app.showHome=function(){clearHotelMapState();sessionStorage.removeItem(SOURCE_KEY);return oldHome?.apply(this,arguments);};
+      app.showRoute=function(){clearHotelMapState();markPlannerSource('route');return oldRoute?.apply(this,arguments);};
+      app.showMap=function(){return oldMap?.apply(this,arguments);};
+      app.__v561StateCleanup=true;
+    }
+    const hp=window.RoadoraHotelPlanner;
+    if(hp && !hp.__v561StateCleanup){
+      const oldShow=hp.show;
+      hp.show=function(source){
+        if(source) markPlannerSource(source);
+        else if(!qs('#hotelPlannerScreen.active')) markPlannerSource(activeScreen());
+        clearHotelMapState();
+        return oldShow?.apply(this,arguments);
+      };
+      hp.openHotelsOnMap=openHotelsOnMapClean;
+      hp.__v561StateCleanup=true;
+    }
+  }
+
+  function handleClick(e){
+    const t=e.target;
+    if(!t?.closest) return;
+
+    // Vanuit kaart naar hotelplanner via compacte kaartknop: terug moet naar kaart gaan.
+    const plannerMini=t.closest('[data-hotel-map-action="planner"]');
+    if(plannerMini){
+      e.preventDefault();e.stopPropagation();
+      return showPlannerFromMap();
+    }
+
+    // Terugchip op kaart is alleen voor plannercontext.
+    if(t.closest('#hotelMapBackBtn')){
+      e.preventDefault();e.stopPropagation();
+      return showPlannerFromMap();
+    }
+
+    // Back in Hotels-tab: niet altijd naar home, maar naar waar je vandaan kwam.
+    if(t.closest('#hotelPlannerScreen [data-hotel-planner-action="back"], #hotelPlannerScreen .hotelDashIcon[aria-label="Terug"]')){
+      e.preventDefault();e.stopPropagation();
+      return backFromPlanner();
+    }
+
+    // Menu/Home-card Hotels openen: bron vastleggen.
+    if(t.closest('[data-action="hotels"], .sideItem[data-action="hotels"]')){
+      markPlannerSource(activeScreen());
+    }
+
+    // Bekijk op kaart vanuit Hotels: plannercontext aan.
+    if(t.closest('#hotelPlannerScreen [data-hotel-planner-action="map-hotels"], #hotelPlannerScreen .hotelMapBtnV55')){
+      e.preventDefault();e.stopPropagation();
+      return openHotelsOnMapClean();
+    }
+
+    // Overnachten in normale kaart: gewone filtermodus, geen terug naar Hotels en geen blijvende CTA's.
+    const cat=t.closest('#mapScreen .cat[data-filter]');
+    if(cat){
+      const filter=cat.dataset.filter;
+      if(filter==='hotel'){
+        setTimeout(()=>{
+          if(sessionStorage.getItem(PLANNER_MAP_KEY)!=='1') clearHotelMapState();
+        },80);
+      }else{
+        setTimeout(clearHotelMapState,80);
+      }
+    }
+
+    const nav=t.closest('#mapScreen .bottomNav .navItem');
+    if(nav){
+      const label=(nav.textContent||'').trim().toLowerCase();
+      if(!label.includes('stops')) setTimeout(clearHotelMapState,40);
+    }
+
+    // Als gebruiker terug naar route/home gaat, reset de hotelstaat.
+    if(t.closest('[data-action="home"], [data-action="route"], #backHomeBtn, .adjust')){
+      setTimeout(clearHotelMapState,40);
+    }
+  }
+  function init(){
+    patchPublicApis();
+    clearHotelMapState();
+    setTimeout(patchPublicApis,500);
+    setTimeout(clearHotelMapState,650);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  document.addEventListener('click',handleClick,true);
+})();
