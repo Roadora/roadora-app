@@ -1309,3 +1309,99 @@
 
   window.RoadoraHotels={show:showHotels,openMap:openMapWithHotels};
 })();
+
+
+/* =========================================================
+   Roadora v4.9.1 — Hotels Tab Visible Fix
+   Maakt Hotels zichtbaar en klikbaar vanuit de bottom nav + menu.
+   ========================================================= */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function closeMenu(){
+    const phone=qs('.phone');
+    phone?.classList.remove('menuOpen','menuExpanded');
+    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  }
+  function ensureHotelsScreen(){
+    let el=qs('#hotelScreen');
+    if(el) return el;
+    el=document.createElement('section');
+    el.id='hotelScreen';
+    el.className='appScreen hotelScreen';
+    el.setAttribute('aria-label','Hotels zoeken');
+    el.innerHTML=`<div class="hotelApp">
+      <header class="hotelTopbar">
+        <button class="hotelIconBtn" data-action="home" aria-label="Terug naar home" type="button">‹</button>
+        <div class="hotelBrand"><span>Roadora</span><b>Hotels</b></div>
+        <button class="hotelIconBtn" data-menu-open aria-label="Menu openen" type="button">☰</button>
+      </header>
+      <section class="hotelHeroPanel"><small>Plan rustig vóór vertrek</small><h1>Vind je overnachting langs de route.</h1><p>Zoek straks op plaats, na zoveel kilometer of na zoveel uur rijden. Nu kun je hotels direct als eigen tab openen en daarna op de kaart bekijken.</p></section>
+      <section class="hotelSearchPanel"><label>Bestemming of route</label><div class="hotelSearchInput"><span>Rotterdam → Innsbruck</span><b>⌕</b></div><div class="hotelModeGrid"><button class="hotelMode active" type="button"><b>Langs route</b><small>Hotels onderweg</small></button><button class="hotelMode" type="button"><b>Na km</b><small>Bijv. na 600 km</small></button><button class="hotelMode" type="button"><b>Na tijd</b><small>Bijv. na 6 uur</small></button></div></section>
+      <section class="hotelListPanel"><div class="hotelSectionHead"><b>Aanbevolen hotels</b><span>Route shortlist</span></div><button class="hotelResult" type="button" data-open-map><i class="hotelThumb hotelThumbOne"></i><span><b>Hotel bij Ulm</b><em>640 km · dag 1 · ± 10 min van route</em><small>Perfect voor een tweedaagse rit naar Oostenrijk.</small></span></button><button class="hotelResult" type="button" data-open-map><i class="hotelThumb hotelThumbTwo"></i><span><b>Heidelberg stopover</b><em>356 km · 3u 55m · stad dichtbij</em><small>Rustiger plannen, eten en overnachten combineren.</small></span></button><button class="hotelPrimaryCta" type="button" data-open-map>Bekijk hotels op de kaart</button></section>
+    </div>`;
+    qs('.phone')?.appendChild(el);
+    return el;
+  }
+  function setSideActive(action){
+    qsa('.sideItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action===action));
+  }
+  function setBottomActiveHotels(){
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>btn.classList.toggle('active', btn.dataset.action==='hotels'));
+  }
+  function showHotels(){
+    const phone=qs('.phone');
+    const hotels=ensureHotelsScreen();
+    closeMenu();
+    phone?.classList.remove('mapActive');
+    phone?.classList.add('hotelActive');
+    qs('#routeSetupScreen')?.classList.remove('active');
+    qs('#mapScreen')?.classList.remove('active');
+    hotels.classList.add('active');
+    setSideActive('hotels');
+    setBottomActiveHotels();
+    window.RoadoraToast?.('Hotels geopend');
+    return false;
+  }
+  function leaveHotels(){
+    qs('.phone')?.classList.remove('hotelActive');
+    qs('#hotelScreen')?.classList.remove('active');
+  }
+  function openMapWithHotels(){
+    leaveHotels();
+    window.RoadoraApp?.showMap?.();
+    setTimeout(()=>{
+      try{
+        window.RoadoraMapApi?.setFilters?.(['hotel']);
+        window.RoadoraMapApi?.closeCategories?.();
+        window.RoadoraToast?.('Hotels op de kaart geopend');
+      }catch(_){ window.RoadoraToast?.('Hotels worden geladen'); }
+    },420);
+    return false;
+  }
+  document.addEventListener('click',function(event){
+    const target=event.target;
+    if(!target?.closest) return;
+
+    const hotelOpen=target.closest('[data-action="hotels"], #mapScreen .bottomNav .navItem[data-action="hotels"]');
+    if(hotelOpen){
+      event.preventDefault();
+      event.stopPropagation();
+      return showHotels();
+    }
+    const hotelMap=target.closest('#hotelScreen [data-open-map]');
+    if(hotelMap){
+      event.preventDefault();
+      event.stopPropagation();
+      return openMapWithHotels();
+    }
+    const hotelHome=target.closest('#hotelScreen [data-action="home"]');
+    if(hotelHome){ leaveHotels(); return; }
+    const hotelRoute=target.closest('#hotelScreen [data-action="route"]');
+    if(hotelRoute){ leaveHotels(); return; }
+  },true);
+
+  window.RoadoraHotels={show:showHotels,openMap:openMapWithHotels};
+})();
