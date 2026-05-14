@@ -2874,13 +2874,14 @@
           <button type="button" data-roadtrip-action="remove" data-roadtrip-id="${escapeAttr(s.id)}">×</button>
         </div>`).join(''):'<p class="roadtripPanelEmptyV584">Kies een stop op de kaart en tik op “Voeg toe aan roadtrip”.</p>';
     }
+    qs('#mapScreen')?.classList.add('roadtripPanelOpenV621');
     panel.classList.add('open');
   }
   function escapeHtml(value){
     return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   }
   function escapeAttr(value){return escapeHtml(value).replace(/`/g,'');}
-  function closePanel(){ qs('#roadtripMiniPanelV584')?.classList.remove('open'); }
+  function closePanel(){ qs('#roadtripMiniPanelV584')?.classList.remove('open'); qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621'); }
   function updateSaveButton(){
     const btn=qs('#mapScreen .sheetActions .saveStop');
     if(!btn) return;
@@ -2988,6 +2989,7 @@
     qs('#roadoraStopOverlayV57')?.classList.remove('open');
     qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
     qs('#roadtripMiniPanelV584')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621');
     qs('#hotelDetailSheet')?.classList.remove('open');
     qs('#hotelCompareSheet')?.classList.remove('open');
   }
@@ -3108,7 +3110,7 @@
     qs('#roadoraStopOverlayV57')?.classList.remove('open');
     qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
   }
-  function closeRoadtrip(){ qs('#roadtripMiniPanelV584')?.classList.remove('open'); }
+  function closeRoadtrip(){ qs('#roadtripMiniPanelV584')?.classList.remove('open'); qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621'); }
   function closeHotelSheets(){
     qs('#hotelDetailSheet')?.classList.remove('open','expanded');
     qs('#hotelCompareSheet')?.classList.remove('open');
@@ -3152,7 +3154,7 @@
 /* Roadora v6.2 Focus & Calm marker */
 (function(){
   'use strict';
-  function mark(){document.body.classList.add('roadoraV62FocusCalm');}
+  function mark(){document.body.classList.add('roadoraV62FocusCalm','roadoraV621BottomSheetHide');}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mark,{once:true});
   else mark();
 })();

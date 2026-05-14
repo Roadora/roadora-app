@@ -4557,3 +4557,43 @@
     filter:blur(12px) saturate(.50) brightness(.56)!important;
   }
 }
+
+
+/* ===== Roadora v6.2.1 Bottom Sheet Auto Hide Fix =====
+   Stops/Mijn Roadtrip openen nu zonder de kaart zwart te maken.
+   Alleen de onderste info-sheet verdwijnt tijdelijk voor rust en focus.
+*/
+.roadoraV621BottomSheetHide #roadoraStopOverlayV57{z-index:895!important;}
+.roadoraV621BottomSheetHide #roadoraStopOverlayV57 .stopOverlayScrimV57{
+  background:linear-gradient(180deg,rgba(34,28,21,.16),rgba(34,28,21,.22))!important;
+  backdrop-filter:blur(3px) saturate(.88)!important;
+  -webkit-backdrop-filter:blur(3px) saturate(.88)!important;
+}
+.roadoraV621BottomSheetHide #mapScreen.stopOverlayOpenV57 #routeLeafletMap,
+.roadoraV621BottomSheetHide #mapScreen.stopOverlayOpenV57 .controls,
+.roadoraV621BottomSheetHide #mapScreen.stopOverlayOpenV57 .bottomNav{
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:auto!important;
+}
+.roadoraV621BottomSheetHide #mapScreen.stopOverlayOpenV57 .sheet,
+.roadoraV621BottomSheetHide #mapScreen.roadtripPanelOpenV621 .sheet{
+  opacity:0!important;
+  transform:translateY(26px) scale(.985)!important;
+  pointer-events:none!important;
+  transition:opacity .18s ease, transform .18s ease!important;
+}
+.roadoraV621BottomSheetHide #mapScreen.stopOverlayOpenV57 .mapCockpit{
+  opacity:1!important;
+  filter:none!important;
+}
+.roadoraV621BottomSheetHide #roadoraStopOverlayV57 .stopOverlayCardV57{
+  background:rgba(255,250,242,.94)!important;
+  box-shadow:0 24px 62px rgba(24,18,12,.20), inset 0 1px 0 rgba(255,255,255,.90)!important;
+}
+@media(max-width:520px){
+  .roadoraV621BottomSheetHide #roadoraStopOverlayV57 .stopOverlayScrimV57{
+    backdrop-filter:blur(2.5px) saturate(.88)!important;
+    -webkit-backdrop-filter:blur(2.5px) saturate(.88)!important;
+  }
+}
