@@ -4666,3 +4666,13 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   opacity:1 !important;
   pointer-events:auto !important;
 }
+
+
+/* ===== Roadora v7.0.4 — Roadtrip segment km/tijd ===== */
+.roadtripV693Segment{
+  min-height:28px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;padding:0 12px!important;margin:0 8px!important;border-left:2px solid rgba(196,134,61,.28)!important;color:#7a6a5b!important;
+}
+.roadtripV693Segment span{font-size:8.5px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.08em!important;white-space:nowrap!important;}
+.roadtripV693Segment b{font-size:10.5px!important;font-weight:900!important;color:#4f4034!important;white-space:nowrap!important;}
+.roadtripV63Head b{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:280px!important;}
+@media(max-width:380px){.roadtripV693Segment{min-height:24px!important;margin:0 6px!important;padding:0 10px!important}.roadtripV693Segment span{font-size:7.6px!important}.roadtripV693Segment b{font-size:9.3px!important}.roadtripV63Head b{max-width:230px!important}}
