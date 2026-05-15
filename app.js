@@ -476,17 +476,10 @@
     roadoraMapInitialized=true;
 
     const route=[[51.9244,4.4777],[51.56,5.15],[50.94,6.96],[50.25,8.4],[49.35,8.72],[48.78,9.18],[48.25,9.85],[47.85,10.75],[47.55,11.05],[47.2692,11.4041]];
-    const stops=[
-      {name:'Fastned Limburg Zuid',meta:'184 km · 2u 05m · 8 snelladers',desc:'Snelle laadstop vlak langs de route. Ideaal voor koffie, toilet en korte EV-pauze zonder grote omweg.',type:'ev',label:'Laadstation',ll:[50.93,6.08],provider:'Fastned',power:'tot 300 kW',status:'6 vrij'},
-      {name:'EnBW Ladepark Heidelberg',meta:'356 km · 3u 55m · 12 snelladers',desc:'Ruime laadlocatie bij Heidelberg met horeca in de buurt. Goede keuze als eerste langere pauze richting Oostenrijk.',type:'ev',label:'Laadstation',ll:[49.42,8.68],provider:'EnBW',power:'tot 300 kW',status:'9 vrij'},
-      {name:'IONITY Ulm Süd',meta:'610 km · 6u 20m · 6 snelladers',desc:'Premium snellaadpunt langs de zuidelijke route. Handig om de auto vol te laden voor het laatste deel richting Tirol.',type:'ev',label:'Laadstation',ll:[48.28,9.98],provider:'IONITY',power:'tot 350 kW',status:'4 vrij'},
-      {name:'Allego Füssen / Fernpass',meta:'820 km · 8u 35m · 4 laders',desc:'Laatste praktische laadstop vóór Oostenrijk. Slim moment om te laden voordat je de Alpen in rijdt.',type:'ev',label:'Laadstation',ll:[47.57,10.70],provider:'Allego',power:'tot 150 kW',status:'2 vrij'},
-      {name:'Stuttgart Mitte',meta:'320 km · 3u 15m',desc:'Goede tussenstop met restaurants, koffie en snelle doorreis naar Zuid-Duitsland.',type:'food',label:'Eten & drinken',ll:[48.77,9.18]},
-      {name:'Hotel bij Ulm',meta:'640 km · dag 1',desc:'Rustige overnachtingsplek dichtbij de route, handig voor een tweedaagse rit naar Innsbruck.',type:'hotel',label:'Overnachten',ll:[48.40,10.00]},
-      {name:'Raststätte Sindelfinger Wald',meta:'430 km · 4u 35m · WC · koffie',desc:'Comfortstop langs de route met toiletten, parkeren en snelle pauzemogelijkheden. Handig voor gezinnen of een korte noodstop.',type:'wc',label:'WC stop',ll:[48.71,8.98]},
-      {name:'Raststätte Allgäuer Tor',meta:'760 km · 8u 05m · WC · eten',desc:'Praktische rustplaats richting Oostenrijk met toiletten en eten dichtbij de route.',type:'wc',label:'WC stop',ll:[47.88,10.31]},
-      {name:'Alpen uitzicht',meta:'900 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
-    ];
+    // v7.4.3 Production stops cleanup:
+    // Geen statische/demo category-pins meer in productie. Categorieën tonen alleen live/API-data.
+    // Gekozen roadtrip-stops worden apart door RoadtripState/RoadoraTripMap gerenderd.
+    const stops=[];
     const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Route wordt geladen…',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
     const svgs={fuel:'<svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"/></svg>',ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>',wc:'<svg viewBox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"/></svg>'};
 
@@ -2619,7 +2612,6 @@
           <button data-stop-filter="food" type="button"><span>🍽️</span><b>Eten</b><small>Restaurants</small></button>
           <button data-stop-filter="view" type="button"><span>⛰️</span><b>Uitjes</b><small>Highlights</small></button>
           <button data-stop-filter="wc" type="button"><span>🚻</span><b>WC’s</b><small>Comfortstop</small></button>
-          <button data-stop-overlay-action="clear" type="button"><span>⌁</span><b>Route</b><small>Alles resetten</small></button>
         </div>
       </article>`;
     (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
