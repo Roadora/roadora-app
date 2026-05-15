@@ -2853,6 +2853,22 @@
   function canAdd(stop){
     return !!(stop && stop.name && !['destination','overview','stops','guide'].includes(stop.type));
   }
+  function focusFullRouteAfterAdd(){
+    // v7.2.1: na toevoegen van een stop nooit in stop-focus blijven hangen.
+    // Roadtrip-state blijft bewaard; alleen tijdelijke ontdek/detail-lagen sluiten.
+    clearTimeout(focusFullRouteAfterAdd._timer);
+    focusFullRouteAfterAdd._timer=setTimeout(()=>{
+      try{ window.RoadoraMapApi?.setFilters?.([]); }catch(_){}
+      try{ window.RoadoraMapApi?.closeCategories?.(); }catch(_){}
+      try{ window.RoadoraMapApi?.clearSelection?.(); }catch(_){}
+      try{ window.RoadoraTripMap?.render?.(); }catch(_){}
+      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){}
+      setTimeout(()=>{
+        try{ window.RoadoraMapApi?.fitRoute?.('add-stop-full-route'); }catch(_){}
+        try{ window.RoadoraTripMap?.fit?.('add-stop-full-route'); }catch(_){}
+      },850);
+    },80);
+  }
   function add(stop){
     if(!canAdd(stop)){ toast('Kies eerst een echte tussenstop'); return false; }
     const data=read();
@@ -2862,6 +2878,7 @@
     write(data);
     toast(exists?'Staat al in je roadtrip':'Toegevoegd aan je roadtrip');
     updateSaveButton();
+    focusFullRouteAfterAdd();
     return true;
   }
   function remove(id){
