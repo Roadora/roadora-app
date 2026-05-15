@@ -1,0 +1,25 @@
+/* Roadora v6.8 Route Sync + Roadtrip Timeline */
+.mapTopbar.smartTopbar .mapLiveChips span{white-space:nowrap}
+.mapLiveSub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet .overline#sheetOverline{color:#9b6b32}
+.roadtripSheet{position:absolute;inset:0;z-index:1200;display:none;align-items:flex-end;justify-content:center;background:rgba(24,18,12,.22);backdrop-filter:blur(2px)}
+.roadtripSheet.open{display:flex}
+.roadtripCard{width:min(644px,calc(100% - 28px));max-height:min(72vh,680px);overflow:hidden;border-radius:30px;background:rgba(255,250,241,.96);box-shadow:0 28px 70px rgba(44,28,12,.28);border:1px solid rgba(255,255,255,.72);padding:24px 24px 22px;margin:0 0 116px;color:#211812}
+.roadtripHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.roadtripHead span{display:block;color:#9b6b32;text-transform:uppercase;font-weight:800;font-size:13px;letter-spacing:.12em}
+.roadtripHead h2{margin:5px 0 0;font-size:25px;line-height:1.05}
+.roadtripClose{width:54px;height:54px;border-radius:50%;border:0;background:#fffaf2;font-size:34px;color:#2b2119;box-shadow:0 8px 24px rgba(62,43,20,.08)}
+.roadtripTimeline{display:grid;gap:8px;max-height:calc(72vh - 190px);overflow:auto;padding-right:2px}
+.roadtripPoint{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:center;padding:13px;border-radius:20px;background:rgba(255,255,255,.72);border:1px solid rgba(80,54,26,.07)}
+.roadtripPointIcon{width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#f2cf88,#d6933d);font-weight:900;color:#2a1b0f}
+.roadtripPoint.start .roadtripPointIcon,.roadtripPoint.end .roadtripPointIcon{background:#2b2119;color:#fff}
+.roadtripPoint b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.roadtripPoint small{display:block;color:#756a5d;line-height:1.35;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.roadtripSegment{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:12px;align-items:center;padding:5px 10px 5px 13px}
+.roadtripSegmentLine{width:3px;height:38px;border-radius:999px;background:linear-gradient(#e7c37b,#d7983f);justify-self:center}
+.roadtripSegmentInfo b{font-size:14px}.roadtripSegmentInfo small{display:block;color:#8a7b69;font-size:12px}
+.roadtripMiniAction{border:0;border-radius:999px;background:#fff9ee;color:#73512a;font-weight:800;padding:10px 12px;box-shadow:0 6px 18px rgba(80,54,26,.07)}
+.roadtripFooter{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.roadtripFooter button{height:58px;border:0;border-radius:20px;font-weight:900;font-size:16px}
+.roadtripGhost{background:#fff}.roadtripPrimary{background:linear-gradient(135deg,#f4d58f,#d89438);color:#24170c}
+@media(max-width:520px){.roadtripCard{width:calc(100vw - 28px);padding:22px 18px;margin-bottom:104px;border-radius:28px}.roadtripHead h2{font-size:23px}.roadtripFooter button{height:56px}.roadtripMiniAction{font-size:12px;padding:9px 10px}.roadtripPoint b{font-size:16px}}
