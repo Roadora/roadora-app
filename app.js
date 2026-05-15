@@ -1295,6 +1295,11 @@
       showPanel:(data)=>{resetSelectedIcon();selectedMarker=null;updateSheet(data);},
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
       getSelectedStop:()=>selectedStopData,
+      getRouteLatLngs:()=>{
+        try{return (routeMain.getLatLngs?.()||[]).map(p=>[Number(p.lat),Number(p.lng)]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));}
+        catch(_){return [];}
+      },
+      getRouteStats:()=>({distanceLabel:routeDistanceLabel,timeLabel:routeTimeLabel}),
       toggleCategories,
       closeCategories:()=>setCategoriesOpen(false)
     };
@@ -3301,6 +3306,69 @@
     }
     return item?.name || '';
   }
+  function haversineKm(a,b){
+    if(!Array.isArray(a)||!Array.isArray(b)) return 0;
+    const R=6371;
+    const lat1=Number(a[0])*Math.PI/180, lat2=Number(b[0])*Math.PI/180;
+    const dLat=(Number(b[0])-Number(a[0]))*Math.PI/180;
+    const dLng=(Number(b[1])-Number(a[1]))*Math.PI/180;
+    const x=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+    return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+  function parseTimeMinutes(label){
+    const m=String(label||'').match(/(\d+)\s*u\s*(\d+)?/i);
+    if(!m) return null;
+    return (Number(m[1]||0)*60)+Number(m[2]||0);
+  }
+  function formatDuration(mins){
+    mins=Math.max(1,Math.round(Number(mins)||0));
+    const h=Math.floor(mins/60), m=mins%60;
+    return h ? `${h}u ${String(m).padStart(2,'0')}m` : `${m}m`;
+  }
+  function formatKm(km){
+    km=Math.max(0,Number(km)||0);
+    return `${Math.round(km).toLocaleString('nl-NL')} km`;
+  }
+  function routeCumulative(route){
+    const cum=[0];
+    for(let i=1;i<route.length;i++) cum[i]=cum[i-1]+haversineKm(route[i-1],route[i]);
+    return cum;
+  }
+  function nearestRouteIndex(route,ll){
+    if(!route.length||!Array.isArray(ll)) return 0;
+    let best=0,bestD=Infinity;
+    const step=Math.max(1,Math.floor(route.length/450));
+    for(let i=0;i<route.length;i+=step){
+      const d=(Number(route[i][0])-Number(ll[0]))**2+(Number(route[i][1])-Number(ll[1]))**2;
+      if(d<bestD){best=i;bestD=d;}
+    }
+    return best;
+  }
+  function segmentLabels(data){
+    const stops=(data?.stops||[]).filter(s=>Array.isArray(s?.ll));
+    const points=[{kind:'origin',name:data.origin,ll:[51.9244,4.4777]},...stops,{kind:'destination',name:data.destination,ll:[47.2692,11.4041]}];
+    const route=window.RoadoraMapApi?.getRouteLatLngs?.()||[];
+    const stats=window.RoadoraMapApi?.getRouteStats?.()||{};
+    const totalTime=parseTimeMinutes(stats.timeLabel)||543;
+    if(route.length>5){
+      const cum=routeCumulative(route);
+      const totalKm=Math.max(1,cum[cum.length-1]||1005);
+      const idxs=points.map(p=>nearestRouteIndex(route,p.ll));
+      return points.slice(1).map((p,i)=>{
+        const a=idxs[i], b=idxs[i+1];
+        let km=Math.abs((cum[b]||0)-(cum[a]||0));
+        if(km<1) km=haversineKm(points[i].ll,p.ll)*1.18;
+        return {to:p, kmLabel:formatKm(km), timeLabel:formatDuration(totalTime*(km/totalKm))};
+      });
+    }
+    return points.slice(1).map((p,i)=>{
+      const km=haversineKm(points[i].ll,p.ll)*1.22;
+      return {to:p, kmLabel:formatKm(km), timeLabel:formatDuration(km/105*60)};
+    });
+  }
+  function segmentHtml(label){
+    return `<div class="roadtripV68Segment"><span></span><b>${escapeHtml(label.kmLabel)}</b><em>${escapeHtml(label.timeLabel)}</em></div>`;
+  }
   function mapsUrl(){
     const data=read();
     const params=new URLSearchParams();
@@ -3342,7 +3410,9 @@
     const panel=ensurePanel();
     closeOtherLayers();
     const stops=data.stops;
+    const segments=segmentLabels(data);
     const stopRows=stops.length ? stops.map((s,i)=>`
+      ${segmentHtml(segments[i]||{kmLabel:'— km',timeLabel:'—'})}
       <div class="roadtripV63Stop" data-trip-id="${escapeAttr(s.id)}">
         <div class="roadtripV63Index">${i+1}</div>
         <div class="roadtripV63Icon">${typeIcon(s.type)}</div>
@@ -3356,6 +3426,7 @@
         <b>Nog geen tussenstops</b>
         <span>Kies een hotel, tankstation, laadpunt of uitje op de kaart en tik op “Voeg toe aan roadtrip”.</span>
       </div>`;
+    const finalSegment=stops.length ? segmentHtml(segments[stops.length]||{kmLabel:'— km',timeLabel:'—'}) : '';
 
     panel.innerHTML=`
       <div class="roadtripPanelScrimV584" data-tripv63-action="close"></div>
@@ -3367,6 +3438,7 @@
         <div class="roadtripV63RouteLine">
           <div class="roadtripV63Endpoint"><i>Start</i><b>${escapeHtml(data.origin)}</b></div>
           ${stopRows}
+          ${finalSegment}
           <div class="roadtripV63Endpoint"><i>Eind</i><b>${escapeHtml(data.destination)}</b></div>
         </div>
         <footer class="roadtripV63Footer">
@@ -3519,17 +3591,8 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    if(stops.length){
-      L.polyline(routePoints(stops),{
-        color:'#6e4b25',
-        weight:2.4,
-        opacity:.46,
-        dashArray:'7 9',
-        lineCap:'round',
-        lineJoin:'round',
-        interactive:false
-      }).addTo(group);
-    }
+    // v6.8.8: geen fake rechte/dashed lijn meer over de kaart.
+    // De hoofdroute blijft de echte ORS-polyline; deze laag toont alleen genummerde roadtrip-pins.
 
     stops.forEach((stop,index)=>{
       const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
