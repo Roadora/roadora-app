@@ -1170,12 +1170,26 @@
     document.querySelectorAll('.cat[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{const f=btn.dataset.filter;activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);syncCatUI();renderMarkers();if(f==='fuel'&&activeFilters.has('fuel')){showToast(liveGoogleFuelLoaded?'Tankstations zichtbaar':'Tankstations langs route zoeken…');loadLiveGoogleFuelStations();return;}if(f==='hotel'&&activeFilters.has('hotel')){showToast(liveGoogleHotelLoaded?'Hotels zichtbaar':'Hotels langs route zoeken…');loadLiveGoogleHotels();return;}showToast(activeFilters.size?'Categorie bijgewerkt':'Kaart weer clean');});});
     document.getElementById('stopsCta')?.addEventListener('click',toggleCategories);
 
+    function roadtripWaypointsForOrs(){
+      try{
+        const data=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}')||{};
+        const stops=Array.isArray(data.stops)?data.stops:[];
+        return stops
+          .filter(s=>Array.isArray(s?.ll) && Number.isFinite(Number(s.ll[0])) && Number.isFinite(Number(s.ll[1])))
+          .slice(0,9)
+          .map(s=>`${Number(s.ll[1]).toFixed(6)},${Number(s.ll[0]).toFixed(6)}`) // ORS endpoint verwacht lng,lat
+          .join('|');
+      }catch(_){ return ''; }
+    }
+
     async function loadOrsRoute(){
       const requestId=++routeRequestId;
       try{
         showToast('Echte route laden…');
         const profile=window.RoadoraState?.profile||document.querySelector('.rVehicle.active')?.dataset.profile||document.querySelector('.vehicle.active')?.dataset.profile||'driving-car';
         const params=new URLSearchParams({start:'4.4777,51.9244',end:'11.4041,47.2692',profile});
+        const waypoints=roadtripWaypointsForOrs();
+        if(waypoints) params.set('waypoints',waypoints);
         const res=await fetch('/api/route?'+params.toString(),{headers:{Accept:'application/json'}});
         if(!res.ok) throw new Error('ORS '+res.status);
         const data=await res.json();
@@ -3589,4 +3603,117 @@
 
   window.RoadoraTripMap={render,fit:fitTripRoute};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleRender,{once:true}); else scheduleRender();
+})();
+
+/* Roadora v7.4.4 — Roadtrip V2 State Reset Future Proof
+   - Eén centrale reset na toevoegen/verwijderen van roadtrip-stops
+   - Na toevoegen: terug naar Route Clean Mode, geen hotel/detail/categorie-state die blijft hangen
+   - Route opnieuw berekenen met gekozen stops via /api/route waypoints
+   - Gestippelde helperlijnen defensief verwijderen
+   - Maps-export blijft locked/onaangeraakt
+*/
+(function(){
+  'use strict';
+  const KEY='roadoraRoadtripV1';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let lastCount=readTrip().stops.length;
+  let routeReloadTimer=null;
+  let cleanupTimer=null;
+
+  function readTrip(){
+    try{
+      const data=JSON.parse(localStorage.getItem(KEY)||'{}')||{};
+      return { stops:Array.isArray(data.stops)?data.stops.filter(Boolean):[] };
+    }catch(_){ return {stops:[]}; }
+  }
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+
+  function setBottomNavRoute(){
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
+      const active=String(btn.dataset.nav||'').toLowerCase()==='route';
+      btn.classList.toggle('active',active);
+      btn.classList.toggle('is-active',active);
+    });
+  }
+
+  function closeTransientStopState(){
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('hotelMode','hotelDetailOpen','stopFocus','categoryFocus');
+    try{ window.RoadoraState && (window.RoadoraState.selectedStop=null); }catch(_){ }
+  }
+
+  function removeDashedHelperLines(){
+    // Defensieve cleanup: echte ORS-route gebruikt geen dasharray. Als een oude helper/fallback-laag
+    // nog in het SVG hangt, verwijderen we alleen dashed paths binnen de Leaflet routekaart.
+    qsa('#routeLeafletMap svg path').forEach(path=>{
+      const dash=(path.getAttribute('stroke-dasharray')||path.style.strokeDasharray||'').trim();
+      const cls=String(path.getAttribute('class')||'');
+      if(dash && dash!=='none') path.remove();
+      if(/roadtrip.*dash|helper.*route|fallback.*route/i.test(cls)) path.remove();
+    });
+  }
+
+  function routeCleanMode({fromAdd=false}={}){
+    closeTransientStopState();
+    setBottomNavRoute();
+    try{ window.RoadoraMapApi?.setFilters?.([]); }catch(_){ }
+    try{ window.RoadoraMapApi?.closeCategories?.(); }catch(_){ }
+    try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
+    try{ window.RoadoraMapApi?.clearSelection?.(); }catch(_){ }
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-state-reset'); }catch(_){ }
+    removeDashedHelperLines();
+    if(fromAdd) toast('Toegevoegd aan Mijn Roadtrip');
+  }
+
+  function refreshRoadtripPanelIfOpen(){
+    const panel=qs('#roadtripMiniPanelV584');
+    if(panel?.classList.contains('open')){
+      try{ window.RoadoraRoadtripV2?.refresh?.(); }catch(_){ }
+    }
+  }
+
+  function scheduleRouteRecalc(){
+    clearTimeout(routeReloadTimer);
+    routeReloadTimer=setTimeout(()=>{
+      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(err){ console.warn('Roadtrip route recalculation:',err); }
+      setTimeout(()=>{
+        try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
+        try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-recalculated'); }catch(_){ }
+        removeDashedHelperLines();
+      },650);
+    },120);
+  }
+
+  window.addEventListener('roadora:roadtrip:update',function(){
+    const count=readTrip().stops.length;
+    const added=count>lastCount;
+    lastCount=count;
+    scheduleRouteRecalc();
+    refreshRoadtripPanelIfOpen();
+    if(added){
+      // Wacht één frame zodat de bestaande add-flow klaar is, daarna hard terug naar route-context.
+      requestAnimationFrame(()=>setTimeout(()=>routeCleanMode({fromAdd:true}),90));
+    }
+  });
+
+  // Bij terug naar Route-tab altijd een echte clean route-mode afdwingen.
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    if(t.closest('#mapScreen .bottomNav .navItem[data-nav="route"]')){
+      setTimeout(()=>routeCleanMode(),80);
+    }
+  },true);
+
+  function boot(){
+    removeDashedHelperLines();
+    clearInterval(cleanupTimer);
+    cleanupTimer=setInterval(removeDashedHelperLines,1800);
+    document.body.classList.add('roadoraV744StateReset');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();

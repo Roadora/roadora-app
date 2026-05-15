@@ -4726,3 +4726,10 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   #roadtripMiniPanelV584 .roadtripV2Point{grid-template-columns:31px minmax(0,1fr) 32px!important;gap:8px!important;}
   #roadtripMiniPanelV584 .roadtripV2Marker{width:31px!important;height:31px!important;}
 }
+
+/* Roadora v7.4.4 — defensive no-dash cleanup */
+#routeLeafletMap svg path[stroke-dasharray],
+#routeLeafletMap svg path[style*="dash"]{
+  display:none !important;
+}
+body.roadoraV744StateReset #roadtripMiniDockV584{display:none!important;}
