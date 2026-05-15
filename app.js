@@ -881,13 +881,32 @@
         else map.setView(s.ll,zoom,{animate:false});
       });
     }
+    function hideOtherStopMarkers(activeRef){
+      markerRefs.forEach(ref=>{
+        try{
+          const isActive=ref===activeRef;
+          ref.marker?.setOpacity?.(isActive?1:0);
+          if(ref.marker?._icon) ref.marker._icon.style.pointerEvents=isActive?'auto':'none';
+        }catch(_){}
+      });
+      setCategoriesOpen(false);
+    }
+    function restoreStopMarkers(){
+      markerRefs.forEach(ref=>{
+        try{
+          ref.marker?.setOpacity?.(1);
+          if(ref.marker?._icon) ref.marker._icon.style.pointerEvents='auto';
+        }catch(_){}
+      });
+    }
     function selectStop(ref,fly=true){
       if(!ref?.stop) return;
       resetSelectedIcon();
       selectedMarker=ref;
       ref.marker?.setIcon(makeStopIcon(ref.stop,true,false));
       updateSheet(ref.stop);
-      if(fly) focusStop(ref.stop,true);
+      hideOtherStopMarkers(ref);
+      if(fly) setTimeout(()=>fit('force'),90);
     }
     function selectedKey(){return selectedStopData?stopKey(selectedStopData):null;}
     function registerMarker(s,layer){
@@ -1172,7 +1191,8 @@
       lastFitAt=now;
       withProgrammaticMove(()=>{
         safeInvalidate();
-        map.fitBounds(routeMain.getBounds(),mapPaddingFor('route'));
+        const bounds=routeMain.getBounds();
+        if(bounds && bounds.isValid && bounds.isValid()) map.fitBounds(bounds,mapPaddingFor('route'));
       });
     }
     function syncCatUI(){document.querySelectorAll('.cat[data-filter]').forEach(btn=>{const f=btn.dataset.filter;btn.classList.toggle('active',activeFilters.has(f));btn.classList.toggle('is-muted',!activeFilters.has(f));});document.getElementById('stopsCta')?.classList.toggle('has-active',activeFilters.size>0);}
@@ -1264,6 +1284,16 @@
         const statStops=document.querySelector('.routePanel .stat:nth-child(3) b'); if(statStops) statStops.textContent=String(stopCount || document.querySelectorAll('.roadtripMapPinV64').length || 0);
         if(km) routeDistanceLabel=km;
         if(time) routeTimeLabel=time;
+        try{
+          localStorage.setItem('roadoraRouteSummaryV1',JSON.stringify({
+            distanceMeters:Number(summary.distance)||0,
+            durationSeconds:Number(summary.duration)||0,
+            distanceLabel:km||routeDistanceLabel,
+            timeLabel:time||routeTimeLabel,
+            stopCount,
+            updatedAt:new Date().toISOString()
+          }));
+        }catch(_){}
         if(km||time){
           destinationSheet.meta=[km,time].filter(Boolean).join(' · ');
           destinationSheet.desc=stopCount
@@ -1289,7 +1319,7 @@
       setFilters,
       reloadRoute:()=>{loadOrsRoute();},
       fitRoute:fit,
-      focusSelected:()=>selectedMarker?selectStop(selectedMarker,true):(selectedStopData?.ll?focusStop(selectedStopData,true):fit('force')),
+      focusSelected:()=>fit('force'),
       clearSelection:()=>{resetSelectedIcon();selectedMarker=null;updateSheet(destinationSheet);fit('force');},
       showPanel:(data)=>{resetSelectedIcon();selectedMarker=null;updateSheet(data);},
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
@@ -3245,8 +3275,11 @@
 (function(){
   'use strict';
   const KEY='roadoraRoadtripV1';
+  const ROUTE_SUMMARY_KEY='roadoraRouteSummaryV1';
   const ORIGIN='Rotterdam, Nederland';
   const DESTINATION='Innsbruck, Oostenrijk';
+  const ORIGIN_LL=[51.9244,4.4777];
+  const DEST_LL=[47.2692,11.4041];
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
 
@@ -3329,6 +3362,62 @@
     const dock=qs('#roadtripMiniDockV584');
     if(dock) dock.hidden=true;
   }
+  function readRouteSummary(){
+    try{
+      const r=JSON.parse(localStorage.getItem(ROUTE_SUMMARY_KEY)||'{}');
+      return {
+        distanceMeters:Number(r.distanceMeters)||0,
+        durationSeconds:Number(r.durationSeconds)||0,
+        distanceLabel:r.distanceLabel||'',
+        timeLabel:r.timeLabel||''
+      };
+    }catch(_){ return {distanceMeters:0,durationSeconds:0,distanceLabel:'',timeLabel:''}; }
+  }
+  function isPoint(stop){
+    return Array.isArray(stop?.ll) && Number.isFinite(Number(stop.ll[0])) && Number.isFinite(Number(stop.ll[1]));
+  }
+  function haversineMeters(a,b){
+    if(!a||!b) return 0;
+    const R=6371000;
+    const toRad=x=>Number(x)*Math.PI/180;
+    const dLat=toRad(b[0]-a[0]);
+    const dLng=toRad(b[1]-a[1]);
+    const lat1=toRad(a[0]);
+    const lat2=toRad(b[0]);
+    const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+    return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+  }
+  function fmtKm(m){
+    if(!Number.isFinite(m)||m<=0) return '— km';
+    return Math.round(m/1000).toLocaleString('nl-NL')+' km';
+  }
+  function fmtTime(sec){
+    if(!Number.isFinite(sec)||sec<=0) return '—';
+    const min=Math.max(1,Math.round(sec/60));
+    return Math.floor(min/60)+'u '+String(min%60).padStart(2,'0')+'m';
+  }
+  function segmentEstimates(data){
+    const summary=readRouteSummary();
+    const stops=(data.stops||[]).filter(isPoint);
+    const pts=[ORIGIN_LL,...stops.map(s=>[Number(s.ll[0]),Number(s.ll[1])]),DEST_LL];
+    const straight=[];
+    for(let i=0;i<pts.length-1;i++) straight.push(Math.max(1,haversineMeters(pts[i],pts[i+1])));
+    const totalStraight=straight.reduce((a,b)=>a+b,0)||1;
+    const totalMeters=summary.distanceMeters||totalStraight*1.18;
+    const totalSeconds=summary.durationSeconds||totalMeters/24;
+    return straight.map(m=>({
+      distanceLabel:fmtKm(totalMeters*(m/totalStraight)),
+      timeLabel:fmtTime(totalSeconds*(m/totalStraight))
+    }));
+  }
+  function routeSummaryLabel(data){
+    const summary=readRouteSummary();
+    const parts=[];
+    if(data.stops.length) parts.push(`${data.stops.length} stop${data.stops.length===1?'':'s'}`);
+    if(summary.distanceLabel) parts.push(summary.distanceLabel);
+    if(summary.timeLabel) parts.push(summary.timeLabel);
+    return parts.join(' · ') || (data.stops.length ? `${data.stops.length} stop${data.stops.length===1?'':'s'} toegevoegd` : 'Bouw je route met tussenstops');
+  }
   function closeOtherLayers(){
     qs('#roadoraStopOverlayV57')?.classList.remove('open');
     qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
@@ -3340,7 +3429,10 @@
     const panel=ensurePanel();
     closeOtherLayers();
     const stops=data.stops;
+    const segments=segmentEstimates(data);
+    const segmentRow=(seg,label)=>`<div class="roadtripV693Segment"><span>${escapeHtml(label||'Rijden')}</span><b>${escapeHtml(seg?.distanceLabel||'— km')} · ${escapeHtml(seg?.timeLabel||'—')}</b></div>`;
     const stopRows=stops.length ? stops.map((s,i)=>`
+      ${segmentRow(segments[i], i===0?'Vanaf start':'Volgend traject')}
       <div class="roadtripV63Stop" data-trip-id="${escapeAttr(s.id)}">
         <div class="roadtripV63Index">${i+1}</div>
         <div class="roadtripV63Icon">${typeIcon(s.type)}</div>
@@ -3349,7 +3441,7 @@
           <small>${escapeHtml(s.label||s.type||'Stop')}${s.meta ? ' · '+escapeHtml(s.meta) : ''}</small>
         </button>
         <button class="roadtripV63Remove" type="button" data-tripv63-action="remove" data-trip-id="${escapeAttr(s.id)}" aria-label="Stop verwijderen">×</button>
-      </div>`).join('') : `
+      </div>`).join('') + segmentRow(segments[stops.length], 'Naar eindbestemming') : `
       <div class="roadtripV63Empty">
         <b>Nog geen tussenstops</b>
         <span>Kies een hotel, tankstation, laadpunt of uitje op de kaart en tik op “Voeg toe aan roadtrip”.</span>
@@ -3359,7 +3451,7 @@
       <div class="roadtripPanelScrimV584" data-tripv63-action="close"></div>
       <article class="roadtripPanelCardV584 roadtripV63Card" role="dialog" aria-label="Mijn Roadtrip">
         <header class="roadtripV63Head">
-          <div><span>Mijn Roadtrip</span><b>${stops.length ? `${stops.length} stop${stops.length===1?'':'s'} toegevoegd` : 'Bouw je route met tussenstops'}</b></div>
+          <div><span>Mijn Roadtrip</span><b>${escapeHtml(routeSummaryLabel(data))}</b></div>
           <button type="button" data-tripv63-action="close" aria-label="Sluiten">×</button>
         </header>
         <div class="roadtripV63RouteLine">
