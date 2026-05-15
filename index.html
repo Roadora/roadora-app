@@ -11,6 +11,24 @@
 <meta content="roadora-v7-3-0-production-places-layer; stable-core; maps-export-locked; places-cache-normalization" name="roadora-build"/>
 <link href="./styles.css" rel="stylesheet"/>
 <script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* Roadora v7.4.6 early roadtrip nav guard: registreert vóór app.js, zodat oude popup-handlers de knop niet meer kunnen kapen. */
+(function(){
+  document.addEventListener('click',function(e){
+    var target=e.target;
+    if(!target || !target.closest) return;
+    var btn=target.closest('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]');
+    if(!btn) return;
+    if(window.RoadoraRoadtripV2 && typeof window.RoadoraRoadtripV2.open==='function'){
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+      window.RoadoraRoadtripV2.open();
+    }
+  },true);
+})();
+</script>
 <script defer="" src="./app.js"></script>
 </head>
 <body>

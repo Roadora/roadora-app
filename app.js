@@ -4656,3 +4656,44 @@
 
   window.RoadoraRoadtripV2={open,close,render,read:readTrip,write:writeTrip,remove};
 })();
+
+/* Roadora v7.4.6 — Roadtrip Page Nav Fix hardener
+   - Bottom-nav Mijn Roadtrip opent altijd Roadtrip V2 page
+   - Oude popup-flow blijft verborgen
+   - Maps/ORS untouched
+*/
+(function(){
+  'use strict';
+  function qs(s,r){return (r||document).querySelector(s);}
+  function qsa(s,r){return Array.from((r||document).querySelectorAll(s));}
+  function hideLegacy(){
+    qs('#roadtripMiniDockV584')?.setAttribute('hidden','hidden');
+    const old=qs('#roadtripMiniPanelV584');
+    if(old){ old.classList.remove('open','roadtripV63Open','roadtripV705Open'); old.style.display='none'; }
+    qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
+  }
+  function openV2(){
+    hideLegacy();
+    if(window.RoadoraRoadtripV2 && typeof window.RoadoraRoadtripV2.open==='function'){
+      return window.RoadoraRoadtripV2.open();
+    }
+    return false;
+  }
+  function bind(){
+    qsa('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]').forEach(btn=>{
+      btn.onclick=function(e){ e.preventDefault(); e.stopPropagation(); return openV2(); };
+      btn.style.pointerEvents='auto';
+    });
+    hideLegacy();
+  }
+  document.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]');
+    if(!btn) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation?.();
+    return openV2();
+  },true);
+  window.addEventListener('roadora:roadtrip:update',hideLegacy);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
+  setTimeout(bind,500);
+  setTimeout(bind,1500);
+})();

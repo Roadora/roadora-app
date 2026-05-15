@@ -4798,3 +4798,48 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 .roadtripV2Card{min-height:0;border-radius:30px;padding:14px;background:rgba(255,250,242,.86);border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 48px rgba(54,34,14,.10);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
 .roadtripV2SectionHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.roadtripV2SectionHead b{font-size:15px;font-weight:950}.roadtripV2SectionHead span{height:24px;border-radius:999px;padding:0 9px;display:inline-flex;align-items:center;background:linear-gradient(135deg,rgba(237,201,132,.42),rgba(196,134,61,.18));font-size:9px;font-weight:900;color:#8a5b28}.roadtripV2Timeline{overflow:auto;padding-right:2px;display:grid;gap:0;overscroll-behavior:contain}.roadtripV2Point{display:grid;grid-template-columns:24px 40px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:10px;border-radius:20px;background:rgba(255,255,255,.46);border:1px solid rgba(70,47,24,.055)}.roadtripV2Point+.roadtripV2Point{margin-top:6px}.roadtripV2Point i{width:24px;height:24px;border-radius:999px;display:grid;place-items:center;background:#2b2119;color:#fff8ea;font-size:10px;font-style:normal;font-weight:950}.roadtripV2Point.start i,.roadtripV2Point.end i{background:transparent}.roadtripV2PointIcon{width:40px;height:40px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#fff4dc,#d3a061);box-shadow:inset 0 1px 0 rgba(255,255,255,.70)}.roadtripV2PointText{min-width:0}.roadtripV2PointText b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;letter-spacing:-.25px}.roadtripV2PointText small{display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#74675c;font-weight:750}.roadtripV2Point button{width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.62);font-size:20px;font-weight:600;color:#7a5a3d}.roadtripV2Segment{display:grid;grid-template-columns:24px 1fr;gap:9px;align-items:center;margin:4px 0 4px 10px}.roadtripV2Segment span{width:2px;height:24px;border-radius:999px;background:linear-gradient(#e8c88e,#c4863d);justify-self:center}.roadtripV2Segment em{font-style:normal;font-size:10px;color:#8a715d;font-weight:850}.roadtripV2Actions{display:grid;grid-template-columns:1.25fr .9fr;gap:9px}.roadtripV2Primary,.roadtripV2Ghost{height:54px;border-radius:22px;font-weight:950;font-size:13px}.roadtripV2Primary{background:linear-gradient(135deg,#edc984,#c4863d);color:#211914;box-shadow:0 16px 34px rgba(196,134,61,.22)}.roadtripV2Ghost{background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.72)}
 @media(max-height:760px){.roadtripV2Shell{gap:9px}.roadtripV2Hero{padding:14px}.roadtripV2Hero h1{font-size:25px}.roadtripV2Hero p{display:none}.roadtripV2Stats{margin-top:10px}.roadtripV2Stats div{min-height:48px}.roadtripV2Card{padding:12px;border-radius:26px}.roadtripV2Point{padding:8px}.roadtripV2Actions button{height:48px}}
+
+/* ===== Roadora v7.4.6 — Roadtrip Page Nav Fix ===== */
+#mapScreen .bottomNav.bottomNavV59{
+  left:14px!important;
+  right:14px!important;
+  bottom:calc(env(safe-area-inset-bottom) + 10px)!important;
+  height:60px!important;
+  min-height:60px!important;
+  border-radius:20px!important;
+  z-index:1200!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,1fr)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+#mapScreen .bottomNav.bottomNavV59 .navItem{
+  min-height:54px!important;
+  font-size:8.6px!important;
+  pointer-events:auto!important;
+}
+#mapScreen .bottomNav.bottomNavV59 .navCenter .round{
+  width:52px!important;
+  height:52px!important;
+}
+.roadtripScreenV2.active{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  z-index:1600!important;
+}
+.phone.roadtripV2Active #mapScreen{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.phone.roadtripV2Active #roadtripScreenV2{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+#roadtripMiniPanelV584:not(.roadtripV2Open),
+#roadtripMiniDockV584{
+  display:none!important;
+}
