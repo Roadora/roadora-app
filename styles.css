@@ -4785,126 +4785,36 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #mapScreen .cat.is-empty::after{content:"0";}
 @keyframes roadoraSpin{to{transform:rotate(360deg)}}
 
-/* ===== Roadora v7.4.5 — Mijn Roadtrip v2 echte pagina ===== */
-#roadtripMiniDockV584,
-#roadtripMiniPanelV584{display:none!important;visibility:hidden!important;pointer-events:none!important;}
-.phone.roadtripV2Active #mapScreen{opacity:0;visibility:hidden;pointer-events:none;}
-.roadtripScreenV2{z-index:980!important;background:linear-gradient(180deg,#fbf5ec,#f2e6d5 58%,#e9d7bf)!important;overflow:hidden!important;}
-.roadtripV2Shell{height:100%;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 18px);display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:12px;overflow:hidden;}
-.roadtripV2Top{height:58px;border-radius:25px;padding:7px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:center;background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.76);box-shadow:0 16px 40px rgba(54,34,14,.10);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
-.roadtripV2Top div{min-width:0}.roadtripV2Top span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#9a6429;font-weight:900}.roadtripV2Top b{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px;letter-spacing:-.35px}.roadtripV2Icon{width:44px;height:44px;border-radius:18px;background:rgba(255,255,255,.62);font-size:24px;font-weight:900;box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
-.roadtripV2Hero{border-radius:30px;padding:18px;background:rgba(255,250,242,.78);border:1px solid rgba(255,255,255,.70);box-shadow:0 18px 48px rgba(54,34,14,.10);backdrop-filter:blur(34px);-webkit-backdrop-filter:blur(34px)}
-.roadtripV2Hero small{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9a6429;font-weight:950}.roadtripV2Hero h1{margin:8px 0 6px;font-family:"Playfair Display",serif;font-size:31px;line-height:.96;letter-spacing:-1.1px}.roadtripV2Hero p{margin:0;color:#6b5f54;font-size:12.5px;line-height:1.42;max-width:320px}.roadtripV2Stats{margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.roadtripV2Stats div{min-height:58px;border-radius:20px;background:rgba(255,255,255,.54);border:1px solid rgba(70,47,24,.07);display:grid;place-items:center;padding:8px}.roadtripV2Stats b{font-size:13px;font-weight:950;color:#2b2119}.roadtripV2Stats span{font-size:8.5px;text-transform:uppercase;letter-spacing:.09em;color:#827366;font-weight:850}
-.roadtripV2Card{min-height:0;border-radius:30px;padding:14px;background:rgba(255,250,242,.86);border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 48px rgba(54,34,14,.10);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
-.roadtripV2SectionHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.roadtripV2SectionHead b{font-size:15px;font-weight:950}.roadtripV2SectionHead span{height:24px;border-radius:999px;padding:0 9px;display:inline-flex;align-items:center;background:linear-gradient(135deg,rgba(237,201,132,.42),rgba(196,134,61,.18));font-size:9px;font-weight:900;color:#8a5b28}.roadtripV2Timeline{overflow:auto;padding-right:2px;display:grid;gap:0;overscroll-behavior:contain}.roadtripV2Point{display:grid;grid-template-columns:24px 40px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:10px;border-radius:20px;background:rgba(255,255,255,.46);border:1px solid rgba(70,47,24,.055)}.roadtripV2Point+.roadtripV2Point{margin-top:6px}.roadtripV2Point i{width:24px;height:24px;border-radius:999px;display:grid;place-items:center;background:#2b2119;color:#fff8ea;font-size:10px;font-style:normal;font-weight:950}.roadtripV2Point.start i,.roadtripV2Point.end i{background:transparent}.roadtripV2PointIcon{width:40px;height:40px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#fff4dc,#d3a061);box-shadow:inset 0 1px 0 rgba(255,255,255,.70)}.roadtripV2PointText{min-width:0}.roadtripV2PointText b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;letter-spacing:-.25px}.roadtripV2PointText small{display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#74675c;font-weight:750}.roadtripV2Point button{width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.62);font-size:20px;font-weight:600;color:#7a5a3d}.roadtripV2Segment{display:grid;grid-template-columns:24px 1fr;gap:9px;align-items:center;margin:4px 0 4px 10px}.roadtripV2Segment span{width:2px;height:24px;border-radius:999px;background:linear-gradient(#e8c88e,#c4863d);justify-self:center}.roadtripV2Segment em{font-style:normal;font-size:10px;color:#8a715d;font-weight:850}.roadtripV2Actions{display:grid;grid-template-columns:1.25fr .9fr;gap:9px}.roadtripV2Primary,.roadtripV2Ghost{height:54px;border-radius:22px;font-weight:950;font-size:13px}.roadtripV2Primary{background:linear-gradient(135deg,#edc984,#c4863d);color:#211914;box-shadow:0 16px 34px rgba(196,134,61,.22)}.roadtripV2Ghost{background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.72)}
-@media(max-height:760px){.roadtripV2Shell{gap:9px}.roadtripV2Hero{padding:14px}.roadtripV2Hero h1{font-size:25px}.roadtripV2Hero p{display:none}.roadtripV2Stats{margin-top:10px}.roadtripV2Stats div{min-height:48px}.roadtripV2Card{padding:12px;border-radius:26px}.roadtripV2Point{padding:8px}.roadtripV2Actions button{height:48px}}
-
-/* ===== Roadora v7.4.6 — Roadtrip Page Nav Fix ===== */
-#mapScreen .bottomNav.bottomNavV59{
-  left:14px!important;
-  right:14px!important;
-  bottom:calc(env(safe-area-inset-bottom) + 10px)!important;
-  height:60px!important;
-  min-height:60px!important;
-  border-radius:20px!important;
-  z-index:1200!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,1fr)!important;
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-#mapScreen .bottomNav.bottomNavV59 .navItem{
-  min-height:54px!important;
-  font-size:8.6px!important;
-  pointer-events:auto!important;
-}
-#mapScreen .bottomNav.bottomNavV59 .navCenter .round{
-  width:52px!important;
-  height:52px!important;
-}
-.roadtripScreenV2.active{
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-  z-index:1600!important;
-}
-.phone.roadtripV2Active #mapScreen{
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-}
-.phone.roadtripV2Active #roadtripScreenV2{
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-#roadtripMiniPanelV584:not(.roadtripV2Open),
-#roadtripMiniDockV584{
-  display:none!important;
-}
-
-
-/* ===== Roadora v7.4.7 — Roadtrip V2 Repair hard override ===== */
-#roadtripMiniDockV584,
-#roadtripMiniPanelV584,
-#mapScreen.roadtripPanelOpenV621 #roadtripMiniPanelV584,
-#mapScreen.roadtripPanelOpenV63 #roadtripMiniPanelV584,
-#mapScreen.roadtripPanelOpenV705 #roadtripMiniPanelV584{
-  display:none!important;
-  visibility:hidden!important;
-  opacity:0!important;
-  pointer-events:none!important;
-}
-#mapScreen .bottomNav.bottomNavV59,
-#mapScreen .bottomNav{
-  position:absolute!important;
-  left:14px!important;
-  right:14px!important;
-  bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
-  height:58px!important;
-  z-index:5000!important;
-  transform:none!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,1fr)!important;
-  align-items:center!important;
-  border-radius:20px!important;
-  overflow:visible!important;
-  pointer-events:auto!important;
-}
-#mapScreen .bottomNav .navItem{
-  min-width:0!important;
-  pointer-events:auto!important;
-  touch-action:manipulation!important;
-}
-#mapScreen .bottomNav .navCenter{
-  transform:translateY(-13px)!important;
-}
-#mapScreen .bottomNav .navCenter .round{
-  width:54px!important;
-  height:54px!important;
-}
-.roadtripScreenV2{
-  position:absolute!important;
-  inset:0!important;
-  z-index:9990!important;
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-  display:block!important;
-}
-.roadtripScreenV2.active{
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-.phone.roadtripV2Active #mapScreen{
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-}
-.phone.roadtripV2Active #roadtripScreenV2{
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
+/* Roadora v7.4.8 — Mijn Roadtrip echte subpage + legacy popup hard-off */
+#roadtripMiniDockV584{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+#roadtripMiniPanelV584:not(.allowLegacyRoadtrip){display:none!important;visibility:hidden!important;pointer-events:none!important;}
+#mapScreen.roadtripPanelOpenV621 .sheet,
+#mapScreen.roadtripPanelOpenV63 .sheet,
+#mapScreen.roadtripPanelOpenV684 .sheet{opacity:1!important;transform:none!important;pointer-events:auto!important;}
+#mapScreen .bottomNav{position:absolute!important;left:14px!important;right:14px!important;bottom:calc(env(safe-area-inset-bottom) + 8px)!important;z-index:930!important;display:grid!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;}
+#mapScreen .bottomNav .navItem[data-roadtrip-page="true"]{position:relative!important;}
+#mapScreen .bottomNav .navItem[data-roadtrip-page="true"].roadtripHasStops::after{content:attr(data-roadtrip-count);position:absolute;top:5px;right:14px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914;font-size:9px;font-weight:900;box-shadow:0 6px 14px rgba(196,135,61,.22)}
+.roadtripScreenV2Page{position:absolute;inset:0;z-index:1500;background:linear-gradient(180deg,#fbf4ea,#eee1d1);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:.24s cubic-bezier(.22,1,.36,1);overflow:hidden;color:#211914;}
+.roadtripScreenV2Page.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);}
+.roadtripV2PageInner{height:100%;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 18px);display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:12px;}
+.rtv2Header{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:10px;}
+.rtv2Back,.rtv2Close{width:44px;height:44px;border-radius:17px;background:rgba(255,250,242,.88);border:1px solid rgba(255,255,255,.76);box-shadow:0 12px 28px rgba(28,18,9,.10);font-size:28px;font-weight:800;display:grid;place-items:center;}
+.rtv2Header span{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#a66e31;font-weight:900;}
+.rtv2Header h2{margin:2px 0 0;font-size:20px;line-height:1.03;letter-spacing:-.6px;}
+.rtv2Hero{border-radius:24px;padding:12px;background:rgba(255,250,242,.86);border:1px solid rgba(255,255,255,.76);box-shadow:0 16px 42px rgba(35,23,12,.10);display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.rtv2Hero div{min-height:62px;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(70,47,24,.07);display:grid;place-items:center;text-align:center;padding:7px;}
+.rtv2Hero span{display:none}.rtv2Hero b{font-size:15px}.rtv2Hero small{font-size:9px;color:#776a5f;font-weight:800;}
+.rtv2Tabs{display:flex;gap:7px;overflow:auto;padding-bottom:1px;}
+.rtv2Tabs button{height:34px;padding:0 13px;border-radius:999px;background:rgba(255,250,242,.74);border:1px solid rgba(70,47,24,.08);font-size:11px;font-weight:850;white-space:nowrap;color:#6f6257;}
+.rtv2Tabs button.active{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914}.rtv2Tabs button:disabled{opacity:.52;}
+.rtv2Timeline{overflow:auto;border-radius:25px;background:rgba(255,250,242,.74);border:1px solid rgba(255,255,255,.72);box-shadow:0 16px 44px rgba(35,23,12,.10);padding:13px;display:grid;gap:8px;align-content:start;}
+.rtv2Point,.rtv2Stop{display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:center;}
+.rtv2Point i,.rtv2Stop i{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:#211914;color:#fff7ec;font-style:normal;font-size:12px;font-weight:900;}
+.rtv2Point div,.rtv2Stop button[data-rtv2-action="focus"]{min-width:0;text-align:left;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(70,47,24,.07);padding:10px 12px;}
+.rtv2Point span,.rtv2Stop span{display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a66e31;font-weight:900;}
+.rtv2Point b,.rtv2Stop b{display:block;font-size:13px;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.rtv2Stop small{display:block;margin-top:3px;font-size:10px;color:#786b60;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rtv2Segment{margin-left:17px;display:grid;grid-template-columns:1px 1fr auto;gap:10px;align-items:center;color:#7d6d5f;font-size:10px;font-weight:900;}
+.rtv2Segment span{height:25px;border-left:2px solid rgba(196,134,61,.28)}.rtv2Segment em{font-style:normal;background:#f5ead8;border-radius:999px;padding:5px 8px;color:#8a5f2e;}
+.rtv2Stop{grid-template-columns:34px 30px minmax(0,1fr) 36px}.rtv2Stop strong{width:30px;height:30px;border-radius:12px;display:grid;place-items:center;background:#f5ead8;font-size:14px}.rtv2Remove{width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.72);font-size:22px;color:#8a5f2e;font-weight:800;}
+.rtv2Tip{border-radius:18px;background:#fff3dc;padding:12px 14px;color:#6f6257;display:grid;gap:3px;}.rtv2Tip b{color:#8a5f2e}.rtv2Tip span{font-size:12px;line-height:1.35;}
+.rtv2Footer{display:grid;grid-template-columns:1fr 1.25fr;gap:9px;}.rtv2Footer button{height:50px;border-radius:18px;background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.76);font-weight:900;font-size:13px;}.rtv2Footer button:last-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914;}.rtv2Footer button:disabled{opacity:.45;}
