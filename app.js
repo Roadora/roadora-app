@@ -1,7 +1,7 @@
-/* Roadora v7.2.3 Fase 2.3 Core Modularisatie
-   - Gebaseerd op v7.2.2 Clean Center Control fallback
-   - Geen gedrag gewijzigd: ORS, Maps locked, Roadtrip-state en UI blijven intact
-   - Nieuwe RoadoraCore facade toegevoegd als veilige voorbereiding op module-splitsing
+/* Roadora v7.2.4 Data & State Cleanup
+   - Gebaseerd op v7.2.3 Core Modularisatie
+   - Geen visuele redesigns en geen Maps-export wijzigingen
+   - Nieuwe RoadoraDataLayer: scheidt route-state, roadtrip-state, category-state en demo/fallback-data contracten
 
    Roadora v7.0.2 Stop Focus Context Fix
    - Home v8.7 blijft intact
@@ -4184,7 +4184,7 @@
 })();
 
 
-/* Roadora v7.2.3 — Phase 2.3 Core Facade
+/* Roadora v7.2.4 — Phase 2.4 Core Facade
    Niet-destructieve architectuurlaag. Deze facade verandert geen bestaand gedrag,
    maar geeft latere modules één veilige ingang naar Route, Map, Roadtrip, Stops, UI en Maps Export.
 */
@@ -4197,8 +4197,8 @@
   }
 
   window.RoadoraCore={
-    version:'7.2.3',
-    phase:'2.3-core-modularisatie',
+    version:'7.2.4',
+    phase:'2.4-data-state-cleanup',
     locked:{ mapsExport:true },
     state:{
       get roadtrip(){ return safeCall(()=>window.RoadoraRoadtrip?.read?.(), null); },
@@ -4227,4 +4227,107 @@
       toast(message){ return window.RoadoraToast?.(message); }
     }
   };
+})();
+
+
+/* Roadora v7.2.4 — Data & State Cleanup Layer
+   Niet-destructieve datalaag. Doel: één vaste plek voor route-summary,
+   roadtrip-state, category-state en toekomstige Google Places-resultaten.
+   Let op: deze laag verandert bewust geen bestaande UX of Maps-flow.
+*/
+(function(){
+  'use strict';
+  if(window.RoadoraDataLayer?.version) return;
+
+  const KEYS={
+    roadtrip:'roadoraRoadtripV1',
+    routeSummary:'roadoraRouteSummaryV1',
+    categoryState:'roadoraCategoryStateV1',
+    placesCache:'roadoraPlacesCacheV1'
+  };
+
+  function safeJsonRead(key, fallback){
+    try{return JSON.parse(localStorage.getItem(key)||'null') ?? fallback;}
+    catch(_){return fallback;}
+  }
+  function safeJsonWrite(key, value){
+    try{localStorage.setItem(key, JSON.stringify(value));return true;}
+    catch(_){return false;}
+  }
+  function nowIso(){return new Date().toISOString();}
+  function normalizeStop(stop, source='unknown'){
+    const ll=Array.isArray(stop?.ll)?[Number(stop.ll[0]),Number(stop.ll[1])]:null;
+    return {
+      id: stop?.id || stop?.googlePlaceId || `${stop?.type||'stop'}:${stop?.name||''}:${ll?ll.join(','):''}`,
+      name: stop?.name || 'Roadora stop',
+      type: stop?.type || 'stop',
+      label: stop?.label || 'Tussenstop',
+      meta: stop?.meta || '',
+      ll: ll && Number.isFinite(ll[0]) && Number.isFinite(ll[1]) ? ll : null,
+      source,
+      provider: stop?.provider || null,
+      googlePlaceId: stop?.googlePlaceId || null,
+      googleMapsUri: stop?.googleMapsUri || null,
+      raw: stop || null
+    };
+  }
+  function readRoadtrip(){
+    const data=safeJsonRead(KEYS.roadtrip,{version:1,origin:'Rotterdam, Nederland',destination:'Innsbruck, Oostenrijk',stops:[]});
+    return {
+      version:data.version||1,
+      origin:data.origin||'Rotterdam, Nederland',
+      destination:data.destination||'Innsbruck, Oostenrijk',
+      stops:Array.isArray(data.stops)?data.stops.map(s=>normalizeStop(s,s.source||'roadtrip')).filter(s=>s.ll):[],
+      updatedAt:data.updatedAt||null
+    };
+  }
+  function readRouteSummary(){
+    return safeJsonRead(KEYS.routeSummary,{distanceLabel:null,timeLabel:null,stopCount:readRoadtrip().stops.length,updatedAt:null});
+  }
+  function writeRouteSummary(summary){
+    const clean={
+      distanceLabel:summary?.distanceLabel||summary?.km||null,
+      timeLabel:summary?.timeLabel||summary?.time||null,
+      stopCount:Number.isFinite(Number(summary?.stopCount))?Number(summary.stopCount):readRoadtrip().stops.length,
+      updatedAt:nowIso()
+    };
+    safeJsonWrite(KEYS.routeSummary,clean);
+    window.dispatchEvent(new CustomEvent('roadora:route:update',{detail:clean}));
+    return clean;
+  }
+  function readCategoryState(){
+    const data=safeJsonRead(KEYS.categoryState,{active:[],mode:'clean-route'});
+    return {active:Array.isArray(data.active)?data.active:[],mode:data.mode||'clean-route',updatedAt:data.updatedAt||null};
+  }
+  function writeCategoryState(next){
+    const clean={active:Array.isArray(next?.active)?Array.from(new Set(next.active)):[],mode:next?.mode||'stops',updatedAt:nowIso()};
+    safeJsonWrite(KEYS.categoryState,clean);
+    window.dispatchEvent(new CustomEvent('roadora:categories:update',{detail:clean}));
+    return clean;
+  }
+  function classifyStopSource(stop){
+    if(stop?.googlePlaceId || stop?.provider==='Google Places') return 'google-places';
+    if(stop?.source) return stop.source;
+    if(stop?.type && ['fuel','hotel','ev','food','view','wc'].includes(stop.type)) return 'fallback-or-category';
+    return 'unknown';
+  }
+
+  window.RoadoraDataLayer={
+    version:'7.2.4',
+    keys:KEYS,
+    normalizeStop,
+    classifyStopSource,
+    roadtrip:{read:readRoadtrip},
+    routeSummary:{read:readRouteSummary,write:writeRouteSummary},
+    categories:{read:readCategoryState,write:writeCategoryState},
+    places:{
+      readCache(){return safeJsonRead(KEYS.placesCache,{version:1,items:[],updatedAt:null});},
+      writeCache(items=[]){const clean={version:1,items:Array.isArray(items)?items:[],updatedAt:nowIso()};safeJsonWrite(KEYS.placesCache,clean);return clean;}
+    }
+  };
+
+  // Koppel de datalaag veilig aan de bestaande Core facade zonder gedrag te wijzigen.
+  if(window.RoadoraCore){
+    window.RoadoraCore.data=window.RoadoraDataLayer;
+  }
 })();
