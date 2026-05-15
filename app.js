@@ -3887,3 +3887,110 @@
 
   window.RoadoraCleanupGuard={normalizeRoadtrip,enforceRouteMode};
 })();
+
+
+/* Roadora v7.0.8 — Topbar + Bottom Sheet Info Hierarchy
+   - Topbar is globale ritstatus, geen dubbele route-summary
+   - Route sheet is routekaart-context met km/tijd/stops
+   - Stop/hotel/fuel sheet blijft context van geselecteerde stop
+   - Maps export blijft locked/onaangeraakt
+*/
+(function(){
+  'use strict';
+  const KEY='roadoraRoadtripV1';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let guard=false;
+  let timer=null;
+
+  function readTrip(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(_){return {};}}
+  function stopsCount(){const d=readTrip();return Array.isArray(d.stops)?d.stops.length:0;}
+  function text(id,fallback=''){return (document.getElementById(id)?.textContent||fallback).trim();}
+  function routeKm(){return text('mapStatusDistance') || qs('.routePanel .stats .stat:nth-child(2) b')?.textContent?.trim() || '— km';}
+  function routeTime(){return text('mapStatusEta') || '—';}
+  function vehicleLabel(){return qs('#mapScreen .vehicle.active span:last-child')?.textContent?.trim() || qs('#routeSetupScreen .rVehicle.active')?.textContent?.replace(/[🚘⚡🚐🏍️]/g,'').trim() || 'Auto';}
+  function arrivalLabel(){
+    const raw=routeTime();
+    const m=String(raw).match(/(\d+)u\s*(\d+)?/i);
+    if(!m) return 'Aankomst —';
+    const mins=(parseInt(m[1],10)*60)+(parseInt(m[2]||'0',10));
+    const d=new Date(Date.now()+mins*60000);
+    return 'Aankomst '+d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  }
+  function isRouteLikeSheet(){
+    const sheet=qs('#mapScreen .sheet');
+    const type=sheet?.dataset?.type || '';
+    const title=text('stopTitle');
+    return !type || ['destination','overview','route'].includes(type) || /Innsbruck|Rotterdam/.test(title);
+  }
+  function routeMeta(){
+    const count=stopsCount();
+    return `${routeKm()} · ${routeTime()}${count?` · ${count} stop${count===1?'':'s'}`:''}`;
+  }
+  function setTopbarGlobal(){
+    if(guard) return;
+    guard=true;
+    try{
+      const title=qs('#mapStatusTitle');
+      const badge=qs('#mapStatusBadge');
+      const sub=qs('#mapStatusSub');
+      const eta=qs('#mapStatusEta');
+      const dist=qs('#mapStatusDistance');
+      const next=qs('#mapStatusNext');
+      const cockpit=qs('#mapScreen .mapCockpit');
+      const count=stopsCount();
+      if(cockpit) cockpit.setAttribute('data-copilot-state','route');
+      if(title) title.textContent='Rotterdam → Innsbruck';
+      if(badge) badge.textContent='Route actief';
+      if(sub) sub.textContent=`${vehicleLabel()} · ${count} stop${count===1?'':'s'}`;
+      if(eta) eta.textContent=arrivalLabel();
+      if(dist) dist.textContent=vehicleLabel();
+      if(next) next.textContent='Maps-ready';
+    }finally{guard=false;}
+  }
+  function setRouteSheetSummary(){
+    const sheet=qs('#mapScreen .sheet');
+    if(!sheet || !isRouteLikeSheet()) return;
+    sheet.dataset.type='route';
+    const over=qs('#mapScreen .overline');
+    const title=qs('#stopTitle');
+    const meta=qs('#stopMeta');
+    const desc=qs('#stopDesc');
+    const primary=qs('#mapScreen .sheetActions .primary');
+    const secondary=qs('#mapScreen .sheetActions .secondary');
+    const save=qs('#mapScreen .sheetActions .saveStop');
+    if(over) over.textContent='Route-overzicht';
+    if(title) title.textContent='Rotterdam → Innsbruck';
+    if(meta) meta.textContent=routeMeta();
+    if(desc) desc.textContent='Je actieve Roadora-route is geladen. De kaart toont de volledige route met je gekozen tussenstops.';
+    if(primary) primary.textContent='➤ Navigeer volledige route';
+    if(secondary){ secondary.textContent='ⓘ Route info'; secondary.hidden=false; secondary.classList.remove('is-hidden'); }
+    if(save){ save.hidden=true; save.disabled=true; save.classList.add('is-disabled'); }
+  }
+  function refreshHierarchy(){
+    setTopbarGlobal();
+    setRouteSheetSummary();
+  }
+  function schedule(){clearTimeout(timer);timer=setTimeout(refreshHierarchy,70);}
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav]');
+    if(nav?.dataset.nav==='route') setTimeout(()=>{setRouteSheetSummary();setTopbarGlobal();},150);
+    if(nav?.dataset.nav==='roadtrip') setTimeout(setTopbarGlobal,150);
+    if(nav?.dataset.nav==='stops') setTimeout(setTopbarGlobal,150);
+  },true);
+  ['roadora:roadtrip:update','roadora:route:update'].forEach(ev=>window.addEventListener(ev,schedule));
+  window.addEventListener('storage',e=>{if(!e.key||e.key===KEY)schedule();});
+  const obs=new MutationObserver(()=>schedule());
+  function boot(){
+    const ui=qs('#mapScreen .ui');
+    if(ui) obs.observe(ui,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-type','class']});
+    refreshHierarchy();
+    setTimeout(refreshHierarchy,500);
+    setTimeout(refreshHierarchy,1300);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
+  window.RoadoraInfoHierarchy={refresh:refreshHierarchy,routeSheet:setRouteSheetSummary,topbar:setTopbarGlobal};
+})();
