@@ -3235,13 +3235,8 @@
     return /Android/i.test(navigator.userAgent||'');
   }
   function openGoogleMapsUrl(url, preferApp=false){
-    if(preferApp && isAndroidDevice()){
-      // Android: forceer de Google Maps app-routebuilder i.p.v. een browser-preview.
-      // Dit opent hetzelfde route-overzicht als Maps zelf: huidige locatie → stops → bestemming.
-      const intent=url.replace(/^https:\/\//,'intent://')+'#Intent;scheme=https;package=com.google.android.apps.maps;end';
-      window.location.href=intent;
-      return;
-    }
+    // v6.7.3: geen Android intent/google.navigation forceren.
+    // Een gewone Maps dir-link behoudt alle waypoints beter en opent op mobiel alsnog meestal in de Maps app.
     window.open(url,'_blank','noopener');
   }
   function mapsUrl(mode='start'){
@@ -3260,13 +3255,12 @@
       return `https://www.google.com/maps/dir/?${params.toString()}`;
     }
 
-    // v6.7.2 Maps App Route Screen:
-    // Voor de startflow laten we op mobiel bewust origin weg. Google Maps pakt dan de actuele
-    // locatie en toont de volledige route-opbouw: huidige locatie → stop 1 → stop 2 → bestemming.
-    // Daardoor krijg je veel vaker het normale Maps-scherm met Start-knop, zoals in Google Maps zelf.
-    if(!isMobileDevice()) params.set('origin',data.origin||ORIGIN);
+    // v6.7.3 Maps Full Route Overview:
+    // Start opent expres de volledige route-overzichtmodus, niet directe navigatie naar stop 1.
+    // Met Current Location als origin kan Google Maps meestal alsnog een Start-knop tonen,
+    // terwijl alle Roadora-tussenstops zichtbaar blijven.
+    params.set('origin', isMobileDevice() ? 'Current Location' : (data.origin||ORIGIN));
     if(waypoints.length) params.set('waypoints',waypoints.join('|'));
-    params.set('dir_action','navigate');
     return `https://www.google.com/maps/dir/?${params.toString()}`;
   }
   function ensurePanel(){
@@ -3575,7 +3569,7 @@
     }
   },true);
   window.RoadoraMapsExportNotes={
-    start:'Start in Maps gebruikt huidige locatie op mobiel en opent de echte navigeerflow waar mogelijk.',
+    start:'Start in Maps opent de volledige roadtrip-route met Current Location, tussenstops en bestemming als overzicht.',
     overview:'Bekijk volledige route opent de hele roadtrip met vertrekpunt, stops en bestemming als overzicht.'
   };
 })();
@@ -3818,3 +3812,11 @@
 
 
 /* Roadora v6.7.1 Route Paint Fix — forceert Leaflet redraw na echte multi-stop route zodat de lijn direct zichtbaar is. */
+
+
+/* Roadora v6.7.3 Maps Full Route Overview marker */
+(function(){
+  'use strict';
+  function mark(){document.body.classList.add('roadoraV673MapsFullRouteOverview');}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mark,{once:true}); else mark();
+})();
