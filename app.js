@@ -1235,6 +1235,20 @@
         const statKm=document.querySelector('.routePanel .stat:nth-child(2) b'); if(statKm&&km) statKm.textContent=km;
         if(km) routeDistanceLabel=km;
         if(time) routeTimeLabel=time;
+        // v7.0.9: bewaar de echte ORS-samenvatting centraal. UI-lagen lezen hieruit,
+        // zodat de topbar niet terugvalt op placeholders zoals "Aankomst —" of "Maps-ready".
+        try{
+          localStorage.setItem('roadoraRouteSummaryV1', JSON.stringify({
+            distanceMeters: Number(summary.distance)||0,
+            durationSeconds: Number(summary.duration)||0,
+            distanceLabel: km || '',
+            timeLabel: time || '',
+            stopCount: (JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}').stops||[]).length || 0,
+            provisional: false,
+            updatedAt: new Date().toISOString()
+          }));
+          window.dispatchEvent(new CustomEvent('roadora:route:update',{detail:{distanceLabel:km,timeLabel:time}}));
+        }catch(_){ }
         if(km||time){destinationSheet.meta=[km,time].filter(Boolean).join(' · ');destinationSheet.desc='Je echte ORS-route naar Innsbruck is geladen. Onderweg kun je hotels, laadstops en eten als context in dit blok openen.';if(!selectedMarker) updateSheet(destinationSheet);else updateSmartTopbar(selectedStopData);}
         fit();showToast('Echte ORS route geladen');
       }catch(err){console.warn('ORS fallback route:',err);showToast('Fallback route actief');}
@@ -3889,43 +3903,65 @@
 })();
 
 
-/* Roadora v7.0.8 — Topbar + Bottom Sheet Info Hierarchy
-   - Topbar is globale ritstatus, geen dubbele route-summary
-   - Route sheet is routekaart-context met km/tijd/stops
-   - Stop/hotel/fuel sheet blijft context van geselecteerde stop
+/* Roadora v7.0.9 — Topbar Info Restore + Clean Route Card
+   - Topbar toont weer nuttige ritinformatie: tijd, km, stops en route-status
+   - Geen placeholders meer zoals "Aankomst —" of "Maps-ready" als ORS-data beschikbaar is
+   - Bottom route-card blijft route-context/CTA en gebruikt dezelfde centrale route summary
    - Maps export blijft locked/onaangeraakt
 */
 (function(){
   'use strict';
-  const KEY='roadoraRoadtripV1';
+  const TRIP_KEY='roadoraRoadtripV1';
+  const SUMMARY_KEY='roadoraRouteSummaryV1';
   const qs=(s,r=document)=>r.querySelector(s);
-  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
   let guard=false;
   let timer=null;
 
-  function readTrip(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(_){return {};}}
-  function stopsCount(){const d=readTrip();return Array.isArray(d.stops)?d.stops.length:0;}
-  function text(id,fallback=''){return (document.getElementById(id)?.textContent||fallback).trim();}
-  function routeKm(){return text('mapStatusDistance') || qs('.routePanel .stats .stat:nth-child(2) b')?.textContent?.trim() || '— km';}
-  function routeTime(){return text('mapStatusEta') || '—';}
+  function readJson(key,fallback={}){try{return JSON.parse(localStorage.getItem(key)||'{}')||fallback;}catch(_){return fallback;}}
+  function readTrip(){const d=readJson(TRIP_KEY,{});return {stops:Array.isArray(d.stops)?d.stops.filter(Boolean):[]};}
+  function readSummary(){return readJson(SUMMARY_KEY,{});}
+  function text(sel,fallback=''){return (qs(sel)?.textContent||fallback).trim();}
+  function isValidTime(v){return /^\d+u\s*\d{0,2}m?$/i.test(String(v||'').trim()) || /^\d+u$/i.test(String(v||'').trim());}
+  function isValidKm(v){return /\d/.test(String(v||'')) && /km/i.test(String(v||''));}
   function vehicleLabel(){return qs('#mapScreen .vehicle.active span:last-child')?.textContent?.trim() || qs('#routeSetupScreen .rVehicle.active')?.textContent?.replace(/[🚘⚡🚐🏍️]/g,'').trim() || 'Auto';}
-  function arrivalLabel(){
-    const raw=routeTime();
-    const m=String(raw).match(/(\d+)u\s*(\d+)?/i);
-    if(!m) return 'Aankomst —';
-    const mins=(parseInt(m[1],10)*60)+(parseInt(m[2]||'0',10));
-    const d=new Date(Date.now()+mins*60000);
-    return 'Aankomst '+d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  function stopCount(){return readTrip().stops.length;}
+  function fallbackMetaParts(){
+    const meta=text('#stopMeta','');
+    return String(meta).split('·').map(x=>x.trim()).filter(Boolean);
+  }
+  function routeKm(){
+    const sum=readSummary();
+    if(isValidKm(sum.distanceLabel)) return sum.distanceLabel;
+    const chip=text('#mapStatusDistance','');
+    if(isValidKm(chip)) return chip;
+    const stat=text('.routePanel .stat:nth-child(2) b','');
+    if(isValidKm(stat)) return stat;
+    const fromMeta=fallbackMetaParts().find(isValidKm);
+    return fromMeta || '— km';
+  }
+  function routeTime(){
+    const sum=readSummary();
+    if(isValidTime(sum.timeLabel)) return sum.timeLabel;
+    const chip=text('#mapStatusEta','');
+    if(isValidTime(chip)) return chip;
+    const fromMeta=fallbackMetaParts().find(isValidTime);
+    return fromMeta || 'route laden';
+  }
+  function stopLabel(){const n=stopCount();return `${n} stop${n===1?'':'s'}`;}
+  function hasRouteNumbers(){return isValidKm(routeKm()) && isValidTime(routeTime());}
+  function routeMeta(){
+    const parts=[];
+    const km=routeKm(), time=routeTime();
+    if(isValidKm(km)) parts.push(km);
+    if(isValidTime(time)) parts.push(time);
+    if(stopCount()) parts.push(stopLabel());
+    return parts.join(' · ') || 'Route wordt geladen';
   }
   function isRouteLikeSheet(){
     const sheet=qs('#mapScreen .sheet');
     const type=sheet?.dataset?.type || '';
-    const title=text('stopTitle');
+    const title=text('#stopTitle','');
     return !type || ['destination','overview','route'].includes(type) || /Innsbruck|Rotterdam/.test(title);
-  }
-  function routeMeta(){
-    const count=stopsCount();
-    return `${routeKm()} · ${routeTime()}${count?` · ${count} stop${count===1?'':'s'}`:''}`;
   }
   function setTopbarGlobal(){
     if(guard) return;
@@ -3938,14 +3974,15 @@
       const dist=qs('#mapStatusDistance');
       const next=qs('#mapStatusNext');
       const cockpit=qs('#mapScreen .mapCockpit');
-      const count=stopsCount();
+      const km=routeKm();
+      const time=routeTime();
       if(cockpit) cockpit.setAttribute('data-copilot-state','route');
       if(title) title.textContent='Rotterdam → Innsbruck';
-      if(badge) badge.textContent='Route actief';
-      if(sub) sub.textContent=`${vehicleLabel()} · ${count} stop${count===1?'':'s'}`;
-      if(eta) eta.textContent=arrivalLabel();
-      if(dist) dist.textContent=vehicleLabel();
-      if(next) next.textContent='Maps-ready';
+      if(badge) badge.textContent='🟢 Route actief';
+      if(sub) sub.textContent=hasRouteNumbers() ? `${vehicleLabel()} route · ${time} · ${km}` : `${vehicleLabel()} route · route laden`;
+      if(eta) eta.textContent=isValidTime(time) ? time : 'route laden';
+      if(dist) dist.textContent=isValidKm(km) ? km : '— km';
+      if(next) next.textContent=stopCount() ? stopLabel() : 'Geen stops';
     }finally{guard=false;}
   }
   function setRouteSheetSummary(){
@@ -3967,29 +4004,27 @@
     if(secondary){ secondary.textContent='ⓘ Route info'; secondary.hidden=false; secondary.classList.remove('is-hidden'); }
     if(save){ save.hidden=true; save.disabled=true; save.classList.add('is-disabled'); }
   }
-  function refreshHierarchy(){
-    setTopbarGlobal();
-    setRouteSheetSummary();
-  }
-  function schedule(){clearTimeout(timer);timer=setTimeout(refreshHierarchy,70);}
+  function refreshHierarchy(){setTopbarGlobal();setRouteSheetSummary();}
+  function schedule(){clearTimeout(timer);timer=setTimeout(refreshHierarchy,80);}
 
   document.addEventListener('click',function(e){
     const t=e.target;
     if(!t?.closest) return;
     const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav]');
-    if(nav?.dataset.nav==='route') setTimeout(()=>{setRouteSheetSummary();setTopbarGlobal();},150);
-    if(nav?.dataset.nav==='roadtrip') setTimeout(setTopbarGlobal,150);
-    if(nav?.dataset.nav==='stops') setTimeout(setTopbarGlobal,150);
+    if(nav?.dataset.nav==='route') setTimeout(refreshHierarchy,160);
+    if(nav?.dataset.nav==='roadtrip') setTimeout(setTopbarGlobal,160);
+    if(nav?.dataset.nav==='stops') setTimeout(setTopbarGlobal,160);
   },true);
   ['roadora:roadtrip:update','roadora:route:update'].forEach(ev=>window.addEventListener(ev,schedule));
-  window.addEventListener('storage',e=>{if(!e.key||e.key===KEY)schedule();});
+  window.addEventListener('storage',e=>{if(!e.key||e.key===TRIP_KEY||e.key===SUMMARY_KEY)schedule();});
   const obs=new MutationObserver(()=>schedule());
   function boot(){
     const ui=qs('#mapScreen .ui');
     if(ui) obs.observe(ui,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-type','class']});
     refreshHierarchy();
-    setTimeout(refreshHierarchy,500);
-    setTimeout(refreshHierarchy,1300);
+    setTimeout(refreshHierarchy,450);
+    setTimeout(refreshHierarchy,1200);
+    setTimeout(refreshHierarchy,2200);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
   window.RoadoraInfoHierarchy={refresh:refreshHierarchy,routeSheet:setRouteSheetSummary,topbar:setTopbarGlobal};
