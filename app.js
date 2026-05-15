@@ -3231,6 +3231,19 @@
   function isMobileDevice(){
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'') || (window.matchMedia?.('(max-width: 760px)')?.matches);
   }
+  function isAndroidDevice(){
+    return /Android/i.test(navigator.userAgent||'');
+  }
+  function openGoogleMapsUrl(url, preferApp=false){
+    if(preferApp && isAndroidDevice()){
+      // Android: forceer de Google Maps app-routebuilder i.p.v. een browser-preview.
+      // Dit opent hetzelfde route-overzicht als Maps zelf: huidige locatie → stops → bestemming.
+      const intent=url.replace(/^https:\/\//,'intent://')+'#Intent;scheme=https;package=com.google.android.apps.maps;end';
+      window.location.href=intent;
+      return;
+    }
+    window.open(url,'_blank','noopener');
+  }
   function mapsUrl(mode='start'){
     const data=read();
     const params=new URLSearchParams();
@@ -3247,12 +3260,11 @@
       return `https://www.google.com/maps/dir/?${params.toString()}`;
     }
 
-    // v6.6.1 Full Route Start Flow:
-    // Open Maps met de VOLLEDIGE route zichtbaar én met dir_action=navigate.
-    // Op mobiel gebruiken we 'Current Location' als origin, zodat Maps de actuele GPS-start pakt.
-    // De eerste Roadora-stop blijft de eerste waypoint; na Start leidt Maps dus eerst daarheen,
-    // terwijl de volledige route met alle stops in de route-opbouw blijft staan.
-    params.set('origin',isMobileDevice() ? 'Current Location' : (data.origin||ORIGIN));
+    // v6.7.2 Maps App Route Screen:
+    // Voor de startflow laten we op mobiel bewust origin weg. Google Maps pakt dan de actuele
+    // locatie en toont de volledige route-opbouw: huidige locatie → stop 1 → stop 2 → bestemming.
+    // Daardoor krijg je veel vaker het normale Maps-scherm met Start-knop, zoals in Google Maps zelf.
+    if(!isMobileDevice()) params.set('origin',data.origin||ORIGIN);
     if(waypoints.length) params.set('waypoints',waypoints.join('|'));
     params.set('dir_action','navigate');
     return `https://www.google.com/maps/dir/?${params.toString()}`;
@@ -3360,7 +3372,7 @@
   function openMaps(mode='start'){
     const viewMode = mode==='overview' ? 'overview' : 'start';
     const url=mapsUrl(viewMode);
-    window.open(url,'_blank','noopener');
+    openGoogleMapsUrl(url, viewMode==='start');
     const count=read().stops.length;
     if(viewMode==='overview'){
       toast(count ? `Volledige roadtrip geopend met ${count} tussenstop${count===1?'':'s'}` : 'Volledige route geopend');
