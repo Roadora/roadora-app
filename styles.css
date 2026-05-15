@@ -4670,3 +4670,35 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
     height:40px!important;
   }
 }
+
+/* Roadora v6.8 Route Mode Polish */
+body.roadoraRouteModeV68 #mapScreen .sheet[data-type="route-overview"],
+#mapScreen .sheet.routeModeSheetV68{
+  background:rgba(255,250,242,.965) !important;
+  box-shadow:0 22px 56px rgba(24,18,12,.20), inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+#mapScreen .sheet[data-type="route-overview"] .thumb,
+#mapScreen .sheet.routeModeSheetV68 .thumb{
+  background:linear-gradient(135deg,#e7f0ff,#2f7df6 52%,#17324d) !important;
+}
+#mapScreen .sheet[data-type="route-overview"] .overline,
+#mapScreen .sheet.routeModeSheetV68 .overline{
+  color:#2f6fcf !important;
+}
+#mapScreen .sheet[data-type="route-overview"] .primary,
+#mapScreen .sheet.routeModeSheetV68 .primary{
+  background:linear-gradient(135deg,#6ca8ff,#2f7df6) !important;
+  color:#fff !important;
+  box-shadow:0 14px 28px rgba(47,125,246,.22), inset 0 1px 0 rgba(255,255,255,.35) !important;
+}
+#mapScreen .sheet[data-type="route-overview"] .saveStop,
+#mapScreen .sheet.routeModeSheetV68 .saveStop{
+  background:rgba(255,255,255,.70) !important;
+  color:#2b5f9e !important;
+}
+#mapScreen .mapCockpit[data-copilot-state="route-overview"] #mapStatusBadge,
+body.roadoraRouteModeV68 #mapScreen #mapStatusBadge{
+  color:#225ca9 !important;
+  background:linear-gradient(135deg,rgba(90,154,255,.20),rgba(47,125,246,.10)) !important;
+  border-color:rgba(47,125,246,.16) !important;
+}
