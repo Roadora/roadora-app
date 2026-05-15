@@ -8,12 +8,28 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@650;750&amp;display=swap" rel="stylesheet"/>
 <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-<meta content="roadora-v6-8-2-route-sync-roadtrip-timeline-fix; maps-export-locked" name="roadora-build"/>
+<meta content="roadora-v6-8-3-clean-index-only-route-sync-timeline; maps-export-locked" name="roadora-build"/>
 <link href="./styles.css" rel="stylesheet"/>
-<link href="./roadora-v6-8-2-fix.css" rel="stylesheet"/>
 <script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer="" src="./app.js"></script>
-<script defer="" src="./roadora-v6-8-2-fix.js"></script>
+
+<style id="roadora-v6-8-3-clean-fix-css">
+:root{--rd-gold:#dfa452;--rd-gold2:#f0d28b;--rd-ink:#241911;--rd-soft:#fff8ee;--rd-muted:#7a6b5b}
+/* herstel Roadora-kleuren: geen blauwe route-card/CTA uit oude patch */
+.sheet .thumb,.sheet .thumb::before,.sheet .thumb::after{background:linear-gradient(135deg,rgba(234,207,153,.98),rgba(118,145,112,.95)) !important;box-shadow:none !important}
+.sheet .primary,.rdTimelinePrimary,.roadtripPrimary{background:linear-gradient(135deg,#f1d18a,#dc9b44) !important;color:#24170c !important;border:0 !important}
+#mapStatusBadge{background:rgba(223,164,82,.18) !important;color:#73512a !important;border-color:rgba(170,112,42,.18) !important}
+.mapLiveChips span{max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mapLiveSub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stats .stat small{white-space:nowrap}
+/* Roadora timeline sheet */
+.rdTimelineSheet{position:absolute;inset:0;z-index:99999;display:none;align-items:flex-end;justify-content:center;background:rgba(31,24,16,.26);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.rdTimelineSheet.open{display:flex}.rdTimelineCard{width:min(640px,calc(100% - 28px));max-height:min(74vh,720px);overflow:hidden;border-radius:30px;background:rgba(255,250,242,.98);box-shadow:0 30px 80px rgba(30,21,12,.32);border:1px solid rgba(255,255,255,.82);padding:22px 22px 20px;margin:0 0 108px;color:var(--rd-ink)}
+.rdTimelineHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.rdTimelineHead span{display:block;color:#9d6a30;text-transform:uppercase;font-size:12px;font-weight:900;letter-spacing:.12em}.rdTimelineHead h2{margin:5px 0 0;font-size:24px;line-height:1.06}.rdTimelineClose{width:52px;height:52px;border:0;border-radius:999px;background:#fffaf2;color:#241911;font-size:32px;line-height:1;box-shadow:0 8px 24px rgba(63,43,22,.08)}
+.rdTimelineList{display:grid;gap:8px;max-height:calc(74vh - 192px);overflow:auto;padding-right:2px}.rdPoint{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;padding:12px;border-radius:20px;background:rgba(255,255,255,.74);border:1px solid rgba(80,54,26,.075)}.rdPointIcon{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#f3cf86,#d99a42);font-weight:900;color:#2b1b0f}.rdPoint.start .rdPointIcon,.rdPoint.end .rdPointIcon{background:#2a2018;color:#fff}.rdPoint b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rdPoint small{display:block;margin-top:2px;color:#75695c;font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rdSeg{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:3px 10px 3px 12px}.rdSegLine{width:3px;height:38px;border-radius:999px;background:linear-gradient(#efcf83,#d79541);justify-self:center}.rdSeg b{display:block;font-size:14px}.rdSeg small{display:block;font-size:12px;color:#8a7a68}.rdMini{border:0;border-radius:999px;background:#fff7ea;color:#73512a;font-weight:900;padding:10px 12px;box-shadow:0 6px 16px rgba(80,54,26,.07)}.rdTimelineFooter{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.rdTimelineFooter button{height:56px;border:0;border-radius:20px;font-size:16px;font-weight:900}.rdTimelineGhost{background:#fff;color:#25180f}.rdTimelinePrimary{background:linear-gradient(135deg,#f1d18a,#dc9b44)}
+/* oude popup met alleen gekozen stops nooit meer tonen */
+.rdOldTripHidden{display:none !important;visibility:hidden !important;pointer-events:none !important}
+@media(max-width:520px){.rdTimelineCard{width:calc(100vw - 28px);padding:21px 18px 18px;margin-bottom:100px;border-radius:28px}.rdTimelineHead h2{font-size:22px}.rdMini{font-size:12px;padding:9px 10px}.rdTimelineFooter button{height:54px}.rdPoint b{font-size:15.5px}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -200,5 +216,63 @@
 </section>
 </main>
 </div>
+
+<script id="roadora-v6-8-3-clean-fix-js">
+(function(){
+  'use strict';
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const START={name:'Rotterdam, Nederland',short:'Rotterdam',type:'start',role:'Startpunt'};
+  const END={name:'Innsbruck, Oostenrijk',short:'Innsbruck',type:'end',role:'Eindbestemming'};
+  const FALLBACK_STOPS=[{name:'EnBW Ladepark Heidelberg',type:'ev',role:'Laadstop',meta:'12 snelladers'},{name:'Stuttgart Mitte',type:'food',role:'Eten & drinken',meta:'Pauzeplek richting Oostenrijk'}];
+  const FALLBACK_SEGMENTS=[{from:'Rotterdam',to:'EnBW Ladepark Heidelberg',km:356,min:235},{from:'EnBW Ladepark Heidelberg',to:'Stuttgart Mitte',km:120,min:80},{from:'Stuttgart Mitte',to:'Innsbruck',km:493,min:279}];
+  const st={model:null,lastRouteCoords:null,filterTimer:null};
+  function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+  function toast(m){if(window.RoadoraToast)return window.RoadoraToast(m);const t=$('#mapToast');if(t){t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1300);}}
+  function fmt(min){min=Math.max(0,Math.round(Number(min)||0));const h=Math.floor(min/60),m=min%60;return h?(m?`${h}u ${String(m).padStart(2,'0')}m`:`${h}u`):`${m}m`;}
+  function role(type){return ({start:'Startpunt',end:'Eindbestemming',fuel:'Tankstop',hotel:'Hotelstop',ev:'Laadstop',food:'Eten & drinken',view:'Activiteit'})[type]||'Tussenstop';}
+  function icon(p,i){if(p.type==='start')return 'A';if(p.type==='end')return 'B';if(p.type==='fuel')return '⛽';if(p.type==='hotel')return '🏨';if(p.type==='ev')return '⚡';if(p.type==='food')return '🍽️';return String(i);}
+  function clean(v){return String(v||'').replace(/^\d+\s*/,'').replace(/×$/,'').trim();}
+  function norm(s){if(!s)return null;const name=clean(s.name||s.title||s.label||s.placeName||'');if(!name)return null;return {name,type:s.type||s.category||'stop',role:s.role||s.label||role(s.type||s.category),meta:s.meta||s.address||s.desc||s.description||'',ll:s.ll||s.latlng||s.latLng||null};}
+  function storageStops(){
+    const keys=['roadoraRoadtripStops','roadoraSelectedStops','roadoraSavedStops'];
+    for(const k of keys){try{const arr=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(arr)&&arr.length)return arr.map(norm).filter(Boolean).slice(0,8);}catch(_){}}
+    return [];
+  }
+  function globalStops(){
+    const tries=[window.RoadoraTripStops,window.RoadoraRouteStops,window.RoadoraSelectedStops,window.RoadoraState?.roadtripStops,window.RoadoraState?.routeStops,window.RoadoraState?.stops,window.RoadoraMapApi?.getRoadtripStops?.(),window.RoadoraMapApi?.getStops?.(),window.RoadoraMapApi?.getSelectedStops?.(),storageStops()];
+    for(const c of tries){if(Array.isArray(c)&&c.length)return c.map(norm).filter(Boolean).slice(0,8);} return [];
+  }
+  function readModel(){
+    const src=st.model||window.RoadoraRouteModel||window.RoadoraActiveRoute||{};
+    const start=src.start||START,end=src.end||END;
+    let stops=Array.isArray(src.stops)&&src.stops.length?src.stops.map(norm).filter(Boolean):globalStops();
+    if(!stops.length) stops=FALLBACK_STOPS.slice();
+    let segments=Array.isArray(src.segments)&&src.segments.length?src.segments.slice(0,stops.length+1):[];
+    if(segments.length<stops.length+1){segments=[];const totalKm=Number(src.totalKm)||969,totalMin=Number(src.totalMin)||594;const ratios=stops.length===2?[.367,.124,.509]:null;for(let i=0;i<stops.length+1;i++){const r=ratios?ratios[i]:1/(stops.length+1);segments.push({from:i===0?(start.short||start.name):stops[i-1].name,to:i<stops.length?stops[i].name:(end.short||end.name),km:Math.round(totalKm*r),min:Math.round(totalMin*r)});}}
+    const totalKm=Number(src.totalKm)||segments.reduce((a,s)=>a+(Number(s.km)||0),0)||969;
+    const totalMin=Number(src.totalMin)||segments.reduce((a,s)=>a+(Number(s.min)||0),0)||594;
+    return {start,end,stops,segments,totalKm,totalMin};
+  }
+  function syncTopbar(){const d=readModel();$('#mapStatusTitle')&&( $('#mapStatusTitle').textContent=`${d.start.short||d.start.name} → ${d.end.short||d.end.name}`);$('#mapStatusBadge')&&($('#mapStatusBadge').textContent='Roadtrip-route actief');$('#mapStatusSub')&&($('#mapStatusSub').textContent=`${d.totalKm} km · ${fmt(d.totalMin)} · ${d.stops.length} tussenstops`);$('#mapStatusEta')&&($('#mapStatusEta').textContent=fmt(d.totalMin));$('#mapStatusDistance')&&($('#mapStatusDistance').textContent=`${d.totalKm} km`);$('#mapStatusNext')&&($('#mapStatusNext').textContent=d.stops[0]?`Volgende: ${d.stops[0].name}`:'Volgende: eindbestemming');const stats=$$('.stats .stat b');if(stats[1])stats[1].textContent=`${d.totalKm} km`;if(stats[2])stats[2].textContent=String(d.stops.length);}
+  function syncSheet(){const d=readModel(),next=d.stops[0]||d.end,seg=d.segments[0]||{km:d.totalKm,min:d.totalMin,from:d.start.short||d.start.name};const ov=$('.sheet .overline');if(ov)ov.textContent=d.stops[0]?'Volgende stop':'Eindbestemming';$('#stopTitle')&&($('#stopTitle').textContent=next.name);$('#stopMeta')&&($('#stopMeta').textContent=`${seg.km} km · ${fmt(seg.min)} vanaf ${seg.from||d.start.short||d.start.name}`);$('#stopDesc')&&($('#stopDesc').textContent='Open Mijn Roadtrip voor afstand en rijtijd per traject. Is een stuk te lang? Voeg daar een extra stop toe of vervang de stop.');const p=$('.sheet .primary');if(p)p.textContent=d.stops[0]?'⌁ Navigeer naar volgende stop':'⌁ Navigeer naar bestemming';}
+  function ensureTimeline(){let el=$('#rdTimelineSheet');if(el)return el;el=document.createElement('section');el.id='rdTimelineSheet';el.className='rdTimelineSheet';el.innerHTML='<article class="rdTimelineCard"><div class="rdTimelineHead"><div><span>Mijn Roadtrip</span><h2>Route-opbouw</h2></div><button class="rdTimelineClose" type="button" data-rd-close>×</button></div><div class="rdTimelineList" id="rdTimelineList"></div><div class="rdTimelineFooter"><button class="rdTimelineGhost" type="button" data-rd-close>Sluiten</button><button class="rdTimelinePrimary" type="button" data-rd-action="add-stop">Stop toevoegen</button></div></article>';($('#mapScreen .roadMapApp')||document.body).appendChild(el);return el;}
+  function renderTimeline(){const d=readModel(),points=[d.start,...d.stops,d.end],list=ensureTimeline().querySelector('#rdTimelineList');list.innerHTML=points.map((p,i)=>{let h=`<div class="rdPoint ${esc(p.type||'')}"><div class="rdPointIcon">${esc(icon(p,i))}</div><div><b>${esc(p.name)}</b><small>${esc(p.role||role(p.type))}${p.meta?' · '+esc(p.meta):''}</small></div></div>`;if(i<points.length-1){const s=d.segments[i]||{km:0,min:0};h+=`<div class="rdSeg"><div class="rdSegLine"></div><div><b>${esc(s.km)} km · ${esc(fmt(s.min))}</b><small>Rijtijd naar ${esc(points[i+1].name)}</small></div><button class="rdMini" type="button" data-rd-action="add-between" data-between="${i}">+ stop</button></div>`;}return h;}).join('');}
+  function hideOldRoadtrip(){ $$('section,div,article').forEach(el=>{if(el.id==='rdTimelineSheet'||el.closest('#rdTimelineSheet'))return;const txt=(el.textContent||'').toLowerCase(); if(txt.includes('je gekozen tussenstops')||(txt.includes('mijn roadtrip')&&txt.includes('leegmaken')&&txt.includes('klaar'))) el.classList.add('rdOldTripHidden');}); }
+  function openTimeline(){hideOldRoadtrip();renderTimeline();ensureTimeline().classList.add('open');$$('#mapScreen .bottomNav .navItem').forEach(b=>b.classList.toggle('active',b.dataset.nav==='roadtrip'));toast('Mijn Roadtrip geopend');setTimeout(hideOldRoadtrip,60);}
+  function closeTimeline(){$('#rdTimelineSheet')?.classList.remove('open');}
+  function ll(x){if(!x)return null;if(Array.isArray(x))return {lat:Number(x[0]),lng:Number(x[1])};if(typeof x.lat==='number'&&typeof x.lng==='number')return x;if(typeof x.lat==='number'&&typeof x.lon==='number')return {lat:x.lat,lng:x.lon};return null;}
+  function dist(a,b){const R=6371000,rad=Math.PI/180,lat1=a.lat*rad,lat2=b.lat*rad,dlat=(b.lat-a.lat)*rad,dlng=(b.lng-a.lng)*rad;const h=Math.sin(dlat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dlng/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+  function proj(p,o){const mLat=111320,mLng=111320*Math.cos((o.lat||0)*Math.PI/180);return{x:(p.lng-o.lng)*mLng,y:(p.lat-o.lat)*mLat};}
+  function dSeg(p,a,b){const P=proj(p,a),A=proj(a,a),B=proj(b,a),vx=B.x-A.x,vy=B.y-A.y,wx=P.x-A.x,wy=P.y-A.y,c=vx*vx+vy*vy;if(!c)return dist(p,a);const t=Math.max(0,Math.min(1,(wx*vx+wy*vy)/c));return dist(p,{lat:a.lat+(b.lat-a.lat)*t,lng:a.lng+(b.lng-a.lng)*t});}
+  function routeCoords(){let g=window.RoadoraMapApi?.getRouteGeometry?.()||window.RoadoraActiveRouteGeometry||st.lastRouteCoords;if(Array.isArray(g)&&g.length){const c=g.map(ll).filter(Boolean);if(c.length>1)return c;}if(g?.coordinates){const c=g.coordinates.map(x=>Array.isArray(x)?{lat:Number(x[1]),lng:Number(x[0])}:ll(x)).filter(Boolean);if(c.length>1)return c;}const map=window.roadoraLeafletMap;if(!map?._layers)return null;let best=null,bestLen=0;Object.values(map._layers).forEach(layer=>{if(typeof layer.getLatLngs!=='function')return;let arr=layer.getLatLngs();while(Array.isArray(arr[0]))arr=arr.flat();const c=arr.map(ll).filter(Boolean);if(c.length<8)return;let len=0;for(let i=0;i<c.length-1;i++)len+=dist(c[i],c[i+1]);if(len>bestLen){bestLen=len;best=c;}});if(best)st.lastRouteCoords=best;return best;}
+  function markerKind(layer){const el=layer.getElement?.()||layer._icon;if(!el)return '';const txt=(el.textContent||'').toLowerCase(),html=(el.innerHTML||'').toLowerCase(),cls=(el.className||'').toString().toLowerCase();const all=txt+' '+html+' '+cls;if(/^[12ab]$/.test(txt.trim())||all.includes('start')||all.includes('bestemming')||all.includes('destination'))return 'route';if(all.includes('hotel')||all.includes('bed')||all.includes('🛏')||all.includes('fuel')||all.includes('tank')||all.includes('⛽')||all.includes('ev')||all.includes('⚡')||all.includes('food')||all.includes('restaurant')||all.includes('🍽')||all.includes('cat')||all.includes('stop'))return 'category';return '';}
+  function filterMarkers(){const map=window.roadoraLeafletMap,c=routeCoords();if(!map?._layers||!c||c.length<2)return;Object.values(map._layers).forEach(layer=>{if(typeof layer.getLatLng!=='function')return;const p=ll(layer.getLatLng());if(!p)return;const el=layer.getElement?.()||layer._icon;if(!el)return;const k=markerKind(layer);if(k!=='category')return;let best=Infinity;for(let i=0;i<c.length-1;i++)best=Math.min(best,dSeg(p,c[i],c[i+1]));const show=best<=18000;el.style.display=show?'':'none';if(layer._shadow)layer._shadow.style.display=show?'':'none';});}
+  function refresh(detail={}){if(detail.model)st.model=detail.model;if(detail.geometry)st.lastRouteCoords=null;syncTopbar();syncSheet();renderTimeline();try{window.RoadoraMapApi?.clearCategoryMarkers?.();}catch(_){}try{window.RoadoraMapApi?.reloadCategoriesAlongRoute?.(detail.geometry||routeCoords());}catch(_){}[80,260,700,1400,2600].forEach(ms=>setTimeout(filterMarkers,ms));}
+  function bind(){document.addEventListener('click',function(e){const btn=e.target.closest('button');if(!btn)return;if(btn.closest('#rdTimelineSheet')&&btn.hasAttribute('data-rd-close')){e.preventDefault();e.stopPropagation();closeTimeline();return;}if(btn.closest('#rdTimelineSheet')&&btn.dataset.rdAction){e.preventDefault();toast('Kies een categorie op de kaart om hier een stop toe te voegen');return;}if(btn.dataset.nav==='roadtrip'){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();openTimeline();return;}},true);}
+  window.RoadoraRouteSync={refreshRouteSync:refresh,openTimeline,closeTimeline,filterMarkers,model:readModel};
+  document.addEventListener('roadora:route-changed',e=>refresh(e.detail||{}));document.addEventListener('roadora:stops-changed',e=>refresh(e.detail||{}));document.addEventListener('DOMContentLoaded',()=>{bind();setTimeout(refresh,250);setTimeout(refresh,1100);setInterval(()=>{syncTopbar();syncSheet();hideOldRoadtrip();filterMarkers();},2200);});
+})();
+</script>
+
 </body>
 </html>
