@@ -2915,11 +2915,20 @@
     updateSaveButton();
     return true;
   }
+  function refreshRoadtripRouteLegacy(){
+    clearTimeout(refreshRoadtripRouteLegacy._timer);
+    refreshRoadtripRouteLegacy._timer=setTimeout(()=>{
+      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){ }
+      try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
+      if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) setTimeout(renderPanel,650);
+    },70);
+  }
   function remove(id){
     const data=read();
     data.stops=data.stops.filter(s=>String(s.id)!==String(id));
     write(data);
     if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) renderPanel();
+    refreshRoadtripRouteLegacy();
     toast('Stop verwijderd');
   }
   function clear(){
@@ -2927,6 +2936,7 @@
     data.stops=[];
     write(data);
     if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) renderPanel();
+    refreshRoadtripRouteLegacy();
     toast('Roadtrip geleegd');
   }
   function ensureDock(){
@@ -3523,11 +3533,20 @@
     qs('#roadtripMiniPanelV584')?.classList.remove('open','roadtripV63Open');
     qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621','roadtripPanelOpenV63');
   }
+  function refreshRouteAfterTripChange(){
+    clearTimeout(refreshRouteAfterTripChange._timer);
+    refreshRouteAfterTripChange._timer=setTimeout(()=>{
+      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){ }
+      try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
+      if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) setTimeout(renderPanel,650);
+    },70);
+  }
   function removeStop(id){
     const data=read();
     data.stops=data.stops.filter(s=>String(s.id)!==String(id));
     write(data);
     renderPanel();
+    refreshRouteAfterTripChange();
     toast('Stop verwijderd');
   }
   function clearStops(){
@@ -3536,6 +3555,7 @@
     data.stops=[];
     write(data);
     renderPanel();
+    refreshRouteAfterTripChange();
     toast('Roadtrip geleegd');
   }
   function findStop(id){ return read().stops.find(s=>String(s.id)===String(id)); }
@@ -3725,7 +3745,10 @@
     if(!t?.closest) return;
     const routeNav=t.closest('#mapScreen .bottomNav .navItem[data-nav="route"]');
     if(routeNav){
-      setTimeout(()=>fitTripRoute('bottom-nav'),90);
+      // v6.9.6 Clean Core: Route-tab mag de roadtrip niet wissen.
+      // Alleen tijdelijke detail/pin-layers worden gesloten; de opgeslagen stops blijven behouden.
+      try{ window.RoadoraMapApi?.clearSelection?.(); }catch(_){ }
+      setTimeout(()=>fitTripRoute('bottom-nav'),120);
       return;
     }
   },true);
