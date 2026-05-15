@@ -4,16 +4,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Roadora — v6.8 Route Sync + Roadtrip Timeline</title>
+<title>Roadora — v5.3.2 Hotel Kaart Switch</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@650;750&amp;display=swap" rel="stylesheet"/>
 <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-<meta content="roadora-v6-8-route-sync-roadtrip-timeline; maps-export-locked" name="roadora-build"/>
+<meta content="roadora-v6-8-2-route-sync-roadtrip-timeline-fix; maps-export-locked" name="roadora-build"/>
 <link href="./styles.css" rel="stylesheet"/>
-<link href="./styles-v6-8-route-sync-roadtrip-timeline.css" rel="stylesheet"/>
+<link href="./roadora-v6-8-2-fix.css" rel="stylesheet"/>
 <script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer="" src="./app.js"></script>
-<script defer="" src="./app-v6-8-route-sync-roadtrip-timeline.js"></script>
+<script defer="" src="./roadora-v6-8-2-fix.js"></script>
 </head>
 <body>
 <div class="app">
@@ -150,13 +150,13 @@
 <div aria-live="polite" class="mapLiveStatus">
 <div class="mapLiveMain">
 <b id="mapStatusTitle">Rotterdam → Innsbruck</b>
-<span id="mapStatusBadge">Roadtrip-route actief</span>
+<span id="mapStatusBadge">Rustige route</span>
 </div>
-<div class="mapLiveSub" id="mapStatusSub">963 km · 9u 41m · 2 tussenstops</div>
+<div class="mapLiveSub" id="mapStatusSub">Auto route · slimme assist voorbereid</div>
 <div class="mapLiveChips">
-<span id="mapStatusEta">9u 41m</span>
-<span id="mapStatusDistance">963 km</span>
-<span id="mapStatusNext">Volgende: JET</span>
+<span id="mapStatusEta">ETA —</span>
+<span id="mapStatusDistance">— km</span>
+<span id="mapStatusNext">Volgende: laadstop</span>
 </div>
 </div>
 </header>
@@ -171,7 +171,7 @@
 <button class="vehicle" data-profile="driving-car" data-vehicle="motor" type="button"><span>🏍️</span><span>Motor</span></button>
 </div>
 </div>
-<div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>963 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>2 stops</b><small>Tussenstops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
+<div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>2.340 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>6–8</b><small>Stops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
 </section>
 </section>
 <button aria-controls="mapCats" aria-expanded="false" class="stopsCta" id="stopsCta" type="button">
@@ -186,7 +186,7 @@
 <button class="cat" data-filter="view" type="button"><svg viewbox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"></path></svg><span>Activiteiten</span></button>
 </div>
 <div class="controls"><div class="ctrlGroup"><button class="ctrl" id="north" type="button">▴</button><button class="ctrl" id="fitRoute" type="button"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><button class="ctrl" type="button"><svg viewbox="0 0 24 24"><path d="M12 2l8 4-8 4-8-4 8-4zM4 12l8 4 8-4M4 18l8 4 8-4"></path></svg></button></div><div class="ctrlGroup"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
-<section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline" id="sheetOverline">Volgende stop</div><h2 id="stopTitle">JET</h2><div class="meta" id="stopMeta">243 km · 2u 25m vanaf Rotterdam</div><div class="desc" id="stopDesc">Je roadtrip-route is actief. Open Mijn Roadtrip om per traject te zien waar een extra stop handig is.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar volgende stop</button><button class="saveStop" type="button" data-roadora-action="open-roadtrip">＋ Tussenstop</button><button class="secondary" type="button" data-roadora-action="open-roadtrip">ⓘ Route info</button></div></div></section>
+<section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="saveStop" type="button">＋ Tussenstop</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
 <nav class="bottomNav bottomNavV59">
             <button class="navItem active" type="button" data-nav="route"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>
             <button class="navItem" type="button" data-nav="stops"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>Stops</button>
