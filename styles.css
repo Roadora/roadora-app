@@ -4686,3 +4686,14 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .roadtripV693Segment b{font-size:9.3px!important;}
   .roadtripV63Head b{max-width:230px!important;}
 }
+
+
+/* ===== Roadora v7.0.0 Fase 1 Core Stability =====
+   Kleine stabilisatie: actieve Route-tab blijft neutraal Roadora-goud, geen blauwe CTA-states.
+   Geen premium polish; alleen consistentie en safe-state styling.
+*/
+#mapScreen .bottomNav .navItem[data-nav="route"].active,
+#mapScreen .bottomNav .navItem[data-nav="route"].is-active{
+  background:rgba(228,188,121,.20) !important;
+  color:#8a5f2e !important;
+}

@@ -1,4 +1,4 @@
-/* Roadora v3.5 Compact Smart Sheet Pro
+/* Roadora v7.0.0 Fase 1 Core Stability — gebaseerd op Compact Smart Sheet Pro
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -3170,15 +3170,28 @@
     if(nav==='route'){
       e.preventDefault();
       e.stopImmediatePropagation();
+      const tripBefore=readTrip();
+      const tripBeforeJson=JSON.stringify(tripBefore||{stops:[]});
       setBottomActive('route');
       closeTransientPanels();
-      // v6.9.4: Route-tab betekent altijd terug naar volledige route-context.
-      // Dus gekozen stop-detail sluiten, categorie-wolken dicht en route opnieuw fitten.
-      // v6.9.7 Roadtrip State Fix: Route-knop wist nooit opgeslagen roadtrip-stops.
-      // Alleen tijdelijke categoriepins/detail-sheets sluiten; de gekozen roadtrip blijft behouden.
+      // v7.0.0 Fase 1 Core Stability:
+      // Route-tab is alleen een VIEW-reset. Hij mag nooit de opgeslagen roadtrip-state wissen.
+      // Tijdelijke stopdetails, categoriepins en overlays gaan dicht; gekozen stops blijven bewaard.
       try{ window.RoadoraMapApi?.setFilters?.([]); }catch(_){ }
       window.RoadoraMapApi?.closeCategories?.();
       window.RoadoraMapApi?.clearSelection?.();
+      // Safety guard: herstel roadtrip-state als een oudere legacy-laag hem toch leegt.
+      setTimeout(()=>{
+        try{
+          const after=readTrip();
+          const beforeCount=Array.isArray(tripBefore?.stops)?tripBefore.stops.length:0;
+          const afterCount=Array.isArray(after?.stops)?after.stops.length:0;
+          if(beforeCount>0 && afterCount===0){
+            localStorage.setItem(KEY,tripBeforeJson);
+            window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:tripBefore}));
+          }
+        }catch(_){ }
+      },30);
       try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
       setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),60);
       setTimeout(()=>window.RoadoraTripMap?.render?.(),120);
@@ -3560,9 +3573,12 @@
   function refreshRouteAfterTripChange(){
     clearTimeout(refreshRouteAfterTripChange._timer);
     refreshRouteAfterTripChange._timer=setTimeout(()=>{
-      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){ }
+      // v7.0.0: eerst direct optimistisch tekenen, daarna ORS echte km/tijd laten overschrijven.
       try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
+      if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) setTimeout(renderPanel,90);
+      try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){ }
       if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) setTimeout(renderPanel,650);
+      if(qs('#roadtripMiniPanelV584')?.classList.contains('open')) setTimeout(renderPanel,1400);
     },70);
   }
   function removeStop(id){
@@ -3796,4 +3812,18 @@
 
   window.RoadoraTripMap={render,fit:fitTripRoute,hide:hideTripMarkers};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleRender,{once:true}); else scheduleRender();
+})();
+
+
+/* Roadora v7.0.0 Fase 1 Stability Marker
+   Bewust geen wijziging aan RoadoraMapsExport. Maps-flow blijft locked.
+*/
+(function(){
+  'use strict';
+  window.RoadoraBuildInfo={
+    version:'v7.0.0-fase1-core-stability',
+    mapsExport:'locked',
+    routeCta:'view-reset-only',
+    roadtripState:'localStorage-protected'
+  };
 })();
