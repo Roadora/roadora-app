@@ -3511,17 +3511,10 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    if(stops.length){
-      L.polyline(routePoints(stops),{
-        color:'#6e4b25',
-        weight:2.4,
-        opacity:.46,
-        dashArray:'7 9',
-        lineCap:'round',
-        lineJoin:'round',
-        interactive:false
-      }).addTo(group);
-    }
+    // v6.9.1: geen stippellijn meer over de kaart.
+    // De blauwe ORS-route is de enige zichtbare route-lijn.
+    // Deze laag toont alleen gekozen roadtrip-stop markers, zodat er geen verwarring ontstaat
+    // tussen de echte route en een simpele rechte waypoint-hulplijn.
 
     stops.forEach((stop,index)=>{
       const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
