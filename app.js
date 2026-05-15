@@ -4029,3 +4029,134 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
   window.RoadoraInfoHierarchy={refresh:refreshHierarchy,routeSheet:setRouteSheetSummary,topbar:setTopbarGlobal};
 })();
+
+/* Roadora v7.1.0 — Info Dedup + Stop Count Sync
+   - Topbar: één compacte route-regel met tijd/km
+   - Topbar chips: alleen aantal gekozen tussenstops zichtbaar
+   - Stats-rij: stops telt mee met echte roadtrip-state, geen 6–8 placeholder
+   - Bottom route-card: routecontext/CTA zonder opnieuw dezelfde km/tijd te herhalen
+   - Maps export/ORS blijven onaangeraakt
+*/
+(function(){
+  'use strict';
+  const TRIP_KEY='roadoraRoadtripV1';
+  const SUMMARY_KEY='roadoraRouteSummaryV1';
+  const qs=(s,r=document)=>r.querySelector(s);
+  let timer=null;
+  let busy=false;
+
+  function readJson(key,fallback={}){
+    try{return JSON.parse(localStorage.getItem(key)||'{}')||fallback;}catch(_){return fallback;}
+  }
+  function tripStops(){
+    const d=readJson(TRIP_KEY,{});
+    return Array.isArray(d.stops)?d.stops.filter(Boolean):[];
+  }
+  function stopCount(){return tripStops().length;}
+  function stopLabel(){const n=stopCount();return `${n} stop${n===1?'':'s'}`;}
+  function text(sel,fallback=''){return (qs(sel)?.textContent||fallback).trim();}
+  function validKm(v){return /\d/.test(String(v||'')) && /km/i.test(String(v||''));}
+  function validTime(v){return /^\d+u(\s*\d{1,2}m)?$/i.test(String(v||'').trim()) || /^\d+u\s*\d{1,2}$/i.test(String(v||'').trim());}
+  function summary(){return readJson(SUMMARY_KEY,{});}
+  function routeKm(){
+    const s=summary();
+    if(validKm(s.distanceLabel)) return s.distanceLabel;
+    const stat=text('.routePanel .stat:nth-child(2) b','');
+    if(validKm(stat)) return stat;
+    const meta=text('#stopMeta','').split('·').map(x=>x.trim()).find(validKm);
+    return meta || '— km';
+  }
+  function routeTime(){
+    const s=summary();
+    if(validTime(s.timeLabel)) return s.timeLabel;
+    const sub=text('#mapStatusSub','').split('·').map(x=>x.trim()).find(validTime);
+    if(validTime(sub)) return sub;
+    const meta=text('#stopMeta','').split('·').map(x=>x.trim()).find(validTime);
+    return meta || 'route laden';
+  }
+  function vehicle(){
+    return qs('#mapScreen .vehicle.active span:last-child')?.textContent?.trim()
+      || qs('#routeSetupScreen .rVehicle.active')?.textContent?.replace(/[🚘⚡🚐🏍️]/g,'').trim()
+      || 'Auto';
+  }
+  function isRouteSheet(){
+    const sheet=qs('#mapScreen .sheet');
+    const type=sheet?.dataset?.type || '';
+    const title=text('#stopTitle','');
+    return !type || ['destination','overview','route'].includes(type) || /Rotterdam|Innsbruck/i.test(title);
+  }
+  function syncStats(){
+    const kmEl=qs('.routePanel .stat:nth-child(2) b');
+    const stopsEl=qs('.routePanel .stat:nth-child(3) b');
+    const stopsSmall=qs('.routePanel .stat:nth-child(3) small');
+    const km=routeKm();
+    if(kmEl && validKm(km)) kmEl.textContent=km;
+    if(stopsEl) stopsEl.textContent=String(stopCount());
+    if(stopsSmall) stopsSmall.textContent=stopCount()===1?'Stop':'Stops';
+  }
+  function syncTopbar(){
+    const title=qs('#mapStatusTitle');
+    const badge=qs('#mapStatusBadge');
+    const sub=qs('#mapStatusSub');
+    const eta=qs('#mapStatusEta');
+    const dist=qs('#mapStatusDistance');
+    const next=qs('#mapStatusNext');
+    const cockpit=qs('#mapScreen .mapCockpit');
+    const km=routeKm();
+    const time=routeTime();
+    if(cockpit) cockpit.setAttribute('data-copilot-state','route');
+    if(title) title.textContent='Rotterdam → Innsbruck';
+    if(badge) badge.textContent='🟢 Route actief';
+    if(sub) sub.textContent=`${vehicle()} route · ${validTime(time)?time:'route laden'}${validKm(km)?' · '+km:''}`;
+
+    // Dedup: chips tonen niet opnieuw tijd én km. Alleen aantal gekozen tussenstops blijft zichtbaar.
+    if(eta){eta.textContent=stopLabel(); eta.style.display='inline-flex';}
+    if(dist){dist.textContent=''; dist.style.display='none';}
+    if(next){next.textContent=''; next.style.display='none';}
+  }
+  function syncRouteCard(){
+    const sheet=qs('#mapScreen .sheet');
+    if(!sheet || !isRouteSheet()) return;
+    sheet.dataset.type='route';
+    const over=qs('#mapScreen .overline');
+    const title=qs('#stopTitle');
+    const meta=qs('#stopMeta');
+    const desc=qs('#stopDesc');
+    const primary=qs('#mapScreen .sheetActions .primary');
+    const secondary=qs('#mapScreen .sheetActions .secondary');
+    const save=qs('#mapScreen .sheetActions .saveStop');
+    if(over) over.textContent='Route-overzicht';
+    if(title) title.textContent='Rotterdam → Innsbruck';
+    if(meta) meta.textContent=`Route actief · ${stopLabel()}`;
+    if(desc) desc.textContent='De kaart toont je actieve roadtrip-route met je gekozen tussenstops. Gebruik Stops om nieuwe plekken langs de route te ontdekken.';
+    if(primary) primary.textContent='➤ Navigeer volledige route';
+    if(secondary){secondary.textContent='ⓘ Route info';secondary.hidden=false;secondary.classList.remove('is-hidden');}
+    if(save){save.hidden=true;save.disabled=true;save.classList.add('is-disabled');}
+  }
+  function refresh(){
+    if(busy) return;
+    busy=true;
+    try{syncStats();syncTopbar();syncRouteCard();}
+    finally{busy=false;}
+  }
+  function schedule(){clearTimeout(timer);timer=setTimeout(refresh,70);}
+
+  document.addEventListener('click',function(e){
+    const nav=e.target?.closest?.('#mapScreen .bottomNav .navItem[data-nav]');
+    if(nav) setTimeout(refresh,120);
+  },true);
+  ['roadora:roadtrip:update','roadora:route:update','DOMContentLoaded'].forEach(ev=>window.addEventListener(ev,schedule));
+  window.addEventListener('storage',e=>{if(!e.key || e.key===TRIP_KEY || e.key===SUMMARY_KEY) schedule();});
+
+  const obs=new MutationObserver(schedule);
+  function boot(){
+    const ui=qs('#mapScreen .ui');
+    if(ui) obs.observe(ui,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-type','class','style']});
+    refresh();
+    setTimeout(refresh,250);
+    setTimeout(refresh,900);
+    setTimeout(refresh,1800);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
+  window.RoadoraInfoDedup={refresh};
+})();
