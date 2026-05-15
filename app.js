@@ -3594,6 +3594,7 @@
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
   let layer=null;
+  let routeLines=[];
   let lastKey='';
   let reqId=0;
   let currentBounds=null;
@@ -3698,19 +3699,39 @@
       });
     }catch(err){ console.warn('Roadora original route soft:',err); }
   }
+  function forceRoutePaint(reason='route-paint'){
+    const map=window.roadoraLeafletMap;
+    if(!map) return;
+    const paint=()=>{
+      try{
+        map.invalidateSize(false);
+        layer?.bringToFront?.();
+        routeLines.forEach(line=>{
+          line?.bringToFront?.();
+          line?.redraw?.();
+        });
+        // Leaflet Canvas kan soms pas tekenen na een user pan; deze redraw triggert dat direct.
+        map._renderer?._redraw?.();
+      }catch(err){ console.warn('Roadora route repaint:',reason,err); }
+    };
+    if(window.requestAnimationFrame) requestAnimationFrame(paint);
+    [0,90,240,520].forEach(ms=>setTimeout(paint,ms));
+  }
   function draw(latlngs,summary,live){
     const map=window.roadoraLeafletMap, L=window.L, group=ensureLayer();
     if(!map||!L||!group||!latlngs.length) return false;
     group.clearLayers();
+    routeLines=[];
     setOriginalRouteSoft();
-    L.polyline(latlngs,{color:'#3b2a1a',weight:8.5,opacity:.13,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group);
-    L.polyline(latlngs,{color:'#b87832',weight:4.4,opacity:.94,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group);
-    L.polyline(latlngs,{color:'#fff4d8',weight:1.15,opacity:.54,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group);
+    routeLines.push(L.polyline(latlngs,{color:'#3b2a1a',weight:8.5,opacity:.13,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group));
+    routeLines.push(L.polyline(latlngs,{color:'#b87832',weight:4.4,opacity:.94,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group));
+    routeLines.push(L.polyline(latlngs,{color:'#fff4d8',weight:1.15,opacity:.54,lineCap:'round',lineJoin:'round',interactive:false}).addTo(group));
     currentBounds=L.latLngBounds(latlngs.map(p=>L.latLng(p[0],p[1])));
     currentSummary=summary;
     document.body.classList.add('roadoraRealRouteV67');
     document.body.classList.toggle('roadoraRealRouteLiveV67',!!live);
     updateCockpit(summary, Math.max(0,routePoints().length-2), live);
+    forceRoutePaint('draw');
     return true;
   }
   async function buildRoute(silent=false){
@@ -3750,6 +3771,7 @@
       const small=window.matchMedia?.('(max-width: 560px)')?.matches;
       map.invalidateSize(false);
       map.fitBounds(currentBounds, small?{paddingTopLeft:[26,112],paddingBottomRight:[26,148],maxZoom:8}:{paddingTopLeft:[46,145],paddingBottomRight:[46,178],maxZoom:8});
+      forceRoutePaint('fit');
       const count=Math.max(0,routePoints().length-2);
       toast(count?`Echte roadtrip-route in beeld · ${count} stop${count===1?'':'s'}`:'Volledige route in beeld');
     };
@@ -3769,6 +3791,8 @@
     const wrapped=function(){
       const res=oldInit.apply(this,arguments);
       schedule(true);
+      setTimeout(()=>forceRoutePaint('map-init'),260);
+      setTimeout(()=>forceRoutePaint('map-init-late'),700);
       return res;
     };
     wrapped.__roadoraV67Wrapped=true;
@@ -3779,3 +3803,6 @@
   window.RoadoraTripMap={...oldTrip,fit,render:()=>{schedule(true); return true;}};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>schedule(true),{once:true}); else schedule(true);
 })();
+
+
+/* Roadora v6.7.1 Route Paint Fix — forceert Leaflet redraw na echte multi-stop route zodat de lijn direct zichtbaar is. */
