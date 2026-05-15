@@ -4697,3 +4697,209 @@
   setTimeout(bind,500);
   setTimeout(bind,1500);
 })();
+
+
+/* Roadora v7.4.7 — Roadtrip V2 Repair Controller
+   Doel: één centrale ingang voor Mijn Roadtrip.
+   Oude popup wordt definitief verborgen; bottom nav opent alleen V2 page.
+   Maps/ORS blijven onaangeraakt.
+*/
+(function(){
+  'use strict';
+  const qs=(sel,root=document)=>root.querySelector(sel);
+  const qsa=(sel,root=document)=>Array.from(root.querySelectorAll(sel));
+  const KEY='roadoraRoadtripV1';
+  const ORIGIN={name:'Rotterdam, Nederland', ll:[51.9244,4.4777], type:'origin', id:'origin'};
+  const DEST={name:'Innsbruck, Oostenrijk', ll:[47.2692,11.4041], type:'destination', id:'destination'};
+
+  function toast(msg){ try{ window.RoadoraToast?.(msg); }catch(_){ console.log(msg); } }
+  function readTrip(){
+    try{
+      const data=JSON.parse(localStorage.getItem(KEY)||'{}')||{};
+      return {
+        version:data.version||1,
+        origin:data.origin||ORIGIN.name,
+        destination:data.destination||DEST.name,
+        stops:Array.isArray(data.stops)?data.stops.filter(Boolean):[],
+        updatedAt:data.updatedAt||null
+      };
+    }catch(_){ return {version:1,origin:ORIGIN.name,destination:DEST.name,stops:[],updatedAt:null}; }
+  }
+  function writeTrip(data){
+    const clean={
+      version:data?.version||1,
+      origin:data?.origin||ORIGIN.name,
+      destination:data?.destination||DEST.name,
+      stops:Array.isArray(data?.stops)?data.stops.filter(Boolean).slice(0,23):[],
+      updatedAt:new Date().toISOString()
+    };
+    try{ localStorage.setItem(KEY,JSON.stringify(clean)); }catch(_){ }
+    window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:clean}));
+    return clean;
+  }
+  function escapeHtml(v){ return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function icon(type){ return {origin:'A',destination:'B',hotel:'🏨',fuel:'⛽',ev:'⚡',food:'🍽️',wc:'🚻',view:'⛰️'}[type] || '📍'; }
+  function ll(point){
+    if(Array.isArray(point?.ll)){
+      const a=Number(point.ll[0]), b=Number(point.ll[1]);
+      if(Number.isFinite(a)&&Number.isFinite(b)) return [a,b];
+    }
+    return null;
+  }
+  function hav(a,b){
+    if(!a||!b) return null;
+    const R=6371, rad=x=>x*Math.PI/180;
+    const dLat=rad(b[0]-a[0]), dLng=rad(b[1]-a[1]);
+    const la1=rad(a[0]), la2=rad(b[0]);
+    const h=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
+    return 2*R*Math.asin(Math.sqrt(h));
+  }
+  function seg(a,b){
+    const km=hav(ll(a),ll(b));
+    if(!Number.isFinite(km)) return {km:'— km',time:'—'};
+    const roadKm=Math.max(1,Math.round(km*1.22));
+    const mins=Math.max(3,Math.round((roadKm/92)*60));
+    const h=Math.floor(mins/60), m=mins%60;
+    return {km:`${roadKm.toLocaleString('nl-NL')} km`, time:h?`${h}u ${String(m).padStart(2,'0')}m`:`${m}m`};
+  }
+  function summary(data){
+    const stored=window.RoadoraDataLayer?.routeSummary?.read?.() || {};
+    const sub=qs('#mapStatusSub')?.textContent?.trim() || '';
+    const domKm=qs('.routePanel .stat:nth-child(2) b')?.textContent?.trim();
+    const km=stored.distanceLabel || domKm || (sub.match(/([\d.]+\s?km)/i)?.[1]) || '— km';
+    const time=stored.timeLabel || (sub.match(/(\d+u\s?\d{1,2}m|\d+u)/i)?.[1]) || qs('#mapStatusEta')?.textContent?.trim() || '—';
+    return {km,time,stopCount:(data.stops||[]).length};
+  }
+  function ensureScreen(){
+    let screen=qs('#roadtripScreenV2');
+    if(screen) return screen;
+    screen=document.createElement('section');
+    screen.id='roadtripScreenV2';
+    screen.className='appScreen roadtripScreenV2';
+    screen.setAttribute('aria-label','Mijn Roadtrip');
+    screen.innerHTML=`
+      <div class="roadtripV2Shell">
+        <header class="roadtripV2Top">
+          <button type="button" class="roadtripV2Icon" data-roadtrip-v2-action="close" aria-label="Terug naar kaart">‹</button>
+          <div><span>Mijn Roadtrip</span><b id="roadtripV2Title">Rotterdam → Innsbruck</b></div>
+          <button type="button" class="roadtripV2Icon" data-roadtrip-v2-action="maps" aria-label="Open in Google Maps">⌁</button>
+        </header>
+        <section class="roadtripV2Hero">
+          <small>Roadora planning</small>
+          <h1>Jouw roadtrip overzicht</h1>
+          <p>Route, hotels en tussenstops rustig op één plek.</p>
+          <div class="roadtripV2Stats">
+            <div><b id="roadtripV2Km">— km</b><span>afstand</span></div>
+            <div><b id="roadtripV2Time">—</b><span>rijtijd</span></div>
+            <div><b id="roadtripV2Stops">0</b><span>stops</span></div>
+          </div>
+        </section>
+        <section class="roadtripV2Card">
+          <div class="roadtripV2SectionHead"><b>Route-opbouw</b><span id="roadtripV2Updated">Live route</span></div>
+          <div class="roadtripV2Timeline" id="roadtripV2Timeline"></div>
+        </section>
+        <section class="roadtripV2Actions">
+          <button type="button" class="roadtripV2Primary" data-roadtrip-v2-action="maps">Start in Google Maps</button>
+          <button type="button" class="roadtripV2Ghost" data-roadtrip-v2-action="view-map">Bekijk op kaart</button>
+        </section>
+      </div>`;
+    (qs('.phone')||document.body).appendChild(screen);
+    return screen;
+  }
+  function hideLegacy(){
+    const old=qs('#roadtripMiniPanelV584');
+    if(old){ old.classList.remove('open','roadtripV63Open','roadtripV705Open'); old.style.display='none'; old.setAttribute('aria-hidden','true'); }
+    const dock=qs('#roadtripMiniDockV584');
+    if(dock){ dock.setAttribute('hidden','hidden'); dock.style.display='none'; }
+    qs('#mapScreen')?.classList.remove('roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
+  }
+  function row(p,index){
+    const cls=p.type==='origin'?'start':p.type==='destination'?'end':'stop';
+    const removable=cls==='stop';
+    const label=p.label||p.meta||(cls==='start'?'Startpunt':cls==='end'?'Eindbestemming':'Tussenstop');
+    return `<div class="roadtripV2Point ${cls}" data-roadtrip-id="${escapeHtml(p.id||'')}">
+      <i>${cls==='start'?'':cls==='end'?'':index}</i>
+      <div class="roadtripV2PointIcon">${icon(p.type)}</div>
+      <div class="roadtripV2PointText"><b>${escapeHtml(p.name||'Stop')}</b><small>${escapeHtml(label)}</small></div>
+      ${removable?`<button type="button" data-roadtrip-v2-action="remove" data-roadtrip-id="${escapeHtml(p.id||'')}">×</button>`:''}
+    </div>`;
+  }
+  function segment(a,b){ const s=seg(a,b); return `<div class="roadtripV2Segment"><span></span><em>${s.km} · ${s.time}</em></div>`; }
+  function render(){
+    const screen=ensureScreen(); hideLegacy();
+    const data=readTrip(); const sum=summary(data);
+    const title=`${data.origin||ORIGIN.name} → ${data.destination||DEST.name}`;
+    qs('#roadtripV2Title',screen).textContent=title;
+    qs('#roadtripV2Km',screen).textContent=sum.km;
+    qs('#roadtripV2Time',screen).textContent=sum.time;
+    qs('#roadtripV2Stops',screen).textContent=String(sum.stopCount);
+    qs('#roadtripV2Updated',screen).textContent=sum.stopCount?`${sum.stopCount} tussenstop${sum.stopCount===1?'':'s'}`:'Nog geen tussenstops';
+    const points=[{...ORIGIN,name:data.origin||ORIGIN.name},...data.stops,{...DEST,name:data.destination||DEST.name}];
+    const html=[];
+    points.forEach((p,i)=>{ html.push(row(p,i)); if(i<points.length-1) html.push(segment(p,points[i+1])); });
+    qs('#roadtripV2Timeline',screen).innerHTML=html.join('');
+    return screen;
+  }
+  function open(){
+    const screen=render();
+    qsa('.appScreen').forEach(s=>{ if(s.id!=='roadtripScreenV2') s.classList.remove('active'); });
+    screen.classList.add('active');
+    qs('.phone')?.classList.add('mapActive','roadtripV2Active');
+    qsa('#mapScreen .bottomNav .navItem').forEach(b=>{
+      const active=(b.dataset.nav||'')==='roadtrip';
+      b.classList.toggle('active',active); b.classList.toggle('is-active',active);
+    });
+    hideLegacy();
+    return false;
+  }
+  function close(){
+    qs('#roadtripScreenV2')?.classList.remove('active');
+    qs('#mapScreen')?.classList.add('active');
+    qs('.phone')?.classList.add('mapActive');
+    qs('.phone')?.classList.remove('roadtripV2Active');
+    setTimeout(()=>{ try{ window.roadoraLeafletMap?.invalidateSize(false); window.RoadoraMapApi?.fitRoute?.('roadtrip-v2-close'); }catch(_){} },120);
+    return false;
+  }
+  function remove(id){
+    const data=readTrip();
+    data.stops=data.stops.filter(s=>String(s.id)!==String(id));
+    writeTrip(data); render(); toast('Stop verwijderd');
+    try{ window.RoadoraMapApi?.reloadRoute?.(); }catch(_){}
+    setTimeout(()=>{ try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-v2-remove'); }catch(_){} },850);
+    return false;
+  }
+  function openMaps(){
+    if(window.RoadoraMapsExport?.open) window.RoadoraMapsExport.open('nav');
+    else toast('Maps-export niet beschikbaar');
+    return false;
+  }
+  function bindRoadtripButton(){
+    qsa('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]').forEach(btn=>{
+      btn.onclick=function(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation?.(); return open(); };
+      btn.style.pointerEvents='auto';
+    });
+  }
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const btn=t.closest('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]');
+    if(btn){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation?.(); return open(); }
+    const action=t.closest('[data-roadtrip-v2-action]');
+    if(action){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation?.();
+      const a=action.dataset.roadtripV2Action;
+      if(a==='close'||a==='view-map') return close();
+      if(a==='maps') return openMaps();
+      if(a==='remove') return remove(action.dataset.roadtripId);
+    }
+  },true);
+  window.addEventListener('roadora:roadtrip:update',()=>{ hideLegacy(); if(qs('#roadtripScreenV2')?.classList.contains('active')) render(); });
+  window.addEventListener('roadora:route:update',()=>{ if(qs('#roadtripScreenV2')?.classList.contains('active')) render(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{ ensureScreen(); hideLegacy(); bindRoadtripButton(); },{once:true});
+  else { ensureScreen(); hideLegacy(); bindRoadtripButton(); }
+  setTimeout(()=>{ hideLegacy(); bindRoadtripButton(); },500);
+  setTimeout(()=>{ hideLegacy(); bindRoadtripButton(); },1500);
+
+  window.RoadoraRoadtripV2={open,close,render,read:readTrip,write:writeTrip,remove};
+})();

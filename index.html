@@ -13,19 +13,34 @@
 <script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* Roadora v7.4.6 early roadtrip nav guard: registreert vóór app.js, zodat oude popup-handlers de knop niet meer kunnen kapen. */
+/* Roadora v7.4.7 Roadtrip V2 EARLY GUARD
+   Blokkeert oude popup-handlers voordat app.js ze kan kapen.
+   Als RoadtripV2 nog niet klaar is, wordt de open-call kort opnieuw geprobeerd.
+*/
 (function(){
+  function tryOpenRoadtripV2(){
+    var tries=0;
+    function run(){
+      tries++;
+      if(window.RoadoraRoadtripV2 && typeof window.RoadoraRoadtripV2.open==='function'){
+        window.RoadoraRoadtripV2.open();
+        return;
+      }
+      if(tries<12) setTimeout(run,120);
+    }
+    run();
+  }
+  window.RoadoraOpenRoadtripV2Safe=tryOpenRoadtripV2;
   document.addEventListener('click',function(e){
     var target=e.target;
     if(!target || !target.closest) return;
     var btn=target.closest('#mapScreen .bottomNav .navItem[data-nav="roadtrip"]');
     if(!btn) return;
-    if(window.RoadoraRoadtripV2 && typeof window.RoadoraRoadtripV2.open==='function'){
-      e.preventDefault();
-      e.stopPropagation();
-      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-      window.RoadoraRoadtripV2.open();
-    }
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    tryOpenRoadtripV2();
+    return false;
   },true);
 })();
 </script>

@@ -4843,3 +4843,68 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #roadtripMiniDockV584{
   display:none!important;
 }
+
+
+/* ===== Roadora v7.4.7 — Roadtrip V2 Repair hard override ===== */
+#roadtripMiniDockV584,
+#roadtripMiniPanelV584,
+#mapScreen.roadtripPanelOpenV621 #roadtripMiniPanelV584,
+#mapScreen.roadtripPanelOpenV63 #roadtripMiniPanelV584,
+#mapScreen.roadtripPanelOpenV705 #roadtripMiniPanelV584{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+#mapScreen .bottomNav.bottomNavV59,
+#mapScreen .bottomNav{
+  position:absolute!important;
+  left:14px!important;
+  right:14px!important;
+  bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
+  height:58px!important;
+  z-index:5000!important;
+  transform:none!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,1fr)!important;
+  align-items:center!important;
+  border-radius:20px!important;
+  overflow:visible!important;
+  pointer-events:auto!important;
+}
+#mapScreen .bottomNav .navItem{
+  min-width:0!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+}
+#mapScreen .bottomNav .navCenter{
+  transform:translateY(-13px)!important;
+}
+#mapScreen .bottomNav .navCenter .round{
+  width:54px!important;
+  height:54px!important;
+}
+.roadtripScreenV2{
+  position:absolute!important;
+  inset:0!important;
+  z-index:9990!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  display:block!important;
+}
+.roadtripScreenV2.active{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+.phone.roadtripV2Active #mapScreen{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.phone.roadtripV2Active #roadtripScreenV2{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
