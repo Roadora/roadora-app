@@ -507,7 +507,7 @@
       {name:'IONITY Ulm Süd',meta:'610 km · 6u 20m · 6 snelladers',desc:'Premium snellaadpunt langs de zuidelijke route. Handig om de auto vol te laden voor het laatste deel richting Tirol.',type:'ev',label:'Laadstation',ll:[48.28,9.98],provider:'IONITY',power:'tot 350 kW',status:'4 vrij'},
       {name:'Allego Füssen / Fernpass',meta:'820 km · 8u 35m · 4 laders',desc:'Laatste praktische laadstop vóór Oostenrijk. Slim moment om te laden voordat je de Alpen in rijdt.',type:'ev',label:'Laadstation',ll:[47.57,10.70],provider:'Allego',power:'tot 150 kW',status:'2 vrij'},
       {name:'Stuttgart Mitte',meta:'320 km · 3u 15m',desc:'Goede tussenstop met restaurants, koffie en snelle doorreis naar Zuid-Duitsland.',type:'food',label:'Eten & drinken',ll:[48.77,9.18]},
-      {name:'Hotel bij Ulm',meta:'640 km · dag 1',desc:'Rustige overnachtingsplek dichtbij de route, handig voor een tweedaagse rit naar Innsbruck.',type:'hotel',label:'Overnachten',ll:[48.40,10.00]},
+      // v7.3.2: geen demo/fallback-hotels meer in de kaartlaag. Hotels komen alleen uit Google Places.
       {name:'Raststätte Sindelfinger Wald',meta:'430 km · 4u 35m · WC · koffie',desc:'Comfortstop langs de route met toiletten, parkeren en snelle pauzemogelijkheden. Handig voor gezinnen of een korte noodstop.',type:'wc',label:'WC stop',ll:[48.71,8.98]},
       {name:'Raststätte Allgäuer Tor',meta:'760 km · 8u 05m · WC · eten',desc:'Praktische rustplaats richting Oostenrijk met toiletten en eten dichtbij de route.',type:'wc',label:'WC stop',ll:[47.88,10.31]},
       {name:'Alpen uitzicht',meta:'900 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
@@ -932,7 +932,7 @@
       markerLayer.clearLayers();liveGoogleFuelLayer.clearLayers();liveGoogleHotelLayer.clearLayers();markerRefs.length=0;selectedMarker=null;
       stops.forEach(s=>{if(isVisible(s)) registerMarker(s,markerLayer);});
       if(activeFilters.has('fuel')) liveGoogleFuelStops.forEach(s=>registerMarker(s,liveGoogleFuelLayer));
-      if(activeFilters.has('hotel')) liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
+      if(activeFilters.has('hotel')) sanitizeGoogleHotels(liveGoogleHotelStops).forEach(s=>registerMarker(s,liveGoogleHotelLayer));
       if(previous && previous.type!=='destination' && !isVisible(previous)){
         selectedMarker=null;
         // Keep category state intact. Only return the sheet to route context when the active category no longer contains the selected stop.
@@ -953,6 +953,7 @@
     function renderLiveGoogleHotelMarkers(){
       liveGoogleHotelLayer.clearLayers();
       if(!activeFilters.has('hotel')) return;
+      liveGoogleHotelStops=sanitizeGoogleHotels(liveGoogleHotelStops);
       liveGoogleHotelStops.forEach(s=>registerMarker(s,liveGoogleHotelLayer));
     }
     function currentRouteSamplePoints(maxPoints=14, options={}){
@@ -1129,6 +1130,24 @@
       return (Array.isArray(list)?list:[]).map(p=>normalizePlacesResult(p,type)).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
     }
 
+    function isRealGoogleHotel(stop){
+      if(!stop || stop.type!=='hotel') return false;
+      const name=String(stop.name||'').toLowerCase();
+      const blocked=[
+        'hotel bij ulm',
+        'roadora hotel',
+        'alpenstop',
+        'heidelberg route hotel',
+        'stuttgart family stay'
+      ];
+      if(blocked.some(x=>name.includes(x))) return false;
+      // Productie-regel: hotelpins mogen alleen uit echte Places-data/cache komen.
+      return stop.source==='google-places' || !!stop.googlePlaceId || !!stop.googleMapsUri;
+    }
+    function sanitizeGoogleHotels(list){
+      return (Array.isArray(list)?list:[]).filter(isRealGoogleHotel);
+    }
+
     async function loadLiveGoogleHotels(){
       if(liveGoogleHotelLoaded||liveGoogleHotelLoading) return;
       liveGoogleHotelLoading=true;
@@ -1165,7 +1184,7 @@
           console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
         }
 
-        liveGoogleHotelStops=spreadStopsAlongRoute(normalizePlacesList(data.places,'hotel'),{buckets:12,perBucket:2,maxTotal:18});
+        liveGoogleHotelStops=sanitizeGoogleHotels(spreadStopsAlongRoute(normalizePlacesList(data.places,'hotel'),{buckets:12,perBucket:2,maxTotal:18}));
         writePlacesCache('hotel',requestKey,liveGoogleHotelStops);
 
         liveGoogleHotelLoaded=true;
@@ -1176,11 +1195,12 @@
       }catch(err){
         liveGoogleHotelLoading=false;
         const cached=readPlacesCache('hotel',liveGoogleHotelKey||placesRequestKey(currentRouteSamplePoints(18,{includeEnds:false}),16000,'route_planning'),180);
-        if(cached?.length){
-          liveGoogleHotelStops=cached;
+        const realCached=sanitizeGoogleHotels(cached||[]);
+        if(realCached.length){
+          liveGoogleHotelStops=realCached;
           liveGoogleHotelLoaded=true;
           renderLiveGoogleHotelMarkers();
-          showToast(`${cached.length} hotels uit cache`);
+          showToast(`${realCached.length} hotels uit cache`);
           return;
         }
         console.warn('Live Google hotels fout:',err);
