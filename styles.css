@@ -4744,3 +4744,19 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 @media(max-height:760px){
   #mapScreen .controlsV722{top:188px !important;}
 }
+
+
+/* ===== Roadora v7.3.1 — No Demo Hotels ===== */
+.hotelPlannerEmptyState,
+.hotelEmptyV731{
+  opacity:.98;
+}
+.hotelPlannerEmptyState .hotelPlannerPhoto,
+.hotelEmptyV731 .hotelPhotoV55{
+  background:linear-gradient(135deg,rgba(237,201,132,.56),rgba(196,134,61,.24)) !important;
+}
+.hotelPlannerEmptyState .hotelPlannerCardActions button,
+.hotelEmptyV731 .hotelMapBtnV55{
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;
+  color:#211914 !important;
+}

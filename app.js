@@ -1,7 +1,7 @@
 /* Roadora v7.3.0 Production Places Layer
    - Gebaseerd op v7.2.4 Data & State Cleanup
    - Geen visuele redesigns en geen Maps-export wijzigingen
-   - Places-data gestandaardiseerd: hotels/tankstations delen cache-, normalisatie- en fallbackcontracten
+   - Demo-hotels uit de hotelplanner verwijderd; hotels komen uit Places-op-kaart of opgeslagen shortlist
 
    Roadora v7.0.2 Stop Focus Context Fix
    - Home v8.7 blijft intact
@@ -1360,12 +1360,8 @@
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
 
-  const hotelSeed=[
-    {name:'Roadora Hotel Ulm Süd',city:'Ulm',km:640,time:'6u 35m',detour:'± 8 min van route',rating:'4,5',tags:['parking','family','breakfast','charger'],price:'€€',desc:'Sterke overnachtingsplek als je de rit in twee dagen splitst richting Tirol.'},
-    {name:'Alpenstop Füssen Comfort',city:'Füssen',km:760,time:'7u 50m',detour:'± 11 min van route',rating:'4,6',tags:['pet','parking','breakfast'],price:'€€',desc:'Handig voor een laatste rustige nacht voor Oostenrijk of de Alpenroute.'},
-    {name:'Heidelberg Route Hotel',city:'Heidelberg',km:420,time:'4u 25m',detour:'± 6 min van route',rating:'4,3',tags:['parking','charger','late'],price:'€€',desc:'Goede tussenstop voor wie eerder wil stoppen of met kinderen reist.'},
-    {name:'Stuttgart Family Stay',city:'Stuttgart',km:520,time:'5u 20m',detour:'± 9 min van route',rating:'4,4',tags:['family','parking','breakfast','pet'],price:'€€€',desc:'Familievriendelijke optie met logische ligging rond het midden van de rit.'}
-  ];
+  // v7.3.1: geen demo-hotels meer in de planner.
+  // Echte hoteldata loopt via Google Places op de kaart of via opgeslagen shortlist.
 
   const filterLabels={
     charger:'⚡ Laadpaal', pet:'🐾 Huisdier', family:'👨‍👩‍👧 Kindvriendelijk', parking:'🅿️ Parkeren', breakfast:'🍳 Ontbijt', late:'🌙 Late check-in'
@@ -1482,33 +1478,23 @@
   function renderHotelCards(){
     const wrap=qs('#hotelPlannerResults');
     if(!wrap) return;
-    const filters=activeFilters();
-    const place=(qs('#hotelPlaceInput')?.value||'').trim().toLowerCase();
-    let list=hotelSeed.filter(h=>{
-      const placeOk=!place || h.city.toLowerCase().includes(place) || h.name.toLowerCase().includes(place);
-      const filtersOk=filters.every(f=>h.tags.includes(f));
-      return placeOk && filtersOk;
-    });
-    if(!list.length) list=hotelSeed.slice(0,2);
-    wrap.innerHTML=list.map(h=>`
-      <article class="hotelPlannerResultCard">
-        <div class="hotelPlannerPhoto"><span>${h.city}</span></div>
+    const copy=currentPlanningText();
+    wrap.innerHTML=`
+      <article class="hotelPlannerResultCard hotelPlannerEmptyState" data-real-data="places-required">
+        <div class="hotelPlannerPhoto"><span>Places</span></div>
         <div class="hotelPlannerInfo">
-          <div class="hotelPlannerResultTop"><b>${h.name}</b><em>${h.rating} ★ · ${h.price}</em></div>
-          <p>${h.desc}</p>
-          <div class="hotelPlannerMeta"><span>${h.km}</span><span>${h.time}</span><span>${h.detour}</span></div>
-          <div class="hotelPlannerTagRow">${h.tags.slice(0,4).map(t=>`<span>${filterLabels[t]||t}</span>`).join('')}</div>
+          <div class="hotelPlannerResultTop"><b>Geen demo-hotels meer</b><em>Live data</em></div>
+          <p>Hotels worden nu via Google Places op de kaart geladen. Zo voorkom je nepresultaten in de planner.</p>
+          <div class="hotelPlannerMeta"><span>Langs route</span><span>Google Places</span><span>Fallback alleen bij API-fout</span></div>
         </div>
         <div class="hotelPlannerCardActions">
-          <button data-hotel-planner-action="map-hotels" type="button">Kaart</button>
-          <button data-hotel-planner-action="save-demo" type="button">Opslaan</button>
+          <button data-hotel-planner-action="map-hotels" type="button">Open kaart</button>
         </div>
-      </article>`).join('');
-    const copy=currentPlanningText();
+      </article>`;
     const title=qs('#hotelPlannerSuggestionTitle');
     const text=qs('#hotelPlannerSuggestionText');
     if(title) title.textContent=copy.title;
-    if(text) text.textContent=copy.text;
+    if(text) text.textContent='Open de kaart om echte hotels langs je actuele ORS-route te laden.';
   }
 
   function showHotelPlanner(){
@@ -1572,7 +1558,6 @@
       if(a==='search'){renderHotelCards();toast('Hotelzoeker bijgewerkt');return false;}
       if(a==='map-hotels') return openHotelsOnMap();
       if(a==='shortlist'){toast('Shortlist komt uit opgeslagen hotels');return false;}
-      if(a==='save-demo'){toast('Hotel opgeslagen in demo-shortlist');return false;}
     }
   }
 
@@ -1996,14 +1981,9 @@
   const MAP_KEY='roadoraReturnToHotels';
   const PLANNER_MAP_KEY='roadoraHotelPlannerOpenedMap';
 
-  const hotels=[
-    {name:'Holiday Inn Express Nürnberg',loc:'Nürnberg, Duitsland',night:1,km:'± 580 km',time:'± 5u 30m',price:'€94',rating:'8,4',tag:'Ideale tussenstop',features:['parking','breakfast','family','late'],photo:'linear-gradient(135deg,#b88945,#2f261d)'},
-    {name:'Best Western Nürnberg City West',loc:'Nürnberg, Duitsland',night:1,km:'± 590 km',time:'± 5u 40m',price:'€89',rating:'8,2',tag:'Top match',features:['parking','pet','breakfast'],photo:'linear-gradient(135deg,#9aa58e,#334231)'},
-    {name:'ARCOTEL Camino Stuttgart',loc:'Stuttgart, Duitsland',night:1,km:'± 530 km',time:'± 5u 10m',price:'€102',rating:'8,5',tag:'Dicht bij route',features:['charger','parking','late'],photo:'linear-gradient(135deg,#d5b47a,#493220)'},
-    {name:'AC Hotel by Marriott Innsbruck',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.000 km',time:'aankomstzone',price:'€129',rating:'8,9',tag:'Dichtbij bestemming',features:['parking','family','breakfast'],photo:'linear-gradient(135deg,#8b9aa8,#1d2933)'},
-    {name:'Hotel Grauer Bär',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.005 km',time:'centrum',price:'€118',rating:'8,6',tag:'Shortlist waard',features:['parking','pet','breakfast'],photo:'linear-gradient(135deg,#cda66a,#3b281d)'},
-    {name:'MEININGER Hotel Innsbruck Zentrum',loc:'Innsbruck, Oostenrijk',night:2,km:'± 1.008 km',time:'centrum',price:'€99',rating:'8,3',tag:'Praktisch',features:['family','late','parking'],photo:'linear-gradient(135deg,#a17854,#2b2018)'}
-  ];
+  // v7.3.1: dashboard toont geen hardcoded hotelvoorbeelden meer.
+  // Echte hotels komen uit Places op de kaart of opgeslagen shortlist.
+  const hotels=[];
 
   const prefLabels={
     charger:['⚡','Laadpaal'], parking:['🅿️','Parkeren'], pet:['🐾','Huisdieren'], family:['👨‍👩‍👧','Familie'], breakfast:['☕','Ontbijt'], late:['🌙','Late check-in']
@@ -2063,7 +2043,7 @@
 
           <section class="hotelListPanel">
             <nav class="hotelTabsV55"><button class="active" data-hotel-tab="recommended" type="button">Aanbevolen</button><button data-hotel-tab="map" type="button">Zoek op kaart</button><button data-hotel-tab="shortlist" type="button">Mijn shortlist</button></nav>
-            <div class="hotelRecommendNote"><b>🌙 Aanbevolen voor dag 1</b><a href="#" data-hotel-planner-action="why">Waarom deze?</a><small>Gebaseerd op je route, rijtijd en opgeslagen wensen.</small></div>
+            <div class="hotelRecommendNote"><b>🌙 Aanbevolen voor dag 1</b><a href="#" data-hotel-planner-action="why">Waarom deze?</a><small>Live hotels worden via Google Places op de kaart geladen.</small></div>
             <div class="hotelCardsV55" id="hotelCardsV55"></div>
             <button class="hotelLoadMore" type="button">Toon meer hotels</button>
           </section>
@@ -2107,12 +2087,22 @@
     const sorted=hotels.slice().sort((a,b)=>scoreHotel(b,prefs)-scoreHotel(a,prefs));
     const wrap=qs('#hotelCardsV55');
     if(wrap){
-      wrap.innerHTML=sorted.slice(0,4).map(h=>cardHtml(h,prefs)).join('');
+      wrap.innerHTML=sorted.length
+        ? sorted.slice(0,4).map(h=>cardHtml(h,prefs)).join('')
+        : `<article class="hotelCardV55 hotelEmptyV731">
+            <div class="hotelPhotoV55"><span>Live</span></div>
+            <div class="hotelInfoV55"><header><b>Geen demo-hotels</b></header><small>Gebruik de kaart om echte Google Places-hotels langs je route te laden.</small><p>Fallback-data verschijnt alleen nog als de API faalt.</p></div>
+            <button class="hotelMapBtnV55" data-hotel-planner-action="map-hotels" type="button">Open hotels op kaart</button>
+          </article>`;
     }
     const rows=qs('#hotelShortRows');
     if(rows){
-      rows.innerHTML=sorted.slice(0,3).map(h=>`<div><span style="background:${h.photo}"></span><b>${h.name}</b><em>${h.loc}</em><strong>${h.price}</strong><button type="button">♡</button></div>`).join('');
+      rows.innerHTML=sorted.length
+        ? sorted.slice(0,3).map(h=>`<div><span style="background:${h.photo}"></span><b>${h.name}</b><em>${h.loc}</em><strong>${h.price}</strong><button type="button">♡</button></div>`).join('')
+        : '<div><span></span><b>Nog geen opgeslagen hotels</b><em>Open echte hotels op de kaart</em><strong>—</strong><button type="button">♡</button></div>';
     }
+    const count=qs('#hotelShortlistCount');
+    if(count) count.textContent=sorted.length ? `${Math.min(3,sorted.length)} hotels` : '0 hotels';
   }
 
   function scoreHotel(h,prefs){return 10 + prefs.filter(p=>h.features.includes(p)).length*4 + (h.tag.includes('match')?3:0) + Number(String(h.rating).replace(',','.'));}
@@ -4282,7 +4272,7 @@
 })();
 
 
-/* Roadora v7.3.0 — Production Places Layer
+/* Roadora v7.3.1 — Places Only Hotels
    Niet-destructieve datalaag. Doel: één vaste plek voor route-summary,
    roadtrip-state, category-state en toekomstige Google Places-resultaten.
    Let op: deze laag verandert bewust geen bestaande UX of Maps-flow.
