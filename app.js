@@ -162,8 +162,28 @@
     return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' informatie');
   }
   function openMapsRoute(){
-    const url='https://www.google.com/maps/dir/?api=1&origin=Rotterdam&destination=Innsbruck&travelmode=driving';
-    window.open(url,'_blank','noopener');toast('Google Maps route geopend');
+    // v7.0.6: alle route/navigatie-CTA's gebruiken dezelfde locked Roadora Maps-export.
+    // Zo opent de bottom Navigeer-knop exact dezelfde volledige roadtrip-route als
+    // "Start in Google Maps" vanuit Mijn Roadtrip, inclusief gekozen tussenstops.
+    if(window.RoadoraMapsExport?.open){
+      window.RoadoraMapsExport.open('nav');
+      return false;
+    }
+    try{
+      const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+      const stops=Array.isArray(trip.stops)?trip.stops:[];
+      const params=new URLSearchParams();
+      params.set('api','1');
+      params.set('destination',trip.destination||'Innsbruck, Oostenrijk');
+      params.set('travelmode','driving');
+      const waypoints=stops.map(s=>Array.isArray(s?.ll)?`${Number(s.ll[0]).toFixed(6)},${Number(s.ll[1]).toFixed(6)}`:s?.name).filter(Boolean).slice(0,9);
+      if(waypoints.length) params.set('waypoints',waypoints.join('|'));
+      window.open('https://www.google.com/maps/dir/?'+params.toString(),'_blank','noopener');
+    }catch(_){
+      window.open('https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving','_blank','noopener');
+    }
+    toast('Google Maps route geopend');
+    return false;
   }
   function openMapsStop(){
     window.open(selectedStopMapsUrl(),'_blank','noopener');
@@ -448,7 +468,7 @@
       return false;
     }
     if(target.closest('#mapScreen .saveStop')){event.preventDefault();saveSelectedStop();return false;}
-    if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') return openHotelDetail(); openMapsStop(); return false;}
+    if(target.closest('#mapScreen .primary')){event.preventDefault();const s=selectedStop(); if(!s || ['destination','overview','stops','guide'].includes(s?.type)) return openMapsRoute(); if(s?.type==='hotel') return openHotelDetail(); openMapsStop(); return false;}
     if(target.closest('#mapScreen .secondary')){event.preventDefault();const s=selectedStop(); if(s?.type==='hotel') openMapsStop(); else openMoreInfo(); return false;}
   }
 
