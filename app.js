@@ -1,7 +1,7 @@
-/* Roadora v7.2.4 Data & State Cleanup
-   - Gebaseerd op v7.2.3 Core Modularisatie
+/* Roadora v7.3.0 Production Places Layer
+   - Gebaseerd op v7.2.4 Data & State Cleanup
    - Geen visuele redesigns en geen Maps-export wijzigingen
-   - Nieuwe RoadoraDataLayer: scheidt route-state, roadtrip-state, category-state en demo/fallback-data contracten
+   - Places-data gestandaardiseerd: hotels/tankstations delen cache-, normalisatie- en fallbackcontracten
 
    Roadora v7.0.2 Stop Focus Context Fix
    - Home v8.7 blijft intact
@@ -1065,6 +1065,70 @@
       return count ? `${count} hotels langs route` : 'Geen hotels langs route gevonden';
     }
 
+
+    // v7.3.0 Production Places Layer: één contract voor Places-resultaten.
+    // Hierdoor blijven hotels/tankstations dezelfde cache-, normalisatie- en fallbackflow gebruiken.
+    const PLACES_CACHE_KEY='roadoraPlacesCacheV2';
+    function safePlacesCacheRead(){
+      try{return JSON.parse(localStorage.getItem(PLACES_CACHE_KEY)||'{}')||{};}
+      catch(_){return {};}
+    }
+    function safePlacesCacheWrite(cache){
+      try{localStorage.setItem(PLACES_CACHE_KEY,JSON.stringify(cache||{}));return true;}
+      catch(_){return false;}
+    }
+    function placesCacheId(category,key){return `${category}:${key}`;}
+    function readPlacesCache(category,key,maxAgeMinutes=90){
+      const cache=safePlacesCacheRead();
+      const entry=cache[placesCacheId(category,key)];
+      if(!entry || !Array.isArray(entry.items)) return null;
+      const age=Date.now()-Number(entry.savedAt||0);
+      if(!Number.isFinite(age) || age<0 || age>maxAgeMinutes*60*1000) return null;
+      return entry.items;
+    }
+    function writePlacesCache(category,key,items){
+      const cache=safePlacesCacheRead();
+      cache[placesCacheId(category,key)]={items:Array.isArray(items)?items:[],savedAt:Date.now(),version:2};
+      safePlacesCacheWrite(cache);
+    }
+    function normalizePlacesResult(p,type){
+      const lat=Number(p?.lat), lng=Number(p?.lng);
+      const base={
+        name:p?.name || (type==='hotel'?'Hotel langs route':'Tankstation'),
+        meta:[p?.address||'Langs je route',p?.rating?`${p.rating} ★`:'',type==='hotel'?(p?.detourLabel||'± 5 min van route'):(p?.openNow===true?'Nu open':'')].filter(Boolean).join(' · '),
+        desc:'',
+        type,
+        label:type==='hotel'?'Hotel langs route':'Premium tankstop',
+        ll:[lat,lng],
+        provider:p?.provider||'Google Places',
+        status:p?.status||(p?.openNow===true?'nu open':p?.openNow===false?'mogelijk gesloten':'openingstijden checken'),
+        openNow:p?.openNow,
+        rating:p?.rating||null,
+        amenities:Array.isArray(p?.amenities)?p.amenities:[],
+        googlePlaceId:p?.id||p?.place_id||p?.googlePlaceId||null,
+        googleMapsUri:p?.googleMapsUri||null,
+        photoName:p?.photoName||null,
+        photoUrl:p?.photoUrl||p?.photo||p?.imageUrl||p?.image||null,
+        infoUrl:p?.googleMapsUri||p?.url||p?.website||p?.websiteUri||null,
+        source:'google-places'
+      };
+      if(type==='hotel'){
+        base.userRatingCount=p?.userRatingCount||null;
+        base.detourLabel=p?.detourLabel||'± 5 min van route';
+        base.priceLevel=p?.priceLevel||null;
+        base.photoNames=Array.isArray(p?.photoNames)?p.photoNames:[];
+        base.photoUrls=Array.isArray(p?.photoUrls)?p.photoUrls:[];
+      }else{
+        base.brand=p?.brand||inferFuelBrand(p?.name);
+        base.detourLabel=p?.detourLabel||p?.detour||'± 2 min van route';
+        base.fuelPrice=p?.fuelPrice||p?.priceLabel||p?.price||null;
+      }
+      return base;
+    }
+    function normalizePlacesList(list,type){
+      return (Array.isArray(list)?list:[]).map(p=>normalizePlacesResult(p,type)).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
+    }
+
     async function loadLiveGoogleHotels(){
       if(liveGoogleHotelLoaded||liveGoogleHotelLoading) return;
       liveGoogleHotelLoading=true;
@@ -1101,22 +1165,8 @@
           console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
         }
 
-        liveGoogleHotelStops=spreadStopsAlongRoute((data.places||[]).map(p=>({
-          name:p.name||'Hotel langs route',
-          meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.detourLabel||'± 5 min van route'].filter(Boolean).join(' · '),
-          desc:'',
-          type:'hotel',label:'Hotel langs route',ll:[Number(p.lat),Number(p.lng)],provider:p.provider||'Google Places',
-          status:p.status||'beschikbaarheid checken',openNow:p.openNow,rating:p.rating||null,userRatingCount:p.userRatingCount||null,
-          detourLabel:p.detourLabel||'± 5 min van route',priceLevel:p.priceLevel||null,
-          amenities:Array.isArray(p.amenities)?p.amenities:[],
-          googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
-          googleMapsUri:p.googleMapsUri||null,
-          photoName:p.photoName||null,
-          photoNames:Array.isArray(p.photoNames)?p.photoNames:[],
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          photoUrls:Array.isArray(p.photoUrls)?p.photoUrls:[],
-          infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
-        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
+        liveGoogleHotelStops=spreadStopsAlongRoute(normalizePlacesList(data.places,'hotel'),{buckets:12,perBucket:2,maxTotal:18});
+        writePlacesCache('hotel',requestKey,liveGoogleHotelStops);
 
         liveGoogleHotelLoaded=true;
         liveGoogleHotelKey=requestKey;
@@ -1125,6 +1175,14 @@
         showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
       }catch(err){
         liveGoogleHotelLoading=false;
+        const cached=readPlacesCache('hotel',liveGoogleHotelKey||placesRequestKey(currentRouteSamplePoints(18,{includeEnds:false}),16000,'route_planning'),180);
+        if(cached?.length){
+          liveGoogleHotelStops=cached;
+          liveGoogleHotelLoaded=true;
+          renderLiveGoogleHotelMarkers();
+          showToast(`${cached.length} hotels uit cache`);
+          return;
+        }
         console.warn('Live Google hotels fout:',err);
         showToast(err?.name==='AbortError'?'Google hotels timeout':'Google hotels niet geladen');
       }
@@ -1167,22 +1225,8 @@
           console.warn('Google fuel backend status:', data.status, data.message || data.errors || '');
         }
 
-        liveGoogleFuelStops=(data.places||[]).map(p=>({
-          name:p.name||'Tankstation',
-          meta:[p.address||'Langs je route',p.rating?`${p.rating} ★`:'',p.openNow===true?'Nu open':''].filter(Boolean).join(' · '),
-          desc:'',
-          type:'fuel',label:'Premium tankstop',ll:[Number(p.lat),Number(p.lng)],provider:p.provider||'Google Places',
-          brand:p.brand||inferFuelBrand(p.name),
-          status:p.status||(p.openNow===true?'nu open':p.openNow===false?'mogelijk gesloten':'openingstijden checken'),openNow:p.openNow,rating:p.rating||null,
-          detourLabel:p.detourLabel||p.detour||'± 2 min van route',
-          fuelPrice:p.fuelPrice||p.priceLabel||p.price||null,
-          amenities:Array.isArray(p.amenities)?p.amenities:[],
-          googlePlaceId:p.id||p.place_id||p.googlePlaceId||null,
-          googleMapsUri:p.googleMapsUri||null,
-          photoName:p.photoName||null,
-          photoUrl:p.photoUrl||p.photo||p.imageUrl||p.image||null,
-          infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
-        })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
+        liveGoogleFuelStops=normalizePlacesList(data.places,'fuel');
+        writePlacesCache('fuel',requestKey,liveGoogleFuelStops);
 
         liveGoogleFuelLoaded=true;
         liveGoogleFuelKey=requestKey;
@@ -1191,6 +1235,14 @@
         showToast(googleFuelMessage(data, liveGoogleFuelStops.length));
       }catch(err){
         liveGoogleFuelLoading=false;
+        const cached=readPlacesCache('fuel',liveGoogleFuelKey||placesRequestKey(currentRouteSamplePoints(14,{includeEnds:false}),7000,'route_quick'),180);
+        if(cached?.length){
+          liveGoogleFuelStops=cached;
+          liveGoogleFuelLoaded=true;
+          renderLiveGoogleFuelMarkers();
+          showToast(`${cached.length} tankstations uit cache`);
+          return;
+        }
         console.warn('Live Google tankstations fout:',err);
         showToast(err?.name==='AbortError'?'Google tankstations timeout':'Google tankstations niet geladen');
       }
@@ -4197,7 +4249,7 @@
   }
 
   window.RoadoraCore={
-    version:'7.2.4',
+    version:'7.3.0',
     phase:'2.4-data-state-cleanup',
     locked:{ mapsExport:true },
     state:{
@@ -4230,7 +4282,7 @@
 })();
 
 
-/* Roadora v7.2.4 — Data & State Cleanup Layer
+/* Roadora v7.3.0 — Production Places Layer
    Niet-destructieve datalaag. Doel: één vaste plek voor route-summary,
    roadtrip-state, category-state en toekomstige Google Places-resultaten.
    Let op: deze laag verandert bewust geen bestaande UX of Maps-flow.
@@ -4313,7 +4365,7 @@
   }
 
   window.RoadoraDataLayer={
-    version:'7.2.4',
+    version:'7.3.0',
     keys:KEYS,
     normalizeStop,
     classifyStopSource,
