@@ -162,7 +162,12 @@
     return 'https://www.google.com/search?q='+encodeURIComponent(selectedStopName()+' informatie');
   }
   function openMapsRoute(){
-    const url='https://www.google.com/maps/dir/?api=1&origin=Rotterdam&destination=Innsbruck&travelmode=driving';
+    // v6.9.2: Maps-export blijft centraal en opent de volledige roadtrip-route inclusief tussenstops.
+    if(window.RoadoraMapsExport?.open){
+      window.RoadoraMapsExport.open('nav');
+      return;
+    }
+    const url='https://www.google.com/maps/dir/?api=1&destination=Innsbruck&travelmode=driving';
     window.open(url,'_blank','noopener');toast('Google Maps route geopend');
   }
   function openMapsStop(){
@@ -3297,7 +3302,8 @@
     const data=read();
     const params=new URLSearchParams();
     params.set('api','1');
-    params.set('origin',data.origin||ORIGIN);
+    // v6.9.2: origin bewust weglaten. Google Maps gebruikt dan de actuele locatie
+    // en toont op mobiel weer de Start-knop, óók met waypoints.
     params.set('destination',data.destination||DESTINATION);
     params.set('travelmode','driving');
     const waypoints=data.stops.map(pointQuery).filter(Boolean).slice(0,9);
@@ -3511,7 +3517,7 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    // v6.9.1: geen stippellijn meer over de kaart.
+    // v6.9.2: geen stippellijn meer over de kaart.
     // De blauwe ORS-route is de enige zichtbare route-lijn.
     // Deze laag toont alleen gekozen roadtrip-stop markers, zodat er geen verwarring ontstaat
     // tussen de echte route en een simpele rechte waypoint-hulplijn.
