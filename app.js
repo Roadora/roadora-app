@@ -2971,10 +2971,10 @@
     });
   }
   function openRoadtripPanel(){
-    const dock=qs('#roadtripMiniDockV584');
-    if(dock){ dock.click(); return true; }
+    // v7.4.2: één centrale entrypoint. Oude compact-popup mag niet meer openen.
+    if(window.RoadoraRoadtripV2?.open){ window.RoadoraRoadtripV2.open(); return true; }
     const panel=qs('#roadtripMiniPanelV584');
-    if(panel){ panel.classList.add('open'); return true; }
+    if(panel){ panel.classList.add('open','roadtripV63Open','roadtripV2Open'); return true; }
     toast('Voeg eerst een stop toe aan je roadtrip');
     return false;
   }
@@ -3160,7 +3160,7 @@
   else mark();
 })();
 
-/* Roadora v6.3.1 Roadtrip Flow — Echt Goed
+/* Roadora v7.4.2 Roadtrip V2 Activation Fix — op basis van v6.3.1
    - Bottom bar is de enige ingang voor Mijn Roadtrip (geen extra zwevende dock)
    - Stabiel paneel met start, gekozen stops en bestemming
    - Direct verwijderen met live refresh
@@ -3463,11 +3463,12 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 
+  window.RoadoraRoadtripV2={open:renderPanel,close:closePanel,refresh:renderPanel};
   window.RoadoraMapsExport={url:mapsUrl,open:openMaps};
 })();
 
 
-/* Roadora v6.4 Route Core Functionality — Goed
+/* Roadora v7.4.2 Route Core zonder gestippelde helperlijn — op basis van v6.4
    - Mijn Roadtrip-stops zijn zichtbaar op de kaart
    - Route-tab focust op de volledige route inclusief gekozen stops
    - Eén centrale stoplijst uit localStorage blijft de bron voor kaart + Maps-export
@@ -3529,17 +3530,8 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    if(stops.length){
-      L.polyline(routePoints(stops),{
-        color:'#6e4b25',
-        weight:2.4,
-        opacity:.46,
-        dashArray:'7 9',
-        lineCap:'round',
-        lineJoin:'round',
-        interactive:false
-      }).addTo(group);
-    }
+    // v7.4.2: geen extra gestippelde roadtrip-/fallbacklijn meer.
+    // De echte ORS-route is de enige routelijn op de kaart; deze laag toont alleen gekozen stopmarkers.
 
     stops.forEach((stop,index)=>{
       const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
