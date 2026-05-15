@@ -3075,10 +3075,13 @@
     });
   }
   function openRoadtripPanel(){
-    const dock=qs('#roadtripMiniDockV584');
-    if(dock){ dock.click(); return true; }
+    // v6.9.4: forceer altijd het nieuwste Roadtrip-paneel met segment km/tijd.
+    if(window.RoadoraRoadtripPanel?.open){
+      window.RoadoraRoadtripPanel.open();
+      return true;
+    }
     const panel=qs('#roadtripMiniPanelV584');
-    if(panel){ panel.classList.add('open'); return true; }
+    if(panel){ panel.classList.add('open','roadtripV63Open'); return true; }
     toast('Voeg eerst een stop toe aan je roadtrip');
     return false;
   }
@@ -3116,10 +3119,15 @@
 
     if(nav==='route'){
       e.preventDefault();
+      e.stopImmediatePropagation();
       setBottomActive('route');
       closeTransientPanels();
-      window.RoadoraMapApi?.fitRoute?.('nav');
-      toast('Route in beeld');
+      // v6.9.4: Route-tab betekent altijd terug naar volledige route-context.
+      // Dus gekozen stop-detail sluiten, categorie-wolken dicht en route opnieuw fitten.
+      window.RoadoraMapApi?.closeCategories?.();
+      window.RoadoraMapApi?.clearSelection?.();
+      setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),90);
+      toast('Volledige route in beeld');
       return false;
     }
 
@@ -3506,6 +3514,19 @@
     const count=read().stops.length;
     toast(count ? `Google Maps geopend met ${count} tussenstop${count===1?'':'s'}` : 'Google Maps route geopend');
   }
+  function setBottomActive(nav){
+    qsa('#mapScreen .bottomNav .navItem').forEach(b=>{
+      const is=(b.dataset.nav||'').toLowerCase()===nav;
+      b.classList.toggle('active',is);
+      b.classList.toggle('is-active',is);
+    });
+  }
+  function closeTransientPanels(){
+    closeOtherLayers();
+    closePanel();
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57','roadtripPanelOpenV621','roadtripPanelOpenV63');
+  }
 
   document.addEventListener('click',function(e){
     const t=e.target;
@@ -3543,6 +3564,7 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 
+  window.RoadoraRoadtripPanel={open:renderPanel,render:renderPanel,close:closePanel,segments:segmentEstimates};
   window.RoadoraMapsExport={url:mapsUrl,open:openMaps};
 })();
 
