@@ -4687,3 +4687,60 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #mapScreen .sheet[data-type="route"] .primary{background:linear-gradient(135deg,#ead0a0,#c88b43)!important;color:#211914!important;}
 #mapScreen .mapCockpit[data-copilot-state="route"] #mapStatusBadge{background:linear-gradient(135deg,rgba(210,238,205,.76),rgba(125,169,103,.24))!important;color:#2f653d!important;}
 #mapScreen .mapCockpit[data-copilot-state="route"] #mapStatusDistance{max-width:80px!important;}
+
+
+/* ===== Roadora v7.2.2 — Clean Center Control =====
+   Verwijdert de losse mini-pil/layers/noord-knoppen en houdt één duidelijke centreer-CTA.
+   Zoom blijft apart; Maps/ORS/roadtrip-state blijven onaangeraakt. */
+#mapScreen .controlsV722{
+  right:12px !important;
+  top:calc(env(safe-area-inset-top) + 206px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  z-index:760 !important;
+}
+#mapScreen .controlsV722 .centerRouteBtn{
+  width:46px !important;
+  height:46px !important;
+  border-radius:18px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:rgba(255,250,242,.94) !important;
+  border:1px solid rgba(255,255,255,.82) !important;
+  box-shadow:0 14px 30px rgba(24,18,12,.14), inset 0 1px 0 rgba(255,255,255,.90) !important;
+  backdrop-filter:blur(28px) !important;
+  -webkit-backdrop-filter:blur(28px) !important;
+  color:#2b2119 !important;
+}
+#mapScreen .controlsV722 .centerRouteBtn svg{
+  width:18px !important;
+  height:18px !important;
+  stroke:currentColor !important;
+  stroke-width:2.2 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+#mapScreen .controlsV722 .centerRouteBtn:active{transform:scale(.96) !important;}
+#mapScreen .controlsV722 .zoomOnly{
+  border-radius:18px !important;
+  overflow:hidden !important;
+  background:rgba(255,250,242,.94) !important;
+  border:1px solid rgba(255,255,255,.82) !important;
+  box-shadow:0 14px 30px rgba(24,18,12,.14), inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+#mapScreen .controlsV722 .zoomOnly .ctrl{
+  width:46px !important;
+  height:42px !important;
+  font-size:18px !important;
+}
+#mapScreen .controlsV722 .zoomOnly .ctrl + .ctrl{border-top:1px solid rgba(70,47,24,.10) !important;}
+@media(max-width:520px){
+  #mapScreen .controlsV722{right:12px !important;top:calc(env(safe-area-inset-top) + 204px) !important;gap:10px !important;}
+  #mapScreen .controlsV722 .centerRouteBtn{width:44px !important;height:44px !important;border-radius:17px !important;}
+  #mapScreen .controlsV722 .zoomOnly .ctrl{width:44px !important;height:40px !important;}
+}
+@media(max-height:760px){
+  #mapScreen .controlsV722{top:188px !important;}
+}

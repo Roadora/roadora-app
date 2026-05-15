@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@650;750&amp;display=swap" rel="stylesheet"/>
 <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-<meta content="roadora-v7-0-4-route-clean-roadtrip-segments; maps-export-locked; no-dashed-line" name="roadora-build"/>
+<meta content="roadora-v7-2-2-clean-center-control; maps-export-locked; no-dashed-line" name="roadora-build"/>
 <link href="./styles.css" rel="stylesheet"/>
 <script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer="" src="./app.js"></script>
@@ -183,7 +183,7 @@
             <button class="cat" data-filter="wc" type="button"><svg viewbox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"></path></svg><span>WC's</span></button>
 <button class="cat" data-filter="view" type="button"><svg viewbox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"></path></svg><span>Activiteiten</span></button>
 </div>
-<div class="controls"><div class="ctrlGroup"><button class="ctrl" id="north" type="button">▴</button><button class="ctrl" id="fitRoute" type="button"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><button class="ctrl" type="button"><svg viewbox="0 0 24 24"><path d="M12 2l8 4-8 4-8-4 8-4zM4 12l8 4 8-4M4 18l8 4 8-4"></path></svg></button></div><div class="ctrlGroup"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
+<div class="controls controlsV722"><button class="centerRouteBtn" id="fitRoute" type="button" aria-label="Centreer route"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><div class="ctrlGroup zoomOnly"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
 <section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="saveStop" type="button">＋ Tussenstop</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
 <nav class="bottomNav bottomNavV59">
             <button class="navItem active" type="button" data-nav="route"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>
