@@ -2723,7 +2723,6 @@
           <button data-stop-filter="food" type="button"><span>🍽️</span><b>Eten</b><small>Restaurants</small></button>
           <button data-stop-filter="view" type="button"><span>⛰️</span><b>Uitjes</b><small>Highlights</small></button>
           <button data-stop-filter="wc" type="button"><span>🚻</span><b>WC’s</b><small>Comfortstop</small></button>
-          <button data-stop-overlay-action="clear" type="button"><span>⌁</span><b>Route</b><small>Alles resetten</small></button>
         </div>
       </article>`;
     (qs('#mapScreen .roadMapApp')||document.body).appendChild(el);
@@ -2963,7 +2962,45 @@
     dock.hidden=count===0;
     dock.innerHTML=`<span>⌁</span><b>Mijn Roadtrip</b><em>${count} stop${count===1?'':'s'}</em>`;
   }
+  function readSummaryV695(){
+    try{
+      const r=JSON.parse(localStorage.getItem('roadoraRouteSummaryV1')||'{}');
+      return {
+        distanceMeters:Number(r.distanceMeters)||0,
+        durationSeconds:Number(r.durationSeconds)||0,
+        distanceLabel:r.distanceLabel||'',
+        timeLabel:r.timeLabel||''
+      };
+    }catch(_){return {distanceMeters:0,durationSeconds:0,distanceLabel:'',timeLabel:''};}
+  }
+  function haversineV695(a,b){
+    if(!a||!b) return 0;
+    const R=6371000,rad=x=>Number(x)*Math.PI/180;
+    const dLat=rad(b[0]-a[0]),dLng=rad(b[1]-a[1]),lat1=rad(a[0]),lat2=rad(b[0]);
+    const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+    return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+  }
+  function fmtKmV695(m){return (!Number.isFinite(m)||m<=0)?'— km':Math.round(m/1000).toLocaleString('nl-NL')+' km';}
+  function fmtTimeV695(sec){
+    if(!Number.isFinite(sec)||sec<=0) return '—';
+    const min=Math.max(1,Math.round(sec/60));
+    return Math.floor(min/60)+'u '+String(min%60).padStart(2,'0')+'m';
+  }
+  function segmentEstimatesV695(data){
+    const ORIGIN=[51.9244,4.4777],DEST=[47.2692,11.4041];
+    const stops=(data.stops||[]).filter(x=>Array.isArray(x?.ll)&&Number.isFinite(Number(x.ll[0]))&&Number.isFinite(Number(x.ll[1])));
+    const pts=[ORIGIN,...stops.map(x=>[Number(x.ll[0]),Number(x.ll[1])]),DEST];
+    const straight=[];
+    for(let i=0;i<pts.length-1;i++) straight.push(Math.max(1,haversineV695(pts[i],pts[i+1])));
+    const totalStraight=straight.reduce((a,b)=>a+b,0)||1;
+    const summary=readSummaryV695();
+    const totalMeters=summary.distanceMeters||totalStraight*1.18;
+    const totalSeconds=summary.durationSeconds||totalMeters/24;
+    return straight.map(m=>({distanceLabel:fmtKmV695(totalMeters*(m/totalStraight)),timeLabel:fmtTimeV695(totalSeconds*(m/totalStraight))}));
+  }
+
   function renderPanel(){
+    // v6.9.5: ook het oude fallback-paneel toont nu segment km/tijd, zodat Mijn Roadtrip nooit kaal opent.
     // v6.1: Mijn Roadtrip krijgt focus; andere layers dicht.
     qs('#roadoraStopOverlayV57')?.classList.remove('open');
     qs('#mapScreen')?.classList.remove('stopOverlayOpenV57');
@@ -2973,11 +3010,14 @@
     const panel=ensurePanel();
     const list=qs('.roadtripPanelListV584',panel);
     if(list){
+      const segments=segmentEstimatesV695(data);
+      const seg=(x,label)=>`<div class="roadtripV693Segment"><span>${escapeHtml(label)}</span><b>${escapeHtml(x?.distanceLabel||'— km')} · ${escapeHtml(x?.timeLabel||'—')}</b></div>`;
       list.innerHTML=data.stops.length?data.stops.map((s,i)=>`
+        ${seg(segments[i], i===0?'Vanaf start':'Volgend traject')}
         <div class="roadtripPanelItemV584" data-roadtrip-id="${escapeAttr(s.id)}">
           <i>${i+1}</i><div><b>${escapeHtml(s.name)}</b><small>${escapeHtml(s.label||s.type||'Stop')} · ${escapeHtml(s.meta||'Langs je route')}</small></div>
           <button type="button" data-roadtrip-action="remove" data-roadtrip-id="${escapeAttr(s.id)}">×</button>
-        </div>`).join(''):'<p class="roadtripPanelEmptyV584">Kies een stop op de kaart en tik op “Voeg toe aan roadtrip”.</p>';
+        </div>`).join('')+seg(segments[data.stops.length], 'Naar eindbestemming'):'<p class="roadtripPanelEmptyV584">Kies een stop op de kaart en tik op “Voeg toe aan roadtrip”.</p>';
     }
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621');
     panel.classList.add('open');
@@ -3124,9 +3164,12 @@
       closeTransientPanels();
       // v6.9.4: Route-tab betekent altijd terug naar volledige route-context.
       // Dus gekozen stop-detail sluiten, categorie-wolken dicht en route opnieuw fitten.
+      try{ window.RoadoraMapApi?.setFilters?.([]); }catch(_){ }
       window.RoadoraMapApi?.closeCategories?.();
       window.RoadoraMapApi?.clearSelection?.();
-      setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),90);
+      try{ window.RoadoraTripMap?.hide?.(); }catch(_){ }
+      setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),60);
+      setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),220);
       toast('Volledige route in beeld');
       return false;
     }
@@ -3651,6 +3694,10 @@
     document.body.classList.toggle('roadoraHasTripStopsV64',stops.length>0);
     return true;
   }
+  function hideTripMarkers(){
+    try{ if(layer) layer.clearLayers(); }catch(_){ }
+    document.body.classList.remove('roadoraHasTripStopsV64');
+  }
   function fitTripRoute(reason='route'){
     const map=window.roadoraLeafletMap;
     const L=window.L;
@@ -3660,7 +3707,7 @@
     const bounds=L.latLngBounds(pts.map(p=>L.latLng(p[0],p[1])));
     const small=window.matchMedia?.('(max-width: 560px)')?.matches;
     try{
-      render();
+      if(reason==='bottom-nav') hideTripMarkers(); else render();
       map.invalidateSize(false);
       map.fitBounds(bounds, small?{paddingTopLeft:[26,118],paddingBottomRight:[26,148],maxZoom:8}:{paddingTopLeft:[48,150],paddingBottomRight:[48,182],maxZoom:8});
       toast(stops.length?`Volledige roadtrip in beeld · ${stops.length} stop${stops.length===1?'':'s'}`:'Volledige route in beeld');
@@ -3698,6 +3745,6 @@
     window.initRoadoraMapSubpage=wrapped;
   }
 
-  window.RoadoraTripMap={render,fit:fitTripRoute};
+  window.RoadoraTripMap={render,fit:fitTripRoute,hide:hideTripMarkers};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleRender,{once:true}); else scheduleRender();
 })();
