@@ -42,7 +42,10 @@ export default async function handler(req, res) {
         coordinates,
         instructions: false,
         preference: 'recommended',
-        units: 'm'
+        units: 'm',
+        // v6.8.8: POI-stops liggen soms net naast de weg/parkeerplaats.
+        // Ruimere snapping voorkomt dat ORS faalt en de app terugvalt op de fallback-route.
+        radiuses: coordinates.map(() => 5000)
       })
     });
 
