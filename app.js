@@ -3460,17 +3460,9 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    if(stops.length){
-      L.polyline(routePoints(stops),{
-        color:'#6e4b25',
-        weight:2.4,
-        opacity:.46,
-        dashArray:'7 9',
-        lineCap:'round',
-        lineJoin:'round',
-        interactive:false
-      }).addTo(group);
-    }
+    // v7.0.3: geen roadtrip-hulplijn meer tekenen.
+    // De enige route-lijn in de kaart is de echte blauwe ORS-route.
+    // Roadtrip-stops blijven zichtbaar als genummerde pins bovenop de route.
 
     stops.forEach((stop,index)=>{
       const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
