@@ -3792,3 +3792,98 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateBadge,{once:true});else updateBadge();
   window.RoadoraRoadtripPanel={open:render,render,close};
 })();
+
+
+/* Roadora v7.0.7 — Fase 1.8 Cleanup + Performance Guard
+   - Geen nieuwe features; alleen core-stabiliteit
+   - Route-tab bewaart roadtrip-stops, sluit alleen tijdelijke detail/categorie lagen
+   - Oude zwevende roadtrip-dock/panel classes worden opgeschoond
+   - Roadtrip storage wordt licht genormaliseerd tegen dubbele items
+   - Maps-export blijft onaangeraakt/locked
+*/
+(function(){
+  'use strict';
+  const KEY='roadoraRoadtripV1';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let routeCleanTimer=null;
+  let normalizeTimer=null;
+
+  function readTrip(){
+    try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(_){return {};}
+  }
+  function stopId(s){
+    return String(s?.id || s?.googlePlaceId || [s?.type||'stop',s?.name||'',Array.isArray(s?.ll)?s.ll.join(','):''].join(':'));
+  }
+  function normalizeRoadtrip(){
+    const data=readTrip();
+    const input=Array.isArray(data.stops)?data.stops.filter(Boolean):[];
+    const seen=new Set();
+    const stops=[];
+    input.forEach(s=>{
+      const id=stopId(s);
+      if(!id || seen.has(id)) return;
+      seen.add(id);
+      stops.push({...s,id});
+    });
+    const clean={...data,version:data.version||1,origin:data.origin||'Rotterdam, Nederland',destination:data.destination||'Innsbruck, Oostenrijk',stops:stops.slice(0,9),updatedAt:data.updatedAt||new Date().toISOString()};
+    if(JSON.stringify(clean)!==JSON.stringify(data)){
+      localStorage.setItem(KEY,JSON.stringify(clean));
+      window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:clean}));
+    }
+  }
+  function scheduleNormalize(){
+    clearTimeout(normalizeTimer);
+    normalizeTimer=setTimeout(normalizeRoadtrip,90);
+  }
+  function closeLegacyRoadtripLayers(){
+    const dock=qs('#roadtripMiniDockV584');
+    if(dock){dock.hidden=true;dock.style.display='none';}
+    qsa('#roadtripMiniPanelV584').forEach(panel=>{
+      if(!panel.classList.contains('roadtripV705Open')) panel.classList.remove('open','roadtripV63Open');
+    });
+    qs('#mapScreen')?.classList.remove('roadtripPanelOpenV63','roadtripPanelOpenV621');
+  }
+  function closeTransientLayers(){
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57','fromHotelsMap');
+  }
+  function enforceRouteMode(){
+    closeTransientLayers();
+    closeLegacyRoadtripLayers();
+    try{window.RoadoraRoadtripPanel?.close?.();}catch(_){}
+    try{window.RoadoraMapApi?.setFilters?.([]);}catch(_){}
+    try{window.RoadoraMapApi?.closeCategories?.();}catch(_){}
+    try{window.RoadoraMapApi?.clearSelection?.();}catch(_){}
+    try{window.RoadoraTripMap?.render?.();}catch(_){}
+    try{window.RoadoraMapApi?.fitRoute?.('route-clean');}catch(_){}
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
+      const active=btn.dataset.nav==='route';
+      btn.classList.toggle('active',active);
+      btn.classList.toggle('is-active',active);
+    });
+  }
+  function scheduleRouteMode(){
+    clearTimeout(routeCleanTimer);
+    routeCleanTimer=setTimeout(enforceRouteMode,80);
+  }
+
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav]');
+    if(nav?.dataset.nav==='route') scheduleRouteMode();
+    if(nav?.dataset.nav==='stops'){
+      setTimeout(()=>{try{window.RoadoraRoadtripPanel?.close?.();}catch(_){} closeLegacyRoadtripLayers();},60);
+    }
+  },true);
+
+  window.addEventListener('roadora:roadtrip:update',scheduleNormalize);
+  window.addEventListener('storage',e=>{if(!e.key||e.key===KEY) scheduleNormalize();});
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{normalizeRoadtrip();closeLegacyRoadtripLayers();},{once:true});
+  else {normalizeRoadtrip();closeLegacyRoadtripLayers();}
+
+  window.RoadoraCleanupGuard={normalizeRoadtrip,enforceRouteMode};
+})();
