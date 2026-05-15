@@ -4646,54 +4646,23 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .roadtripMapPinV64 b{font-size:13px;}
 }
 
-/* ===== Roadora v6.9.3 — Stabiliteit vóór polish =====
-   Mijn Roadtrip toont weer km/tijd per traject.
-   Bij geselecteerde stop blijft de volledige route in beeld en verdwijnen losse stopwolken.
-*/
-.roadtripV693Segment{
-  min-height:28px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  padding:0 12px!important;
-  margin:0 8px!important;
-  border-left:2px solid rgba(196,134,61,.28)!important;
-  color:#7a6a5b!important;
-}
-.roadtripV693Segment span{
-  font-size:8.5px!important;
-  font-weight:900!important;
-  text-transform:uppercase!important;
-  letter-spacing:.08em!important;
-  white-space:nowrap!important;
-}
-.roadtripV693Segment b{
-  font-size:10.5px!important;
-  font-weight:900!important;
-  color:#4f4034!important;
-  white-space:nowrap!important;
-}
-.roadtripV63Head b{
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  max-width:280px!important;
-}
-@media(max-width:380px){
-  .roadtripV693Segment{min-height:24px!important;margin:0 6px!important;padding:0 10px!important;}
-  .roadtripV693Segment span{font-size:7.6px!important;}
-  .roadtripV693Segment b{font-size:9.3px!important;}
-  .roadtripV63Head b{max-width:230px!important;}
-}
 
-
-/* ===== Roadora v7.0.0 Fase 1 Core Stability =====
-   Kleine stabilisatie: actieve Route-tab blijft neutraal Roadora-goud, geen blauwe CTA-states.
-   Geen premium polish; alleen consistentie en safe-state styling.
-*/
-#mapScreen .bottomNav .navItem[data-nav="route"].active,
-#mapScreen .bottomNav .navItem[data-nav="route"].is-active{
-  background:rgba(228,188,121,.20) !important;
-  color:#8a5f2e !important;
+/* ===== Roadora v7.0.2 Stop Focus Context Fix =====
+   Stop selecteren mag de context niet wissen: alle geladen stops blijven zichtbaar,
+   de gekozen stop krijgt alleen duidelijke focus. */
+#mapScreen.stopFocusContextV702 .leaflet-marker-icon{
+  transition:opacity .18s ease, transform .18s ease, filter .18s ease !important;
+}
+#mapScreen.stopFocusContextV702 .stopPin:not(.selected){
+  opacity:.76 !important;
+  filter:saturate(.92) contrast(.96) !important;
+}
+#mapScreen.stopFocusContextV702 .stopPin.selected{
+  opacity:1 !important;
+  transform:scale(1.22) translateZ(0) !important;
+  z-index:9999 !important;
+}
+#mapScreen.stopFocusContextV702 .sheet{
+  opacity:1 !important;
+  pointer-events:auto !important;
 }
