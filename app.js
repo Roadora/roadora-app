@@ -1,4 +1,9 @@
-/* Roadora v7.0.2 Stop Focus Context Fix
+/* Roadora v7.2.3 Fase 2.3 Core Modularisatie
+   - Gebaseerd op v7.2.2 Clean Center Control fallback
+   - Geen gedrag gewijzigd: ORS, Maps locked, Roadtrip-state en UI blijven intact
+   - Nieuwe RoadoraCore facade toegevoegd als veilige voorbereiding op module-splitsing
+
+   Roadora v7.0.2 Stop Focus Context Fix
    - Home v8.7 blijft intact
    - Veilige map boot, geen dubbele init
    - Voertuig sync tussen route setup en kaart
@@ -4176,4 +4181,50 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
   window.RoadoraInfoDedup={refresh};
+})();
+
+
+/* Roadora v7.2.3 — Phase 2.3 Core Facade
+   Niet-destructieve architectuurlaag. Deze facade verandert geen bestaand gedrag,
+   maar geeft latere modules één veilige ingang naar Route, Map, Roadtrip, Stops, UI en Maps Export.
+*/
+(function(){
+  'use strict';
+  if(window.RoadoraCore?.version) return;
+
+  function safeCall(fn, fallback){
+    try{ return typeof fn === 'function' ? fn() : fallback; }catch(_){ return fallback; }
+  }
+
+  window.RoadoraCore={
+    version:'7.2.3',
+    phase:'2.3-core-modularisatie',
+    locked:{ mapsExport:true },
+    state:{
+      get roadtrip(){ return safeCall(()=>window.RoadoraRoadtrip?.read?.(), null); },
+      get selectedStop(){ return safeCall(()=>window.RoadoraMapApi?.getSelectedStop?.(), window.RoadoraState?.selectedStop || null); },
+      refreshRoadtrip(){
+        window.dispatchEvent(new CustomEvent('roadora:roadtrip:update'));
+        window.dispatchEvent(new CustomEvent('roadora:route:update'));
+      }
+    },
+    route:{
+      reload(){ return window.RoadoraMapApi?.reloadRoute?.(); },
+      fit(reason='core-fit'){ return window.RoadoraMapApi?.fitRoute?.(reason); },
+      clearSelection(){ return window.RoadoraMapApi?.clearSelection?.(); }
+    },
+    map:{
+      setFilters(filters){ return window.RoadoraMapApi?.setFilters?.(filters); },
+      closeCategories(){ return window.RoadoraMapApi?.closeCategories?.(); },
+      focusSelected(){ return window.RoadoraMapApi?.focusSelected?.(); }
+    },
+    mapsExport:{
+      open(mode='nav'){ return window.RoadoraMapsExport?.open?.(mode); },
+      url(){ return window.RoadoraMapsExport?.url?.(); }
+    },
+    ui:{
+      refreshInfo(){ return window.RoadoraInfoDedup?.refresh?.(); },
+      toast(message){ return window.RoadoraToast?.(message); }
+    }
+  };
 })();
