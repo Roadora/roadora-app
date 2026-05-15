@@ -3174,11 +3174,14 @@
       closeTransientPanels();
       // v6.9.4: Route-tab betekent altijd terug naar volledige route-context.
       // Dus gekozen stop-detail sluiten, categorie-wolken dicht en route opnieuw fitten.
+      // v6.9.7 Roadtrip State Fix: Route-knop wist nooit opgeslagen roadtrip-stops.
+      // Alleen tijdelijke categoriepins/detail-sheets sluiten; de gekozen roadtrip blijft behouden.
       try{ window.RoadoraMapApi?.setFilters?.([]); }catch(_){ }
       window.RoadoraMapApi?.closeCategories?.();
       window.RoadoraMapApi?.clearSelection?.();
-      try{ window.RoadoraTripMap?.hide?.(); }catch(_){ }
+      try{ window.RoadoraTripMap?.render?.(); }catch(_){ }
       setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),60);
+      setTimeout(()=>window.RoadoraTripMap?.render?.(),120);
       setTimeout(()=>window.RoadoraMapApi?.fitRoute?.('force'),220);
       toast('Volledige route in beeld');
       return false;
@@ -3471,6 +3474,27 @@
       timeLabel:fmtTime(totalSeconds*(m/totalStraight))
     }));
   }
+  function writeOptimisticRouteSummary(data){
+    // v6.9.7: direct feedback na verwijderen/leegmaken, vóór ORS klaar is.
+    // ORS overschrijft dit daarna met de echte route-samenvatting.
+    try{
+      const stops=(data.stops||[]).filter(isPoint);
+      const pts=[ORIGIN_LL,...stops.map(s=>[Number(s.ll[0]),Number(s.ll[1])]),DEST_LL];
+      let straight=0;
+      for(let i=0;i<pts.length-1;i++) straight+=Math.max(1,haversineMeters(pts[i],pts[i+1]));
+      const distanceMeters=Math.round(straight*1.18);
+      const durationSeconds=Math.round(distanceMeters/24);
+      localStorage.setItem(ROUTE_SUMMARY_KEY,JSON.stringify({
+        distanceMeters,
+        durationSeconds,
+        distanceLabel:fmtKm(distanceMeters),
+        timeLabel:fmtTime(durationSeconds),
+        stopCount:stops.length,
+        provisional:true,
+        updatedAt:new Date().toISOString()
+      }));
+    }catch(_){ }
+  }
   function routeSummaryLabel(data){
     const summary=readRouteSummary();
     const parts=[];
@@ -3544,7 +3568,8 @@
   function removeStop(id){
     const data=read();
     data.stops=data.stops.filter(s=>String(s.id)!==String(id));
-    write(data);
+    const clean=write(data);
+    writeOptimisticRouteSummary(clean);
     renderPanel();
     refreshRouteAfterTripChange();
     toast('Stop verwijderd');
@@ -3553,7 +3578,8 @@
     const data=read();
     if(!data.stops.length) return;
     data.stops=[];
-    write(data);
+    const clean=write(data);
+    writeOptimisticRouteSummary(clean);
     renderPanel();
     refreshRouteAfterTripChange();
     toast('Roadtrip geleegd');
@@ -3727,7 +3753,7 @@
     const bounds=L.latLngBounds(pts.map(p=>L.latLng(p[0],p[1])));
     const small=window.matchMedia?.('(max-width: 560px)')?.matches;
     try{
-      if(reason==='bottom-nav') hideTripMarkers(); else render();
+      render();
       map.invalidateSize(false);
       map.fitBounds(bounds, small?{paddingTopLeft:[26,118],paddingBottomRight:[26,148],maxZoom:8}:{paddingTopLeft:[48,150],paddingBottomRight:[48,182],maxZoom:8});
       toast(stops.length?`Volledige roadtrip in beeld · ${stops.length} stop${stops.length===1?'':'s'}`:'Volledige route in beeld');
@@ -3748,7 +3774,7 @@
       // v6.9.6 Clean Core: Route-tab mag de roadtrip niet wissen.
       // Alleen tijdelijke detail/pin-layers worden gesloten; de opgeslagen stops blijven behouden.
       try{ window.RoadoraMapApi?.clearSelection?.(); }catch(_){ }
-      setTimeout(()=>fitTripRoute('bottom-nav'),120);
+      setTimeout(()=>fitTripRoute('route'),120);
       return;
     }
   },true);
