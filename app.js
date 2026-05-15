@@ -487,14 +487,14 @@
       {name:'Raststätte Allgäuer Tor',meta:'760 km · 8u 05m · WC · eten',desc:'Praktische rustplaats richting Oostenrijk met toiletten en eten dichtbij de route.',type:'wc',label:'WC stop',ll:[47.88,10.31]},
       {name:'Alpen uitzicht',meta:'900 km · dag 2',desc:'Rustige scenic stop richting Oostenrijk, ideaal voor foto’s en een korte pauze.',type:'view',label:'Activiteit',ll:[47.42,11.12]}
     ];
-    const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Eindbestemming · volledige route',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
+    const destinationSheet={name:'Innsbruck, Oostenrijk',meta:'Route wordt geladen…',desc:'Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.',type:'destination',label:'Eindbestemming',ll:[47.2692,11.4041]};
     const svgs={fuel:'<svg viewBox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"/></svg>',ev:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>',food:'<svg viewBox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"/></svg>',hotel:'<svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg>',view:'<svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"/></svg>',wc:'<svg viewBox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"/></svg>'};
 
     const map=L.map('routeLeafletMap',{zoomControl:false,attributionControl:false,preferCanvas:true,scrollWheelZoom:true,tap:true,zoomSnap:.25,zoomDelta:.5}).setView([49.2,8.1],6);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,crossOrigin:true}).addTo(map);
-    const routeShadow=L.polyline(route,{color:'#1f5fbf',weight:8.5,opacity:.20,lineCap:'round',lineJoin:'round'}).addTo(map);
-    const routeMain=L.polyline(route,{color:'#2d8cff',weight:4.6,opacity:.94,lineCap:'round',lineJoin:'round'}).addTo(map);
-    const routeHighlight=L.polyline(route,{color:'#eaf5ff',weight:1.35,opacity:.75,lineCap:'round',lineJoin:'round'}).addTo(map);
+    const routeShadow=L.polyline(route,{color:'#3b2a1a',weight:7.2,opacity:.16,lineCap:'round',lineJoin:'round'}).addTo(map);
+    const routeMain=L.polyline(route,{color:'#c98f48',weight:3.8,opacity:.88,lineCap:'round',lineJoin:'round'}).addTo(map);
+    const routeHighlight=L.polyline(route,{color:'#fff4d8',weight:1.05,opacity:.52,lineCap:'round',lineJoin:'round'}).addTo(map);
     const markerLayer=L.layerGroup().addTo(map);
     const liveGoogleFuelLayer=L.layerGroup().addTo(map);
     const liveGoogleHotelLayer=L.layerGroup().addTo(map);
@@ -688,30 +688,17 @@
       if(v.short==='Motor') return '🏍 Scenic';
       return '🟢 Rustige route';
     }
-    function roadtripStopCount(){
-      try{
-        const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
-        return Array.isArray(trip.stops)?trip.stops.filter(Boolean).length:0;
-      }catch(_){ return 0; }
-    }
-    function baseRouteSummary(){
-      const time=(routeTimeLabel && routeTimeLabel!=='Route laden…')?routeTimeLabel:'route laden';
-      const dist=(routeDistanceLabel && routeDistanceLabel!=='— km')?routeDistanceLabel:'afstand berekenen';
-      return {time,dist};
-    }
     function copilotStateFor(stop){
       const type=stop?.type||'destination';
       const v=vehicleInfo();
-      const count=roadtripStopCount();
-      const sum=baseRouteSummary();
       const base={
         state:'route',
         title:'Rotterdam → Innsbruck',
         badge:routeMood(),
-        sub:`${v.mode} · ${sum.time} · ${sum.dist}`,
-        eta:count?`${count} tussenstop${count===1?'':'s'}`:'Geen tussenstops',
-        distance:'Route actief',
-        next:'Maps-export klaar'
+        sub:`${v.mode} · ${routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'route laden'} · ${routeDistanceLabel||'afstand berekenen'}`,
+        eta:routeTimeLabel && routeTimeLabel!=='Route laden…' ? routeTimeLabel : 'ETA —',
+        distance:routeDistanceLabel||'— km',
+        next:v.short==='EV'?'Volgende: laadstop':'Pauze over 45 min'
       };
 
       if(type==='overview') return {...base,state:'overview',badge:'Trip overzicht',next:'Alle stops'};
@@ -1042,33 +1029,6 @@
       return count ? `${count} hotels langs route` : 'Geen hotels langs route gevonden';
     }
 
-    function demoRouteStopPoints(amount=3){
-      const pts=currentRouteSamplePoints(Math.max(5,amount+2),{includeEnds:false});
-      if(!pts.length) return [];
-      const wanted=[0.25,0.48,0.70,0.84];
-      return wanted.slice(0,amount).map(progress=>{
-        return pts.reduce((best,p)=>Math.abs(p.progress-progress)<Math.abs((best?.progress||0)-progress)?p:best,pts[0]);
-      });
-    }
-    function demoGoogleFuelStops(){
-      return demoRouteStopPoints(3).map((p,i)=>({
-        name:['JET langs route','Shell routepunt','Aral snelwegstop'][i]||'Tankstation langs route',
-        meta:[`${Math.round((p.distanceFromStartMeters||0)/1000)} km vanaf start`,'Langs je actuele route','Google fallback'].join(' · '),
-        desc:'Fallback teststop op basis van de actuele route. Hiermee kun je de Roadora-flow testen als Google Places geen resultaten teruggeeft.',
-        type:'fuel',label:'Premium tankstop',ll:[p.lat,p.lng],provider:'Roadora fallback',brand:['JET','Shell','Aral'][i]||'Tankstation',
-        status:'teststop',openNow:null,rating:4.2,detourLabel:'langs route',amenities:['WC','Shop','Koffie'],googlePlaceId:null,googleMapsUri:null,photoUrl:null,infoUrl:null
-      }));
-    }
-    function demoGoogleHotelStops(){
-      return demoRouteStopPoints(4).map((p,i)=>({
-        name:['Hotel langs Koblenz','Hotel regio Frankfurt','Hotel bij Ulm','Hotel richting München'][i]||'Hotel langs route',
-        meta:[`${Math.round((p.distanceFromStartMeters||0)/1000)} km vanaf start`,'Langs je actuele route','fallback'].join(' · '),
-        desc:'Fallback hotel langs de actuele route. Handig om Overnachten te testen zonder afhankelijk te zijn van live Google-resultaten.',
-        type:'hotel',label:'Hotel langs route',ll:[p.lat,p.lng],provider:'Roadora fallback',status:'testoptie',openNow:null,rating:4.1,userRatingCount:128,detourLabel:'langs route',priceLevel:null,
-        amenities:['Wifi','Parkeren','Ontbijt'],googlePlaceId:null,googleMapsUri:null,photoUrl:null,photoUrls:[],infoUrl:null
-      }));
-    }
-
     async function loadLiveGoogleHotels(){
       if(liveGoogleHotelLoaded||liveGoogleHotelLoading) return;
       liveGoogleHotelLoading=true;
@@ -1122,9 +1082,6 @@
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1])),{buckets:12,perBucket:2,maxTotal:18});
 
-        if(!liveGoogleHotelStops.length){
-          liveGoogleHotelStops=demoGoogleHotelStops();
-        }
         liveGoogleHotelLoaded=true;
         liveGoogleHotelKey=requestKey;
         liveGoogleHotelLoading=false;
@@ -1133,10 +1090,7 @@
       }catch(err){
         liveGoogleHotelLoading=false;
         console.warn('Live Google hotels fout:',err);
-        liveGoogleHotelStops=demoGoogleHotelStops();
-        liveGoogleHotelLoaded=true;
-        renderLiveGoogleHotelMarkers();
-        showToast('Fallback hotels langs actuele route');
+        showToast(err?.name==='AbortError'?'Google hotels timeout':'Google hotels niet geladen');
       }
     }
 
@@ -1194,9 +1148,6 @@
           infoUrl:p.googleMapsUri||p.url||p.website||p.websiteUri||null
         })).filter(p=>Number.isFinite(p.ll[0])&&Number.isFinite(p.ll[1]));
 
-        if(!liveGoogleFuelStops.length){
-          liveGoogleFuelStops=demoGoogleFuelStops();
-        }
         liveGoogleFuelLoaded=true;
         liveGoogleFuelKey=requestKey;
         liveGoogleFuelLoading=false;
@@ -1205,10 +1156,7 @@
       }catch(err){
         liveGoogleFuelLoading=false;
         console.warn('Live Google tankstations fout:',err);
-        liveGoogleFuelStops=demoGoogleFuelStops();
-        liveGoogleFuelLoaded=true;
-        renderLiveGoogleFuelMarkers();
-        showToast('Fallback tankstations langs actuele route');
+        showToast(err?.name==='AbortError'?'Google tankstations timeout':'Google tankstations niet geladen');
       }
     }
     function fit(reason='route'){
@@ -1235,22 +1183,6 @@
         showToast('Echte route laden…');
         const profile=window.RoadoraState?.profile||document.querySelector('.rVehicle.active')?.dataset.profile||document.querySelector('.vehicle.active')?.dataset.profile||'driving-car';
         const params=new URLSearchParams({start:'4.4777,51.9244',end:'11.4041,47.2692',profile});
-
-        // v6.8.6: de actuele roadtrip-stops zijn leidend voor de ORS-route.
-        // Daardoor buigt de blauwe route echt via gekozen stops en worden hotel/tank-resultaten
-        // daarna opnieuw langs die nieuwe route gezocht.
-        try{
-          const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
-          const waypoints=(Array.isArray(trip.stops)?trip.stops:[])
-            .filter(s=>Array.isArray(s?.ll)&&Number.isFinite(Number(s.ll[0]))&&Number.isFinite(Number(s.ll[1])))
-            .map(s=>`${Number(s.ll[1]).toFixed(6)},${Number(s.ll[0]).toFixed(6)}`)
-            .slice(0,9);
-          if(waypoints.length){
-            params.set('waypoints',waypoints.join('|'));
-            params.set('via',waypoints.join('|'));
-          }
-        }catch(err){ console.warn('Roadtrip waypoints lezen mislukt:',err); }
-
         const res=await fetch('/api/route?'+params.toString(),{headers:{Accept:'application/json'}});
         if(!res.ok) throw new Error('ORS '+res.status);
         const data=await res.json();
@@ -1271,11 +1203,7 @@
         const statKm=document.querySelector('.routePanel .stat:nth-child(2) b'); if(statKm&&km) statKm.textContent=km;
         if(km) routeDistanceLabel=km;
         if(time) routeTimeLabel=time;
-        if(km||time){
-          destinationSheet.meta='Eindbestemming · volledige route';
-          destinationSheet.desc='Je roadtrip-route is opnieuw berekend via je gekozen tussenstops. Nieuwe hotels en tankstations worden langs deze actuele route geladen.';
-          if(!selectedMarker) updateSheet(destinationSheet);else updateSmartTopbar(selectedStopData);
-        }
+        if(km||time){destinationSheet.meta=[km,time].filter(Boolean).join(' · ');destinationSheet.desc='Je echte ORS-route naar Innsbruck is geladen. Onderweg kun je hotels, laadstops en eten als context in dit blok openen.';if(!selectedMarker) updateSheet(destinationSheet);else updateSmartTopbar(selectedStopData);}
         fit();showToast('Echte ORS route geladen');
       }catch(err){console.warn('ORS fallback route:',err);showToast('Fallback route actief');}
     }
@@ -1295,20 +1223,9 @@
       showPanel:(data)=>{resetSelectedIcon();selectedMarker=null;updateSheet(data);},
       updateTopbar:()=>updateSmartTopbar(selectedStopData||destinationSheet),
       getSelectedStop:()=>selectedStopData,
-      getRouteLatLngs:()=>{
-        try{return (routeMain.getLatLngs?.()||[]).map(p=>[Number(p.lat),Number(p.lng)]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));}
-        catch(_){return [];}
-      },
-      getRouteStats:()=>({distanceLabel:routeDistanceLabel,timeLabel:routeTimeLabel}),
       toggleCategories,
       closeCategories:()=>setCategoriesOpen(false)
     };
-
-    window.addEventListener('roadora:roadtrip:update',()=>{
-      showToast('Route opnieuw berekenen via tussenstops…');
-      setTimeout(()=>loadOrsRoute(),80);
-    });
-    window.addEventListener('storage',(e)=>{ if(!e.key || e.key==='roadoraRoadtripV1') setTimeout(()=>loadOrsRoute(),120); });
 
     window.roadoraLeafletMap=map;
     document.getElementById('zoomIn')?.addEventListener('click',()=>map.zoomIn());
@@ -3306,69 +3223,6 @@
     }
     return item?.name || '';
   }
-  function haversineKm(a,b){
-    if(!Array.isArray(a)||!Array.isArray(b)) return 0;
-    const R=6371;
-    const lat1=Number(a[0])*Math.PI/180, lat2=Number(b[0])*Math.PI/180;
-    const dLat=(Number(b[0])-Number(a[0]))*Math.PI/180;
-    const dLng=(Number(b[1])-Number(a[1]))*Math.PI/180;
-    const x=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
-    return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-  }
-  function parseTimeMinutes(label){
-    const m=String(label||'').match(/(\d+)\s*u\s*(\d+)?/i);
-    if(!m) return null;
-    return (Number(m[1]||0)*60)+Number(m[2]||0);
-  }
-  function formatDuration(mins){
-    mins=Math.max(1,Math.round(Number(mins)||0));
-    const h=Math.floor(mins/60), m=mins%60;
-    return h ? `${h}u ${String(m).padStart(2,'0')}m` : `${m}m`;
-  }
-  function formatKm(km){
-    km=Math.max(0,Number(km)||0);
-    return `${Math.round(km).toLocaleString('nl-NL')} km`;
-  }
-  function routeCumulative(route){
-    const cum=[0];
-    for(let i=1;i<route.length;i++) cum[i]=cum[i-1]+haversineKm(route[i-1],route[i]);
-    return cum;
-  }
-  function nearestRouteIndex(route,ll){
-    if(!route.length||!Array.isArray(ll)) return 0;
-    let best=0,bestD=Infinity;
-    const step=Math.max(1,Math.floor(route.length/450));
-    for(let i=0;i<route.length;i+=step){
-      const d=(Number(route[i][0])-Number(ll[0]))**2+(Number(route[i][1])-Number(ll[1]))**2;
-      if(d<bestD){best=i;bestD=d;}
-    }
-    return best;
-  }
-  function segmentLabels(data){
-    const stops=(data?.stops||[]).filter(s=>Array.isArray(s?.ll));
-    const points=[{kind:'origin',name:data.origin,ll:[51.9244,4.4777]},...stops,{kind:'destination',name:data.destination,ll:[47.2692,11.4041]}];
-    const route=window.RoadoraMapApi?.getRouteLatLngs?.()||[];
-    const stats=window.RoadoraMapApi?.getRouteStats?.()||{};
-    const totalTime=parseTimeMinutes(stats.timeLabel)||543;
-    if(route.length>5){
-      const cum=routeCumulative(route);
-      const totalKm=Math.max(1,cum[cum.length-1]||1005);
-      const idxs=points.map(p=>nearestRouteIndex(route,p.ll));
-      return points.slice(1).map((p,i)=>{
-        const a=idxs[i], b=idxs[i+1];
-        let km=Math.abs((cum[b]||0)-(cum[a]||0));
-        if(km<1) km=haversineKm(points[i].ll,p.ll)*1.18;
-        return {to:p, kmLabel:formatKm(km), timeLabel:formatDuration(totalTime*(km/totalKm))};
-      });
-    }
-    return points.slice(1).map((p,i)=>{
-      const km=haversineKm(points[i].ll,p.ll)*1.22;
-      return {to:p, kmLabel:formatKm(km), timeLabel:formatDuration(km/105*60)};
-    });
-  }
-  function segmentHtml(label){
-    return `<div class="roadtripV68Segment"><span></span><b>${escapeHtml(label.kmLabel)}</b><em>${escapeHtml(label.timeLabel)}</em></div>`;
-  }
   function mapsUrl(){
     const data=read();
     const params=new URLSearchParams();
@@ -3410,9 +3264,7 @@
     const panel=ensurePanel();
     closeOtherLayers();
     const stops=data.stops;
-    const segments=segmentLabels(data);
     const stopRows=stops.length ? stops.map((s,i)=>`
-      ${segmentHtml(segments[i]||{kmLabel:'— km',timeLabel:'—'})}
       <div class="roadtripV63Stop" data-trip-id="${escapeAttr(s.id)}">
         <div class="roadtripV63Index">${i+1}</div>
         <div class="roadtripV63Icon">${typeIcon(s.type)}</div>
@@ -3426,7 +3278,6 @@
         <b>Nog geen tussenstops</b>
         <span>Kies een hotel, tankstation, laadpunt of uitje op de kaart en tik op “Voeg toe aan roadtrip”.</span>
       </div>`;
-    const finalSegment=stops.length ? segmentHtml(segments[stops.length]||{kmLabel:'— km',timeLabel:'—'}) : '';
 
     panel.innerHTML=`
       <div class="roadtripPanelScrimV584" data-tripv63-action="close"></div>
@@ -3438,7 +3289,6 @@
         <div class="roadtripV63RouteLine">
           <div class="roadtripV63Endpoint"><i>Start</i><b>${escapeHtml(data.origin)}</b></div>
           ${stopRows}
-          ${finalSegment}
           <div class="roadtripV63Endpoint"><i>Eind</i><b>${escapeHtml(data.destination)}</b></div>
         </div>
         <footer class="roadtripV63Footer">
@@ -3591,8 +3441,17 @@
     group.clearLayers();
     const stops=read().filter(isPoint);
 
-    // v6.8.8: geen fake rechte/dashed lijn meer over de kaart.
-    // De hoofdroute blijft de echte ORS-polyline; deze laag toont alleen genummerde roadtrip-pins.
+    if(stops.length){
+      L.polyline(routePoints(stops),{
+        color:'#6e4b25',
+        weight:2.4,
+        opacity:.46,
+        dashArray:'7 9',
+        lineCap:'round',
+        lineJoin:'round',
+        interactive:false
+      }).addTo(group);
+    }
 
     stops.forEach((stop,index)=>{
       const marker=L.marker([Number(stop.ll[0]),Number(stop.ll[1])],{icon:makeIcon(stop,index),zIndexOffset:900}).addTo(group);
