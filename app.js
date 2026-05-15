@@ -1061,9 +1061,12 @@
     }
 
 
-    // v7.3.0 Production Places Layer: één contract voor Places-resultaten.
-    // Hierdoor blijven hotels/tankstations dezelfde cache-, normalisatie- en fallbackflow gebruiken.
-    const PLACES_CACHE_KEY='roadoraPlacesCacheV2';
+    // v7.3.4 Production Places Layer: één contract voor Places-resultaten.
+    // Hotels/tankstations gebruiken dezelfde loading/error/cache-flow. Maps-export blijft los en locked.
+    const PLACES_CACHE_KEY='roadoraPlacesCacheV3';
+    const PLACES_CACHE_TTL_MINUTES={hotel:180,fuel:120};
+    const PLACES_CACHE_MAX_ENTRIES=28;
+    const placesUiState={hotel:'idle',fuel:'idle'};
     function safePlacesCacheRead(){
       try{return JSON.parse(localStorage.getItem(PLACES_CACHE_KEY)||'{}')||{};}
       catch(_){return {};}
@@ -1073,18 +1076,47 @@
       catch(_){return false;}
     }
     function placesCacheId(category,key){return `${category}:${key}`;}
-    function readPlacesCache(category,key,maxAgeMinutes=90){
+    function compactPlacesCache(cache){
+      const entries=Object.entries(cache||{}).sort((a,b)=>Number(b[1]?.savedAt||0)-Number(a[1]?.savedAt||0));
+      return Object.fromEntries(entries.slice(0,PLACES_CACHE_MAX_ENTRIES));
+    }
+    function readPlacesCacheEntry(category,key,maxAgeMinutes=90,allowStale=false){
       const cache=safePlacesCacheRead();
       const entry=cache[placesCacheId(category,key)];
       if(!entry || !Array.isArray(entry.items)) return null;
       const age=Date.now()-Number(entry.savedAt||0);
-      if(!Number.isFinite(age) || age<0 || age>maxAgeMinutes*60*1000) return null;
-      return entry.items;
+      if(!Number.isFinite(age) || age<0) return null;
+      const isFresh=age<=maxAgeMinutes*60*1000;
+      if(!isFresh && !allowStale) return null;
+      return {...entry,isFresh,ageMinutes:Math.round(age/60000)};
     }
-    function writePlacesCache(category,key,items){
+    function readPlacesCache(category,key,maxAgeMinutes=90,allowStale=false){
+      return readPlacesCacheEntry(category,key,maxAgeMinutes,allowStale)?.items || null;
+    }
+    function writePlacesCache(category,key,items,status='ok'){
       const cache=safePlacesCacheRead();
-      cache[placesCacheId(category,key)]={items:Array.isArray(items)?items:[],savedAt:Date.now(),version:2};
-      safePlacesCacheWrite(cache);
+      cache[placesCacheId(category,key)]={items:Array.isArray(items)?items:[],savedAt:Date.now(),version:3,status};
+      safePlacesCacheWrite(compactPlacesCache(cache));
+    }
+    function setPlaceCategoryState(category,state,message){
+      placesUiState[category]=state;
+      const btn=document.querySelector(`.cat[data-filter="${category}"]`);
+      if(btn){
+        btn.dataset.placeState=state;
+        btn.classList.toggle('is-loading',state==='loading');
+        btn.classList.toggle('is-error',state==='error');
+        btn.classList.toggle('is-empty',state==='empty');
+        if(message) btn.title=message;
+      }
+      const cta=document.getElementById('stopsCta');
+      if(cta && activeFilters.has(category)) cta.dataset.placeState=state;
+    }
+    function placesEmptyMessage(category){
+      return category==='hotel'?'Geen hotels langs deze route gevonden':'Geen tankstations langs deze route gevonden';
+    }
+    function placesErrorMessage(category,err){
+      if(err?.name==='AbortError') return category==='hotel'?'Hotels laden duurde te lang':'Tankstations laden duurde te lang';
+      return category==='hotel'?'Hotels niet geladen':'Tankstations niet geladen';
     }
     function normalizePlacesResult(p,type){
       const lat=Number(p?.lat), lng=Number(p?.lng);
@@ -1144,22 +1176,27 @@
 
     async function loadLiveGoogleHotels(){
       if(liveGoogleHotelLoaded||liveGoogleHotelLoading) return;
+      const points=currentRouteSamplePoints(18,{includeEnds:false});
+      const requestKey=placesRequestKey(points,16000,'route_planning');
+      if(liveGoogleHotelLoaded && liveGoogleHotelKey===requestKey){renderLiveGoogleHotelMarkers();return;}
+      if(!points.length){showToast('Nog geen routepunten beschikbaar');setPlaceCategoryState('hotel','empty','Routepunten ontbreken');return;}
+
+      liveGoogleHotelKey=requestKey;
+      const ttl=PLACES_CACHE_TTL_MINUTES.hotel;
+      const freshCached=sanitizeGoogleHotels(readPlacesCache('hotel',requestKey,ttl,false)||[]);
+      if(freshCached.length){
+        liveGoogleHotelStops=freshCached;
+        liveGoogleHotelLoaded=true;
+        renderLiveGoogleHotelMarkers();
+        setPlaceCategoryState('hotel','ready',`${freshCached.length} hotels uit cache`);
+        showToast(`${freshCached.length} hotels uit cache`);
+        return;
+      }
+
       liveGoogleHotelLoading=true;
+      setPlaceCategoryState('hotel','loading','Hotels langs route laden…');
       try{
         showToast('Hotels langs route zoeken…');
-        const points=currentRouteSamplePoints(18,{includeEnds:false});
-        const requestKey=placesRequestKey(points,16000,'route_planning');
-        if(liveGoogleHotelLoaded && liveGoogleHotelKey===requestKey){
-          liveGoogleHotelLoading=false;
-          renderLiveGoogleHotelMarkers();
-          return;
-        }
-        if(!points.length){
-          liveGoogleHotelLoading=false;
-          showToast('Nog geen routepunten beschikbaar');
-          return;
-        }
-
         const requestId=++liveGoogleHotelRequestId;
         const controller = new AbortController();
         const timer = setTimeout(()=>controller.abort(), 12000);
@@ -1174,52 +1211,57 @@
         const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
         if(requestId!==liveGoogleHotelRequestId) return;
         if(!res.ok) throw new Error(data.error||data.message||'Google Hotels API fout');
-        if(data.ok===false){
-          console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
-        }
+        if(data.ok===false) console.warn('Google hotels backend status:', data.status, data.message || data.errors || '');
 
         liveGoogleHotelStops=sanitizeGoogleHotels(spreadStopsAlongRoute(normalizePlacesList(data.places,'hotel'),{buckets:12,perBucket:2,maxTotal:18}));
-        writePlacesCache('hotel',requestKey,liveGoogleHotelStops);
-
+        writePlacesCache('hotel',requestKey,liveGoogleHotelStops,data.status||'live');
         liveGoogleHotelLoaded=true;
-        liveGoogleHotelKey=requestKey;
         liveGoogleHotelLoading=false;
         renderLiveGoogleHotelMarkers();
+        setPlaceCategoryState('hotel',liveGoogleHotelStops.length?'ready':'empty',googleHotelMessage(data, liveGoogleHotelStops.length));
         showToast(googleHotelMessage(data, liveGoogleHotelStops.length));
       }catch(err){
         liveGoogleHotelLoading=false;
-        const cached=readPlacesCache('hotel',liveGoogleHotelKey||placesRequestKey(currentRouteSamplePoints(18,{includeEnds:false}),16000,'route_planning'),180);
-        const realCached=sanitizeGoogleHotels(cached||[]);
-        if(realCached.length){
-          liveGoogleHotelStops=realCached;
+        const stale=sanitizeGoogleHotels(readPlacesCache('hotel',requestKey,24*60,true)||[]);
+        if(stale.length){
+          liveGoogleHotelStops=stale;
           liveGoogleHotelLoaded=true;
           renderLiveGoogleHotelMarkers();
-          showToast(`${realCached.length} hotels uit cache`);
+          setPlaceCategoryState('hotel','cached',`${stale.length} hotels uit oudere cache`);
+          showToast(`${stale.length} hotels uit oudere cache`);
           return;
         }
+        liveGoogleHotelStops=[];
+        renderLiveGoogleHotelMarkers();
+        setPlaceCategoryState('hotel','error',placesErrorMessage('hotel',err));
         console.warn('Live Google hotels fout:',err);
-        showToast(err?.name==='AbortError'?'Google hotels timeout':'Google hotels niet geladen');
+        showToast(placesErrorMessage('hotel',err));
       }
     }
 
     async function loadLiveGoogleFuelStations(){
       if(liveGoogleFuelLoaded||liveGoogleFuelLoading) return;
+      const points=currentRouteSamplePoints(14,{includeEnds:false});
+      const requestKey=placesRequestKey(points,7000,'route_quick');
+      if(liveGoogleFuelLoaded && liveGoogleFuelKey===requestKey){renderLiveGoogleFuelMarkers();return;}
+      if(!points.length){showToast('Nog geen routepunten beschikbaar');setPlaceCategoryState('fuel','empty','Routepunten ontbreken');return;}
+
+      liveGoogleFuelKey=requestKey;
+      const ttl=PLACES_CACHE_TTL_MINUTES.fuel;
+      const freshCached=readPlacesCache('fuel',requestKey,ttl,false)||[];
+      if(freshCached.length){
+        liveGoogleFuelStops=freshCached;
+        liveGoogleFuelLoaded=true;
+        renderLiveGoogleFuelMarkers();
+        setPlaceCategoryState('fuel','ready',`${freshCached.length} tankstations uit cache`);
+        showToast(`${freshCached.length} tankstations uit cache`);
+        return;
+      }
+
       liveGoogleFuelLoading=true;
+      setPlaceCategoryState('fuel','loading','Tankstations langs route laden…');
       try{
         showToast('Tankstations dicht langs route zoeken…');
-        const points=currentRouteSamplePoints(14,{includeEnds:false});
-        const requestKey=placesRequestKey(points,7000,'route_quick');
-        if(liveGoogleFuelLoaded && liveGoogleFuelKey===requestKey){
-          liveGoogleFuelLoading=false;
-          renderLiveGoogleFuelMarkers();
-          return;
-        }
-        if(!points.length){
-          liveGoogleFuelLoading=false;
-          showToast('Nog geen routepunten beschikbaar');
-          return;
-        }
-
         const requestId=++liveGoogleFuelRequestId;
         const controller = new AbortController();
         const timer = setTimeout(()=>controller.abort(), 11000);
@@ -1234,31 +1276,31 @@
         const data=await res.json().catch(()=>({ok:false,status:'invalid_json',places:[]}));
         if(requestId!==liveGoogleFuelRequestId) return;
         if(!res.ok) throw new Error(data.error||data.message||'Google Fuel API fout');
-
-        if(data.ok===false){
-          console.warn('Google fuel backend status:', data.status, data.message || data.errors || '');
-        }
+        if(data.ok===false) console.warn('Google fuel backend status:', data.status, data.message || data.errors || '');
 
         liveGoogleFuelStops=normalizePlacesList(data.places,'fuel');
-        writePlacesCache('fuel',requestKey,liveGoogleFuelStops);
-
+        writePlacesCache('fuel',requestKey,liveGoogleFuelStops,data.status||'live');
         liveGoogleFuelLoaded=true;
-        liveGoogleFuelKey=requestKey;
         liveGoogleFuelLoading=false;
         renderLiveGoogleFuelMarkers();
+        setPlaceCategoryState('fuel',liveGoogleFuelStops.length?'ready':'empty',googleFuelMessage(data, liveGoogleFuelStops.length));
         showToast(googleFuelMessage(data, liveGoogleFuelStops.length));
       }catch(err){
         liveGoogleFuelLoading=false;
-        const cached=readPlacesCache('fuel',liveGoogleFuelKey||placesRequestKey(currentRouteSamplePoints(14,{includeEnds:false}),7000,'route_quick'),180);
-        if(cached?.length){
-          liveGoogleFuelStops=cached;
+        const stale=readPlacesCache('fuel',requestKey,24*60,true)||[];
+        if(stale.length){
+          liveGoogleFuelStops=stale;
           liveGoogleFuelLoaded=true;
           renderLiveGoogleFuelMarkers();
-          showToast(`${cached.length} tankstations uit cache`);
+          setPlaceCategoryState('fuel','cached',`${stale.length} tankstations uit oudere cache`);
+          showToast(`${stale.length} tankstations uit oudere cache`);
           return;
         }
+        liveGoogleFuelStops=[];
+        renderLiveGoogleFuelMarkers();
+        setPlaceCategoryState('fuel','error',placesErrorMessage('fuel',err));
         console.warn('Live Google tankstations fout:',err);
-        showToast(err?.name==='AbortError'?'Google tankstations timeout':'Google tankstations niet geladen');
+        showToast(placesErrorMessage('fuel',err));
       }
     }
     function fit(reason='route'){
@@ -1271,7 +1313,7 @@
         map.fitBounds(routeMain.getBounds(),mapPaddingFor('route'));
       });
     }
-    function syncCatUI(){document.querySelectorAll('.cat[data-filter]').forEach(btn=>{const f=btn.dataset.filter;btn.classList.toggle('active',activeFilters.has(f));btn.classList.toggle('is-muted',!activeFilters.has(f));});document.getElementById('stopsCta')?.classList.toggle('has-active',activeFilters.size>0);}
+    function syncCatUI(){document.querySelectorAll('.cat[data-filter]').forEach(btn=>{const f=btn.dataset.filter;const active=activeFilters.has(f);btn.classList.toggle('active',active);btn.classList.toggle('is-muted',!active);if(!active){btn.classList.remove('is-loading','is-error','is-empty');delete btn.dataset.placeState;}});const cta=document.getElementById('stopsCta');if(cta){cta.classList.toggle('has-active',activeFilters.size>0);if(!activeFilters.size) delete cta.dataset.placeState;}}
     function setFilters(filters){
       if(!Array.isArray(filters)||!filters.length){activeFilters=new Set();}
       else{activeFilters=new Set(filters);activeFilters.delete('all');}
