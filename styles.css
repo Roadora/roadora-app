@@ -5190,3 +5190,253 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
     font-size:40px;
   }
 }
+
+
+
+/* =========================================================
+   Roadora v7.7.5 — Mijn Roadtrip Hero Visible Fix
+   Doel:
+   - De gekozen hero-foto echt fullscreen zichtbaar maken
+   - Zwarte achtergrond verwijderen
+   - Bestaande Roadtrip V2 functionaliteit behouden
+   ========================================================= */
+
+#roadtripScreenV2Page{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1500 !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+  background:#0d0a07 !important;
+  color:#fff7ed !important;
+}
+
+#roadtripScreenV2Page.active{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  transform:none !important;
+}
+
+/* Fullscreen hero achter alles */
+#roadtripScreenV2Page::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  background-image:url("./assets/roadtrip-hero.png") !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  transform:scale(1.01) !important;
+}
+
+/* Premium overlay: foto zichtbaar, tekst leesbaar */
+#roadtripScreenV2Page::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  background:
+    radial-gradient(circle at 50% 16%, rgba(255,226,170,.16), transparent 38%),
+    linear-gradient(180deg, rgba(4,3,2,.12) 0%, rgba(4,3,2,.06) 30%, rgba(4,3,2,.36) 62%, rgba(4,3,2,.78) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.42), rgba(0,0,0,.08) 42%, rgba(0,0,0,.30)) !important;
+}
+
+#roadtripScreenV2Page .roadtripV2PageInner{
+  position:relative !important;
+  z-index:2 !important;
+  height:100% !important;
+  padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 16px) !important;
+  display:grid !important;
+  grid-template-rows:auto minmax(150px, 1fr) auto auto auto !important;
+  gap:12px !important;
+  background:transparent !important;
+  overflow:hidden !important;
+}
+
+/* Header over de foto */
+#roadtripScreenV2Page .rtv2Header{
+  display:grid !important;
+  grid-template-columns:44px minmax(0,1fr) 44px !important;
+  align-items:center !important;
+  gap:10px !important;
+  color:#fff7ed !important;
+  text-shadow:0 4px 22px rgba(0,0,0,.52) !important;
+}
+
+#roadtripScreenV2Page .rtv2Header span{
+  color:#d89b4c !important;
+  font-size:10px !important;
+  letter-spacing:.14em !important;
+  text-transform:uppercase !important;
+  font-weight:900 !important;
+}
+
+#roadtripScreenV2Page .rtv2Header h2{
+  color:#fff7ed !important;
+  font-family:"Playfair Display",serif !important;
+  font-size:22px !important;
+  line-height:1.02 !important;
+  margin:2px 0 0 !important;
+  letter-spacing:-.7px !important;
+}
+
+#roadtripScreenV2Page .rtv2Back,
+#roadtripScreenV2Page .rtv2Close{
+  width:44px !important;
+  height:44px !important;
+  border-radius:17px !important;
+  background:rgba(255,249,239,.88) !important;
+  color:#241914 !important;
+  border:1px solid rgba(255,255,255,.62) !important;
+  box-shadow:0 14px 34px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.72) !important;
+  backdrop-filter:blur(18px) !important;
+  -webkit-backdrop-filter:blur(18px) !important;
+}
+
+/* Hero stats worden lager over de foto geplaatst */
+#roadtripScreenV2Page .rtv2Hero{
+  align-self:end !important;
+  border-radius:24px !important;
+  padding:11px !important;
+  background:rgba(255,249,239,.84) !important;
+  border:1px solid rgba(255,255,255,.64) !important;
+  box-shadow:0 22px 54px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.72) !important;
+  backdrop-filter:blur(22px) !important;
+  -webkit-backdrop-filter:blur(22px) !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,1fr) !important;
+  gap:8px !important;
+}
+
+#roadtripScreenV2Page .rtv2Hero div{
+  min-height:58px !important;
+  border-radius:17px !important;
+  background:rgba(255,255,255,.68) !important;
+  border:1px solid rgba(70,47,24,.07) !important;
+  color:#211914 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65) !important;
+}
+
+#roadtripScreenV2Page .rtv2Hero b{
+  font-size:15px !important;
+  color:#111 !important;
+}
+
+#roadtripScreenV2Page .rtv2Hero small{
+  font-size:8px !important;
+  color:#65584d !important;
+}
+
+/* Tabs glass onder de stats */
+#roadtripScreenV2Page .rtv2Tabs{
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  gap:7px !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+
+#roadtripScreenV2Page .rtv2Tabs button{
+  height:34px !important;
+  border-radius:999px !important;
+  background:rgba(255,249,239,.78) !important;
+  border:1px solid rgba(255,255,255,.56) !important;
+  color:#6b5d50 !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.60) !important;
+  backdrop-filter:blur(16px) !important;
+  -webkit-backdrop-filter:blur(16px) !important;
+}
+
+#roadtripScreenV2Page .rtv2Tabs button.active{
+  color:#9b6429 !important;
+  background:rgba(255,249,239,.94) !important;
+}
+
+/* Timeline minder zwaar, foto blijft zichtbaar rond en achter cards */
+#roadtripScreenV2Page .rtv2Timeline{
+  max-height:min(38dvh, 320px) !important;
+  overflow:auto !important;
+  border-radius:25px !important;
+  padding:13px !important;
+  background:rgba(255,249,239,.72) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(18px) !important;
+  -webkit-backdrop-filter:blur(18px) !important;
+}
+
+#roadtripScreenV2Page .rtv2Point div,
+#roadtripScreenV2Page .rtv2Stop button[data-rtv2-action="focus"]{
+  background:rgba(255,255,255,.76) !important;
+}
+
+#roadtripScreenV2Page .rtv2Segment b,
+#roadtripScreenV2Page .rtv2Segment em{
+  color:#fff7ed !important;
+  text-shadow:0 3px 14px rgba(0,0,0,.45) !important;
+}
+
+#roadtripScreenV2Page .rtv2Footer{
+  display:grid !important;
+  grid-template-columns:1fr 1.25fr !important;
+  gap:9px !important;
+}
+
+#roadtripScreenV2Page .rtv2Footer button{
+  height:50px !important;
+  border-radius:18px !important;
+  background:rgba(255,249,239,.82) !important;
+  color:#211914 !important;
+  border:1px solid rgba(255,255,255,.64) !important;
+  box-shadow:0 14px 34px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(18px) !important;
+  -webkit-backdrop-filter:blur(18px) !important;
+  font-weight:900 !important;
+}
+
+#roadtripScreenV2Page .rtv2Footer button:last-child{
+  background:linear-gradient(135deg,#e8bd78,#c4863d) !important;
+  color:#211914 !important;
+}
+
+/* Kleine telefoons: kaart niet alles laten bedekken */
+@media(max-height:760px){
+  #roadtripScreenV2Page .roadtripV2PageInner{
+    grid-template-rows:auto minmax(110px, 1fr) auto auto auto !important;
+    gap:9px !important;
+  }
+
+  #roadtripScreenV2Page .rtv2Timeline{
+    max-height:32dvh !important;
+  }
+
+  #roadtripScreenV2Page .rtv2Hero div{
+    min-height:52px !important;
+  }
+
+  #roadtripScreenV2Page .rtv2Footer button{
+    height:46px !important;
+  }
+}
+
+@media(max-width:380px){
+  #roadtripScreenV2Page .roadtripV2PageInner{
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  #roadtripScreenV2Page .rtv2Header h2{
+    font-size:19px !important;
+  }
+
+  #roadtripScreenV2Page .rtv2Hero b{
+    font-size:13px !important;
+  }
+}
