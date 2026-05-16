@@ -5014,15 +5014,13 @@
       // Hierdoor blijft Start in Google Maps werken nadat je een nieuwe route maakt
       // en daarna tussenstops toevoegt. Origin blijft bewust leeg = actuele locatie.
       const url=buildRoadtripMapsUrl();
-      const opened=window.open(url,'_blank','noopener');
-      if(!opened){ window.location.href=url; }
+      window.open(url,'_blank','noopener');
       toast('Google Maps geopend');
     }catch(err){
       console.warn('Roadtrip Google Maps direct export:',err);
       try{
         const url='https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving';
-        const opened=window.open(url,'_blank','noopener');
-        if(!opened) window.location.href=url;
+        window.open(url,'_blank','noopener');
       }catch(_){}
       toast('Google Maps geopend');
     }
@@ -5179,11 +5177,13 @@
 })();
 
 /* Roadora v7.8.9 — Google Maps CTA hard priority
-   Als een tab-hitzone per ongeluk boven de CTA ligt, wint Maps alsnog op coördinaten.
+   Veilig gemaakt in v7.8.11: geen window.location fallback en één Maps-launch per tap.
+   De locked Maps-export blijft leidend; origin blijft leeg zodat Google Maps actuele locatie gebruikt.
 */
 (function(){
   'use strict';
   const qs=(s,r=document)=>r.querySelector(s);
+  let lastMapsAt=0;
   function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
   function isOpen(){ return !!qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
   function inMapsCta(e){
@@ -5192,7 +5192,7 @@
     const r=p.getBoundingClientRect();
     const x=((e.clientX-r.left)/Math.max(1,r.width))*100;
     const y=((e.clientY-r.top)/Math.max(1,r.height))*100;
-    return x>=42 && x<=98 && y>=82 && y<=94;
+    return x>=42 && x<=98 && y>=70 && y<=94;
   }
   function buildUrl(){
     try{
@@ -5212,22 +5212,22 @@
       return 'https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving';
     }
   }
-  function openMaps(){
-    const url=buildUrl();
-    const opened=window.open(url,'_blank','noopener');
-    if(!opened) window.location.href=url;
+  function openMapsOnce(){
+    const now=Date.now();
+    if(now-lastMapsAt<1200) return false;
+    lastMapsAt=now;
+    const url=(window.RoadoraMapsExport?.url?.()) || buildUrl();
+    // Belangrijk: nooit window.location.href gebruiken, anders vervangt Google Maps de Roadora-pagina.
+    window.open(url,'_blank','noopener');
     toast('Google Maps geopend');
     return false;
   }
-  ['pointerdown','pointerup','touchend','click'].forEach(type=>{
-    window.addEventListener(type,function(e){
-      if(!isOpen()) return;
-      if(!inMapsCta(e)) return;
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      if(type==='pointerdown') return false;
-      return openMaps();
-    },true);
-  });
+  window.RoadoraSafeMapsOpen=openMapsOnce;
+  window.addEventListener('click',function(e){
+    if(!isOpen() || !inMapsCta(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return openMapsOnce();
+  },true);
 })();
