@@ -3542,9 +3542,9 @@
 /* Planner schermen mogen de route/map niet blijven blokkeren na terug. */
 #hotelPlannerScreen:not(.active),
 #explorePlannerScreen:not(.active){
-  opacity:0 !important;
-  visibility:hidden !important;
-  pointer-events:none !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
 }
 #hotelPlannerScreen.active,
 #explorePlannerScreen.active{
@@ -4820,172 +4820,96 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 .rtv2Footer{display:grid;grid-template-columns:1fr 1.25fr;gap:9px;}.rtv2Footer button{height:50px;border-radius:18px;background:rgba(255,250,242,.82);border:1px solid rgba(255,255,255,.76);font-weight:900;font-size:13px;}.rtv2Footer button:last-child{background:linear-gradient(135deg,#ead0a0,#c88b43);color:#211914;}.rtv2Footer button:disabled{opacity:.45;}
 
 
-/* ===== Roadora v7.6.8 Poster Homescreen =====
-   De huidige Home is vervangen door één complete cinematic homescreen-poster.
-   Alle zichtbare knoppen op de poster hebben transparante hotspots erboven.
-   Route setup, kaart, hotels en alle bestaande flows blijven intact.
-*/
+/* =========================================================
+   Roadora v7.6.9 — SAFE COMPLETE HOME FIX
+   - Geen verborgen .content meer
+   - Geen zwarte overlay
+   - Nieuwe cinematic achtergrond als assets/home-poster.png
+   - Bestaande knoppen, menu, routeflow, hotelplanner en kaart blijven werken
+   ========================================================= */
+
 .phone{
-  background:#050505 !important;
+  background:#090806 !important;
 }
 
-.phone:not(.mapActive) > .bg{
+/* Nieuwe homescreen achtergrond */
+.phone > .bg{
   position:absolute !important;
   inset:0 !important;
-  background-image:url("./assets/home-poster.png") !important;
+  z-index:0 !important;
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.06) 0%,
+      rgba(0,0,0,.10) 24%,
+      rgba(0,0,0,.22) 48%,
+      rgba(0,0,0,.54) 100%
+    ),
+    url("./assets/home-poster.png") !important;
+
   background-size:cover !important;
   background-position:center top !important;
   background-repeat:no-repeat !important;
   transform:none !important;
-  z-index:0 !important;
 }
 
-.phone:not(.mapActive)::before{
+/* Verwijdert oude zware overlay die zwart scherm kon veroorzaken */
+.phone:before{
   display:none !important;
 }
 
-/* Oude homescreen UI onzichtbaar maken, maar app/screens behouden. */
-.phone:not(.mapActive) > .content{
-  opacity:0 !important;
-  visibility:hidden !important;
-  pointer-events:none !important;
+/* Zorg dat de bestaande home weer zichtbaar en klikbaar is */
+.phone > .content{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  position:relative !important;
+  z-index:2 !important;
 }
 
-/* Poster-hotspots */
-.homePosterHotspots{
-  position:absolute;
-  inset:0;
-  z-index:42;
-  display:block;
-  pointer-events:none;
+/* Home tekst beter leesbaar boven cinematic achtergrond */
+.phone > .content .logo,
+.phone > .content .hero h1,
+.phone > .content .hero p{
+  color:#fff7ee !important;
+  text-shadow:0 3px 22px rgba(0,0,0,.45) !important;
 }
 
-.homeHotspot{
-  position:absolute;
-  display:block;
-  background:rgba(255,255,255,0);
-  border:0;
-  border-radius:28px;
-  pointer-events:auto;
-  cursor:pointer;
+.phone > .content .hero h1 span{
+  color:#e2a54e !important;
 }
 
-/* Zoekbalk */
-.homeSearchHotspot{
-  left:13%;
-  right:14%;
-  top:48.7%;
-  height:5.8%;
-  border-radius:999px;
+/* Searchbar premium zoals mockup */
+.phone > .content .search{
+  background:rgba(255,247,236,.90) !important;
+  border:1px solid rgba(255,255,255,.64) !important;
+  box-shadow:0 22px 55px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.72) !important;
 }
 
-/* Drie hoofdcards */
-.homeRouteCardHotspot{
-  left:5.6%;
-  top:56.2%;
-  width:27.5%;
-  height:10.9%;
+/* Cards iets dichter bij de mockup */
+.phone > .content .card{
+  background:rgba(255,247,236,.86) !important;
+  border:1px solid rgba(255,255,255,.60) !important;
+  box-shadow:0 20px 48px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.70) !important;
 }
 
-.homeExploreCardHotspot{
-  left:36.3%;
-  top:56.2%;
-  width:27.5%;
-  height:10.9%;
+/* Populaire roadtrips goed leesbaar */
+.phone > .content .sectionTitle b,
+.phone > .content .sectionTitle span{
+  color:#fff7ee !important;
+  text-shadow:0 3px 18px rgba(0,0,0,.52) !important;
 }
 
-.homeHotelsCardHotspot{
-  right:5.8%;
-  top:56.2%;
-  width:27.5%;
-  height:10.9%;
+/* Hamburger blijft boven alles */
+.menuToggle{
+  z-index:80 !important;
 }
 
-/* Populaire roadtrips */
-.homeRoadtripOneHotspot{
-  left:5.4%;
-  top:73.2%;
-  width:28%;
-  height:15.8%;
+/* Andere schermen blijven gewoon boven home draaien */
+#routeSetupScreen.active{
+  z-index:700 !important;
 }
-
-.homeRoadtripTwoHotspot{
-  left:36%;
-  top:73.2%;
-  width:28%;
-  height:15.8%;
-}
-
-.homeRoadtripThreeHotspot{
-  right:5.4%;
-  top:73.2%;
-  width:28%;
-  height:15.8%;
-}
-
-/* Bottom nav */
-.homeBottomHomeHotspot{
-  left:5.5%;
-  bottom:2.6%;
-  width:18%;
-  height:7.4%;
-}
-
-.homeBottomRoadtripHotspot{
-  left:24%;
-  bottom:2.6%;
-  width:18%;
-  height:7.4%;
-}
-
-.homeBottomPlusHotspot{
-  left:42%;
-  bottom:2.1%;
-  width:16%;
-  height:8.6%;
-  border-radius:999px;
-}
-
-.homeBottomDiscoverHotspot{
-  right:23.5%;
-  bottom:2.6%;
-  width:18%;
-  height:7.4%;
-}
-
-.homeBottomProfileHotspot{
-  right:5%;
-  bottom:2.6%;
-  width:18%;
-  height:7.4%;
-}
-
-/* Bestaande hamburger blijft functioneel, maar valt exact over de poster-knop */
-.phone:not(.mapActive) > .menuToggle{
-  z-index:75 !important;
-  left:4.2% !important;
-  top:7.6% !important;
-  width:52px !important;
-  height:52px !important;
-  opacity:0 !important;
-}
-
-/* Wanneer andere schermen actief zijn, poster-hotspots uitzetten. */
-.routeSetup.active ~ .homePosterHotspots,
-#mapScreen.active ~ .homePosterHotspots,
-.phone.mapActive .homePosterHotspots{
-  display:none !important;
-}
-
-@media(min-width:560px) and (min-height:720px){
-  .phone:not(.mapActive) > .bg{
-    background-size:cover !important;
-    background-position:center top !important;
-  }
-}
-
-@media(max-height:760px){
-  .homeSearchHotspot{top:48.4%;height:5.9%;}
-  .homeRouteCardHotspot,.homeExploreCardHotspot,.homeHotelsCardHotspot{top:56%;height:10.8%;}
-  .homeRoadtripOneHotspot,.homeRoadtripTwoHotspot,.homeRoadtripThreeHotspot{top:73%;height:15.6%;}
+#mapScreen.active{
+  z-index:900 !important;
 }
