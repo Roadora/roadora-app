@@ -5440,3 +5440,66 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
     font-size:13px !important;
   }
 }
+
+
+
+/* =========================================================
+   v7.7.6 Overlay + Layout Fix
+   Verwijdert witte/zwarte balken en laat hero mooi doorlopen
+   ========================================================= */
+
+#roadtripScreenV2Page{
+  background:transparent !important;
+}
+
+#roadtripScreenV2Page::before{
+  filter:none !important;
+}
+
+/* Geen harde gradient-balken meer */
+#roadtripScreenV2Page::after{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.32) 0%,
+      rgba(0,0,0,.10) 22%,
+      rgba(0,0,0,.16) 58%,
+      rgba(0,0,0,.46) 100%
+    ) !important;
+}
+
+/* Alles netjes laten overlappen zonder afgesneden vlakken */
+#roadtripScreenV2Page .roadtripV2PageInner{
+  grid-template-rows:auto minmax(220px,1fr) auto auto auto !important;
+  align-content:end !important;
+}
+
+/* Header zonder rare blokachtergrond */
+#roadtripScreenV2Page .rtv2Header,
+#roadtripScreenV2Page .rtv2Hero,
+#roadtripScreenV2Page .rtv2Tabs,
+#roadtripScreenV2Page .rtv2Timeline,
+#roadtripScreenV2Page .rtv2Footer{
+  position:relative !important;
+  z-index:5 !important;
+}
+
+/* Meer cinematic spacing */
+#roadtripScreenV2Page .rtv2Hero{
+  margin-top:auto !important;
+}
+
+/* Timeline transparanter zodat achtergrond zichtbaar blijft */
+#roadtripScreenV2Page .rtv2Timeline{
+  background:rgba(255,249,239,.62) !important;
+}
+
+/* Footer iets los van onderkant */
+#roadtripScreenV2Page .rtv2Footer{
+  margin-bottom:2px !important;
+}
+
+/* Geen clipping */
+#roadtripScreenV2Page *{
+  background-clip:padding-box !important;
+}
