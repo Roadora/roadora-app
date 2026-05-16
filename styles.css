@@ -6208,3 +6208,32 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
     background-position:center top !important;
   }
 }
+
+
+/* =========================================================
+   ROADORA v7.7.2 — HOME BACKGROUND HIGHER POSITION
+   Doel:
+   - Foto hoger plaatsen
+   - Minder wolken dominant
+   - Dorp, kerk, heuvel en kasteel hoger in homescreen
+   - Bestaande compacte hero + functies blijven intact
+   ========================================================= */
+
+.bg{
+  background-position:center 26% !important;
+  background-size:cover !important;
+}
+
+/* Op lagere telefoons iets minder agressief zodat de onderkant niet te donker wordt */
+@media(max-height:760px){
+  .bg{
+    background-position:center 22% !important;
+  }
+}
+
+/* Op grotere mockup/desktop-phone view mag het dorp duidelijk hoger */
+@media(min-width:560px) and (min-height:720px){
+  .bg{
+    background-position:center 28% !important;
+  }
+}
