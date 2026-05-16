@@ -5683,3 +5683,105 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .roadtripPremiumV78 .rtpHeroText{margin-top:104px;}
   .roadtripPremiumV78 .rtpRouteName{font-size:44px;}
 }
+
+/* ===== Roadora v7.8.1 — Mijn Roadtrip Hero Fix =====
+   Fix: achtergrondfoto echt deels fullscreen, geen beige blokken bovenin,
+   topbar/text zweven transparant over de foto. ORS/Maps-export blijft locked. */
+.roadtripPremiumV78{
+  background:#f7eee3 !important;
+}
+.roadtripPremiumV78 .rtpScroll{
+  padding:0 16px calc(env(safe-area-inset-bottom) + 20px) !important;
+  background:#f7eee3 !important;
+}
+.roadtripPremiumV78 .rtpHero{
+  margin:0 -16px !important;
+  min-height:min(680px,68dvh) !important;
+  padding:calc(env(safe-area-inset-top) + 30px) 16px 176px !important;
+  background-image:
+    linear-gradient(180deg,rgba(5,4,3,.32) 0%,rgba(5,4,3,.12) 18%,rgba(5,4,3,.08) 38%,rgba(6,5,4,.44) 82%,rgba(247,238,227,.96) 100%),
+    linear-gradient(90deg,rgba(5,4,3,.50) 0%,rgba(5,4,3,.22) 48%,rgba(5,4,3,.36) 100%),
+    url('./assets/roadtrip-bg-current.png') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+  overflow:hidden !important;
+}
+.roadtripPremiumV78 .rtpHero:after{
+  height:150px !important;
+  background:linear-gradient(180deg,rgba(247,238,227,0),#f7eee3 82%) !important;
+}
+.roadtripPremiumV78 .rtpTop{
+  position:relative !important;
+  z-index:6 !important;
+  display:grid !important;
+  grid-template-columns:58px minmax(0,1fr) 58px !important;
+  align-items:start !important;
+  gap:16px !important;
+  background:transparent !important;
+}
+.roadtripPremiumV78 .rtpTitle{
+  min-width:0 !important;
+  padding-top:4px !important;
+  background:transparent !important;
+}
+.roadtripPremiumV78 .rtpTitle h1{
+  color:#fffaf1 !important;
+  text-shadow:0 3px 18px rgba(0,0,0,.34) !important;
+}
+.roadtripPremiumV78 .rtpTitle p{
+  color:rgba(255,250,242,.94) !important;
+  text-shadow:0 2px 12px rgba(0,0,0,.30) !important;
+}
+.roadtripPremiumV78 .rtpBack,
+.roadtripPremiumV78 .rtpMore,
+.roadtripPremiumV78 .rtpHeart{
+  background:rgba(255,250,244,.90) !important;
+  color:#14110f !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+.roadtripPremiumV78 .rtpHeart{
+  top:calc(env(safe-area-inset-top) + 138px) !important;
+  right:16px !important;
+}
+.roadtripPremiumV78 .rtpHeroText{
+  margin-top:clamp(78px,13dvh,128px) !important;
+  color:#fff !important;
+  text-shadow:0 3px 18px rgba(0,0,0,.28) !important;
+}
+.roadtripPremiumV78 .rtpStatus{
+  background:rgba(30,25,20,.40) !important;
+  border-color:rgba(255,255,255,.18) !important;
+  color:#fff !important;
+}
+.roadtripPremiumV78 .rtpRouteName{
+  color:#fffaf1 !important;
+  text-shadow:0 3px 18px rgba(0,0,0,.34) !important;
+}
+.roadtripPremiumV78 .rtpSubtitle{
+  color:#fff !important;
+  text-shadow:0 3px 18px rgba(0,0,0,.34) !important;
+}
+.roadtripPremiumV78 .rtpStatsCard{
+  margin-top:-132px !important;
+  z-index:8 !important;
+  background:rgba(255,250,244,.90) !important;
+}
+.roadtripPremiumV78 .rtpTabs{
+  bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
+}
+@media(max-width:520px){
+  .roadtripPremiumV78 .rtpTop{grid-template-columns:52px minmax(0,1fr) 52px !important;gap:12px !important;}
+  .roadtripPremiumV78 .rtpBack,.roadtripPremiumV78 .rtpMore,.roadtripPremiumV78 .rtpHeart{width:52px !important;height:52px !important;border-radius:20px !important;}
+  .roadtripPremiumV78 .rtpHero{min-height:min(640px,67dvh) !important;padding-bottom:162px !important;background-position:center top !important;}
+  .roadtripPremiumV78 .rtpHeroText{margin-top:clamp(70px,12dvh,112px) !important;}
+  .roadtripPremiumV78 .rtpStatsCard{margin-top:-118px !important;}
+}
+@media(max-height:760px){
+  .roadtripPremiumV78 .rtpHero{min-height:520px !important;padding-bottom:142px !important;}
+  .roadtripPremiumV78 .rtpHeroText{margin-top:68px !important;}
+  .roadtripPremiumV78 .rtpRouteName{font-size:42px !important;}
+  .roadtripPremiumV78 .rtpSubtitle{font-size:14.5px !important;line-height:1.45 !important;}
+  .roadtripPremiumV78 .rtpStatsCard{margin-top:-104px !important;}
+}
