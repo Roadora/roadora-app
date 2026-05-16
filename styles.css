@@ -30,7 +30,7 @@
 }
 #mapScreen .thumb{
   position:relative;
-  background-size:cover !important;
+  background-size:132% !important;
   background-position:center !important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.40),
@@ -1205,7 +1205,7 @@
   position:relative;
 }
 #mapScreen .sheet[data-type="fuel"] .thumb.has-photo{
-  background-size:cover !important;
+  background-size:132% !important;
   background-position:center !important;
 }
 #mapScreen .sheet[data-type="fuel"] .thumb::after{
@@ -2460,7 +2460,7 @@
   width:72px !important;
   height:72px !important;
   border-radius:15px !important;
-  background-size:cover !important;
+  background-size:132% !important;
   background-position:center !important;
 }
 #mapScreen .thumb-hotel.has-photo{
@@ -3364,7 +3364,7 @@
 
 /* v4.6 — hotel photo thumbnails + saved hotel delete */
 #mapScreen .thumb.has-photo{
-  background-size:cover !important;
+  background-size:132% !important;
   background-position:center center !important;
 }
 .hotelCompareItem{
@@ -3407,7 +3407,7 @@
 }
 .hotelCompareDelete:active{transform:scale(.94);}
 .hotelCompareThumb.has-photo{
-  background-size:cover !important;
+  background-size:132% !important;
   background-position:center center !important;
 }
 .hotelDetailAmenities span,
@@ -4851,15 +4851,15 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 /* Fullscreen-ish hero, maar compacter zodat hij in Roadora past */
 .rtv2CinemaHero{
   position:relative !important;
-  min-height:61dvh !important;
+  min-height:68dvh !important;
   margin:0 !important;
   overflow:hidden !important;
   border-radius:0 0 30px 30px !important;
   background-image:
     linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.08) 28%,rgba(0,0,0,.44) 100%),
     url('./assets/roadtrip-hero.jpg') !important;
-  background-size:cover !important;
-  background-position:center 42% !important;
+  background-size:132% !important;
+  background-position:center 24% !important;
   background-repeat:no-repeat !important;
   box-shadow:0 18px 42px rgba(42,28,16,.14), inset 0 1px 0 rgba(255,255,255,.10) !important;
 }
@@ -4881,7 +4881,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   left:0 !important;
   right:0 !important;
   bottom:-2px !important;
-  height:150px !important;
+  height:190px !important;
   z-index:2 !important;
   pointer-events:none !important;
   background:linear-gradient(180deg,rgba(238,227,212,0) 0%,rgba(238,227,212,.52) 58%,rgba(238,227,212,.98) 100%) !important;
@@ -4973,7 +4973,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   z-index:4 !important;
   left:20px !important;
   right:20px !important;
-  bottom:104px !important;
+  bottom:128px !important;
 }
 
 .rtv2Badge{
