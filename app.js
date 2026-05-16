@@ -4880,3 +4880,94 @@
   function init(){ tryPatch(); ensureHitZones(); setTimeout(tryPatch,80); setTimeout(ensureHitZones,180); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+/* Roadora v7.8.6 — Mijn Roadtrip Real Button Region Fix
+   - Maakt de knoppen in de screenshot-afbeelding betrouwbaar klikbaar via scherm-coördinaten
+   - Geen wijziging aan ORS, Maps-export of route-core
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function page(){ return qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
+  function pctFromEvent(e,p){
+    const r=p.getBoundingClientRect();
+    return {x:((e.clientX-r.left)/Math.max(1,r.width))*100,y:((e.clientY-r.top)/Math.max(1,r.height))*100};
+  }
+  function inBox(p,b){ return p.x>=b.x1 && p.x<=b.x2 && p.y>=b.y1 && p.y<=b.y2; }
+  function actionForPoint(p){
+    const boxes=[
+      ['close',       {x1:0,  x2:17,  y1:0,   y2:12}],
+      ['more',        {x1:82, x2:100, y1:0,   y2:12}],
+      ['favorite',    {x1:82, x2:100, y1:10,  y2:20}],
+      ['details',     {x1:65, x2:98,  y1:50,  y2:61}],
+      ['clear',       {x1:3,  x2:47,  y1:79,  y2:89}],
+      ['maps',        {x1:46, x2:99,  y1:79,  y2:89}],
+      ['tab-overview',{x1:3,  x2:28,  y1:88,  y2:99}],
+      ['tab-trajecten',{x1:28,x2:51,  y1:88,  y2:99}],
+      ['tab-hotels',  {x1:51, x2:74,  y1:88,  y2:99}],
+      ['tab-notities',{x1:74, x2:99,  y1:88,  y2:99}]
+    ];
+    for(const [name,box] of boxes){ if(inBox(p,box)) return name; }
+    return '';
+  }
+  function closeRoadtrip(){
+    if(window.RoadoraRoadtripImageOnly?.close) return window.RoadoraRoadtripImageOnly.close();
+    qs('#roadtripScreenV2Page')?.classList.remove('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-v786-close'); }catch(_){ }
+    return false;
+  }
+  function openMaps(){
+    try{
+      if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-v786');
+      window.open('https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving','_blank','noopener');
+      toast('Google Maps geopend');
+    }catch(err){ console.warn('Roadtrip Maps:',err); toast('Google Maps openen lukt niet'); }
+    return false;
+  }
+  function clearTrip(){
+    try{
+      if(window.RoadoraRoadtrip?.clear){ window.RoadoraRoadtrip.clear(); }
+      else{
+        const d=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+        d.stops=[]; d.updatedAt=new Date().toISOString();
+        localStorage.setItem('roadoraRoadtripV1',JSON.stringify(d));
+        window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:d}));
+      }
+      toast('Roadtrip geleegd');
+    }catch(err){ console.warn('Roadtrip clear:',err); toast('Leegmaken niet gelukt'); }
+    return false;
+  }
+  function favorite(){
+    const key='roadoraRoadtripFavoriteV786';
+    const next=localStorage.getItem(key)==='1'?'0':'1';
+    localStorage.setItem(key,next);
+    toast(next==='1'?'Roadtrip als favoriet gemarkeerd':'Favoriet verwijderd');
+    return false;
+  }
+  function handle(action){
+    if(action==='close') return closeRoadtrip();
+    if(action==='maps') return openMaps();
+    if(action==='clear') return clearTrip();
+    if(action==='favorite') return favorite();
+    if(action==='more'){ toast('Roadtrip opties voorbereid'); return false; }
+    if(action==='details'){ toast('Details bekijken voorbereid'); return false; }
+    if(action==='tab-overview'){ toast('Overzicht'); return false; }
+    if(action==='tab-trajecten'){ toast('Trajecten voorbereid'); return false; }
+    if(action==='tab-hotels'){ toast('Hotels voorbereid'); return false; }
+    if(action==='tab-notities'){ toast('Notities voorbereid'); return false; }
+    return false;
+  }
+  window.addEventListener('click',function(e){
+    const p=page();
+    if(!p) return;
+    if(e.target?.closest?.('[data-rt-image-only-close],[data-rt-image-action]')) return;
+    const action=actionForPoint(pctFromEvent(e,p));
+    if(!action) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return handle(action);
+  },true);
+})();
