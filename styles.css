@@ -5948,3 +5948,40 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   display:none !important;
   pointer-events:none !important;
 }
+
+/* ===== Roadora v7.8.15 — Mijn Roadtrip bottom cleanup + nav omhoog =====
+   Verwijdert/maskeert oude baked-in Leegmaken/Start knoppen onderin de hero-afbeelding.
+   Alleen de echte bottom action bar blijft zichtbaar en staat iets hoger. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:132px !important;
+  z-index:2147483500 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(249,242,233,0),rgba(249,242,233,.92) 34%,#fbf4ea 70%,#fbf4ea 100%) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 24px) !important;
+  z-index:2147483600 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{height:122px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{bottom:calc(env(safe-area-inset-bottom) + 18px) !important;}
+}
