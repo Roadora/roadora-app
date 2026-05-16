@@ -4959,17 +4959,10 @@
     if(action==='tab-notities'){ toast('Notities voorbereid'); return false; }
     return false;
   }
-  window.addEventListener('click',function(e){
-    const p=page();
-    if(!p) return;
-    if(e.target?.closest?.('[data-rt-image-only-close],[data-rt-image-action]')) return;
-    const action=actionForPoint(pctFromEvent(e,p));
-    if(!action) return;
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    return handle(action);
-  },true);
+  // v7.8.16: oude ruwe coördinaat-handler uitgeschakeld.
+  // Deze handler liet taps op Hotels/Notities soms als Maps tellen.
+  // Alleen echte DOM-knoppen mogen nog acties afvangen.
+  window.addEventListener('click',function(e){ return; },true);
 })();
 
 
@@ -5107,7 +5100,9 @@
     if(!isOpen()) return;
     ensureButtons();
     const btn=e.target?.closest?.('[data-rt-fixed-action]');
-    const action=btn?.dataset?.rtFixedAction || actionFromPoint(e);
+    // v7.8.16: geen raw coordinate fallback meer.
+    // Bottom nav heeft zijn eigen echte knoppen; hiermee voorkom je dat Hotels/Notities Maps openen.
+    const action=btn?.dataset?.rtFixedAction || '';
     if(!action) return;
     e.preventDefault();
     e.stopPropagation();
@@ -5223,13 +5218,9 @@
     return false;
   }
   window.RoadoraSafeMapsOpen=openMapsOnce;
-  window.addEventListener('click',function(e){
-    if(!isOpen() || !inMapsCta(e)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    return openMapsOnce();
-  },true);
+  // v7.8.16: raw Maps CTA-zone uitgeschakeld.
+  // Start in Maps loopt nu alleen via de echte .rtBottomActionMapsV7812 knop.
+  window.addEventListener('click',function(e){ return; },true);
 })();
 
 /* Roadora v7.8.12 — Mijn Roadtrip Bottom Actions Update
@@ -5308,4 +5299,98 @@
   const mo=new MutationObserver(()=>{ if(page()) ensureBottomActions(); });
   function init(){ ensureBottomActions(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
+
+
+/* Roadora v7.8.16 — Mijn Roadtrip button isolation + return fix
+   - Bottom bar iets hoger voor telefoons
+   - Hotels/Notities/Trajecten kunnen nooit meer Maps openen
+   - Terug uit Mijn Roadtrip opent geen hamburger-menu meer
+   - Start in Maps blijft locked via RoadoraSafeMapsOpen/RoadoraMapsExport
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let justClosedRoadtripAt=0;
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function page(){ return qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
+  function closeMenuHard(){
+    const phone=qs('.phone');
+    phone?.classList.remove('menuOpen','menuExpanded');
+    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  }
+  function markClosed(){ justClosedRoadtripAt=Date.now(); closeMenuHard(); }
+  function closeRoadtripSafe(){
+    markClosed();
+    if(window.RoadoraRoadtripImageOnly?.close) return window.RoadoraRoadtripImageOnly.close();
+    qs('#roadtripScreenV2Page')?.classList.remove('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    return false;
+  }
+  function openMapsSafe(){
+    if(window.RoadoraSafeMapsOpen) return window.RoadoraSafeMapsOpen();
+    if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-bottom-v7816');
+    toast('Google Maps openen lukt niet');
+    return false;
+  }
+  function setBottomActive(action){
+    const p=page();
+    if(!p) return;
+    qsa('.rtBottomActionV7812',p).forEach(btn=>{
+      const active=btn.dataset.rtBottomAction===action;
+      btn.classList.toggle('active',active);
+      btn.classList.toggle('is-active',active);
+    });
+  }
+  function handleBottomAction(action){
+    if(action==='maps') return openMapsSafe();
+    if(action==='overview'){ setBottomActive('overview'); toast('Overzicht'); return false; }
+    if(action==='trajecten'){ setBottomActive('trajecten'); toast('Trajecten voorbereid'); return false; }
+    if(action==='hotels'){ setBottomActive('hotels'); toast('Hotels voorbereid'); return false; }
+    if(action==='notities'){ setBottomActive('notities'); toast('Notities voorbereid'); return false; }
+    return false;
+  }
+  function intercept(e){
+    const p=page();
+    if(!p) return;
+
+    const back=e.target?.closest?.('[data-rt-image-only-close], .rtFixedBack, .rtHitBack');
+    if(back && p.contains(back)){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      return closeRoadtripSafe();
+    }
+
+    const btn=e.target?.closest?.('.rtBottomActionV7812[data-rt-bottom-action]');
+    if(btn && p.contains(btn)){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      return handleBottomAction(btn.dataset.rtBottomAction);
+    }
+  }
+  ['pointerdown','pointerup','touchstart','touchend','click'].forEach(type=>window.addEventListener(type,intercept,true));
+
+  // Voorkom dat de onderliggende kaart-hamburger opent direct na sluiten van Mijn Roadtrip.
+  window.addEventListener('click',function(e){
+    if(Date.now()-justClosedRoadtripAt>700) return;
+    if(e.target?.closest?.('[data-menu-open], #menuToggle, .mapNavBtn')){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      closeMenuHard();
+      return false;
+    }
+  },true);
+
+  function patchClose(){
+    if(!window.RoadoraRoadtripImageOnly || window.RoadoraRoadtripImageOnly.__v7816ClosePatched) return;
+    const oldClose=window.RoadoraRoadtripImageOnly.close;
+    window.RoadoraRoadtripImageOnly.close=function(){
+      markClosed();
+      const result=oldClose ? oldClose.apply(this,arguments) : false;
+      setTimeout(closeMenuHard,20);
+      setTimeout(closeMenuHard,180);
+      return result;
+    };
+    window.RoadoraRoadtripImageOnly.__v7816ClosePatched=true;
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',patchClose,{once:true}); else patchClose();
+  setTimeout(patchClose,300);
 })();

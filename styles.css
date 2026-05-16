@@ -5985,3 +5985,49 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{height:122px !important;}
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{bottom:calc(env(safe-area-inset-bottom) + 18px) !important;}
 }
+
+/* ===== Roadora v7.8.16 — Mijn Roadtrip telefoon-fit + knop-isolatie =====
+   Bottom bar iets hoger en alleen echte bottom-bar knoppen zijn klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  height:150px !important;
+  background:linear-gradient(180deg,rgba(249,242,233,0),rgba(249,242,233,.88) 28%,#fbf4ea 64%,#fbf4ea 100%) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 34px) !important;
+  height:58px !important;
+  z-index:2147483640 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+}
+/* Oude invisible zones definitief uit; ze mogen geen taps meer overnemen. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabNotities{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 28px) !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+    height:138px !important;
+  }
+}
