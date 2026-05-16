@@ -196,52 +196,40 @@
 </div>
 </div>
 </section>
-
-<section aria-label="Mijn Roadtrip" class="appScreen myRoadtripScreen" id="myRoadtripScreen">
-  <div class="roadtripHeroBg"></div>
-  <div class="roadtripShade"></div>
-  <header class="roadtripTop">
-    <button class="roadtripIcon" data-action="map" type="button" aria-label="Terug naar kaart">‹</button>
-    <div><h1>Mijn Roadtrip</h1><p>Jouw reis. Jouw herinneringen.</p></div>
-    <button class="roadtripIcon" type="button" aria-label="Meer opties">•••</button>
-  </header>
-  <main class="roadtripContent">
-    <section class="roadtripTitleBlock">
-      <span class="roadtripBadge">• Actieve roadtrip</span>
-      <h2>Rotterdam<br><span>Innsbruck</span></h2>
-      <p>Een mooie rit vol bijzondere plekken, geweldige uitzichten en fijne stops.</p>
-    </section>
-    <section class="roadtripStatsCard">
-      <div class="roadtripStatsGrid">
-        <div><b>9u 03m</b><span>Rijtijd</span></div>
-        <div><b>1.005 km</b><span>Totaal</span></div>
-        <div><b>1</b><span>Tussenstop</span></div>
-        <div><b>2.350 m</b><span>Hoogteverschil</span></div>
-      </div>
-      <div class="roadtripProgressRow"><span>73% voltooid</span><button type="button">Details bekijken ›</button></div>
-      <div class="roadtripProgress"><i></i></div>
-    </section>
-    <section class="roadtripNextCard">
-      <h3>Volgende stop</h3>
-      <div class="roadtripNextGrid">
-        <div class="roadtripNextPhoto"></div>
-        <div><b>Hotel Lyon Centre</b><span>📍 Lyon, Frankrijk</span><span>🕒 Nog 2u 14m rijden · 198 km</span></div>
-      </div>
-      <div class="roadtripNextActions">
-        <button type="button">Leegmaken</button>
-        <button class="primary" data-action="maps-route" type="button">Start in Google Maps</button>
-      </div>
-    </section>
-  </main>
-  <nav class="roadtripBottomNav">
-    <button class="active" type="button">Overzicht</button>
-    <button type="button">Trajecten</button>
-    <button type="button">Hotels</button>
-    <button type="button">Notities</button>
-  </nav>
-</section>
-
 </main>
 </div>
+
+<section id="myRoadtripScreen" class="appScreen myRoadtripScreen">
+  <div class="roadtripHeroBg"></div>
+  <div class="roadtripShade"></div>
+
+  <div class="roadtripTop">
+    <button class="roadtripGlassBtn" onclick="setScreen('map')">‹</button>
+    <div class="roadtripTitleWrap">
+      <h1>Mijn Roadtrip</h1>
+      <p>Jouw reis. Jouw herinneringen.</p>
+    </div>
+    <button class="roadtripGlassBtn">⋯</button>
+  </div>
+
+  <div class="roadtripContent">
+    <div class="roadtripHeroText">
+      <span class="roadtripChip">Actieve roadtrip</span>
+      <h2>Rotterdam<br>→ Innsbruck</h2>
+      <p>Een premium roadtrip vol mooie wegen, hotels en herinneringen.</p>
+    </div>
+
+    <div class="roadtripCard">
+      <div class="roadtripStats">
+        <div><strong>1005 km</strong><span>afstand</span></div>
+        <div><strong>9u 03m</strong><span>rijtijd</span></div>
+        <div><strong>3</strong><span>stops</span></div>
+      </div>
+
+      <button class="roadtripPrimaryBtn">Open in Google Maps</button>
+    </div>
+  </div>
+</section>
+
 </body>
 </html>

@@ -6006,257 +6006,151 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 
 
 
-/* =========================================================
-   ROADORA v7.7.1 — COMPACT HERO HOME
-   Doel:
-   - Hero-sectie compacter
-   - Meer dorp/rivier/kasteel zichtbaar
-   - Bestaande knoppen en routeflow blijven werken
-   ========================================================= */
+/* =========================
+   ROADTRIP FIXED FINAL
+========================= */
 
-.phone{
-  background:#0d0a07 !important;
+.myRoadtripScreen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  overflow:hidden;
+  background:#18110c;
+  color:white;
+  display:none;
 }
 
-/* Gebruik de huidige Roadora hero-afbeelding met betere crop */
-.bg{
-  position:absolute !important;
-  inset:0 !important;
-  z-index:0 !important;
+.myRoadtripScreen.active{
+  display:block;
+}
 
+.roadtripHeroBg{
+  position:absolute;
+  inset:0;
   background-image:
-    linear-gradient(
-      180deg,
-      rgba(255,246,232,.20) 0%,
-      rgba(255,246,232,.06) 26%,
-      rgba(0,0,0,.10) 48%,
-      rgba(0,0,0,.42) 78%,
-      rgba(0,0,0,.66) 100%
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255,246,232,.42) 0%,
-      rgba(255,246,232,.16) 34%,
-      rgba(255,246,232,0) 64%
-    ),
-    url("./assets/home-bg.png") !important;
+    linear-gradient(to bottom,
+      rgba(0,0,0,.15),
+      rgba(0,0,0,.55)),
+    url('./assets/roadtrip-hero.png');
 
-  background-size:cover !important;
-  background-position:center top !important;
-  background-repeat:no-repeat !important;
-  transform:none !important;
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
 }
 
-/* Geen extra zware overlay over dorp/kerk */
-.phone:before{
+.roadtripShade{
+  position:absolute;
+  inset:0;
   background:
-    radial-gradient(circle at 12% 22%,rgba(255,246,229,.30),rgba(255,246,229,.10) 28%,transparent 50%),
-    linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.04) 44%,rgba(0,0,0,.28) 76%,rgba(0,0,0,.56)) !important;
+    radial-gradient(circle at top,
+      rgba(255,210,120,.18),
+      transparent 45%);
 }
 
-/* Compactere home-grid: hero neemt minder hoogte in */
-.content{
-  position:relative !important;
-  z-index:2 !important;
-  grid-template-rows:auto auto auto minmax(14px,.64fr) auto auto auto !important;
-  padding-top:calc(env(safe-area-inset-top) + 20px) !important;
-  padding-bottom:calc(env(safe-area-inset-bottom) + 18px) !important;
+.roadtripTop{
+  position:relative;
+  z-index:2;
+  padding:28px 18px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-/* Topbar iets compacter */
-.top{
-  min-height:44px !important;
+.roadtripGlassBtn{
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:18px;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(16px);
+  font-size:26px;
+  color:#22170f;
 }
 
-.logo{
-  color:#17110d !important;
-  text-shadow:0 2px 16px rgba(255,255,255,.32) !important;
+.roadtripTitleWrap{
+  text-align:center;
 }
 
-/* HERO: minder hoog en minder ruimte */
-.hero{
-  margin-top:clamp(22px,4.6dvh,36px) !important;
-  width:min(330px,88vw) !important;
+.roadtripTitleWrap h1{
+  margin:0;
+  font-size:24px;
+  font-family:serif;
 }
 
-.hero h1{
-  font-size:clamp(29px,7.4vw,36px) !important;
-  line-height:.96 !important;
-  letter-spacing:-1.25px !important;
-  color:#120d09 !important;
-  text-shadow:0 3px 18px rgba(255,246,232,.28), 0 2px 14px rgba(0,0,0,.14) !important;
+.roadtripTitleWrap p{
+  margin:4px 0 0;
+  font-size:11px;
+  opacity:.85;
 }
 
-.hero h1 span{
-  color:#b77b35 !important;
+.roadtripContent{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:0 18px 120px;
 }
 
-.hero p{
-  margin-top:clamp(8px,1.45dvh,12px) !important;
-  width:min(285px,76vw) !important;
-  font-size:clamp(12px,3.25vw,13.5px) !important;
-  line-height:1.38 !important;
-  color:#1f1711 !important;
-  text-shadow:0 2px 16px rgba(255,246,232,.34) !important;
+.roadtripHeroText h2{
+  margin:10px 0;
+  font-size:54px;
+  line-height:.92;
+  font-family:serif;
 }
 
-/* Zoekbalk dichter op hero en iets compacter */
-.search{
-  margin-top:clamp(14px,2.45dvh,20px) !important;
-  height:clamp(50px,6.1dvh,55px) !important;
-  width:min(354px,100%) !important;
-  background:rgba(255,249,239,.88) !important;
-  border:1px solid rgba(255,255,255,.64) !important;
-  box-shadow:0 18px 48px rgba(25,16,8,.21), inset 0 1px 0 rgba(255,255,255,.68) !important;
+.roadtripHeroText p{
+  max-width:300px;
+  line-height:1.4;
 }
 
-.go{
-  width:43px !important;
-  height:43px !important;
+.roadtripChip{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(16px);
+  font-size:12px;
 }
 
-/* Minder verticale ruimte tussen search en cards */
-.spacer{
-  min-height:0 !important;
+.roadtripCard{
+  margin-top:18px;
+  padding:18px;
+  border-radius:28px;
+  background:rgba(255,248,240,.86);
+  backdrop-filter:blur(20px);
+  color:#23160f;
 }
 
-/* Cards compacter zodat het dorp zichtbaarer blijft */
-.quick{
-  gap:clamp(8px,2.2vw,10px) !important;
+.roadtripStats{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
 }
 
-.card{
-  height:clamp(82px,11.2dvh,96px) !important;
-  border-radius:20px !important;
-  padding:10px 7px 9px !important;
-  background:rgba(255,249,239,.78) !important;
-  border:1px solid rgba(255,255,255,.56) !important;
-  box-shadow:0 14px 34px rgba(25,16,8,.16), inset 0 1px 0 rgba(255,255,255,.58) !important;
+.roadtripStats div{
+  display:flex;
+  flex-direction:column;
 }
 
-.card svg{
-  width:clamp(22px,5.8vw,27px) !important;
-  height:clamp(22px,5.8vw,27px) !important;
+.roadtripStats strong{
+  font-size:18px;
 }
 
-.card b{
-  font-size:clamp(11px,2.95vw,12.5px) !important;
+.roadtripStats span{
+  font-size:11px;
+  opacity:.7;
 }
 
-.card small{
-  font-size:clamp(8px,2.25vw,9.5px) !important;
-  line-height:1.22 !important;
+.roadtripPrimaryBtn{
+  margin-top:18px;
+  width:100%;
+  height:52px;
+  border:none;
+  border-radius:18px;
+  background:linear-gradient(135deg,#e5b15d,#c98738);
+  color:white;
+  font-weight:700;
+  font-size:15px;
 }
-
-/* Roadtrip sectie compacter */
-.sectionTitle{
-  margin:clamp(12px,2.35dvh,18px) 1px clamp(7px,1.2dvh,10px) !important;
-}
-
-.sectionTitle b{
-  font-size:clamp(16px,4.45vw,20px) !important;
-}
-
-.trips{
-  gap:clamp(8px,2.2vw,10px) !important;
-}
-
-.trip{
-  height:clamp(74px,10.7dvh,92px) !important;
-  border-radius:17px !important;
-  padding:10px !important;
-}
-
-/* Kleine schermen: nog compacter */
-@media(max-height:760px){
-  .content{
-    grid-template-rows:auto auto auto minmax(10px,.48fr) auto auto auto !important;
-    padding-top:calc(env(safe-area-inset-top) + 16px) !important;
-  }
-
-  .hero{
-    margin-top:18px !important;
-  }
-
-  .hero h1{
-    font-size:29px !important;
-  }
-
-  .hero p{
-    margin-top:7px !important;
-    font-size:12px !important;
-    line-height:1.32 !important;
-  }
-
-  .search{
-    margin-top:12px !important;
-    height:50px !important;
-  }
-
-  .card{
-    height:76px !important;
-  }
-
-  .trip{
-    height:68px !important;
-  }
-}
-
-/* Brede telefoon/browser viewport: achtergrond mooi houden */
-@media(min-width:560px) and (min-height:720px){
-  .bg{
-    background-position:center top !important;
-  }
-}
-
-
-/* =========================================================
-   ROADORA v7.7.2 — HOME BACKGROUND HIGHER POSITION
-   Doel:
-   - Foto hoger plaatsen
-   - Minder wolken dominant
-   - Dorp, kerk, heuvel en kasteel hoger in homescreen
-   - Bestaande compacte hero + functies blijven intact
-   ========================================================= */
-
-.bg{
-  background-position:center 26% !important;
-  background-size:cover !important;
-}
-
-/* Op lagere telefoons iets minder agressief zodat de onderkant niet te donker wordt */
-@media(max-height:760px){
-  .bg{
-    background-position:center 22% !important;
-  }
-}
-
-/* Op grotere mockup/desktop-phone view mag het dorp duidelijk hoger */
-@media(min-width:560px) and (min-height:720px){
-  .bg{
-    background-position:center 28% !important;
-  }
-}
-
-
-/* Roadora v7.7.3 — Mijn Roadtrip Hero */
-.myRoadtripScreen{background:#0d0a07!important;overflow:hidden!important;color:#fff7ed!important}
-.myRoadtripScreen.active{opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:950!important}
-.roadtripHeroBg{position:absolute;inset:0;z-index:0;background-image:url("./assets/roadtrip-hero.png");background-size:cover;background-position:center center;background-repeat:no-repeat;transform:scale(1.01)}
-.roadtripShade{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 50% 18%,rgba(255,231,181,.10),transparent 38%),linear-gradient(180deg,rgba(5,4,3,.18) 0%,rgba(5,4,3,.10) 34%,rgba(5,4,3,.48) 68%,rgba(5,4,3,.78) 100%),linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.04) 42%,rgba(0,0,0,.28))}
-.roadtripTop{position:relative;z-index:3;padding:calc(env(safe-area-inset-top) + 18px) 18px 0;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;gap:10px}
-.roadtripTop h1{margin:0;text-align:center;font-family:"Playfair Display",serif;font-size:25px;line-height:1;color:#fff7ed;text-shadow:0 4px 22px rgba(0,0,0,.45)}
-.roadtripTop p{margin:4px 0 0;text-align:center;font-size:11px;font-weight:700;color:rgba(255,247,237,.82);text-shadow:0 3px 16px rgba(0,0,0,.42)}
-.roadtripIcon{width:46px;height:46px;border-radius:18px;display:grid;place-items:center;color:#241914;background:rgba(255,249,239,.86);border:1px solid rgba(255,255,255,.58);box-shadow:0 14px 34px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:24px;font-weight:900}
-.roadtripContent{position:relative;z-index:3;height:calc(100% - 86px);padding:clamp(92px,18dvh,155px) 18px calc(env(safe-area-inset-bottom) + 86px);display:flex;flex-direction:column;justify-content:flex-end;gap:14px;overflow:hidden}
-.roadtripTitleBlock{color:#fff7ed;text-shadow:0 4px 24px rgba(0,0,0,.45)}
-.roadtripBadge{display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:999px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.26);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.02em}
-.roadtripTitleBlock h2{margin:9px 0 8px;font-family:"Playfair Display",serif;font-size:clamp(42px,12vw,58px);line-height:.90;letter-spacing:-1.8px}.roadtripTitleBlock h2 span{color:#fff}
-.roadtripTitleBlock p{margin:0;width:min(330px,86vw);font-size:13px;line-height:1.32;font-weight:800;color:#fff7ed}
-.roadtripStatsCard,.roadtripNextCard,.roadtripBottomNav{background:rgba(255,249,239,.86);color:#211914;border:1px solid rgba(255,255,255,.62);box-shadow:0 22px 54px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
-.roadtripStatsCard{border-radius:24px;padding:14px 12px 13px}.roadtripStatsGrid{display:grid;grid-template-columns:repeat(4,1fr)}.roadtripStatsGrid div{text-align:center;padding:2px 6px 10px;border-right:1px solid rgba(70,47,24,.11)}.roadtripStatsGrid div:last-child{border-right:0}.roadtripStatsGrid b{display:block;font-size:13px;font-weight:900;white-space:nowrap}.roadtripStatsGrid span{display:block;margin-top:4px;font-size:8px;font-weight:750;color:#6b5d50}
-.roadtripProgressRow{border-top:1px solid rgba(70,47,24,.10);padding-top:11px;display:flex;align-items:center;justify-content:space-between;gap:10px}.roadtripProgressRow span{font-size:12px;font-weight:900}.roadtripProgressRow button{height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.72);font-size:10px;font-weight:900}.roadtripProgress{margin-top:9px;height:7px;border-radius:999px;background:rgba(70,47,24,.10);overflow:hidden}.roadtripProgress i{display:block;width:73%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e1ad64,#c4863d)}
-.roadtripNextCard{border-radius:24px;padding:14px}.roadtripNextCard h3{margin:0 0 10px;font-family:"Playfair Display",serif;font-size:20px}.roadtripNextGrid{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center}.roadtripNextPhoto{width:76px;height:76px;border-radius:18px;background:linear-gradient(135deg,#2c2117,#d7a35b);box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}.roadtripNextGrid b{display:block;font-family:"Playfair Display",serif;font-size:18px;margin-bottom:8px}.roadtripNextGrid span{display:block;font-size:11px;font-weight:700;color:#6b5d50;margin-top:5px}.roadtripNextActions{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;margin-top:13px}.roadtripNextActions button{height:46px;border-radius:17px;background:rgba(255,255,255,.66);font-size:12px;font-weight:900}.roadtripNextActions .primary{color:white;background:linear-gradient(135deg,#e8b866,#c4863d);box-shadow:0 15px 28px rgba(196,134,61,.24)}
-.roadtripBottomNav{position:absolute;z-index:4;left:18px;right:18px;bottom:calc(env(safe-area-inset-bottom) + 10px);height:58px;border-radius:21px;display:grid;grid-template-columns:repeat(4,1fr);padding:5px}.roadtripBottomNav button{border-radius:17px;font-size:10px;font-weight:850;color:#6b5d50}.roadtripBottomNav button.active{background:rgba(255,255,255,.64);color:#c4863d}
-@media(max-height:760px){.roadtripContent{padding-top:80px;gap:10px}.roadtripTitleBlock h2{font-size:42px}.roadtripTitleBlock p{font-size:11px}.roadtripNextCard{display:none}}
-@media(max-width:380px){.roadtripStatsGrid b{font-size:11px}.roadtripStatsGrid span{font-size:7px}.roadtripTitleBlock h2{font-size:40px}}

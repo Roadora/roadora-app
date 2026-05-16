@@ -97,24 +97,14 @@
       phone?.classList.remove('mapActive');
       route?.classList.remove('active');
       map?.classList.remove('active');
-      document.getElementById('myRoadtripScreen')?.classList.remove('active');
       return false;
     }
     if(screen==='route'){
       phone?.classList.remove('mapActive');
       map?.classList.remove('active');
-      document.getElementById('myRoadtripScreen')?.classList.remove('active');
       route?.classList.add('active');
       return false;
     }
-    if(screen==='roadtrip'){
-      phone?.classList.remove('mapActive');
-      route?.classList.remove('active');
-      map?.classList.remove('active');
-      document.getElementById('myRoadtripScreen')?.classList.add('active');
-      return false;
-    }
-    document.getElementById('myRoadtripScreen')?.classList.remove('active');
     if(screen==='map'){
       phone?.classList.add('mapActive');
       route?.classList.remove('active');
@@ -442,15 +432,13 @@
     if(target.closest('#menuScrim')){event.preventDefault();closeMenu();return false;}
     if(target.closest('[data-action="home"], #backHomeBtn')){event.preventDefault();return setScreen('home');}
     if(target.closest('[data-action="route"], .adjust')){event.preventDefault();return setScreen('route');}
-    if(target.closest('[data-action="map"]')){event.preventDefault();return setScreen('map');}
     if(target.closest('#openMapBtn, .rPlan, [data-open-map]')){event.preventDefault();return setScreen('map');}
-    if(target.closest('[data-action="maps-route"]')){event.preventDefault();return openMapsRoute();}
     const vehicleBtn=target.closest('.rVehicle,.vehicle');
     if(vehicleBtn){event.preventDefault();setVehicle(vehicleBtn.dataset.vehicle,vehicleBtn.dataset.profile);window.RoadoraMapApi?.reloadRoute?.();toast('Voertuig bijgewerkt');return false;}
     const setupCat=target.closest('#routeSetupScreen .rCat[data-filter]');
     if(setupCat){event.preventDefault();setupCat.classList.toggle('active');toast('Categorie bijgewerkt');return false;}
     const bottomNav=target.closest('#mapScreen .bottomNav .navItem');
-    if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.clearSelection?.();window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){window.RoadoraMapApi?.toggleCategories?.();return false;}if(label.includes('reisgids')){setSheet('guide');return false;}if(label.includes('mijn roadtrip')){return setScreen('roadtrip');}return false;}
+    if(bottomNav){event.preventDefault();setActiveBottomNav(bottomNav);const label=(bottomNav.textContent||'').trim().toLowerCase();if(label.includes('route')){window.RoadoraMapApi?.clearSelection?.();window.RoadoraMapApi?.fitRoute?.('nav');toast('Volledige route in beeld');return false;}if(label.includes('overzicht')){setSheet('overview');return false;}if(label.includes('navigeer')){openMapsRoute();return false;}if(label.includes('stops')){window.RoadoraMapApi?.toggleCategories?.();return false;}if(label.includes('reisgids')){setSheet('guide');return false;}return false;}
     const hotelAction=target.closest('[data-hotel-action]');
     if(hotelAction){
       event.preventDefault();
@@ -4661,3 +4649,14 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+
+window.openRoadtripScreen = function(){
+  const el = document.getElementById('myRoadtripScreen');
+  if(el) el.classList.add('active');
+}
+
+window.closeRoadtripScreen = function(){
+  const el = document.getElementById('myRoadtripScreen');
+  if(el) el.classList.remove('active');
+}
