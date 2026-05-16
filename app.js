@@ -432,6 +432,10 @@
     if(target.closest('#menuScrim')){event.preventDefault();closeMenu();return false;}
     if(target.closest('[data-action="home"], #backHomeBtn')){event.preventDefault();return setScreen('home');}
     if(target.closest('[data-action="route"], .adjust')){event.preventDefault();return setScreen('route');}
+    if(target.closest('[data-action="hotels"]')){event.preventDefault();return window.RoadoraHotelPlanner?.open?.() || setScreen('route');}
+    if(target.closest('[data-action="explore"]')){event.preventDefault();toast('Uitjes worden later gekoppeld');return false;}
+    if(target.closest('[data-action="roadtrip"]')){event.preventDefault();window.RoadoraRoadtrip?.open?.();toast('Mijn Roadtrip geopend');return false;}
+    if(target.closest('[data-action="account"]')){event.preventDefault();toast('Profiel komt later');return false;}
     if(target.closest('#openMapBtn, .rPlan, [data-open-map]')){event.preventDefault();return setScreen('map');}
     const vehicleBtn=target.closest('.rVehicle,.vehicle');
     if(vehicleBtn){event.preventDefault();setVehicle(vehicleBtn.dataset.vehicle,vehicleBtn.dataset.profile);window.RoadoraMapApi?.reloadRoute?.();toast('Voertuig bijgewerkt');return false;}
