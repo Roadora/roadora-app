@@ -5368,3 +5368,193 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .rtv2ActionRow button{height:42px !important;}
   .rtv2BottomTabs{min-height:54px !important;}
 }
+
+/* ===== Roadora v7.5.2 — Mijn Roadtrip Layout Balance Fix =====
+   Doel: juiste hero behouden, alles netjes plaatsen, geen afgesneden stats/tabs.
+   Alleen Roadtrip-subpage. Maps/ORS/Google Maps export blijven ongemoeid.
+*/
+.roadtripScreenV2Page{
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 54% -8%,rgba(255,238,210,.95),rgba(255,246,235,.64) 30%,transparent 58%),
+    linear-gradient(180deg,#fbf4ea 0%,#f5ebdf 48%,#eadbc9 100%) !important;
+}
+.roadtripV2PageInner{
+  height:100% !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 14px) !important;
+  gap:12px !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+.roadtripV2PageInner::-webkit-scrollbar{display:none !important;}
+.rtv2PremiumHeader{
+  flex:0 0 auto !important;
+  position:relative !important;
+  z-index:10 !important;
+  grid-template-columns:42px minmax(0,1fr) 42px !important;
+  gap:10px !important;
+  padding:0 2px !important;
+}
+.rtv2PremiumHeader .rtv2Back,
+.rtv2PremiumHeader .rtv2Close{
+  width:42px !important;
+  height:42px !important;
+  border-radius:16px !important;
+}
+.rtv2PremiumHeader h2{
+  font-size:clamp(20px,5.6vw,25px) !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.rtv2PremiumHeader small{
+  font-size:clamp(9px,2.6vw,11px) !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.rtv2PremiumHero{
+  flex:0 0 auto !important;
+  height:clamp(430px, 58dvh, 535px) !important;
+  min-height:430px !important;
+  max-height:none !important;
+  border-radius:28px !important;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.06) 24%,rgba(0,0,0,.32) 67%,rgba(0,0,0,.58) 100%),
+    url('./assets/roadtrip-hero.jpg') center center / cover no-repeat !important;
+  box-shadow:0 22px 60px rgba(49,31,16,.16), inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.rtv2PremiumHero::after{
+  height:165px !important;
+  background:linear-gradient(180deg,rgba(245,235,222,0),rgba(245,235,222,.46) 42%,rgba(245,235,222,.98) 100%) !important;
+  z-index:1 !important;
+}
+.rtv2HeroShade{
+  background:
+    radial-gradient(circle at 84% 8%,rgba(237,184,96,.26),transparent 34%),
+    linear-gradient(90deg,rgba(7,22,24,.72),rgba(5,16,18,.20) 54%,rgba(0,0,0,.08) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.20) 58%,rgba(0,0,0,.34)) !important;
+}
+.rtv2Fav{
+  top:18px !important;
+  right:16px !important;
+  width:52px !important;
+  height:52px !important;
+}
+.rtv2HeroText{
+  left:20px !important;
+  right:20px !important;
+  top:74px !important;
+  z-index:3 !important;
+}
+.rtv2Status{
+  height:28px !important;
+  padding:0 12px !important;
+  font-size:9.5px !important;
+}
+.rtv2HeroText h1{
+  margin-top:22px !important;
+  font-size:clamp(39px,10.7vw,54px) !important;
+  line-height:.98 !important;
+  letter-spacing:-1.8px !important;
+  max-width:74% !important;
+  text-shadow:0 8px 22px rgba(0,0,0,.25) !important;
+}
+.rtv2HeroText h1 span{
+  font-size:30px !important;
+  margin:4px 0 !important;
+}
+.rtv2HeroText p{
+  width:min(276px,80%) !important;
+  margin-top:17px !important;
+  padding-top:12px !important;
+  font-size:13.5px !important;
+  line-height:1.45 !important;
+}
+.rtv2StatsGlass{
+  left:14px !important;
+  right:14px !important;
+  bottom:83px !important;
+  min-height:96px !important;
+  border-radius:24px !important;
+  background:rgba(25,25,21,.54) !important;
+  backdrop-filter:blur(30px) !important;
+  -webkit-backdrop-filter:blur(30px) !important;
+}
+.rtv2StatsGlass div{padding:12px 2px !important;gap:6px !important;}
+.rtv2StatsGlass svg{width:23px !important;height:23px !important;}
+.rtv2StatsGlass b{font-size:clamp(13px,3.7vw,17px) !important;}
+.rtv2StatsGlass small{font-size:clamp(7.5px,2.2vw,9px) !important;}
+.rtv2ProgressGlass{
+  left:14px !important;
+  right:14px !important;
+  bottom:16px !important;
+  min-height:56px !important;
+  border-radius:21px !important;
+  padding:12px 13px !important;
+  background:rgba(34,31,27,.45) !important;
+}
+.rtv2ProgressGlass button{
+  height:36px !important;
+  font-size:11px !important;
+  padding:0 12px !important;
+}
+.rtv2NextStopCard{
+  flex:0 0 auto !important;
+  min-height:118px !important;
+  border-radius:28px !important;
+  margin-top:0 !important;
+  padding:14px !important;
+  grid-template-columns:minmax(0,1fr) 112px !important;
+  background:rgba(255,250,242,.90) !important;
+  box-shadow:0 16px 42px rgba(54,34,14,.09), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+.rtv2PremiumFooter{
+  flex:0 0 auto !important;
+  gap:11px !important;
+  padding-bottom:0 !important;
+}
+.rtv2ActionRow{gap:10px !important;}
+.rtv2ActionRow button{height:52px !important;border-radius:19px !important;}
+.rtv2BottomTabs{
+  min-height:66px !important;
+  border-radius:27px !important;
+  margin-bottom:0 !important;
+}
+@media(max-width:390px){
+  .roadtripV2PageInner{padding-left:10px!important;padding-right:10px!important;gap:10px!important;}
+  .rtv2PremiumHero{height:clamp(410px, 56dvh, 490px) !important;min-height:410px !important;border-radius:26px !important;}
+  .rtv2HeroText{left:17px!important;right:17px!important;top:70px!important;}
+  .rtv2HeroText h1{font-size:38px!important;max-width:78%!important;}
+  .rtv2HeroText p{font-size:11.5px!important;width:78%!important;line-height:1.38!important;}
+  .rtv2StatsGlass{left:11px!important;right:11px!important;bottom:76px!important;min-height:86px!important;border-radius:22px!important;}
+  .rtv2StatsGlass svg{width:19px!important;height:19px!important;}
+  .rtv2StatsGlass b{font-size:12.5px!important;}
+  .rtv2StatsGlass small{font-size:7px!important;}
+  .rtv2ProgressGlass{left:11px!important;right:11px!important;bottom:12px!important;min-height:52px!important;}
+  .rtv2ProgressGlass b{font-size:12px!important;margin-bottom:7px!important;}
+  .rtv2ProgressGlass button{height:34px!important;font-size:10px!important;padding:0 10px!important;}
+  .rtv2NextStopCard{grid-template-columns:minmax(0,1fr) 92px!important;min-height:104px!important;padding:12px!important;border-radius:24px!important;}
+  .rtv2NextRow{grid-template-columns:58px minmax(0,1fr)!important;gap:8px!important;}
+  .rtv2NextPhoto{width:58px!important;height:58px!important;border-radius:15px!important;}
+  .rtv2NextRow b{font-size:14px!important;}
+  .rtv2NextRow small{font-size:8.4px!important;}
+  .rtv2MiniRoute{min-height:76px!important;border-radius:18px!important;}
+  .rtv2ActionRow button{height:46px!important;font-size:11px!important;}
+  .rtv2BottomTabs{min-height:60px!important;border-radius:24px!important;}
+}
+@media(max-height:760px){
+  .rtv2PremiumHero{height:390px!important;min-height:390px!important;}
+  .rtv2HeroText{top:56px!important;}
+  .rtv2HeroText h1{font-size:35px!important;}
+  .rtv2HeroText p{font-size:11px!important;margin-top:12px!important;padding-top:9px!important;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;}
+  .rtv2StatsGlass{bottom:72px!important;min-height:78px!important;}
+  .rtv2ProgressGlass{bottom:11px!important;min-height:49px!important;}
+  .rtv2NextStopCard{min-height:96px!important;}
+  .rtv2ActionRow button{height:44px!important;}
+  .rtv2BottomTabs{min-height:56px!important;}
+}
