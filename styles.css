@@ -5503,3 +5503,79 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #roadtripScreenV2Page *{
   background-clip:padding-box !important;
 }
+
+/* =========================================================
+   Roadora v7.8.3 — Mijn Roadtrip Image Only Reset
+   Alleen de afbeelding, alle cards/blokken/timeline uit.
+   ========================================================= */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783,
+#roadtripScreenV2Page{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1600 !important;
+  overflow:hidden !important;
+  background:#17110d !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783::before,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783::after{
+  content:none !important;
+  display:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:block !important;
+  overflow:hidden !important;
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783 > *{
+  display:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Header,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Hero,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Tabs,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Timeline,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Footer,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2StaticMockupPage,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2StaticMockupImg,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 [class*="rtv2Static"],
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 [class*="rtv2"]:not(.roadtripV2PageInner):not(.roadtripImageOnlyV783){
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripImageOnlyCloseV783{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  width:76px !important;
+  height:76px !important;
+  z-index:5 !important;
+  opacity:.001 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .bottomNav,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .sheet,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .mapCockpit,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .controls,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .cats,
+.phone.roadtripImageOnlyPhoneV783 #roadoraStopOverlayV57,
+.phone.roadtripImageOnlyPhoneV783 #roadtripMiniPanelV584,
+.phone.roadtripImageOnlyPhoneV783 #hotelDetailSheet,
+.phone.roadtripImageOnlyPhoneV783 #hotelCompareSheet{
+  display:none !important;
+}

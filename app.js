@@ -4675,3 +4675,88 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+/* Roadora v7.8.3 — Mijn Roadtrip Image Only Reset
+   - Alle Mijn Roadtrip blokken tijdelijk uitgeschakeld
+   - Alleen de achtergrondafbeelding tonen
+   - Route-core, ORS en Maps-export blijven onaangeraakt
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+
+  function ensureImageOnlyPage(){
+    let page=qs('#roadtripScreenV2Page');
+    if(!page){
+      page=document.createElement('section');
+      page.id='roadtripScreenV2Page';
+      page.className='roadtripScreenV2Page';
+      page.setAttribute('aria-label','Mijn Roadtrip');
+      (qs('.phone')||document.body).appendChild(page);
+    }
+    page.innerHTML='<div class="roadtripV2PageInner roadtripImageOnlyV783" aria-label="Mijn Roadtrip afbeelding"></div><button class="roadtripImageOnlyCloseV783" type="button" data-rt-image-only-close aria-label="Terug naar kaart"></button>';
+    return page;
+  }
+
+  function setBottomActive(active){
+    qsa('#mapScreen .bottomNav .navItem').forEach(btn=>{
+      const isRoadtrip=(btn.dataset.nav||'').toLowerCase().includes('roadtrip') || btn.dataset.roadtripPage==='true';
+      btn.classList.toggle('active', active && isRoadtrip);
+      btn.classList.toggle('is-active', active && isRoadtrip);
+      if(!active){
+        const route=(btn.dataset.nav||'')==='route';
+        btn.classList.toggle('active',route);
+        btn.classList.toggle('is-active',route);
+      }
+    });
+  }
+
+  function openImageOnly(){
+    qs('#roadtripMiniPanelV584')?.classList.remove('open','roadtripV63Open','roadtripV705Open');
+    qs('#roadoraStopOverlayV57')?.classList.remove('open');
+    qs('#hotelDetailSheet')?.classList.remove('open','expanded');
+    qs('#hotelCompareSheet')?.classList.remove('open');
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57','roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
+    ensureImageOnlyPage().classList.add('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.add('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    setBottomActive(true);
+    toast('Mijn Roadtrip afbeelding geopend');
+    return false;
+  }
+
+  function closeImageOnly(){
+    qs('#roadtripScreenV2Page')?.classList.remove('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    setBottomActive(false);
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-image-only-close'); }catch(_){ }
+    return false;
+  }
+
+  window.RoadoraRoadtripImageOnly={open:openImageOnly,close:closeImageOnly};
+
+  window.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    if(t.closest('[data-rt-image-only-close]')){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      return closeImageOnly();
+    }
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav], #mapScreen .bottomNav .navItem[data-roadtrip-page="true"]');
+    if(nav){
+      const label=(nav.textContent||'').toLowerCase();
+      const isRoadtrip=(nav.dataset.nav||'').toLowerCase().includes('roadtrip') || nav.dataset.roadtripPage==='true' || label.includes('roadtrip');
+      if(isRoadtrip){
+        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+        return openImageOnly();
+      }
+    }
+    const legacy=t.closest('#roadtripMiniDockV584');
+    if(legacy){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      return openImageOnly();
+    }
+  },true);
+})();
