@@ -4561,71 +4561,36 @@
     const summary=readSummary();
     const stops=trip.stops;
     const totalStops=stops.length;
-    const firstStop=stops[0]||null;
-    const progress=Math.max(8,Math.min(86,totalStops?48+(totalStops*11):18));
-    const originShort=String(trip.origin||ORIGIN).replace(', Nederland','');
-    const destShort=String(trip.destination||DEST).replace(', Oostenrijk','');
-    const routeTitle=`${esc(originShort)}<span>→</span>${esc(destShort)}`;
-    const nextName=firstStop?.name || 'Nog geen stop gekozen';
-    const nextType=firstStop ? typeLabel(firstStop) : 'Volgende stop';
-    const nextMeta=firstStop ? String(firstStop.address||firstStop.meta||'Langs je route').split(' · ')[0] : 'Voeg een hotel, tankstation of plek toe vanaf de kaart';
-    const nextPhoto=firstStop?.photoUrl||firstStop?.photo||firstStop?.imageUrl||firstStop?.image||'';
-    const nextKm=firstStop ? Math.max(1,Math.round(kmBetween(ORIGIN_LL,ll(firstStop,ORIGIN_LL))*1.18)) : 0;
-    const nextTime=firstStop ? timeFromKm(nextKm) : '—';
+    let prev=ORIGIN_LL;
+    const timeline=[];
+    timeline.push(`<div class="rtv2Point start"><i>A</i><div><span>Startpunt</span><b>${esc(trip.origin)}</b></div></div>`);
+    stops.forEach((s,i)=>{
+      const p=ll(s,prev);
+      const km=Math.round(kmBetween(prev,p)*1.18);
+      timeline.push(`<div class="rtv2Segment"><span></span><b>${km.toLocaleString('nl-NL')} km</b><em>${timeFromKm(km)}</em></div>`);
+      timeline.push(`<div class="rtv2Stop" data-trip-id="${esc(s.id||i)}"><i>${i+1}</i><strong>${stopIcon(s)}</strong><button type="button" data-rtv2-action="focus" data-trip-id="${esc(s.id||i)}"><span>${esc(typeLabel(s))}</span><b>${esc(s.name||'Tussenstop')}</b><small>${esc(String(s.address||s.meta||'Langs route').split(' · ')[0])}</small></button><button type="button" class="rtv2Remove" data-rtv2-action="remove" data-trip-id="${esc(s.id||i)}" aria-label="Stop verwijderen">×</button></div>`);
+      prev=p;
+    });
+    const lastKm=Math.round(kmBetween(prev,DEST_LL)*1.18);
+    if(stops.length){ timeline.push(`<div class="rtv2Segment"><span></span><b>${lastKm.toLocaleString('nl-NL')} km</b><em>${timeFromKm(lastKm)}</em></div>`); }
+    timeline.push(`<div class="rtv2Point end"><i>B</i><div><span>Eindbestemming</span><b>${esc(trip.destination)}</b></div></div>`);
+    const empty=!stops.length?`<div class="rtv2Tip"><b>Tip</b><span>Kies een hotel, tankstation of andere plek op de kaart en voeg die toe aan je roadtrip.</span></div>`:'';
     inner.innerHTML=`
-      <header class="rtv2Header rtv2PremiumHeader">
+      <header class="rtv2Header">
         <button type="button" class="rtv2Back" data-rtv2-action="close" aria-label="Terug naar kaart">‹</button>
-        <div><h2>Mijn Roadtrip</h2><small>Jouw reis. Jouw herinneringen.</small></div>
-        <button type="button" class="rtv2Close rtv2More" data-rtv2-action="close" aria-label="Sluiten">•••</button>
+        <div><span>Mijn Roadtrip</span><h2>${esc(trip.origin.replace(', Nederland',''))} → ${esc(trip.destination.replace(', Oostenrijk',''))}</h2></div>
+        <button type="button" class="rtv2Close" data-rtv2-action="close" aria-label="Sluiten">×</button>
       </header>
-
-      <section class="rtv2PremiumHero">
-        <button type="button" class="rtv2Fav" aria-label="Bewaar roadtrip">♡</button>
-        <div class="rtv2HeroShade"></div>
-        <div class="rtv2HeroText">
-          <span class="rtv2Status"><i></i> Actieve roadtrip</span>
-          <h1>${routeTitle}</h1>
-          <p>Een mooie rit vol bijzondere plekken, geweldige uitzichten en fijne stops.</p>
-        </div>
-
-        <div class="rtv2StatsGlass">
-          <div><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><b>${esc(summary.timeLabel||'9u 03m')}</b><small>Rijtijd</small></div>
-          <div><svg viewBox="0 0 24 24"><path d="M6 20V5M18 20V5M9 20l2-15M15 20l-2-15"/></svg><b>${esc(summary.distanceLabel||'1.005 km')}</b><small>Totaal</small></div>
-          <div><svg viewBox="0 0 24 24"><path d="M12 21s7-5 7-11a7 7 0 0 0-14 0c0 6 7 11 7 11Z"/><circle cx="12" cy="10" r="2"/></svg><b>${totalStops}</b><small>Tussenstops</small></div>
-          <div><svg viewBox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3Z"/></svg><b>2.350 m</b><small>Hoogteverschil</small></div>
-        </div>
-
-        <div class="rtv2ProgressGlass">
-          <div>
-            <b>${progress}% voltooid</b>
-            <span><em style="width:${progress}%"></em></span>
-          </div>
-          <button type="button" data-rtv2-action="details">Details bekijken ›</button>
-        </div>
+      <section class="rtv2Hero">
+        <div><span>Route-overzicht</span><b>${esc(summary.timeLabel||'9u 03m')}</b><small>Rijtijd</small></div>
+        <div><span>Afstand</span><b>${esc(summary.distanceLabel||'1.005 km')}</b><small>Totaal</small></div>
+        <div><span>Stops</span><b>${totalStops}</b><small>Tussenstops</small></div>
       </section>
-
-      <section class="rtv2NextStopCard">
-        <div class="rtv2NextInfo">
-          <span>Volgende stop</span>
-          <div class="rtv2NextRow">
-            <div class="rtv2NextPhoto ${nextPhoto?'has-photo':''}" style="${nextPhoto?`background-image:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.18)),url('${String(nextPhoto).replace(/'/g,'')}')`:''}"></div>
-            <div>
-              <b>${esc(nextName)}</b>
-              <small>⌖ ${esc(nextMeta)}</small>
-              <small>◷ ${firstStop?`Nog ${nextTime} rijden · ${nextKm.toLocaleString('nl-NL')} km`:'Kies een stop op de kaart'}</small>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="rtv2MiniRoute" ${firstStop?`data-rtv2-action="focus" data-trip-id="${esc(firstStop.id||0)}"`:''} aria-label="Bekijk volgende stop"></button>
-      </section>
-
-      <footer class="rtv2Footer rtv2PremiumFooter">
-        <nav class="rtv2BottomTabs" aria-label="Mijn Roadtrip onderdelen">
-          <button class="active" type="button"><svg viewBox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15"/></svg><span>Overzicht</span></button>
-          <button type="button" data-rtv2-action="details"><svg viewBox="0 0 24 24"><path d="M5 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h10"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="19" r="2"/></svg><span>Trajecten</span></button>
-          <button type="button" data-rtv2-action="details"><svg viewBox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"/></svg><span>Hotels</span></button>
-          <button type="button" data-rtv2-action="details"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M14 3v5h5M10 13h6M10 17h5"/></svg><span>Notities</span></button>
-        </nav>
+      <nav class="rtv2Tabs"><button class="active" type="button">Overzicht</button><button type="button" disabled>Trajecten</button><button type="button" disabled>Hotels</button><button type="button" disabled>Notities</button></nav>
+      <section class="rtv2Timeline">${timeline.join('')}${empty}</section>
+      <footer class="rtv2Footer">
+        <button type="button" data-rtv2-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
+        <button type="button" data-rtv2-action="maps">Start in Google Maps</button>
       </footer>`;
   }
 
@@ -4698,7 +4663,6 @@
     if(action==='clear') return clearStops();
     if(action==='focus') return focusStop(a.dataset.tripId);
     if(action==='maps') return window.RoadoraMapsExport?.open ? window.RoadoraMapsExport.open('roadtrip') : toast('Maps-export niet beschikbaar');
-    if(action==='details') return toast('Deze sectie bouwen we hierna premium uit');
   },true);
 
   window.RoadoraRoadtripPage={open:openPage,close:closePage,render,updateBadge};
@@ -4710,4 +4674,89 @@
     ensurePage();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
+
+
+/* Roadora v7.5.6 — Mijn Roadtrip Cinematic Hero class bridge
+   Only adds styling hooks. Does not touch Maps/ORS/Google Maps export. */
+(function(){
+  'use strict';
+
+  function qs(s,r=document){return r.querySelector(s);}
+  function qsa(s,r=document){return Array.from(r.querySelectorAll(s));}
+
+  function enhanceRoadtripPage(){
+    const page =
+      qs('#roadtripPageV748') ||
+      qs('#roadtripPageV75') ||
+      qs('#myRoadtripScreen') ||
+      qs('.roadtripPageV748') ||
+      qs('.roadtripPageV75');
+
+    if(!page) return;
+
+    page.classList.add('roadtripCinematicV756');
+
+    const hero =
+      qs('.roadtripHeroV75', page) ||
+      qs('.roadtripPremiumHero', page) ||
+      qs('.roadtripHero', page) ||
+      qs('[class*="Hero"]', page);
+
+    if(hero){
+      hero.classList.add('roadtripHeroV75');
+
+      const inner =
+        qs('.roadtripHeroInner', hero) ||
+        qs('.roadtripHeroContent', hero) ||
+        qs('.roadtripHeroInner', page) ||
+        qs('.roadtripHeroContent', page);
+
+      if(inner) inner.classList.add('roadtripHeroInner');
+    }
+
+    const stats =
+      qs('.roadtripStatsV75', page) ||
+      qs('.roadtripHeroStats', page) ||
+      qs('.roadtripStats', page);
+
+    if(stats) stats.classList.add('roadtripStats');
+
+    const body =
+      qs('.roadtripContent', page) ||
+      qs('.roadtripBody', page) ||
+      qs('.roadtripMain', page);
+
+    if(body) body.classList.add('roadtripContent');
+
+    const tabs =
+      qs('.roadtripTabs', page) ||
+      qs('.roadtripSubTabs', page);
+
+    if(tabs) tabs.classList.add('roadtripTabs');
+
+    qsa('button', page).forEach(btn=>{
+      const text=(btn.textContent||'').trim().toLowerCase();
+      if(text.includes('leegmaken') || text.includes('start in google') || text.includes('google maps')){
+        const parent=btn.closest('.roadtripActions,.roadtripBottomActions');
+        if(parent) parent.classList.add('roadtripBottomActions');
+      }
+    });
+  }
+
+  function boot(){
+    enhanceRoadtripPage();
+    setTimeout(enhanceRoadtripPage,250);
+    setTimeout(enhanceRoadtripPage,900);
+    window.addEventListener('roadora:roadtrip:update', enhanceRoadtripPage);
+    document.addEventListener('click', function(e){
+      if(e.target?.closest?.('[data-nav="roadtrip"],[data-action="roadtrip"],.roadtripTabs button,.roadtripSubTabs button')){
+        setTimeout(enhanceRoadtripPage,80);
+        setTimeout(enhanceRoadtripPage,350);
+      }
+    }, true);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
 })();
