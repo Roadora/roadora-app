@@ -5932,3 +5932,19 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 @media(max-width:380px){
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:auto !important;height:auto !important;}
 }
+
+
+/* ===== Roadora v7.8.14 — Clean background button cleanup =====
+   Oude baked-in CTA's zijn uit de hero-asset gehaald. Alleen de echte bottom action bar blijft klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 10px) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  pointer-events:none !important;
+}
