@@ -5579,3 +5579,8 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 .phone.roadtripImageOnlyPhoneV783 #hotelCompareSheet{
   display:none !important;
 }
+
+/* Roadora v7.8.4 Definitieve Mijn Roadtrip Afbeelding
+   Asset vervangen door definitieve mockup-afbeelding: ./assets/roadtrip-hero.png
+   Image-only reset blijft actief: geen losse blokken/cards/timeline over de afbeelding.
+*/
