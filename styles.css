@@ -5321,3 +5321,50 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .rtv2ActionRow button{height:48px;}
   .rtv2BottomTabs{min-height:58px;}
 }
+
+/* ===== Roadora v7.5.1 — Correct Hero + Layout Fix =====
+   Alleen Mijn Roadtrip hero/layout polish. Maps/ORS/export untouched.
+*/
+.rtv2PremiumHero{
+  flex:0 0 auto !important;
+  height:clamp(365px, 53dvh, 470px) !important;
+  min-height:365px !important;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.10) 38%,rgba(0,0,0,.62) 100%),
+    url('./assets/roadtrip-hero.jpg') center center / cover no-repeat !important;
+}
+.rtv2HeroShade{
+  background:
+    radial-gradient(circle at 82% 8%,rgba(237,185,101,.24),transparent 35%),
+    linear-gradient(90deg,rgba(8,22,24,.74),rgba(8,22,24,.24) 48%,rgba(0,0,0,.03) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.17) 52%,rgba(0,0,0,.36)) !important;
+}
+.rtv2HeroText{top:96px !important;left:22px !important;right:20px !important;}
+.rtv2HeroText h1{font-size:clamp(37px, 10vw, 50px) !important;line-height:1.02 !important;}
+.rtv2HeroText p{max-width:285px !important;text-shadow:0 2px 10px rgba(0,0,0,.28) !important;}
+.rtv2StatsGlass{left:18px !important;right:18px !important;bottom:86px !important;}
+.rtv2ProgressGlass{left:18px !important;right:18px !important;bottom:16px !important;}
+.rtv2NextStopCard{flex:0 0 auto !important;margin-top:2px !important;}
+.rtv2PremiumFooter{flex:0 0 auto !important;}
+.rtv2BottomTabs{position:relative !important;}
+@media(max-height:760px){
+  .roadtripV2PageInner{gap:9px !important;padding-top:calc(env(safe-area-inset-top) + 12px) !important;}
+  .rtv2PremiumHeader .rtv2Back,.rtv2PremiumHeader .rtv2Close{width:40px !important;height:40px !important;border-radius:15px !important;}
+  .rtv2PremiumHeader h2{font-size:22px !important;}
+  .rtv2PremiumHeader small{font-size:10px !important;margin-top:2px !important;}
+  .rtv2PremiumHero{height:355px !important;min-height:355px !important;border-radius:26px !important;}
+  .rtv2HeroText{top:78px !important;left:20px !important;}
+  .rtv2HeroText h1{font-size:35px !important;}
+  .rtv2Status{height:25px !important;font-size:8.4px !important;}
+  .rtv2StatsGlass{bottom:78px !important;padding:12px 6px !important;}
+  .rtv2StatsGlass div{gap:3px !important;}
+  .rtv2StatsGlass svg{width:20px !important;height:20px !important;}
+  .rtv2StatsGlass b{font-size:14px !important;}
+  .rtv2StatsGlass small{font-size:8px !important;}
+  .rtv2ProgressGlass{height:58px !important;bottom:14px !important;}
+  .rtv2NextStopCard{min-height:96px !important;padding:10px !important;}
+  .rtv2NextPhoto{width:56px !important;height:56px !important;}
+  .rtv2MiniRoute{min-height:64px !important;}
+  .rtv2ActionRow button{height:42px !important;}
+  .rtv2BottomTabs{min-height:54px !important;}
+}
