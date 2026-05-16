@@ -4971,3 +4971,209 @@
     return handle(action);
   },true);
 })();
+
+
+/* Roadora v7.8.7 — Definitieve Mijn Roadtrip Button Fix
+   - Grote, echte transparante knoppen boven de screenshot-afbeelding
+   - Google Maps gebruikt exact de bestaande locked RoadoraMapsExport
+   - Werkt via pointerup + click voor Android/mobile
+   - Geen wijziging aan ORS, route-core of Maps-export zelf
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  let lastActionAt=0;
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function page(){ return qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783, #roadtripScreenV2Page.active'); }
+  function isOpen(){ return !!qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
+  function closeRoadtrip(){
+    if(window.RoadoraRoadtripImageOnly?.close) return window.RoadoraRoadtripImageOnly.close();
+    qs('#roadtripScreenV2Page')?.classList.remove('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-v787-close'); }catch(_){ }
+    return false;
+  }
+  function buildRoadtripMapsUrl(){
+    const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+    const stops=Array.isArray(trip.stops)?trip.stops:[];
+    const destination=encodeURIComponent(trip.destination||'Innsbruck, Oostenrijk');
+    const waypoints=stops.map(s=>{
+      if(Array.isArray(s?.ll) && Number.isFinite(Number(s.ll[0])) && Number.isFinite(Number(s.ll[1]))){
+        return `${Number(s.ll[0]).toFixed(6)},${Number(s.ll[1]).toFixed(6)}`;
+      }
+      return String(s?.name||'').trim();
+    }).filter(Boolean).slice(0,9);
+    let url=`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`;
+    if(waypoints.length) url += '&waypoints=' + waypoints.map(encodeURIComponent).join('%7C');
+    return url;
+  }
+  function openMaps(){
+    try{
+      // v7.8.8: directe Maps-link opnieuw opgebouwd uit localStorage.
+      // Hierdoor blijft Start in Google Maps werken nadat je een nieuwe route maakt
+      // en daarna tussenstops toevoegt. Origin blijft bewust leeg = actuele locatie.
+      const url=buildRoadtripMapsUrl();
+      const opened=window.open(url,'_blank','noopener');
+      if(!opened){ window.location.href=url; }
+      toast('Google Maps geopend');
+    }catch(err){
+      console.warn('Roadtrip Google Maps direct export:',err);
+      try{
+        const url='https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving';
+        const opened=window.open(url,'_blank','noopener');
+        if(!opened) window.location.href=url;
+      }catch(_){}
+      toast('Google Maps geopend');
+    }
+    return false;
+  }
+  function clearTrip(){
+    try{
+      if(window.RoadoraRoadtrip?.clear) window.RoadoraRoadtrip.clear();
+      else{
+        const data=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+        data.stops=[]; data.updatedAt=new Date().toISOString();
+        localStorage.setItem('roadoraRoadtripV1',JSON.stringify(data));
+        window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:data}));
+      }
+      toast('Roadtrip geleegd');
+    }catch(err){ console.warn('Roadtrip leegmaken:',err); toast('Leegmaken niet gelukt'); }
+    return false;
+  }
+  function favorite(){
+    const key='roadoraRoadtripFavoriteV787';
+    const next=localStorage.getItem(key)==='1'?'0':'1';
+    localStorage.setItem(key,next);
+    toast(next==='1'?'Roadtrip als favoriet gemarkeerd':'Favoriet verwijderd');
+    return false;
+  }
+  function ensureButtons(){
+    const p=page();
+    if(!p || !p.classList.contains('roadtripImageOnlyActiveV783')) return;
+    let layer=qs('.rtFixedLayerV787',p);
+    if(layer) return;
+    layer=document.createElement('div');
+    layer.className='rtFixedLayerV787';
+    layer.innerHTML=`
+      <button class="rtFixedBtn rtFixedBack" data-rt-fixed-action="close" aria-label="Terug naar kaart" type="button"></button>
+      <button class="rtFixedBtn rtFixedMore" data-rt-fixed-action="more" aria-label="Meer opties" type="button"></button>
+      <button class="rtFixedBtn rtFixedFav" data-rt-fixed-action="favorite" aria-label="Favoriet" type="button"></button>
+      <button class="rtFixedBtn rtFixedDetails" data-rt-fixed-action="details" aria-label="Details bekijken" type="button"></button>
+      <button class="rtFixedBtn rtFixedClear" data-rt-fixed-action="clear" aria-label="Roadtrip leegmaken" type="button"></button>
+      <button class="rtFixedBtn rtFixedMaps" data-rt-fixed-action="maps" aria-label="Start in Google Maps" type="button"></button>
+      <button class="rtFixedBtn rtFixedOverview" data-rt-fixed-action="tab-overview" aria-label="Overzicht" type="button"></button>
+      <button class="rtFixedBtn rtFixedTrajecten" data-rt-fixed-action="tab-trajecten" aria-label="Trajecten" type="button"></button>
+      <button class="rtFixedBtn rtFixedHotels" data-rt-fixed-action="tab-hotels" aria-label="Hotels" type="button"></button>
+      <button class="rtFixedBtn rtFixedNotities" data-rt-fixed-action="tab-notities" aria-label="Notities" type="button"></button>`;
+    p.appendChild(layer);
+  }
+  function actionFromPoint(e){
+    const p=page();
+    if(!p) return '';
+    const r=p.getBoundingClientRect();
+    const x=((e.clientX-r.left)/Math.max(1,r.width))*100;
+    const y=((e.clientY-r.top)/Math.max(1,r.height))*100;
+    if(x<22 && y<14) return 'close';
+    if(x>74 && y<13) return 'more';
+    if(x>72 && y>=7 && y<24) return 'favorite';
+    if(x>55 && y>=49 && y<64) return 'details';
+    if(x>=0 && x<47 && y>=72 && y<92) return 'clear';
+    // Extra groot zodat de Google Maps CTA altijd werkt, ook bij andere crops/schaling.
+    if(x>=38 && x<=100 && y>=70 && y<=94) return 'maps';
+    if(y>=86){
+      if(x<30) return 'tab-overview';
+      if(x<53) return 'tab-trajecten';
+      if(x<75) return 'tab-hotels';
+      return 'tab-notities';
+    }
+    return '';
+  }
+  function handleAction(action){
+    const now=Date.now();
+    if(now-lastActionAt<260) return false;
+    lastActionAt=now;
+    if(action==='close') return closeRoadtrip();
+    if(action==='maps') return openMaps();
+    if(action==='clear') return clearTrip();
+    if(action==='favorite') return favorite();
+    if(action==='more'){ toast('Roadtrip opties voorbereid'); return false; }
+    if(action==='details'){ toast('Details bekijken voorbereid'); return false; }
+    if(action==='tab-overview'){ toast('Overzicht'); return false; }
+    if(action==='tab-trajecten'){ toast('Trajecten voorbereid'); return false; }
+    if(action==='tab-hotels'){ toast('Hotels voorbereid'); return false; }
+    if(action==='tab-notities'){ toast('Notities voorbereid'); return false; }
+    return false;
+  }
+  function intercept(e){
+    if(!isOpen()) return;
+    ensureButtons();
+    const btn=e.target?.closest?.('[data-rt-fixed-action]');
+    const action=btn?.dataset?.rtFixedAction || actionFromPoint(e);
+    if(!action) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return handleAction(action);
+  }
+  ['pointerup','touchend','click'].forEach(type=>window.addEventListener(type,intercept,true));
+  function patchOpen(){
+    if(window.RoadoraRoadtripImageOnly && !window.RoadoraRoadtripImageOnly.__v787Patched){
+      const oldOpen=window.RoadoraRoadtripImageOnly.open;
+      window.RoadoraRoadtripImageOnly.open=function(){
+        const r=oldOpen ? oldOpen.apply(this,arguments) : false;
+        setTimeout(ensureButtons,0);
+        setTimeout(ensureButtons,120);
+        return r;
+      };
+      window.RoadoraRoadtripImageOnly.__v787Patched=true;
+    }
+  }
+  const mo=new MutationObserver(()=>{ if(isOpen()) ensureButtons(); });
+  function init(){ patchOpen(); ensureButtons(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); setTimeout(patchOpen,180); setTimeout(ensureButtons,250); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
+
+
+/* Roadora v7.8.8 — Google Maps na nieuwe stops fix
+   - Start in Google Maps bouwt de URL altijd opnieuw uit roadoraRoadtripV1
+   - Werkt ook na nieuwe route + tussenstops
+   - Geen wijzigingen aan ORS-route of Maps-export core
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  function mapsUrl(){
+    try{
+      const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+      const stops=Array.isArray(trip.stops)?trip.stops:[];
+      const destination=encodeURIComponent(trip.destination||'Innsbruck, Oostenrijk');
+      const waypoints=stops.map(s=>{
+        if(Array.isArray(s?.ll) && Number.isFinite(Number(s.ll[0])) && Number.isFinite(Number(s.ll[1]))){
+          return `${Number(s.ll[0]).toFixed(6)},${Number(s.ll[1]).toFixed(6)}`;
+        }
+        return String(s?.name||'').trim();
+      }).filter(Boolean).slice(0,9);
+      let url=`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`;
+      if(waypoints.length) url += '&waypoints=' + waypoints.map(encodeURIComponent).join('%7C');
+      return url;
+    }catch(_){
+      return 'https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving';
+    }
+  }
+  function armMapsButton(){
+    const page=qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active');
+    if(!page) return;
+    const btn=qs('.rtFixedMaps',page) || qs('.rtHitMaps',page);
+    if(!btn) return;
+    btn.setAttribute('data-maps-url',mapsUrl());
+  }
+  window.addEventListener('pointerdown',e=>{
+    if(e.target?.closest?.('.rtFixedMaps,.rtHitMaps')) armMapsButton();
+  },true);
+  window.addEventListener('roadora:roadtrip:update',()=>setTimeout(armMapsButton,80));
+  window.addEventListener('storage',e=>{ if(!e.key || e.key==='roadoraRoadtripV1') setTimeout(armMapsButton,80); });
+  const mo=new MutationObserver(()=>armMapsButton());
+  function init(){ armMapsButton(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
