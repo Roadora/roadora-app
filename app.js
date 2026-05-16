@@ -4557,85 +4557,14 @@
   function render(){
     const page=ensurePage();
     const inner=$('.roadtripV2PageInner',page);
-    const trip=readTrip();
-    const summary=readSummary();
-    const stops=trip.stops;
-    const totalStops=stops.length;
-
-    const firstStop = stops[0] || null;
-    const nextName = firstStop?.name || 'Nog geen tussenstop gekozen';
-    const nextType = firstStop ? typeLabel(firstStop) : 'Volgende stop';
-    const nextAddress = firstStop ? String(firstStop.address||firstStop.meta||'Langs je route').split(' · ')[0] : 'Voeg een hotel, tankstation of uitje toe vanaf de kaart.';
-    const nextMeta = firstStop ? 'Nog 2u 14m rijden · 188 km' : 'Open de kaart en kies je eerste stop';
-    const nextId = firstStop ? esc(firstStop.id||0) : '';
-
-    let prev=ORIGIN_LL;
-    const timeline=[];
-    timeline.push(`<div class="rtv2Point start"><i>A</i><div><span>Startpunt</span><b>${esc(trip.origin)}</b></div></div>`);
-    stops.forEach((s,i)=>{
-      const p=ll(s,prev);
-      const km=Math.round(kmBetween(prev,p)*1.18);
-      timeline.push(`<div class="rtv2Segment"><span></span><b>${km.toLocaleString('nl-NL')} km</b><em>${timeFromKm(km)}</em></div>`);
-      timeline.push(`<div class="rtv2Stop" data-trip-id="${esc(s.id||i)}"><i>${i+1}</i><strong>${stopIcon(s)}</strong><button type="button" data-rtv2-action="focus" data-trip-id="${esc(s.id||i)}"><span>${esc(typeLabel(s))}</span><b>${esc(s.name||'Tussenstop')}</b><small>${esc(String(s.address||s.meta||'Langs route').split(' · ')[0])}</small></button><button type="button" class="rtv2Remove" data-rtv2-action="remove" data-trip-id="${esc(s.id||i)}" aria-label="Stop verwijderen">×</button></div>`);
-      prev=p;
-    });
-    const lastKm=Math.round(kmBetween(prev,DEST_LL)*1.18);
-    if(stops.length){ timeline.push(`<div class="rtv2Segment"><span></span><b>${lastKm.toLocaleString('nl-NL')} km</b><em>${timeFromKm(lastKm)}</em></div>`); }
-    timeline.push(`<div class="rtv2Point end"><i>B</i><div><span>Eindbestemming</span><b>${esc(trip.destination)}</b></div></div>`);
-
     inner.innerHTML=`
-      <section class="rtv2CinemaHero">
-        <header class="rtv2CinemaTop">
-          <button type="button" class="rtv2Back rtv2GlassBtn" data-rtv2-action="close" aria-label="Terug naar kaart">‹</button>
-          <div class="rtv2CinemaTitle">
-            <span>Mijn Roadtrip</span>
-            <small>Jouw reis. Jouw herinneringen.</small>
-          </div>
-          <button type="button" class="rtv2Close rtv2GlassBtn" data-rtv2-action="close" aria-label="Sluiten">•••</button>
-        </header>
-
-        <button type="button" class="rtv2Heart" aria-label="Roadtrip bewaren">♡</button>
-
-        <div class="rtv2HeroCopy">
-          <span class="rtv2Badge">● Actieve roadtrip</span>
-          <h1>${esc(trip.origin.replace(', Nederland',''))}<em>→</em>${esc(trip.destination.replace(', Oostenrijk',''))}</h1>
-          <p>Een mooie rit vol bijzondere plekken, geweldige uitzichten en fijne stops.</p>
-        </div>
-      </section>
-
-      <section class="rtv2StatsCard">
-        <div class="rtv2StatsGrid">
-          <div><i>◷</i><b>${esc(summary.timeLabel||'9u 03m')}</b><small>Rijtijd</small></div>
-          <div><i>╱╲</i><b>${esc(summary.distanceLabel||'1.005 km')}</b><small>Totaal</small></div>
-          <div><i>⌖</i><b>${totalStops}</b><small>Tussenstops</small></div>
-          <div><i>△</i><b>2.350 m</b><small>Hoogteverschil</small></div>
-        </div>
-        <div class="rtv2ProgressRow">
-          <div><b>73% voltooid</b><span><i style="width:73%"></i></span></div>
-          <button type="button" data-rtv2-action="details">Details bekijken ›</button>
-        </div>
-      </section>
-
-      <section class="rtv2NextStopCard ${firstStop?'':'is-empty'}">
-        <div class="rtv2NextInfo">
-          <span>Volgende stop</span>
-          <button type="button" ${firstStop?`data-rtv2-action="focus" data-trip-id="${nextId}"`:''}>
-            <b>${esc(nextName)}</b>
-            <small>⌖ ${esc(nextAddress)}</small>
-            <small>◷ ${esc(nextMeta)}</small>
-          </button>
-        </div>
-        <div class="rtv2NextMap" aria-hidden="true"><i></i></div>
-      </section>
-
-      <section class="rtv2Timeline rtv2TimelineHidden" aria-label="Trajecten">${timeline.join('')}</section>
-
-      <nav class="rtv2Tabs">
-        <button class="active" type="button">▱<span>Overzicht</span></button>
-        <button type="button" disabled>⌁<span>Trajecten</span></button>
-        <button type="button" disabled>▰<span>Hotels</span></button>
-        <button type="button" disabled>▤<span>Notities</span></button>
-      </nav>`;
+      <section class="rtv2StaticMockupPage" aria-label="Mijn Roadtrip preview">
+        <img src="./assets/roadtrip-page-mockup.png" alt="Mijn Roadtrip premium preview" class="rtv2StaticMockupImg">
+        <button type="button" class="rtv2StaticHotspot rtv2StaticBack" data-rtv2-action="close" aria-label="Terug"></button>
+        <button type="button" class="rtv2StaticHotspot rtv2StaticMore" data-rtv2-action="details" aria-label="Meer opties"></button>
+        <button type="button" class="rtv2StaticHotspot rtv2StaticDetails" data-rtv2-action="details" aria-label="Details bekijken"></button>
+        <button type="button" class="rtv2StaticHotspot rtv2StaticMaps" data-rtv2-action="maps" aria-label="Start in Google Maps"></button>
+      </section>`;
   }
 
   function setBottomActive(){

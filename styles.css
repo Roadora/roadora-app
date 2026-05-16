@@ -5909,3 +5909,98 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   }
 }
 
+
+
+/* =========================================================
+   Roadora v7.6.5 — Mijn Roadtrip Static Mockup Page
+   Doel: exacte mockup-afbeelding als volledige Mijn Roadtrip pagina.
+   Knoppen blijven klikbare hotspots voor later.
+   Home, kaart, ORS en Maps-export blijven onaangeraakt.
+   ========================================================= */
+
+.roadtripScreenV2Page{
+  background:#efe5d7 !important;
+  overflow:hidden !important;
+}
+
+.roadtripV2PageInner{
+  height:100% !important;
+  padding:0 !important;
+  overflow:auto !important;
+  background:#efe5d7 !important;
+}
+
+.rtv2StaticMockupPage{
+  position:relative !important;
+  width:100% !important;
+  min-height:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:flex-start !important;
+  background:#efe5d7 !important;
+}
+
+.rtv2StaticMockupImg{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:100% !important;
+  object-fit:cover !important;
+  object-position:top center !important;
+  user-select:none !important;
+  -webkit-user-drag:none !important;
+}
+
+/* Klikbare zones voor later werkende knoppen */
+.rtv2StaticHotspot{
+  position:absolute !important;
+  z-index:20 !important;
+  border:0 !important;
+  background:transparent !important;
+  padding:0 !important;
+  cursor:pointer !important;
+  appearance:none !important;
+  -webkit-appearance:none !important;
+}
+
+/* Terugknop linksboven */
+.rtv2StaticBack{
+  left:4.5% !important;
+  top:3.3% !important;
+  width:10.5% !important;
+  height:5.3% !important;
+}
+
+/* Meerknop rechtsboven */
+.rtv2StaticMore{
+  right:4.5% !important;
+  top:3.3% !important;
+  width:10.5% !important;
+  height:5.3% !important;
+}
+
+/* Details bekijken in stats-card */
+.rtv2StaticDetails{
+  right:10% !important;
+  top:55.5% !important;
+  width:27% !important;
+  height:5.2% !important;
+}
+
+/* Start in Google Maps */
+.rtv2StaticMaps{
+  right:7.5% !important;
+  top:82.8% !important;
+  width:43% !important;
+  height:6.2% !important;
+}
+
+@media(min-width:600px){
+  .rtv2StaticMockupImg{
+    max-width:480px !important;
+  }
+  .rtv2StaticMockupPage{
+    background:#efe5d7 !important;
+  }
+}
+
