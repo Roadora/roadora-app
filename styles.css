@@ -5658,3 +5658,37 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten{left:28% !important;bottom:0 !important;width:25% !important;height:15% !important;}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels{left:51% !important;bottom:0 !important;width:24% !important;height:15% !important;}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{right:0 !important;bottom:0 !important;width:27% !important;height:15% !important;}
+
+/* ===== Roadora v7.8.9 — Maps CTA Priority Fix =====
+   Fix: bottom tab hitzones lagen over de zichtbare Google Maps CTA.
+   Google Maps krijgt nu altijd de hoogste tap-prioriteit.
+*/
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedLayerV787{
+  pointer-events:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBtn{
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{
+  left:43% !important;
+  right:4% !important;
+  top:84% !important;
+  width:auto !important;
+  height:9.5% !important;
+  z-index:50 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear{
+  left:4% !important;
+  top:84% !important;
+  width:39% !important;
+  height:9.5% !important;
+  z-index:40 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{
+  height:6.5% !important;
+  bottom:0 !important;
+  z-index:10 !important;
+}

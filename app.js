@@ -5177,3 +5177,57 @@
   function init(){ armMapsButton(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+/* Roadora v7.8.9 — Google Maps CTA hard priority
+   Als een tab-hitzone per ongeluk boven de CTA ligt, wint Maps alsnog op coördinaten.
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function isOpen(){ return !!qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
+  function inMapsCta(e){
+    const p=qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active');
+    if(!p) return false;
+    const r=p.getBoundingClientRect();
+    const x=((e.clientX-r.left)/Math.max(1,r.width))*100;
+    const y=((e.clientY-r.top)/Math.max(1,r.height))*100;
+    return x>=42 && x<=98 && y>=82 && y<=94;
+  }
+  function buildUrl(){
+    try{
+      const trip=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+      const stops=Array.isArray(trip.stops)?trip.stops:[];
+      const destination=encodeURIComponent(trip.destination||'Innsbruck, Oostenrijk');
+      const waypoints=stops.map(s=>{
+        if(Array.isArray(s?.ll) && Number.isFinite(Number(s.ll[0])) && Number.isFinite(Number(s.ll[1]))){
+          return `${Number(s.ll[0]).toFixed(6)},${Number(s.ll[1]).toFixed(6)}`;
+        }
+        return String(s?.name||'').trim();
+      }).filter(Boolean).slice(0,9);
+      let url=`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`;
+      if(waypoints.length) url += '&waypoints=' + waypoints.map(encodeURIComponent).join('%7C');
+      return url;
+    }catch(_){
+      return 'https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving';
+    }
+  }
+  function openMaps(){
+    const url=buildUrl();
+    const opened=window.open(url,'_blank','noopener');
+    if(!opened) window.location.href=url;
+    toast('Google Maps geopend');
+    return false;
+  }
+  ['pointerdown','pointerup','touchend','click'].forEach(type=>{
+    window.addEventListener(type,function(e){
+      if(!isOpen()) return;
+      if(!inMapsCta(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      if(type==='pointerdown') return false;
+      return openMaps();
+    },true);
+  });
+})();
