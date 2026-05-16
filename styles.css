@@ -5692,3 +5692,61 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   bottom:0 !important;
   z-index:10 !important;
 }
+
+/* ===== Roadora v7.8.10 — Mijn Roadtrip Phone Fit =====
+   Alleen beeldschaal/viewport-fit. Geen route-core, ORS of Maps-export wijzigingen.
+   De mockup-afbeelding vult nu exact het telefoonscherm zodat er geen losse
+   blokken, clipping of overlappende layout ontstaat.
+*/
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  max-height:100dvh !important;
+  overflow:hidden !important;
+  border-radius:inherit !important;
+  background:#0f0b08 !important;
+  touch-action:manipulation !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+  max-height:100% !important;
+  display:block !important;
+  overflow:hidden !important;
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:100% 100% !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  transform:none !important;
+  border-radius:inherit !important;
+}
+@supports (height:100svh){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783{
+    height:100svh !important;
+    min-height:100svh !important;
+    max-height:100svh !important;
+  }
+}
+@media (min-width:560px) and (min-height:720px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783,
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+    border-radius:38px !important;
+  }
+}
+/* Hitzones opnieuw strak op de zichtbare telefoon-mockup gezet. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBack{left:0 !important;top:0 !important;width:15% !important;height:8% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMore{right:0 !important;top:0 !important;width:16% !important;height:8% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedFav{right:0 !important;top:6.5% !important;width:18% !important;height:9% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails{right:4% !important;top:59% !important;width:34% !important;height:8% !important;z-index:35 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear{left:4% !important;top:83.5% !important;width:43% !important;height:8.5% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{left:47% !important;right:4% !important;top:83.5% !important;width:auto !important;height:8.5% !important;z-index:60 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview{left:3% !important;bottom:0 !important;width:26% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten{left:29% !important;bottom:0 !important;width:24% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels{left:53% !important;bottom:0 !important;width:22% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{right:2% !important;bottom:0 !important;width:23% !important;height:8% !important;z-index:20 !important;}
