@@ -5231,3 +5231,81 @@
     return openMapsOnce();
   },true);
 })();
+
+/* Roadora v7.8.12 — Mijn Roadtrip Bottom Actions Update
+   - Knoppen blijven onderaan voor makkelijke bediening
+   - Start in Maps staat nu tussen Trajecten en Hotels
+   - Zelfde compacte premium stijl als de kaart-bottom-nav
+   - Maps blijft locked via RoadoraSafeMapsOpen / RoadoraMapsExport
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function page(){ return qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active'); }
+  function openMaps(){
+    if(window.RoadoraSafeMapsOpen) return window.RoadoraSafeMapsOpen();
+    if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-bottom-v7812');
+    toast('Google Maps openen lukt niet');
+    return false;
+  }
+  function setActive(tab){
+    const p=page();
+    if(!p) return;
+    qsa('.rtBottomActionV7812',p).forEach(btn=>{
+      const active=btn.dataset.rtBottomAction===tab;
+      btn.classList.toggle('active',active);
+      btn.classList.toggle('is-active',active);
+    });
+  }
+  function ensureBottomActions(){
+    const p=page();
+    if(!p) return;
+    let bar=qs('.rtBottomActionsV7812',p);
+    if(bar) return;
+    bar=document.createElement('nav');
+    bar.className='rtBottomActionsV7812';
+    bar.setAttribute('aria-label','Mijn Roadtrip acties');
+    bar.innerHTML=`
+      <button class="rtBottomActionV7812 active" data-rt-bottom-action="overview" type="button" aria-label="Overzicht">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"></path></svg><span>Overzicht</span>
+      </button>
+      <button class="rtBottomActionV7812" data-rt-bottom-action="trajecten" type="button" aria-label="Trajecten">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h10a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h10"></path><circle cx="5" cy="6" r="2"></circle><circle cx="19" cy="18" r="2"></circle></svg><span>Trajecten</span>
+      </button>
+      <button class="rtBottomActionV7812 rtBottomActionMapsV7812" data-rt-bottom-action="maps" type="button" aria-label="Start in Maps">
+        <b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4 20-7z"></path></svg></b><span>Maps</span>
+      </button>
+      <button class="rtBottomActionV7812" data-rt-bottom-action="hotels" type="button" aria-label="Hotels">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Hotels</span>
+      </button>
+      <button class="rtBottomActionV7812" data-rt-bottom-action="notities" type="button" aria-label="Notities">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6z"></path><path d="M9 8h6M9 12h6M9 16h4"></path></svg><span>Notities</span>
+      </button>`;
+    p.appendChild(bar);
+  }
+  function handle(action){
+    if(action==='maps') return openMaps();
+    if(action==='overview'){ setActive('overview'); toast('Overzicht'); return false; }
+    if(action==='trajecten'){ setActive('trajecten'); toast('Trajecten voorbereid'); return false; }
+    if(action==='hotels'){ setActive('hotels'); toast('Hotels voorbereid'); return false; }
+    if(action==='notities'){ setActive('notities'); toast('Notities voorbereid'); return false; }
+    return false;
+  }
+  function intercept(e){
+    const p=page();
+    if(!p) return;
+    ensureBottomActions();
+    const btn=e.target?.closest?.('.rtBottomActionV7812[data-rt-bottom-action]');
+    if(!btn || !p.contains(btn)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return handle(btn.dataset.rtBottomAction);
+  }
+  ['pointerup','touchend','click'].forEach(type=>window.addEventListener(type,intercept,true));
+  const mo=new MutationObserver(()=>{ if(page()) ensureBottomActions(); });
+  function init(){ ensureBottomActions(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();

@@ -5750,3 +5750,125 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten{left:29% !important;bottom:0 !important;width:24% !important;height:8% !important;z-index:20 !important;}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels{left:53% !important;bottom:0 !important;width:22% !important;height:8% !important;z-index:20 !important;}
 #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{right:2% !important;bottom:0 !important;width:23% !important;height:8% !important;z-index:20 !important;}
+
+/* ===== Roadora v7.8.12 — Mijn Roadtrip bottom action bar =====
+   Overzicht · Trajecten · Start in Maps · Hotels · Notities
+   Zelfde compacte premium gevoel als de kaart-bottom-nav. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 8px) !important;
+  height:58px !important;
+  z-index:2147483600 !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1.12fr 1fr 1fr !important;
+  align-items:center !important;
+  gap:0 !important;
+  padding:4px 5px !important;
+  border-radius:20px !important;
+  background:rgba(255,250,242,.90) !important;
+  border:1px solid rgba(255,255,255,.72) !important;
+  box-shadow:0 18px 44px rgba(24,18,12,.22), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(30px) !important;
+  -webkit-backdrop-filter:blur(30px) !important;
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  height:50px !important;
+  min-width:0 !important;
+  display:grid !important;
+  place-items:center !important;
+  grid-template-rows:20px 14px !important;
+  align-content:center !important;
+  gap:2px !important;
+  border:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:16px !important;
+  background:transparent !important;
+  color:#665d52 !important;
+  font-size:8px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+  text-align:center !important;
+  box-shadow:none !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 svg{
+  width:17px !important;
+  height:17px !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 span{
+  display:block !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  white-space:nowrap !important;
+  text-overflow:ellipsis !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.active,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.is-active{
+  background:rgba(228,188,121,.20) !important;
+  color:#8a5f2e !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:translateY(-13px) !important;
+  grid-template-rows:50px 13px !important;
+  height:64px !important;
+  overflow:visible !important;
+  color:#7d5429 !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{
+  width:50px !important;
+  height:50px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;
+  color:#fff !important;
+  box-shadow:0 10px 24px rgba(196,134,61,.34),0 0 0 5px rgba(255,249,239,.76) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 svg{
+  width:22px !important;
+  height:22px !important;
+  margin:0 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  margin-top:2px !important;
+  color:#5e5146 !important;
+}
+/* Oude screenshot-hitzones voor Leegmaken/Details uitschakelen: die CTA's zitten niet meer in de nieuwe UX. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails{
+  display:none !important;
+  pointer-events:none !important;
+}
+/* Oude onzichtbare bottom-tab hitzones omlaag in prioriteit, nieuwe bar regelt de taps. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{
+  z-index:5 !important;
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    left:10px !important;
+    right:10px !important;
+    height:56px !important;
+    border-radius:19px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{font-size:7.3px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:48px !important;height:48px !important;}
+}
