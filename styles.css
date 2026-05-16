@@ -5872,3 +5872,63 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{font-size:7.3px !important;}
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:48px !important;height:48px !important;}
 }
+
+
+/* ===== Roadora v7.8.13 — Roadtrip bottom nav clean line fix =====
+   Start in Maps is nu onderdeel van dezelfde balk: geen floating center meer. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  grid-template-columns:repeat(5,1fr) !important;
+  height:58px !important;
+  padding:4px 5px !important;
+  z-index:2147483600 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+  grid-template-rows:20px 14px !important;
+  height:50px !important;
+  overflow:hidden !important;
+  color:#665d52 !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{
+  display:contents !important;
+  width:auto !important;
+  height:auto !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 svg{
+  width:17px !important;
+  height:17px !important;
+  margin:0 !important;
+  stroke:currentColor !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  margin-top:0 !important;
+  color:inherit !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812:active,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812.is-active{
+  background:rgba(228,188,121,.20) !important;
+  color:#8a5f2e !important;
+}
+/* Oude onzichtbare hitzones onderin volledig uitschakelen zodat alleen de nieuwe balk taps afvangt. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab{
+  display:none !important;
+  pointer-events:none !important;
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:auto !important;height:auto !important;}
+}

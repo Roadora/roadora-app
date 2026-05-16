@@ -5275,7 +5275,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h10a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h10"></path><circle cx="5" cy="6" r="2"></circle><circle cx="19" cy="18" r="2"></circle></svg><span>Trajecten</span>
       </button>
       <button class="rtBottomActionV7812 rtBottomActionMapsV7812" data-rt-bottom-action="maps" type="button" aria-label="Start in Maps">
-        <b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4 20-7z"></path></svg></b><span>Maps</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4 20-7z"></path></svg><span>Start</span>
       </button>
       <button class="rtBottomActionV7812" data-rt-bottom-action="hotels" type="button" aria-label="Hotels">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Hotels</span>
