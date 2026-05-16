@@ -5558,3 +5558,52 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   .rtv2ActionRow button{height:44px!important;}
   .rtv2BottomTabs{min-height:56px!important;}
 }
+
+
+/* ===== Roadora v7.5.3 — Hero Zoom Out + Clean Bottom Tabs =====
+   Alleen Mijn Roadtrip: hero toont meer beeld, CTA-row verwijderd, tabs krijgen volledige breedte. */
+.rtv2PremiumHero{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.035),rgba(0,0,0,.055) 24%,rgba(0,0,0,.28) 67%,rgba(0,0,0,.54) 100%),
+    url('./assets/roadtrip-hero.jpg') center 46% / 92% auto no-repeat,
+    url('./assets/roadtrip-hero.jpg') center center / cover no-repeat !important;
+}
+.rtv2PremiumHero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:rgba(245,235,222,.04);
+  pointer-events:none;
+}
+.rtv2HeroShade{z-index:1 !important;}
+.rtv2Fav,.rtv2HeroText,.rtv2StatsGlass,.rtv2ProgressGlass{z-index:3 !important;}
+.rtv2PremiumFooter{
+  display:block !important;
+  gap:0 !important;
+  padding-bottom:max(0px, env(safe-area-inset-bottom)) !important;
+}
+.rtv2ActionRow{display:none !important;}
+.rtv2BottomTabs{
+  width:100% !important;
+  min-height:72px !important;
+  border-radius:28px !important;
+  margin:0 !important;
+  padding:7px !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+.roadtripV2PageInner{
+  padding-bottom:calc(env(safe-area-inset-bottom) + 10px) !important;
+}
+@media(max-width:390px){
+  .rtv2PremiumHero{
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.035),rgba(0,0,0,.055) 24%,rgba(0,0,0,.28) 67%,rgba(0,0,0,.54) 100%),
+      url('./assets/roadtrip-hero.jpg') center 46% / 94% auto no-repeat,
+      url('./assets/roadtrip-hero.jpg') center center / cover no-repeat !important;
+  }
+  .rtv2BottomTabs{min-height:64px !important;}
+}
+@media(max-height:760px){
+  .rtv2BottomTabs{min-height:60px !important;}
+}

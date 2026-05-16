@@ -4620,10 +4620,6 @@
       </section>
 
       <footer class="rtv2Footer rtv2PremiumFooter">
-        <div class="rtv2ActionRow">
-          <button type="button" data-rtv2-action="clear" ${stops.length?'':'disabled'}>⌫ Leegmaken</button>
-          <button type="button" data-rtv2-action="maps">⌁ Start in Google Maps</button>
-        </div>
         <nav class="rtv2BottomTabs" aria-label="Mijn Roadtrip onderdelen">
           <button class="active" type="button"><svg viewBox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15"/></svg><span>Overzicht</span></button>
           <button type="button" data-rtv2-action="details"><svg viewBox="0 0 24 24"><path d="M5 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h10"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="19" r="2"/></svg><span>Trajecten</span></button>
