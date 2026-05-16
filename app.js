@@ -4760,3 +4760,123 @@
     }
   },true);
 })();
+
+/* Roadora v7.8.5 — Mijn Roadtrip Image Hit Zones
+   - De mockup-afbeelding blijft leidend
+   - Onzichtbare tap-zones maken de knoppen weer werkend
+   - ORS, route-core en Maps-export blijven onaangeraakt
+*/
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function page(){ return qs('#roadtripScreenV2Page'); }
+
+  function ensureHitZones(){
+    const p=page();
+    if(!p || qs('.rtImageHitLayerV785',p)) return p;
+    const layer=document.createElement('div');
+    layer.className='rtImageHitLayerV785';
+    layer.innerHTML=`
+      <button class="rtHit rtHitBack" data-rt-image-action="close" aria-label="Terug naar kaart" type="button"></button>
+      <button class="rtHit rtHitMore" data-rt-image-action="more" aria-label="Roadtrip opties" type="button"></button>
+      <button class="rtHit rtHitFav" data-rt-image-action="favorite" aria-label="Roadtrip favoriet" type="button"></button>
+      <button class="rtHit rtHitDetails" data-rt-image-action="details" aria-label="Details bekijken" type="button"></button>
+      <button class="rtHit rtHitClear" data-rt-image-action="clear" aria-label="Roadtrip leegmaken" type="button"></button>
+      <button class="rtHit rtHitMaps" data-rt-image-action="maps" aria-label="Start in Google Maps" type="button"></button>
+      <button class="rtHit rtHitTab rtHitTabOverview" data-rt-image-action="tab-overview" aria-label="Overzicht" type="button"></button>
+      <button class="rtHit rtHitTab rtHitTabTrajecten" data-rt-image-action="tab-trajecten" aria-label="Trajecten" type="button"></button>
+      <button class="rtHit rtHitTab rtHitTabHotels" data-rt-image-action="tab-hotels" aria-label="Hotels" type="button"></button>
+      <button class="rtHit rtHitTab rtHitTabNotities" data-rt-image-action="tab-notities" aria-label="Notities" type="button"></button>`;
+    p.appendChild(layer);
+    return p;
+  }
+
+  function closeRoadtrip(){
+    if(window.RoadoraRoadtripImageOnly?.close) return window.RoadoraRoadtripImageOnly.close();
+    page()?.classList.remove('active','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783');
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-image-close'); }catch(_){ }
+    return false;
+  }
+
+  function clearRoadtrip(){
+    try{
+      if(window.RoadoraRoadtrip?.clear){ window.RoadoraRoadtrip.clear(); }
+      else{
+        const raw=JSON.parse(localStorage.getItem('roadoraRoadtripV1')||'{}');
+        raw.stops=[];
+        raw.updatedAt=new Date().toISOString();
+        localStorage.setItem('roadoraRoadtripV1',JSON.stringify(raw));
+        window.dispatchEvent(new CustomEvent('roadora:roadtrip:update',{detail:raw}));
+      }
+      toast('Roadtrip geleegd');
+    }catch(err){ console.warn('Roadtrip leegmaken:',err); toast('Leegmaken niet gelukt'); }
+    return false;
+  }
+
+  function openMaps(){
+    try{
+      if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-image');
+      window.open('https://www.google.com/maps/dir/?api=1&destination=Innsbruck%2C%20Oostenrijk&travelmode=driving','_blank','noopener');
+      toast('Google Maps geopend');
+    }catch(err){ console.warn('Maps open:',err); toast('Google Maps openen lukt niet'); }
+    return false;
+  }
+
+  function toggleFavorite(){
+    const key='roadoraRoadtripFavoriteV785';
+    const next=localStorage.getItem(key)==='1' ? '0' : '1';
+    localStorage.setItem(key,next);
+    toast(next==='1'?'Roadtrip als favoriet gemarkeerd':'Favoriet verwijderd');
+    return false;
+  }
+
+  function handleAction(action){
+    if(action==='close') return closeRoadtrip();
+    if(action==='maps') return openMaps();
+    if(action==='clear') return clearRoadtrip();
+    if(action==='favorite') return toggleFavorite();
+    if(action==='more'){ toast('Roadtrip opties voorbereid'); return false; }
+    if(action==='details'){ toast('Details bekijken voorbereid'); return false; }
+    if(action==='tab-overview'){ toast('Overzicht'); return false; }
+    if(action==='tab-trajecten'){ toast('Trajecten komen straks terug'); return false; }
+    if(action==='tab-hotels'){ toast('Hotels komen straks terug'); return false; }
+    if(action==='tab-notities'){ toast('Notities komen straks terug'); return false; }
+    return false;
+  }
+
+  const tryPatch=()=>{
+    if(window.RoadoraRoadtripImageOnly && !window.RoadoraRoadtripImageOnly.__hitZonesV785){
+      const oldOpen=window.RoadoraRoadtripImageOnly.open;
+      window.RoadoraRoadtripImageOnly.open=function(){
+        const r=oldOpen ? oldOpen.apply(this,arguments) : false;
+        setTimeout(ensureHitZones,0);
+        return r;
+      };
+      window.RoadoraRoadtripImageOnly.__hitZonesV785=true;
+    }
+  };
+
+  window.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const actionBtn=t.closest('[data-rt-image-action]');
+    if(actionBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      return handleAction(actionBtn.dataset.rtImageAction);
+    }
+    const nav=t.closest('#mapScreen .bottomNav .navItem[data-nav], #mapScreen .bottomNav .navItem[data-roadtrip-page="true"]');
+    if(nav){
+      const label=(nav.textContent||'').toLowerCase();
+      const isRoadtrip=(nav.dataset.nav||'').toLowerCase().includes('roadtrip') || nav.dataset.roadtripPage==='true' || label.includes('roadtrip');
+      if(isRoadtrip) setTimeout(ensureHitZones,0);
+    }
+  },true);
+
+  function init(){ tryPatch(); ensureHitZones(); setTimeout(tryPatch,80); setTimeout(ensureHitZones,180); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
