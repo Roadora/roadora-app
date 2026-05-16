@@ -6004,3 +6004,102 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   }
 }
 
+
+
+/* =========================================================
+   ROADORA v7.7 CINEMATIC HOME FINAL
+   ========================================================= */
+
+.phone{
+  background:#0b0907 !important;
+}
+
+/* Cinematic homescreen background */
+.bg{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.06) 0%,
+      rgba(0,0,0,.10) 26%,
+      rgba(0,0,0,.18) 46%,
+      rgba(0,0,0,.42) 72%,
+      rgba(0,0,0,.72) 100%
+    ),
+    url("./assets/home-bg.png") !important;
+
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+
+  transform:none !important;
+}
+
+/* Remove old heavy overlay */
+.phone:before{
+  display:none !important;
+}
+
+/* Keep all existing app UI functional */
+.content{
+  position:relative !important;
+  z-index:5 !important;
+}
+
+/* Better text readability */
+.hero h1,
+.hero p,
+.logo{
+  color:#fff7ef !important;
+  text-shadow:0 4px 22px rgba(0,0,0,.50) !important;
+}
+
+.hero h1 span{
+  color:#d9a04b !important;
+}
+
+/* Premium glass search */
+.search{
+  background:rgba(255,247,236,.92) !important;
+  border:1px solid rgba(255,255,255,.55) !important;
+  box-shadow:
+    0 18px 55px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,255,255,.62) !important;
+}
+
+/* Premium cards */
+.card{
+  background:rgba(255,247,236,.88) !important;
+  border:1px solid rgba(255,255,255,.45) !important;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.52) !important;
+
+  backdrop-filter:blur(12px) !important;
+}
+
+/* Section titles */
+.sectionTitle,
+.sectionTitle *{
+  color:#fff7ef !important;
+  text-shadow:0 3px 20px rgba(0,0,0,.48) !important;
+}
+
+/* Bottom nav premium */
+.bottomNav{
+  background:rgba(14,12,10,.76) !important;
+  backdrop-filter:blur(18px) !important;
+  border-top:1px solid rgba(255,255,255,.08) !important;
+}
+
+/* Ensure route/map pages remain above home */
+#mapScreen.active{
+  z-index:999 !important;
+}
+
+#routeSetupScreen.active{
+  z-index:800 !important;
+}
