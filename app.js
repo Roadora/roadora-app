@@ -5394,3 +5394,26 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',patchClose,{once:true}); else patchClose();
   setTimeout(patchClose,300);
 })();
+
+
+/* Roadora v7.8.20 — SAFE roadtrip open fallback
+   Alleen voor betrouwbaarheid van de Mijn Roadtrip knop. Raakt ORS, kaart-init en Maps-export niet aan. */
+(function(){
+  'use strict';
+  function isRoadtripNav(btn){
+    if(!btn) return false;
+    const nav=String(btn.dataset.nav||'').toLowerCase();
+    const label=String(btn.textContent||'').toLowerCase();
+    return nav==='roadtrip' || nav==='roadtrippage' || label.includes('mijn roadtrip');
+  }
+  window.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#mapScreen .bottomNav .navItem[data-nav]');
+    if(!isRoadtripNav(btn)) return;
+    if(window.RoadoraRoadtripImageOnly?.open){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      return window.RoadoraRoadtripImageOnly.open();
+    }
+  },true);
+})();
