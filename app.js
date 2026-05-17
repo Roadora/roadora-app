@@ -5523,7 +5523,7 @@
     p.className='roadtripScreenV2Page active rtHalfActiveV7825';
     p.innerHTML=`
       <div class="rtHalfPageV7825">
-        <div class="rtHalfHeroV7825" aria-hidden="true"><img src="./assets/roadtrip-hero.png" alt="" loading="eager" decoding="async"></div>
+        <div class="rtHalfHeroV7825" aria-hidden="true"></div>
         <div class="rtHalfTopV7825">
           <button class="rtHalfBtnV7825" data-rt-half-action="close" type="button" aria-label="Terug naar kaart">‹</button>
           <div class="rtHalfTopRightV7825">
@@ -5611,12 +5611,3 @@
   },true);
   ['roadora:roadtrip:update','roadora:route:update','storage'].forEach(ev=>window.addEventListener(ev,()=>{if(qs('#roadtripScreenV2Page.rtHalfActiveV7825.active')) render();}));
 })();
-
-
-// Roadora fix: fallback teksten verwijderen
-document.addEventListener('DOMContentLoaded', () => {
-  const ids = ['mapStatusTitle','mapStatusBadge','mapStatusSub','mapStatusEta','mapStatusDistance','mapStatusNext'];
-  ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ''; });
-  const panels = document.querySelectorAll('.roadtripPanelEmptyV584, .hotelPlannerHero, .hotelPlannerResultCard');
-  panels.forEach(p => p.innerHTML = '');
-});
