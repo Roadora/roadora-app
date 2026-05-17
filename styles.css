@@ -5625,3 +5625,27 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #menuScrim{
   pointer-events:auto!important;
 }
+
+/* Roadora v7.8.41 — Home button click fix
+   Fix: v7.8.40 zette #menuScrim per ongeluk altijd op pointer-events:auto.
+   Daardoor lag er een onzichtbare laag over Home en werkten Plan route / Uitjes / Hotels niet meer.
+   Scrim mag alleen clicks pakken als het menu echt open is. */
+#menuScrim,
+.menuScrim{
+  pointer-events:none !important;
+}
+.phone.menuOpen #menuScrim,
+.phone.menuExpanded #menuScrim,
+.phone.menuOpen .menuScrim,
+.phone.menuExpanded .menuScrim{
+  pointer-events:auto !important;
+}
+
+/* Zorg dat Home-content altijd klikbaar blijft wanneer geen app-subscreen actief is. */
+.phone:not(.mapActive):not(.roadtripV2PageOpen) .content,
+.phone:not(.mapActive):not(.roadtripV2PageOpen) .quick,
+.phone:not(.mapActive):not(.roadtripV2PageOpen) .card,
+.phone:not(.mapActive):not(.roadtripV2PageOpen) .search,
+.phone:not(.mapActive):not(.roadtripV2PageOpen) .go{
+  pointer-events:auto !important;
+}
