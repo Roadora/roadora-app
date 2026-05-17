@@ -5469,3 +5469,145 @@
   function init(){ clean(); mo.observe(document.body||document.documentElement,{childList:true,subtree:true}); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
+
+/* Roadora v7.8.25 — Half Screen Hero Roadtrip Page
+   Futureproof: schone foto bovenin, echte UI eronder. Geen ORS/Maps-core wijzigingen. */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const TRIP_KEY='roadoraRoadtripV1';
+  const SUMMARY_KEY='roadoraRouteSummaryV1';
+  function toast(msg){ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }
+  function readJson(key,fallback={}){try{return JSON.parse(localStorage.getItem(key)||'{}')||fallback;}catch(_){return fallback;}}
+  function readTrip(){const d=readJson(TRIP_KEY,{});return {origin:d.origin||'Rotterdam, Nederland',destination:d.destination||'Innsbruck, Oostenrijk',stops:Array.isArray(d.stops)?d.stops.filter(Boolean):[]};}
+  function readSummary(){return readJson(SUMMARY_KEY,{});}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function compactPlace(v){return String(v||'').replace(', Nederland','').replace(', Oostenrijk','').trim();}
+  function nextStop(trip){return trip.stops[0] || {name:'Hotel Lyon Centre',type:'hotel',label:'Volgende stop',meta:'Lyon, Frankrijk · Nog 2u 14m rijden · 198 km'};}
+  function stopMetaParts(stop){
+    const raw=String(stop?.meta||stop?.address||'Lyon, Frankrijk · Nog 2u 14m rijden · 198 km');
+    const parts=raw.split('·').map(x=>x.trim()).filter(Boolean);
+    return {place:parts[0]||'Lyon, Frankrijk',time:parts.slice(1).join(' · ')||'Nog 2u 14m rijden · 198 km'};
+  }
+  function page(){
+    let p=qs('#roadtripScreenV2Page');
+    if(!p){p=document.createElement('section');p.id='roadtripScreenV2Page';p.className='roadtripScreenV2Page';p.setAttribute('aria-label','Mijn Roadtrip');(qs('.phone')||document.body).appendChild(p);}
+    return p;
+  }
+  function closeMenuHard(){
+    qs('.phone')?.classList.remove('menuOpen','menuExpanded');
+    qsa('#sideMenu,#menuScrim').forEach(el=>el.classList.remove('open','active','show'));
+  }
+  function openMaps(){
+    if(window.RoadoraSafeMapsOpen) return window.RoadoraSafeMapsOpen();
+    if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-half-v7825');
+    toast('Google Maps openen lukt niet');
+    return false;
+  }
+  function setActive(action){
+    const p=page();
+    qsa('.rtHalfNavBtnV7825',p).forEach(btn=>{
+      const active=btn.dataset.rtHalfAction===action;
+      btn.classList.toggle('active',active);
+      btn.classList.toggle('is-active',active);
+    });
+  }
+  function render(){
+    const trip=readTrip();
+    const summary=readSummary();
+    const stop=nextStop(trip);
+    const meta=stopMetaParts(stop);
+    const photo=stop.photoUrl||stop.photo||stop.imageUrl||'';
+    const p=page();
+    p.className='roadtripScreenV2Page active rtHalfActiveV7825';
+    p.innerHTML=`
+      <div class="rtHalfPageV7825">
+        <div class="rtHalfHeroV7825" aria-hidden="true"></div>
+        <div class="rtHalfTopV7825">
+          <button class="rtHalfBtnV7825" data-rt-half-action="close" type="button" aria-label="Terug naar kaart">‹</button>
+          <div class="rtHalfTopRightV7825">
+            <button class="rtHalfBtnV7825" data-rt-half-action="more" type="button" aria-label="Meer opties">•••</button>
+            <button class="rtHalfBtnV7825" data-rt-half-action="favorite" type="button" aria-label="Favoriet"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6z"></path></svg></button>
+          </div>
+        </div>
+        <section class="rtHalfSheetV7825">
+          <div class="rtHalfGrabV7825"></div>
+          <header class="rtHalfTitleV7825">
+            <h1>Mijn Roadtrip</h1>
+            <p>Jouw stops, trajecten en plannen op één plek.</p>
+          </header>
+          <article class="rtHalfNextCardV7825">
+            <h2>Volgende stop</h2>
+            <div class="rtHalfNextGridV7825">
+              <div class="rtHalfHotelPhotoV7825" style="${photo?`background-image:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.26)),url('${String(photo).replace(/'/g,'')}')`:''}"></div>
+              <div class="rtHalfStopTextV7825">
+                <b>${esc(stop.name||'Hotel Lyon Centre')}</b>
+                <span>⌖ ${esc(meta.place)}</span>
+                <small>◷ ${esc(meta.time)}</small>
+              </div>
+              <div class="rtHalfMiniMapV7825"><i class="rtHalfMapPinV7825"></i></div>
+            </div>
+            <div class="rtHalfStatsV7825">
+              <div><b>${esc(summary.timeLabel||'9u 03m')}</b><span>Rijtijd</span></div>
+              <div><b>${esc(summary.distanceLabel||'1.005 km')}</b><span>Totaal</span></div>
+              <div><b>${trip.stops.length}</b><span>Tussenstops</span></div>
+            </div>
+          </article>
+        </section>
+        <nav class="rtHalfNavV7825" aria-label="Mijn Roadtrip navigatie">
+          <button class="rtHalfNavBtnV7825 active" data-rt-half-action="overview" type="button" aria-label="Overzicht"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 12h14M5 19h14"></path></svg><span>Overzicht</span></button>
+          <button class="rtHalfNavBtnV7825" data-rt-half-action="trajecten" type="button" aria-label="Trajecten"><svg viewBox="0 0 24 24"><path d="M6 6h4a4 4 0 0 1 0 8H8a4 4 0 0 0 0 8h10"></path><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="22" r="2"></circle></svg><span>Trajecten</span></button>
+          <button class="rtHalfNavBtnV7825" data-rt-half-action="maps" type="button" aria-label="Start in Maps"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4 20-7z"></path></svg><span>Start</span></button>
+          <button class="rtHalfNavBtnV7825" data-rt-half-action="hotels" type="button" aria-label="Hotels"><svg viewBox="0 0 24 24"><path d="M3 12h18v8M5 12V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v5M7 12V9h4v3"></path></svg><span>Hotels</span></button>
+          <button class="rtHalfNavBtnV7825" data-rt-half-action="notities" type="button" aria-label="Notities"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"></path><path d="M9 8h6M9 12h6M9 16h4"></path></svg><span>Notities</span></button>
+        </nav>
+      </div>`;
+    return p;
+  }
+  function open(){
+    closeMenuHard();
+    qsa('#roadtripMiniPanelV584,#roadoraStopOverlayV57,#hotelDetailSheet,#hotelCompareSheet').forEach(el=>el.classList.remove('open','expanded','roadtripV63Open','roadtripV705Open'));
+    qs('#mapScreen')?.classList.remove('stopOverlayOpenV57','roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
+    render();
+    qs('.phone')?.classList.add('roadtripV2PageOpen','roadtripHalfPhoneV7825');
+    toast('Mijn Roadtrip geopend');
+    return false;
+  }
+  function close(){
+    const p=page();
+    p.classList.remove('active','rtHalfActiveV7825','roadtripImageOnlyActiveV783');
+    qs('.phone')?.classList.remove('roadtripV2PageOpen','roadtripImageOnlyPhoneV783','roadtripHalfPhoneV7825');
+    closeMenuHard();
+    try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-half-close'); }catch(_){ }
+    return false;
+  }
+  function favorite(){const key='roadoraRoadtripFavoriteV7825';const next=localStorage.getItem(key)==='1'?'0':'1';localStorage.setItem(key,next);toast(next==='1'?'Roadtrip als favoriet gemarkeerd':'Favoriet verwijderd');return false;}
+  function handle(action){
+    if(action==='close') return close();
+    if(action==='maps') return openMaps();
+    if(action==='favorite') return favorite();
+    if(action==='more'){toast('Roadtrip opties voorbereid');return false;}
+    if(action==='overview'){setActive('overview');toast('Overzicht');return false;}
+    if(action==='trajecten'){setActive('trajecten');toast('Trajecten voorbereid');return false;}
+    if(action==='hotels'){setActive('hotels');toast('Hotels voorbereid');return false;}
+    if(action==='notities'){setActive('notities');toast('Notities voorbereid');return false;}
+    return false;
+  }
+  window.RoadoraRoadtripImageOnly={open,close,render};
+  window.RoadoraRoadtripPage={open,close,render};
+  window.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('[data-rt-half-action]');
+    if(btn && page().contains(btn)){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      return handle(btn.dataset.rtHalfAction);
+    }
+    const nav=e.target?.closest?.('#mapScreen .bottomNav .navItem[data-nav], #mapScreen .bottomNav .navItem[data-roadtrip-page="true"]');
+    if(nav){
+      const label=(nav.textContent||'').toLowerCase();
+      const isRoadtrip=(nav.dataset.nav||'').toLowerCase().includes('roadtrip') || nav.dataset.roadtripPage==='true' || label.includes('roadtrip');
+      if(isRoadtrip){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();return open();}
+    }
+  },true);
+  ['roadora:roadtrip:update','roadora:route:update','storage'].forEach(ev=>window.addEventListener(ev,()=>{if(qs('#roadtripScreenV2Page.rtHalfActiveV7825.active')) render();}));
+})();
