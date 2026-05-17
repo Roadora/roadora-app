@@ -3029,7 +3029,7 @@
       <article class="roadtripPanelCardV584">
         <header><div><span>Mijn Roadtrip</span><b>Je gekozen tussenstops</b></div><button type="button" data-roadtrip-action="close">×</button></header>
         <div class="roadtripPanelListV584"></div>
-        <footer><button type="button" data-roadtrip-action="clear">Leegmaken</button><button type="button" data-roadtrip-action="close">Klaar</button></footer>
+        <footer><button type="button" data-roadtrip-action="close">Klaar</button></footer>
       </article>`;
     (qs('#mapScreen .roadMapApp')||document.body).appendChild(panel);
     return panel;
@@ -3557,10 +3557,7 @@
           ${stopRows}
           <div class="roadtripV63Endpoint"><i>Eind</i><b>${escapeHtml(data.destination)}</b></div>
         </div>
-        <footer class="roadtripV63Footer">
-          <button type="button" class="roadtripV63Ghost" data-tripv63-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
-          <button type="button" class="roadtripV63Primary" data-tripv63-action="maps">Start in Google Maps</button>
-        </footer>
+
       </article>`;
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621','roadtripPanelOpenV63');
     panel.classList.add('open','roadtripV63Open');
@@ -3908,7 +3905,7 @@
     rows.push(`<div class="roadtripV705Endpoint"><i>Eind</i><b>${esc(d.destination)}</b></div>`);
     const empty=`<div class="roadtripV705Empty"><b>Nog geen tussenstops</b><span>Kies een hotel, tankstation, laadpunt of uitje en voeg hem toe aan je roadtrip.</span></div>`;
     const el=panel();
-    el.innerHTML=`<div class="roadtripPanelScrimV584" data-roadtrip705="close"></div><article class="roadtripPanelCardV584 roadtripV705Card" role="dialog" aria-label="Mijn Roadtrip"><header class="roadtripV705Head"><div><span>Mijn Roadtrip</span><b>${esc(totalLine||'Bouw je route met tussenstops')}</b></div><button type="button" data-roadtrip705="close">×</button></header><div class="roadtripV705List">${d.stops.length?rows.join(''):empty}</div><footer class="roadtripV705Footer"><button type="button" data-roadtrip705="clear" ${d.stops.length?'':'disabled'}>Leegmaken</button><button type="button" data-roadtrip705="maps">Start in Google Maps</button></footer></article>`;
+    el.innerHTML=`<div class="roadtripPanelScrimV584" data-roadtrip705="close"></div><article class="roadtripPanelCardV584 roadtripV705Card" role="dialog" aria-label="Mijn Roadtrip"><header class="roadtripV705Head"><div><span>Mijn Roadtrip</span><b>${esc(totalLine||'Bouw je route met tussenstops')}</b></div><button type="button" data-roadtrip705="close">×</button></header><div class="roadtripV705List">${d.stops.length?rows.join(''):empty}</div></article>`;
     qs('#mapScreen')?.classList.add('roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
     el.classList.add('open','roadtripV63Open','roadtripV705Open');
     updateBadge();
@@ -4587,11 +4584,7 @@
         <div><span>Stops</span><b>${totalStops}</b><small>Tussenstops</small></div>
       </section>
       <nav class="rtv2Tabs"><button class="active" type="button">Overzicht</button><button type="button" disabled>Trajecten</button><button type="button" disabled>Hotels</button><button type="button" disabled>Notities</button></nav>
-      <section class="rtv2Timeline">${timeline.join('')}${empty}</section>
-      <footer class="rtv2Footer">
-        <button type="button" data-rtv2-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
-        <button type="button" data-rtv2-action="maps">Start in Google Maps</button>
-      </footer>`;
+      <section class="rtv2Timeline">${timeline.join('')}${empty}</section>`;
   }
 
   function setBottomActive(){
@@ -4783,8 +4776,6 @@
       <button class="rtHit rtHitMore" data-rt-image-action="more" aria-label="Roadtrip opties" type="button"></button>
       <button class="rtHit rtHitFav" data-rt-image-action="favorite" aria-label="Roadtrip favoriet" type="button"></button>
       <button class="rtHit rtHitDetails" data-rt-image-action="details" aria-label="Details bekijken" type="button"></button>
-      <button class="rtHit rtHitClear" data-rt-image-action="clear" aria-label="Roadtrip leegmaken" type="button"></button>
-      <button class="rtHit rtHitMaps" data-rt-image-action="maps" aria-label="Start in Google Maps" type="button"></button>
       <button class="rtHit rtHitTab rtHitTabOverview" data-rt-image-action="tab-overview" aria-label="Overzicht" type="button"></button>
       <button class="rtHit rtHitTab rtHitTabTrajecten" data-rt-image-action="tab-trajecten" aria-label="Trajecten" type="button"></button>
       <button class="rtHit rtHitTab rtHitTabHotels" data-rt-image-action="tab-hotels" aria-label="Hotels" type="button"></button>
@@ -5051,8 +5042,6 @@
       <button class="rtFixedBtn rtFixedMore" data-rt-fixed-action="more" aria-label="Meer opties" type="button"></button>
       <button class="rtFixedBtn rtFixedFav" data-rt-fixed-action="favorite" aria-label="Favoriet" type="button"></button>
       <button class="rtFixedBtn rtFixedDetails" data-rt-fixed-action="details" aria-label="Details bekijken" type="button"></button>
-      <button class="rtFixedBtn rtFixedClear" data-rt-fixed-action="clear" aria-label="Roadtrip leegmaken" type="button"></button>
-      <button class="rtFixedBtn rtFixedMaps" data-rt-fixed-action="maps" aria-label="Start in Google Maps" type="button"></button>
       <button class="rtFixedBtn rtFixedOverview" data-rt-fixed-action="tab-overview" aria-label="Overzicht" type="button"></button>
       <button class="rtFixedBtn rtFixedTrajecten" data-rt-fixed-action="tab-trajecten" aria-label="Trajecten" type="button"></button>
       <button class="rtFixedBtn rtFixedHotels" data-rt-fixed-action="tab-hotels" aria-label="Hotels" type="button"></button>
@@ -5451,5 +5440,32 @@
   ['DOMContentLoaded','roadora:roadtrip:update','roadora:route:update'].forEach(ev=>window.addEventListener(ev,()=>setTimeout(cleanupOldRoadtripCtas,30)));
   const mo=new MutationObserver(()=>cleanupOldRoadtripCtas());
   function init(){ cleanupOldRoadtripCtas(); mo.observe(document.documentElement,{childList:true,subtree:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();
+
+
+/* Roadora v7.8.24 — JS template old CTA removal final
+   Verwijdert oude Leegmaken / Start in Google Maps CTA's uit alle Roadtrip-render templates.
+   De centrale bottom-nav Start-knop blijft de enige Maps-ingang. */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function clean(){
+    const roots=[qs('#roadtripScreenV2Page'), qs('#roadtripMiniPanelV584')].filter(Boolean);
+    roots.forEach(root=>{
+      qsa('.rtv2Footer,.roadtripV63Footer,.roadtripV705Footer,.rtv2Actions,.rtHitClear,.rtHitMaps,.rtFixedClear,.rtFixedMaps', root).forEach(el=>el.remove());
+      qsa('button',root).forEach(btn=>{
+        if(btn.closest('.rtBottomActionsV7812,.rtBottomNavV7812,.rtBottomActionMapsV7812')) return;
+        const txt=((btn.textContent||'')+' '+(btn.getAttribute('aria-label')||'')).toLowerCase();
+        if(txt.includes('leegmaken') || txt.includes('start in google maps')) btn.remove();
+      });
+    });
+  }
+  window.RoadoraCleanOldRoadtripCtas=clean;
+  ['DOMContentLoaded','roadora:roadtrip:update','roadora:route:update','pageshow'].forEach(ev=>window.addEventListener(ev,()=>setTimeout(clean,40)));
+  document.addEventListener('click',()=>setTimeout(clean,40),true);
+  const mo=new MutationObserver(()=>clean());
+  function init(){ clean(); mo.observe(document.body||document.documentElement,{childList:true,subtree:true}); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
