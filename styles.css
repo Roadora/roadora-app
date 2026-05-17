@@ -5505,410 +5505,1028 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 }
 
 /* =========================================================
-   Roadora v7.8.45 — FINAL Clean Roadtrip Subpage
-   One page only: hero, stats, tabs, timeline/content, fixed bottom nav.
-   All old modal/sheet/popup roadtrip layers are killed visually.
+   Roadora v7.8.3 — Mijn Roadtrip Image Only Reset
+   Alleen de afbeelding, alle cards/blokken/timeline uit.
    ========================================================= */
-.phone.roadtripCleanOpenV7845 #roadtripMiniPanelV584,
-.phone.roadtripCleanOpenV7845 .roadtripMiniPanelV584,
-.phone.roadtripCleanOpenV7845 #roadtripMiniDockV584,
-.phone.roadtripCleanOpenV7845 .roadtripMiniDockV584,
-#roadtripMiniPanelV584:not(.allowLegacyRoadtrip),
-#roadtripMiniDockV584{
-  display:none!important;
-  visibility:hidden!important;
-  opacity:0!important;
-  pointer-events:none!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783,
+#roadtripScreenV2Page{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1600 !important;
+  overflow:hidden !important;
+  background:#17110d !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783::before,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783::after{
+  content:none !important;
+  display:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:block !important;
+  overflow:hidden !important;
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783 > *{
+  display:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Header,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Hero,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Tabs,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Timeline,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2Footer,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2StaticMockupPage,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtv2StaticMockupImg,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 [class*="rtv2Static"],
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 [class*="rtv2"]:not(.roadtripV2PageInner):not(.roadtripImageOnlyV783){
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripImageOnlyCloseV783{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  width:76px !important;
+  height:76px !important;
+  z-index:5 !important;
+  opacity:.001 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .bottomNav,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .sheet,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .mapCockpit,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .controls,
+.phone.roadtripImageOnlyPhoneV783 #mapScreen .cats,
+.phone.roadtripImageOnlyPhoneV783 #roadoraStopOverlayV57,
+.phone.roadtripImageOnlyPhoneV783 #roadtripMiniPanelV584,
+.phone.roadtripImageOnlyPhoneV783 #hotelDetailSheet,
+.phone.roadtripImageOnlyPhoneV783 #hotelCompareSheet{
+  display:none !important;
 }
 
-#roadtripScreenV2Page.roadtripCleanPageV7845{
-  position:absolute!important;
-  inset:0!important;
-  z-index:1800!important;
-  display:block!important;
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-  transform:none!important;
-  overflow:hidden!important;
-  color:#211914!important;
-  background:linear-gradient(180deg,#efe7dc 0%,#e6dbcc 100%)!important;
+/* Roadora v7.8.4 Definitieve Mijn Roadtrip Afbeelding
+   Asset vervangen door definitieve mockup-afbeelding: ./assets/roadtrip-hero.png
+   Image-only reset blijft actief: geen losse blokken/cards/timeline over de afbeelding.
+*/
+
+/* Roadora v7.8.5 — Werkende tap-zones boven de Mijn Roadtrip afbeelding */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtImageHitLayerV785{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:30 !important;
+  pointer-events:none !important;
 }
-#roadtripScreenV2Page.roadtripCleanPageV7845.active{
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHit{
+  position:absolute !important;
+  display:block !important;
+  border:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:rgba(255,0,0,0) !important;
+  box-shadow:none !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
 }
-#roadtripScreenV2Page.roadtripCleanPageV7845::before,
-#roadtripScreenV2Page.roadtripCleanPageV7845::after{
-  content:none!important;
-  display:none!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHit:active{
+  background:rgba(255,255,255,.06) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitBack{left:0;top:0;width:18%;height:12%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMore{right:0;top:0;width:18%;height:12%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitFav{right:0;top:9%;width:18%;height:10%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails{right:4%;top:51.5%;width:31%;height:8%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear{left:4%;top:80.5%;width:42%;height:8%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{right:4%;top:80.5%;width:48%;height:8%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab{bottom:2.7%;height:9.8%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabOverview{left:4%;width:25%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabTrajecten{left:29%;width:23%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabHotels{left:52%;width:22%;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabNotities{left:74%;width:22%;}
+
+
+/* Roadora v7.8.7 — Definitieve transparante buttonlaag over Mijn Roadtrip afbeelding */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedLayerV787{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:2147483000 !important;
+  display:block !important;
+  pointer-events:none !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBtn{
+  position:absolute !important;
+  display:block !important;
+  opacity:.001 !important;
+  background:transparent !important;
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  cursor:pointer !important;
+  z-index:2147483001 !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBtn:active{opacity:.08 !important;background:#fff !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBack{left:0 !important;top:0 !important;width:22% !important;height:14% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMore{right:0 !important;top:0 !important;width:26% !important;height:13% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedFav{right:0 !important;top:7% !important;width:28% !important;height:17% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails{right:0 !important;top:48% !important;width:45% !important;height:17% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear{left:0 !important;top:72% !important;width:48% !important;height:20% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{right:0 !important;top:70% !important;width:64% !important;height:24% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview{left:0 !important;bottom:0 !important;width:30% !important;height:15% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten{left:28% !important;bottom:0 !important;width:25% !important;height:15% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels{left:51% !important;bottom:0 !important;width:24% !important;height:15% !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{right:0 !important;bottom:0 !important;width:27% !important;height:15% !important;}
+
+/* ===== Roadora v7.8.9 — Maps CTA Priority Fix =====
+   Fix: bottom tab hitzones lagen over de zichtbare Google Maps CTA.
+   Google Maps krijgt nu altijd de hoogste tap-prioriteit.
+*/
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedLayerV787{
+  pointer-events:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBtn{
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{
+  left:43% !important;
+  right:4% !important;
+  top:84% !important;
+  width:auto !important;
+  height:9.5% !important;
+  z-index:50 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear{
+  left:4% !important;
+  top:84% !important;
+  width:39% !important;
+  height:9.5% !important;
+  z-index:40 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{
+  height:6.5% !important;
+  bottom:0 !important;
+  z-index:10 !important;
 }
 
-#roadtripScreenV2Page .roadtripCleanInnerV7845{
-  position:absolute!important;
-  inset:0!important;
-  z-index:2!important;
-  height:100%!important;
-  width:100%!important;
-  overflow:hidden!important;
-  background:linear-gradient(180deg,#efe7dc 0%,#e7dccd 100%)!important;
-  display:block!important;
-  padding:0!important;
+/* ===== Roadora v7.8.10 — Mijn Roadtrip Phone Fit =====
+   Alleen beeldschaal/viewport-fit. Geen route-core, ORS of Maps-export wijzigingen.
+   De mockup-afbeelding vult nu exact het telefoonscherm zodat er geen losse
+   blokken, clipping of overlappende layout ontstaat.
+*/
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  max-height:100dvh !important;
+  overflow:hidden !important;
+  border-radius:inherit !important;
+  background:#0f0b08 !important;
+  touch-action:manipulation !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+  max-height:100% !important;
+  display:block !important;
+  overflow:hidden !important;
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:100% 100% !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  transform:none !important;
+  border-radius:inherit !important;
+}
+@supports (height:100svh){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783{
+    height:100svh !important;
+    min-height:100svh !important;
+    max-height:100svh !important;
+  }
+}
+@media (min-width:560px) and (min-height:720px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783,
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+    border-radius:38px !important;
+  }
+}
+/* Hitzones opnieuw strak op de zichtbare telefoon-mockup gezet. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBack{left:0 !important;top:0 !important;width:15% !important;height:8% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMore{right:0 !important;top:0 !important;width:16% !important;height:8% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedFav{right:0 !important;top:6.5% !important;width:18% !important;height:9% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails{right:4% !important;top:59% !important;width:34% !important;height:8% !important;z-index:35 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear{left:4% !important;top:83.5% !important;width:43% !important;height:8.5% !important;z-index:45 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{left:47% !important;right:4% !important;top:83.5% !important;width:auto !important;height:8.5% !important;z-index:60 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview{left:3% !important;bottom:0 !important;width:26% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten{left:29% !important;bottom:0 !important;width:24% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels{left:53% !important;bottom:0 !important;width:22% !important;height:8% !important;z-index:20 !important;}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities{right:2% !important;bottom:0 !important;width:23% !important;height:8% !important;z-index:20 !important;}
+
+/* ===== Roadora v7.8.12 — Mijn Roadtrip bottom action bar =====
+   Overzicht · Trajecten · Start in Maps · Hotels · Notities
+   Zelfde compacte premium gevoel als de kaart-bottom-nav. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 8px) !important;
+  height:58px !important;
+  z-index:2147483600 !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1.12fr 1fr 1fr !important;
+  align-items:center !important;
+  gap:0 !important;
+  padding:4px 5px !important;
+  border-radius:20px !important;
+  background:rgba(255,250,242,.90) !important;
+  border:1px solid rgba(255,255,255,.72) !important;
+  box-shadow:0 18px 44px rgba(24,18,12,.22), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(30px) !important;
+  -webkit-backdrop-filter:blur(30px) !important;
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  height:50px !important;
+  min-width:0 !important;
+  display:grid !important;
+  place-items:center !important;
+  grid-template-rows:20px 14px !important;
+  align-content:center !important;
+  gap:2px !important;
+  border:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:16px !important;
+  background:transparent !important;
+  color:#665d52 !important;
+  font-size:8px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+  text-align:center !important;
+  box-shadow:none !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 svg{
+  width:17px !important;
+  height:17px !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 span{
+  display:block !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  white-space:nowrap !important;
+  text-overflow:ellipsis !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.active,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.is-active{
+  background:rgba(228,188,121,.20) !important;
+  color:#8a5f2e !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:translateY(-13px) !important;
+  grid-template-rows:50px 13px !important;
+  height:64px !important;
+  overflow:visible !important;
+  color:#7d5429 !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{
+  width:50px !important;
+  height:50px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(135deg,#edc984,#c4863d) !important;
+  color:#fff !important;
+  box-shadow:0 10px 24px rgba(196,134,61,.34),0 0 0 5px rgba(255,249,239,.76) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 svg{
+  width:22px !important;
+  height:22px !important;
+  margin:0 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  margin-top:2px !important;
+  color:#5e5146 !important;
+}
+/* Oude screenshot-hitzones voor Leegmaken/Details uitschakelen: die CTA's zitten niet meer in de nieuwe UX. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails{
+  display:none !important;
+  pointer-events:none !important;
+}
+/* Oude onzichtbare bottom-tab hitzones omlaag in prioriteit, nieuwe bar regelt de taps. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps{
+  z-index:5 !important;
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    left:10px !important;
+    right:10px !important;
+    height:56px !important;
+    border-radius:19px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{font-size:7.3px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:48px !important;height:48px !important;}
 }
 
-#roadtripScreenV2Page .rtCleanHero{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  height:50dvh!important;
-  min-height:355px!important;
-  max-height:465px!important;
-  z-index:1!important;
-  background-image:
-    linear-gradient(180deg,rgba(13,10,7,.05) 0%,rgba(13,10,7,.02) 42%,rgba(239,231,220,.15) 72%,#efe7dc 100%),
-    url("./assets/roadtrip-hero.png")!important;
-  background-size:cover!important;
-  background-position:center top!important;
-  background-repeat:no-repeat!important;
+
+/* ===== Roadora v7.8.13 — Roadtrip bottom nav clean line fix =====
+   Start in Maps is nu onderdeel van dezelfde balk: geen floating center meer. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  grid-template-columns:repeat(5,1fr) !important;
+  height:58px !important;
+  padding:4px 5px !important;
+  z-index:2147483600 !important;
 }
-#roadtripScreenV2Page .rtCleanHero::after{
-  content:""!important;
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  bottom:-1px!important;
-  height:45%!important;
-  pointer-events:none!important;
-  background:linear-gradient(180deg,rgba(239,231,220,0),rgba(239,231,220,.72) 56%,#efe7dc 100%)!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+  grid-template-rows:20px 14px !important;
+  height:50px !important;
+  overflow:hidden !important;
+  color:#665d52 !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{
+  display:contents !important;
+  width:auto !important;
+  height:auto !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 svg{
+  width:17px !important;
+  height:17px !important;
+  margin:0 !important;
+  stroke:currentColor !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  margin-top:0 !important;
+  color:inherit !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812:active,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812.is-active{
+  background:rgba(228,188,121,.20) !important;
+  color:#8a5f2e !important;
+}
+/* Oude onzichtbare hitzones onderin volledig uitschakelen zodat alleen de nieuwe balk taps afvangt. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab{
+  display:none !important;
+  pointer-events:none !important;
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 b{width:auto !important;height:auto !important;}
 }
 
-#roadtripScreenV2Page .rtCleanHeader{
-  position:absolute!important;
-  left:16px!important;
-  right:16px!important;
-  top:calc(env(safe-area-inset-top) + 18px)!important;
-  z-index:8!important;
-  display:grid!important;
-  grid-template-columns:50px minmax(0,1fr) 50px!important;
-  align-items:center!important;
-  gap:10px!important;
-  color:#fff7ed!important;
-  text-shadow:0 4px 22px rgba(0,0,0,.55)!important;
-}
-#roadtripScreenV2Page .rtCleanHeader span{
-  display:block!important;
-  font-size:10px!important;
-  line-height:1!important;
-  letter-spacing:.14em!important;
-  text-transform:uppercase!important;
-  color:#efc37c!important;
-  font-weight:900!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-#roadtripScreenV2Page .rtCleanHeader h2{
-  margin:3px 0 0!important;
-  color:#fff7ed!important;
-  font-family:"Playfair Display",serif!important;
-  font-size:clamp(23px,6vw,32px)!important;
-  line-height:1!important;
-  letter-spacing:-.9px!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-#roadtripScreenV2Page .rtCleanBack,
-#roadtripScreenV2Page .rtCleanClose{
-  width:50px!important;
-  height:50px!important;
-  border-radius:18px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:rgba(255,249,239,.92)!important;
-  border:1px solid rgba(255,255,255,.68)!important;
-  color:#241914!important;
-  box-shadow:0 16px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.76)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important;
-  font-size:34px!important;
-  font-weight:900!important;
-  line-height:1!important;
-  text-shadow:none!important;
-}
-#roadtripScreenV2Page .rtCleanClose{font-size:32px!important;}
 
-#roadtripScreenV2Page .rtCleanScroll{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:calc(50dvh - 64px)!important;
-  bottom:calc(env(safe-area-inset-bottom) + 78px)!important;
-  z-index:5!important;
-  overflow:auto!important;
-  -webkit-overflow-scrolling:touch!important;
-  padding:0 16px 24px!important;
-  display:grid!important;
-  gap:12px!important;
-  align-content:start!important;
-  background:transparent!important;
+/* ===== Roadora v7.8.14 — Clean background button cleanup =====
+   Oude baked-in CTA's zijn uit de hero-asset gehaald. Alleen de echte bottom action bar blijft klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 10px) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  pointer-events:none !important;
 }
 
-#roadtripScreenV2Page .rtCleanStats{
-  display:grid!important;
-  grid-template-columns:repeat(3,1fr)!important;
-  gap:10px!important;
-  padding:10px!important;
-  border-radius:24px!important;
-  background:rgba(255,249,239,.90)!important;
-  border:1px solid rgba(255,255,255,.74)!important;
-  box-shadow:0 22px 54px rgba(34,24,14,.16),inset 0 1px 0 rgba(255,255,255,.82)!important;
-  backdrop-filter:blur(22px)!important;
-  -webkit-backdrop-filter:blur(22px)!important;
+/* ===== Roadora v7.8.15 — Mijn Roadtrip bottom cleanup + nav omhoog =====
+   Verwijdert/maskeert oude baked-in Leegmaken/Start knoppen onderin de hero-afbeelding.
+   Alleen de echte bottom action bar blijft zichtbaar en staat iets hoger. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:132px !important;
+  z-index:2147483500 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(249,242,233,0),rgba(249,242,233,.92) 34%,#fbf4ea 70%,#fbf4ea 100%) !important;
 }
-#roadtripScreenV2Page .rtCleanStats div{
-  min-height:64px!important;
-  border-radius:18px!important;
-  display:grid!important;
-  place-items:center!important;
-  text-align:center!important;
-  padding:8px 4px!important;
-  background:rgba(255,255,255,.66)!important;
-  border:1px solid rgba(70,47,24,.06)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.64)!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 24px) !important;
+  z-index:2147483600 !important;
 }
-#roadtripScreenV2Page .rtCleanStats b{
-  display:block!important;
-  color:#15100d!important;
-  font-size:clamp(18px,5vw,24px)!important;
-  line-height:1!important;
-  font-weight:900!important;
-  letter-spacing:-.5px!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
 }
-#roadtripScreenV2Page .rtCleanStats small{
-  display:block!important;
-  margin-top:5px!important;
-  color:#6f6258!important;
-  font-size:10px!important;
-  font-weight:850!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{height:122px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{bottom:calc(env(safe-area-inset-bottom) + 18px) !important;}
 }
 
-#roadtripScreenV2Page .rtCleanTabs{
-  display:grid!important;
-  grid-template-columns:repeat(4,1fr)!important;
-  gap:8px!important;
-  padding:8px!important;
-  border-radius:24px!important;
-  background:rgba(255,249,239,.72)!important;
-  border:1px solid rgba(255,255,255,.62)!important;
-  box-shadow:0 16px 36px rgba(34,24,14,.11),inset 0 1px 0 rgba(255,255,255,.72)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important;
-  overflow:visible!important;
+/* ===== Roadora v7.8.16 — Mijn Roadtrip telefoon-fit + knop-isolatie =====
+   Bottom bar iets hoger en alleen echte bottom-bar knoppen zijn klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  height:150px !important;
+  background:linear-gradient(180deg,rgba(249,242,233,0),rgba(249,242,233,.88) 28%,#fbf4ea 64%,#fbf4ea 100%) !important;
 }
-#roadtripScreenV2Page .rtCleanTabs button{
-  height:36px!important;
-  border-radius:999px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:rgba(255,255,255,.55)!important;
-  border:1px solid rgba(70,47,24,.055)!important;
-  color:#7c7066!important;
-  font-size:10.5px!important;
-  font-weight:900!important;
-  white-space:nowrap!important;
-  padding:0 6px!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 34px) !important;
+  height:58px !important;
+  z-index:2147483640 !important;
 }
-#roadtripScreenV2Page .rtCleanTabs button.active{
-  background:rgba(255,255,255,.92)!important;
-  color:#9b6429!important;
-  box-shadow:0 10px 20px rgba(50,34,16,.08)!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  pointer-events:auto !important;
 }
-#roadtripScreenV2Page .rtCleanTabs button:disabled{opacity:.62!important;}
-
-#roadtripScreenV2Page .rtCleanTimeline{
-  display:grid!important;
-  gap:9px!important;
-  align-content:start!important;
-  min-height:170px!important;
-  padding:14px!important;
-  border-radius:26px!important;
-  background:rgba(255,249,239,.78)!important;
-  border:1px solid rgba(255,255,255,.68)!important;
-  box-shadow:0 18px 44px rgba(34,24,14,.13),inset 0 1px 0 rgba(255,255,255,.70)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important;
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
 }
-#roadtripScreenV2Page .rtCleanPoint,
-#roadtripScreenV2Page .rtCleanStop{
-  display:grid!important;
-  grid-template-columns:38px minmax(0,1fr)!important;
-  align-items:center!important;
-  gap:10px!important;
+/* Oude invisible zones definitief uit; ze mogen geen taps meer overnemen. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedNotities,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabOverview,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabTrajecten,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabHotels,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTabNotities{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
 }
-#roadtripScreenV2Page .rtCleanStop{grid-template-columns:38px 34px minmax(0,1fr) 38px!important;}
-#roadtripScreenV2Page .rtCleanPoint i,
-#roadtripScreenV2Page .rtCleanStop i{
-  width:36px!important;
-  height:36px!important;
-  border-radius:999px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:#211914!important;
-  color:#fff7ec!important;
-  font-style:normal!important;
-  font-size:13px!important;
-  font-weight:950!important;
-}
-#roadtripScreenV2Page .rtCleanStop strong{
-  width:34px!important;
-  height:34px!important;
-  border-radius:13px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:#f5ead8!important;
-  border:1px solid rgba(70,47,24,.06)!important;
-  font-size:15px!important;
-}
-#roadtripScreenV2Page .rtCleanPoint div,
-#roadtripScreenV2Page .rtCleanStop button[data-rtclean-action="focus"]{
-  min-width:0!important;
-  text-align:left!important;
-  border-radius:18px!important;
-  background:rgba(255,255,255,.72)!important;
-  border:1px solid rgba(70,47,24,.06)!important;
-  padding:11px 13px!important;
-}
-#roadtripScreenV2Page .rtCleanPoint span,
-#roadtripScreenV2Page .rtCleanStop span{
-  display:block!important;
-  font-size:9px!important;
-  line-height:1!important;
-  letter-spacing:.12em!important;
-  text-transform:uppercase!important;
-  color:#a66e31!important;
-  font-weight:950!important;
-}
-#roadtripScreenV2Page .rtCleanPoint b,
-#roadtripScreenV2Page .rtCleanStop b{
-  display:block!important;
-  margin-top:3px!important;
-  color:#211914!important;
-  font-size:14px!important;
-  line-height:1.13!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-#roadtripScreenV2Page .rtCleanStop small{
-  display:block!important;
-  margin-top:3px!important;
-  color:#75685e!important;
-  font-size:10.5px!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-#roadtripScreenV2Page .rtCleanRemove{
-  width:36px!important;
-  height:36px!important;
-  border-radius:999px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:rgba(255,255,255,.72)!important;
-  color:#8a5f2e!important;
-  font-size:23px!important;
-  font-weight:900!important;
-}
-#roadtripScreenV2Page .rtCleanSegment{
-  display:grid!important;
-  grid-template-columns:1px 1fr auto!important;
-  align-items:center!important;
-  gap:10px!important;
-  margin-left:18px!important;
-  color:#7d6d5f!important;
-  font-size:10px!important;
-  font-weight:900!important;
-}
-#roadtripScreenV2Page .rtCleanSegment span{height:26px!important;border-left:2px solid rgba(196,134,61,.28)!important;}
-#roadtripScreenV2Page .rtCleanSegment em{font-style:normal!important;background:#f5ead8!important;border-radius:999px!important;padding:5px 8px!important;color:#8a5f2e!important;}
-#roadtripScreenV2Page .rtCleanTip{
-  border-radius:18px!important;
-  background:#fff3dc!important;
-  padding:13px 14px!important;
-  display:grid!important;
-  gap:4px!important;
-  color:#6f6257!important;
-}
-#roadtripScreenV2Page .rtCleanTip b{color:#8a5f2e!important;font-size:15px!important;}
-#roadtripScreenV2Page .rtCleanTip span{font-size:12px!important;line-height:1.35!important;}
-
-#roadtripScreenV2Page .rtCleanBottomNav{
-  position:absolute!important;
-  left:14px!important;
-  right:14px!important;
-  bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
-  height:60px!important;
-  z-index:20!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,1fr)!important;
-  align-items:center!important;
-  padding:5px!important;
-  border-radius:23px!important;
-  background:rgba(255,249,239,.94)!important;
-  border:1px solid rgba(255,255,255,.74)!important;
-  box-shadow:0 18px 44px rgba(22,15,9,.18),inset 0 1px 0 rgba(255,255,255,.82)!important;
-  backdrop-filter:blur(22px)!important;
-  -webkit-backdrop-filter:blur(22px)!important;
-}
-#roadtripScreenV2Page .rtCleanBottomNav button{
-  height:50px!important;
-  border-radius:18px!important;
-  display:grid!important;
-  place-items:center!important;
-  gap:1px!important;
-  color:#655d53!important;
-  font-size:9px!important;
-  font-weight:850!important;
-  text-align:center!important;
-}
-#roadtripScreenV2Page .rtCleanBottomNav button.active{
-  background:rgba(228,188,121,.20)!important;
-  color:#9a6429!important;
-}
-#roadtripScreenV2Page .rtCleanBottomNav button:disabled{opacity:.72!important;}
-#roadtripScreenV2Page .rtCleanBottomNav svg{
-  width:18px!important;
-  height:18px!important;
-  stroke:currentColor!important;
-  stroke-width:2!important;
-  fill:none!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 28px) !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+    height:138px !important;
+  }
 }
 
-#roadtripScreenV2Page .rtv2Header,
-#roadtripScreenV2Page .rtv2Hero,
-#roadtripScreenV2Page .rtv2Tabs,
-#roadtripScreenV2Page .rtv2Timeline,
-#roadtripScreenV2Page .rtv2Footer,
-#roadtripScreenV2Page .rtv2RealPage,
-#roadtripScreenV2Page .rtv2HeroImage{
-  display:none!important;
+
+/* ===== Roadora v7.8.20 SAFE RECOVERY =====
+   Basis terug op v7.8.16 werkende app.js/ORS-flow.
+   Alleen Mijn Roadtrip visueel opgeschoond: oude CTA-hitboxes uit, bottom bar omhoog.
+   ORS-route, kaart-init en Maps-export blijven onaangeraakt. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+}
+
+/* Oude losse CTA's/hit-zones in de content volledig uitzetten. De echte startknop zit alleen in de bottom bar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  width:0 !important;
+  height:0 !important;
+}
+
+/* Alleen de echte bottom-actions blijven klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  position:absolute !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 22px) !important;
+  height:58px !important;
+  z-index:90 !important;
+  pointer-events:auto !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr !important;
+  align-items:center !important;
+  overflow:visible !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  pointer-events:auto !important;
+  position:relative !important;
+  z-index:92 !important;
+  min-height:48px !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  pointer-events:auto !important;
+  z-index:94 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  font-size:7.2px !important;
+  line-height:1.05 !important;
+}
+
+/* Schaduw onderin rustiger, maar genoeg ruimte voor vingers. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:150px !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(246,238,226,0),rgba(246,238,226,.86) 52%,rgba(246,238,226,.96)) !important;
+  z-index:8 !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripImageOnlyCloseV783{
+  pointer-events:auto !important;
+  z-index:100 !important;
 }
 
 @media(max-height:760px){
-  #roadtripScreenV2Page .rtCleanHero{height:46dvh!important;min-height:310px!important;}
-  #roadtripScreenV2Page .rtCleanScroll{top:calc(46dvh - 56px)!important;}
-  #roadtripScreenV2Page .rtCleanStats div{min-height:56px!important;}
-  #roadtripScreenV2Page .rtCleanTimeline{min-height:145px!important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 14px) !important;
+    height:54px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+    height:132px !important;
+  }
 }
+
+/* ===== Roadora v7.8.22 — Mijn Roadtrip bottom nav echte center polish =====
+   Alleen visuele uitlijning. Geen ORS, Maps-export of app.js wijzigingen.
+   Doel: bottom bar symmetrisch, iets hoger en veilig boven Android/iOS navigation. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783{
+  overflow:hidden !important;
+  background:#f4ecdf !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+}
+
+/* zachte fade achter de navigatie, geen harde balk */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:152px !important;
+  z-index:8 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(246,238,226,0),rgba(246,238,226,.80) 46%,rgba(246,238,226,.98) 100%) !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  position:absolute !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:calc(env(safe-area-inset-bottom) + 34px) !important;
+  transform:translateX(-50%) !important;
+  width:min(392px, calc(100% - 30px)) !important;
+  height:72px !important;
+  z-index:120 !important;
+  display:grid !important;
+  grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+  align-items:center !important;
+  justify-items:center !important;
+  gap:0 !important;
+  padding:6px 8px !important;
+  border-radius:26px !important;
+  background:rgba(255,250,244,.94) !important;
+  border:1px solid rgba(255,255,255,.76) !important;
+  box-shadow:0 18px 44px rgba(42,29,18,.16), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(26px) !important;
+  -webkit-backdrop-filter:blur(26px) !important;
+  overflow:visible !important;
+  pointer-events:auto !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  width:100% !important;
+  height:60px !important;
+  min-height:60px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:grid !important;
+  grid-template-rows:28px 18px !important;
+  align-content:center !important;
+  justify-items:center !important;
+  row-gap:2px !important;
+  border-radius:20px !important;
+  background:transparent !important;
+  color:#5f574f !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+  text-align:center !important;
+  letter-spacing:-.1px !important;
+  pointer-events:auto !important;
+  position:relative !important;
+  z-index:122 !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 svg{
+  width:22px !important;
+  height:22px !important;
+  margin:0 !important;
+  align-self:end !important;
+  stroke:currentColor !important;
+  stroke-width:1.9 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 span{
+  display:block !important;
+  width:100% !important;
+  max-width:64px !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  text-align:center !important;
+  align-self:start !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.active,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812.is-active{
+  background:linear-gradient(135deg,rgba(237,201,132,.34),rgba(196,134,61,.16)) !important;
+  color:#c47a1d !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  color:#5f574f !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 svg{
+  width:24px !important;
+  height:24px !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812 span{
+  font-size:10px !important;
+  line-height:1 !important;
+  max-width:58px !important;
+}
+
+/* alle oude losse CTA's blijven uit */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  pointer-events:none !important;
+}
+
 @media(max-width:380px){
-  #roadtripScreenV2Page .rtCleanHeader{left:12px!important;right:12px!important;grid-template-columns:46px minmax(0,1fr) 46px!important;}
-  #roadtripScreenV2Page .rtCleanBack,#roadtripScreenV2Page .rtCleanClose{width:46px!important;height:46px!important;}
-  #roadtripScreenV2Page .rtCleanScroll{padding-left:12px!important;padding-right:12px!important;}
-  #roadtripScreenV2Page .rtCleanTabs{gap:5px!important;}
-  #roadtripScreenV2Page .rtCleanTabs button{font-size:9px!important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    width:calc(100% - 24px) !important;
+    bottom:calc(env(safe-area-inset-bottom) + 28px) !important;
+    height:68px !important;
+    padding:5px 6px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+    height:58px !important;
+    min-height:58px !important;
+    grid-template-rows:27px 17px !important;
+    font-size:9.2px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 svg{
+    width:20px !important;
+    height:20px !important;
+  }
+}
+
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 24px) !important;
+    height:66px !important;
+  }
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+    height:136px !important;
+  }
+}
+
+/* ===== Roadora v7.8.23 — Remove old Mijn Roadtrip CTA row safely =====
+   Alleen oude Leegmaken/Start-in-Google-Maps knoppen in de content weg.
+   Bottom-nav Start blijft behouden. ORS/Maps-export/app core onaangeraakt. */
+#roadtripScreenV2Page .rtv2Footer,
+#roadtripScreenV2Page .roadtripV63Footer,
+#roadtripScreenV2Page .roadtripV705Footer,
+#roadtripScreenV2Page .rtv2Actions,
+#roadtripScreenV2Page [data-rtv2-action="clear"],
+#roadtripScreenV2Page [data-rtv2-action="maps"],
+#roadtripScreenV2Page [data-tripv63-action="clear"],
+#roadtripScreenV2Page [data-tripv63-action="maps"],
+#roadtripScreenV2Page [data-roadtrip705="clear"],
+#roadtripScreenV2Page [data-roadtrip705="maps"],
+#roadtripScreenV2Page [data-roadtrip-action="clear"],
+#roadtripScreenV2Page .rtFixedClear,
+#roadtripScreenV2Page .rtFixedMaps,
+#roadtripScreenV2Page .rtHitClear,
+#roadtripScreenV2Page .rtHitMaps{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  width:0 !important;
+  height:0 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+}
+
+/* Geef de content onder de volgende-stop card rust, zonder oude action-row ruimte. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 36px) !important;
+}
+
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 28px) !important;
+  }
+}
+
+/* =========================================================
+   Roadora v7.8.25 — Mijn Roadtrip Half Screen Hero
+   Schone futureproof layout: bovenste helft foto, onderste helft echte UI.
+   Raakt ORS/Maps/route-core niet aan.
+   ========================================================= */
+#roadtripScreenV2Page.rtHalfActiveV7825{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1500!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  overflow:hidden!important;
+  background:#f4ecdf!important;
+  color:#211914!important;
+  transform:none!important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825::before,
+#roadtripScreenV2Page.rtHalfActiveV7825::after{display:none!important;content:none!important;}
+#roadtripScreenV2Page.rtHalfActiveV7825 .roadtripV2PageInner{display:none!important;}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtImageHitLayerV785,
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtFixedLayerV787,
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtBottomActionsV7812,
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtv2Footer,
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtv2Actions{display:none!important;pointer-events:none!important;}
+.rtHalfPageV7825{position:absolute;inset:0;overflow:hidden;background:linear-gradient(180deg,#f3eadc,#fff8ee);}
+.rtHalfHeroV7825{position:absolute;left:0;right:0;top:0;height:50dvh;min-height:360px;max-height:505px;background-image:url('./assets/roadtrip-hero.png');background-size:cover;background-position:center 46%;background-repeat:no-repeat;overflow:hidden;}
+.rtHalfHeroV7825::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.06) 40%,rgba(0,0,0,.10) 72%,rgba(244,236,223,.72) 100%),linear-gradient(90deg,rgba(0,0,0,.30),rgba(0,0,0,.03) 48%,rgba(0,0,0,.10));pointer-events:none;}
+.rtHalfTopV7825{position:absolute;left:18px;right:18px;top:calc(env(safe-area-inset-top) + 18px);z-index:4;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none;}
+.rtHalfTopRightV7825{display:grid;gap:12px;pointer-events:auto;}
+.rtHalfBtnV7825{width:46px;height:46px;border-radius:18px;background:rgba(255,250,242,.90);border:1px solid rgba(255,255,255,.70);box-shadow:0 14px 34px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.84);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;place-items:center;color:#211914;font-size:23px;font-weight:950;line-height:1;pointer-events:auto;}
+.rtHalfBtnV7825 svg{width:23px;height:23px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.rtHalfSheetV7825{position:absolute;left:0;right:0;top:calc(50dvh - 34px);bottom:0;z-index:3;border-radius:34px 34px 0 0;background:linear-gradient(180deg,rgba(255,250,243,.97),#f7efe4 72%,#f4eadc);box-shadow:0 -22px 54px rgba(36,24,12,.16);padding:28px 18px calc(env(safe-area-inset-bottom) + 94px);overflow:auto;overscroll-behavior:contain;}
+.rtHalfGrabV7825{width:56px;height:5px;border-radius:99px;background:rgba(70,47,24,.11);margin:0 auto 22px;}
+.rtHalfTitleV7825{padding:0 12px 18px;}
+.rtHalfTitleV7825 h1{margin:0;font-family:"Playfair Display",serif;font-size:clamp(36px,10vw,52px);line-height:.98;letter-spacing:-1.5px;color:#211914;}
+.rtHalfTitleV7825 p{margin:9px 0 0;color:#74665a;font-size:clamp(14px,3.8vw,17px);font-weight:650;line-height:1.35;}
+.rtHalfNextCardV7825{margin:0 0 14px;border-radius:26px;padding:14px;background:rgba(255,255,255,.70);border:1px solid rgba(255,255,255,.82);box-shadow:0 15px 42px rgba(35,23,12,.10),inset 0 1px 0 rgba(255,255,255,.90);}
+.rtHalfNextCardV7825 h2{margin:0 0 10px;font-family:"Playfair Display",serif;font-size:21px;letter-spacing:-.45px;color:#211914;}
+.rtHalfNextGridV7825{display:grid;grid-template-columns:96px minmax(0,1fr) 98px;gap:12px;align-items:center;}
+.rtHalfHotelPhotoV7825{width:96px;height:96px;border-radius:20px;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.32)),linear-gradient(135deg,#1e1712,#d39a55);background-size:cover;background-position:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.25);}
+.rtHalfStopTextV7825{min-width:0;}
+.rtHalfStopTextV7825 b{display:block;font-family:"Playfair Display",serif;font-size:20px;line-height:1.06;letter-spacing:-.35px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rtHalfStopTextV7825 span,.rtHalfStopTextV7825 small{display:block;margin-top:8px;font-size:11.5px;font-weight:700;color:#6f6257;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rtHalfMiniMapV7825{height:96px;border-radius:20px;background:linear-gradient(135deg,#fff8ec,#eadbc9);position:relative;overflow:hidden;border:1px solid rgba(70,47,24,.05);}
+.rtHalfMiniMapV7825::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 24% 30%,rgba(196,134,61,.10),transparent 34%),linear-gradient(115deg,transparent 0 45%,rgba(255,255,255,.46) 46% 48%,transparent 49% 100%);}
+.rtHalfMiniMapV7825::after{content:"";position:absolute;left:28px;bottom:-10px;width:55px;height:100px;border-left:4px dashed #d17d12;border-radius:52% 0 0 0;transform:rotate(-18deg);opacity:.9;}
+.rtHalfMapPinV7825{position:absolute;right:22px;top:18px;width:28px;height:28px;border-radius:999px;background:#fff7ec;border:6px solid #df7d07;box-shadow:0 7px 14px rgba(196,134,61,.20);z-index:2;}
+.rtHalfStatsV7825{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.rtHalfStatsV7825 div{min-height:58px;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(70,47,24,.06);display:grid;place-items:center;text-align:center;padding:8px;}
+.rtHalfStatsV7825 b{font-size:15px;font-weight:900;line-height:1;}.rtHalfStatsV7825 span{font-size:9px;font-weight:800;color:#76685b;margin-top:3px;}
+.rtHalfNavV7825{position:absolute;left:18px;right:18px;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:8;height:68px;border-radius:24px;padding:5px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:rgba(255,250,243,.92);border:1px solid rgba(255,255,255,.84);box-shadow:0 18px 44px rgba(35,23,12,.16),inset 0 1px 0 rgba(255,255,255,.92);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);}
+.rtHalfNavBtnV7825{border-radius:20px;display:grid;place-items:center;align-content:center;gap:3px;color:#62584e;font-size:10px;font-weight:850;min-width:0;}
+.rtHalfNavBtnV7825 svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.rtHalfNavBtnV7825.active{background:rgba(244,230,207,.88);color:#cf790f;}
+.rtHalfNavBtnV7825[data-rt-half-action="maps"] svg{width:22px;height:22px;}
+@media(max-width:390px){.rtHalfHeroV7825{min-height:330px}.rtHalfSheetV7825{top:calc(50dvh - 30px);padding-left:14px;padding-right:14px}.rtHalfNextGridV7825{grid-template-columns:82px minmax(0,1fr) 82px;gap:9px}.rtHalfHotelPhotoV7825,.rtHalfMiniMapV7825{width:82px;height:82px;border-radius:18px}.rtHalfStopTextV7825 b{font-size:17px}.rtHalfStopTextV7825 span,.rtHalfStopTextV7825 small{font-size:9.5px}.rtHalfNavV7825{left:12px;right:12px;height:64px}.rtHalfNavBtnV7825{font-size:8.8px}.rtHalfNavBtnV7825 svg{width:18px;height:18px}}
+@media(max-height:760px){.rtHalfHeroV7825{height:47dvh;min-height:300px}.rtHalfSheetV7825{top:calc(47dvh - 28px);padding-bottom:calc(env(safe-area-inset-bottom) + 86px)}.rtHalfTitleV7825 h1{font-size:34px}.rtHalfTitleV7825 p{font-size:13px}.rtHalfStatsV7825{display:none}.rtHalfNextCardV7825{padding:12px}.rtHalfNavV7825{height:62px;bottom:calc(env(safe-area-inset-bottom) + 10px)}}
+
+
+/* ===== Roadora v7.8.33 — CURRENT FILES FIX: real clean image fully visible in top half =====
+   Alleen Mijn Roadtrip hero-layout. ORS, Maps export en route-core blijven onaangeraakt. */
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfPageV7825{
+  background:#f6efe5 !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  width:100% !important;
+  height:50dvh !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:#201812 !important;
+  background-image:none !important;
+  border-radius:0 !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825 img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  display:block !important;
+  flex:0 0 auto !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(0,0,0,0) 45%,rgba(0,0,0,.10)) !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{
+  top:50dvh !important;
+  bottom:0 !important;
+  border-radius:30px 30px 0 0 !important;
+  margin-top:0 !important;
+  padding-top:22px !important;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 98px) !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfTopV7825{
+  top:calc(env(safe-area-inset-top) + 14px) !important;
+  z-index:9 !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfNavV7825{
+  z-index:12 !important;
+  bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
+}
+@media(max-width:390px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;}
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-bottom:calc(env(safe-area-inset-bottom) + 92px) !important;}
+}
+
+
+/* =========================================================
+   Roadora v7.8.34 — ECHTE 50/50 FIX VOOR MIJN ROADTRIP
+   Probleem opgelost: de lange originele foto wordt NIET meer volledig zichtbaar gemaakt.
+   De hero is exact de bovenste helft van het scherm en snijdt de rest af.
+   ========================================================= */
+#roadtripScreenV2Page.rtHalfActiveV7825{
+  background:#9b8069 !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfPageV7825{
+  position:absolute !important;
+  inset:0 !important;
+  overflow:hidden !important;
+  background:#9b8069 !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  width:100% !important;
+  height:50dvh !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+  display:block !important;
+  background:#241a12 !important;
+  background-image:none !important;
+  border-radius:0 0 0 0 !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825 img{
+  width:100% !important;
+  height:auto !important;
+  min-height:100% !important;
+  max-height:none !important;
+  object-fit:unset !important;
+  object-position:center top !important;
+  display:block !important;
+  transform:none !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(0,0,0,0) 52%,rgba(0,0,0,.18)) !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:50dvh !important;
+  bottom:0 !important;
+  margin-top:0 !important;
+  border-radius:0 !important;
+  background:#9b8069 !important;
+  box-shadow:none !important;
+  padding-top:24px !important;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 98px) !important;
+}
+
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfNavV7825{
+  z-index:12 !important;
+  bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
+}
+
+@media(max-width:390px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;}
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;}
 }
