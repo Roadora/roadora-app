@@ -6389,13 +6389,10 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 @media(max-height:760px){.rtHalfHeroV7825{height:47dvh;min-height:300px}.rtHalfSheetV7825{top:calc(47dvh - 28px);padding-bottom:calc(env(safe-area-inset-bottom) + 86px)}.rtHalfTitleV7825 h1{font-size:34px}.rtHalfTitleV7825 p{font-size:13px}.rtHalfStatsV7825{display:none}.rtHalfNextCardV7825{padding:12px}.rtHalfNavV7825{height:62px;bottom:calc(env(safe-area-inset-bottom) + 10px)}}
 
 
-/* ===== Roadora v7.8.30 — REAL clean hero image in top half =====
-   Alleen Mijn Roadtrip hero/layout. ORS, Maps-export en route-core blijven onaangeraakt. */
-#roadtripScreenV2Page.rtHalfActiveV7825{
-  background:#f4ecdf !important;
-}
+/* ===== Roadora v7.8.33 — CURRENT FILES FIX: real clean image fully visible in top half =====
+   Alleen Mijn Roadtrip hero-layout. ORS, Maps export en route-core blijven onaangeraakt. */
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfPageV7825{
-  background:#f4ecdf !important;
+  background:#f6efe5 !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{
   position:absolute !important;
@@ -6406,45 +6403,50 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   height:50dvh !important;
   min-height:0 !important;
   max-height:none !important;
+  overflow:hidden !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  overflow:hidden !important;
-  background:#15110d !important;
+  background:#201812 !important;
   background-image:none !important;
+  border-radius:0 !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825 img{
-  display:block !important;
   width:100% !important;
   height:100% !important;
   object-fit:contain !important;
   object-position:center center !important;
-  background:#15110d !important;
+  display:block !important;
+  flex:0 0 auto !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825::after{
   content:"" !important;
   position:absolute !important;
   inset:0 !important;
   pointer-events:none !important;
-  background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.03) 38%,rgba(0,0,0,.06) 76%,rgba(0,0,0,.10)) !important;
+  background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(0,0,0,0) 45%,rgba(0,0,0,.10)) !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{
   top:50dvh !important;
-  border-radius:0 !important;
+  bottom:0 !important;
+  border-radius:30px 30px 0 0 !important;
+  margin-top:0 !important;
   padding-top:22px !important;
-  padding-bottom:calc(env(safe-area-inset-bottom) + 94px) !important;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 98px) !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfTopV7825{
-  z-index:10 !important;
+  top:calc(env(safe-area-inset-top) + 14px) !important;
+  z-index:9 !important;
 }
 #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfNavV7825{
-  bottom:calc(env(safe-area-inset-bottom) + 14px) !important;
+  z-index:12 !important;
+  bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
 }
 @media(max-width:390px){
   #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
-  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-left:14px !important;padding-right:14px !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;}
 }
 @media(max-height:760px){
   #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
-  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-bottom:calc(env(safe-area-inset-bottom) + 86px) !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-bottom:calc(env(safe-area-inset-bottom) + 92px) !important;}
 }
