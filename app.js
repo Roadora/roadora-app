@@ -4557,14 +4557,43 @@
   function render(){
     const page=ensurePage();
     const inner=$('.roadtripV2PageInner',page);
+    const trip=readTrip();
+    const summary=readSummary();
+    const stops=trip.stops;
+    const totalStops=stops.length;
+    let prev=ORIGIN_LL;
+    const timeline=[];
+    timeline.push(`<div class="rtv2Point start"><i>A</i><div><span>Startpunt</span><b>${esc(trip.origin)}</b></div></div>`);
+    stops.forEach((s,i)=>{
+      const p=ll(s,prev);
+      const km=Math.round(kmBetween(prev,p)*1.18);
+      timeline.push(`<div class="rtv2Segment"><span></span><b>${km.toLocaleString('nl-NL')} km</b><em>${timeFromKm(km)}</em></div>`);
+      timeline.push(`<div class="rtv2Stop" data-trip-id="${esc(s.id||i)}"><i>${i+1}</i><strong>${stopIcon(s)}</strong><button type="button" data-rtv2-action="focus" data-trip-id="${esc(s.id||i)}"><span>${esc(typeLabel(s))}</span><b>${esc(s.name||'Tussenstop')}</b><small>${esc(String(s.address||s.meta||'Langs route').split(' · ')[0])}</small></button><button type="button" class="rtv2Remove" data-rtv2-action="remove" data-trip-id="${esc(s.id||i)}" aria-label="Stop verwijderen">×</button></div>`);
+      prev=p;
+    });
+    const lastKm=Math.round(kmBetween(prev,DEST_LL)*1.18);
+    if(stops.length){ timeline.push(`<div class="rtv2Segment"><span></span><b>${lastKm.toLocaleString('nl-NL')} km</b><em>${timeFromKm(lastKm)}</em></div>`); }
+    timeline.push(`<div class="rtv2Point end"><i>B</i><div><span>Eindbestemming</span><b>${esc(trip.destination)}</b></div></div>`);
+    const empty=!stops.length?`<div class="rtv2Tip"><b>Tip</b><span>Kies een hotel, tankstation of andere plek op de kaart en voeg die toe aan je roadtrip.</span></div>`:'';
     inner.innerHTML=`
-      <section class="rtv2StaticMockupPage" aria-label="Mijn Roadtrip preview">
-        <img src="./assets/roadtrip-page-mockup.png" alt="Mijn Roadtrip premium preview" class="rtv2StaticMockupImg">
-        <button type="button" class="rtv2StaticHotspot rtv2StaticBack" data-rtv2-action="close" aria-label="Terug"></button>
-        <button type="button" class="rtv2StaticHotspot rtv2StaticMore" data-rtv2-action="details" aria-label="Meer opties"></button>
-        <button type="button" class="rtv2StaticHotspot rtv2StaticDetails" data-rtv2-action="details" aria-label="Details bekijken"></button>
-        <button type="button" class="rtv2StaticHotspot rtv2StaticMaps" data-rtv2-action="maps" aria-label="Start in Google Maps"></button>
-      </section>`;
+      <header class="rtv2Header">
+        <button type="button" class="rtv2Back" data-rtv2-action="close" aria-label="Terug naar kaart">‹</button>
+        <div><span>Mijn Roadtrip</span><h2>${esc(trip.origin.replace(', Nederland',''))} → ${esc(trip.destination.replace(', Oostenrijk',''))}</h2></div>
+        <button type="button" class="rtv2Close" data-rtv2-action="close" aria-label="Sluiten">×</button>
+      </header>
+      <section class="rtv2Hero">
+        <div><span>Route-overzicht</span><b>${esc(summary.timeLabel||'9u 03m')}</b><small>Rijtijd</small></div>
+        <div><span>Afstand</span><b>${esc(summary.distanceLabel||'1.005 km')}</b><small>Totaal</small></div>
+        <div><span>Stops</span><b>${totalStops}</b><small>Tussenstops</small></div>
+      </section>
+      <section class="rtv2Timeline">${timeline.join('')}${empty}</section>
+      <nav class="rtv2BottomNav" aria-label="Mijn Roadtrip navigatie">
+        <button class="active" type="button" data-rtv2-tab="overview"><span>☰</span><b>Overzicht</b></button>
+        <button type="button" data-rtv2-tab="trajecten"><span>⌘</span><b>Trajecten</b></button>
+        <button type="button" data-rtv2-action="maps"><span>➤</span><b>Start</b></button>
+        <button type="button" data-rtv2-tab="hotels"><span>▰</span><b>Hotels</b></button>
+        <button type="button" data-rtv2-tab="notities"><span>▤</span><b>Notities</b></button>
+      </nav>`;
   }
 
   function setBottomActive(){
@@ -4636,7 +4665,6 @@
     if(action==='clear') return clearStops();
     if(action==='focus') return focusStop(a.dataset.tripId);
     if(action==='maps') return window.RoadoraMapsExport?.open ? window.RoadoraMapsExport.open('roadtrip') : toast('Maps-export niet beschikbaar');
-    if(action==='details') return toast('Details komen in de volgende laag');
   },true);
 
   window.RoadoraRoadtripPage={open:openPage,close:closePage,render,updateBadge};
