@@ -5503,3 +5503,412 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 #roadtripScreenV2Page *{
   background-clip:padding-box !important;
 }
+
+/* =========================================================
+   Roadora v7.8.45 — FINAL Clean Roadtrip Subpage
+   One page only: hero, stats, tabs, timeline/content, fixed bottom nav.
+   All old modal/sheet/popup roadtrip layers are killed visually.
+   ========================================================= */
+.phone.roadtripCleanOpenV7845 #roadtripMiniPanelV584,
+.phone.roadtripCleanOpenV7845 .roadtripMiniPanelV584,
+.phone.roadtripCleanOpenV7845 #roadtripMiniDockV584,
+.phone.roadtripCleanOpenV7845 .roadtripMiniDockV584,
+#roadtripMiniPanelV584:not(.allowLegacyRoadtrip),
+#roadtripMiniDockV584{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+#roadtripScreenV2Page.roadtripCleanPageV7845{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1800!important;
+  display:block!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:none!important;
+  overflow:hidden!important;
+  color:#211914!important;
+  background:linear-gradient(180deg,#efe7dc 0%,#e6dbcc 100%)!important;
+}
+#roadtripScreenV2Page.roadtripCleanPageV7845.active{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+#roadtripScreenV2Page.roadtripCleanPageV7845::before,
+#roadtripScreenV2Page.roadtripCleanPageV7845::after{
+  content:none!important;
+  display:none!important;
+}
+
+#roadtripScreenV2Page .roadtripCleanInnerV7845{
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  height:100%!important;
+  width:100%!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#efe7dc 0%,#e7dccd 100%)!important;
+  display:block!important;
+  padding:0!important;
+}
+
+#roadtripScreenV2Page .rtCleanHero{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:50dvh!important;
+  min-height:355px!important;
+  max-height:465px!important;
+  z-index:1!important;
+  background-image:
+    linear-gradient(180deg,rgba(13,10,7,.05) 0%,rgba(13,10,7,.02) 42%,rgba(239,231,220,.15) 72%,#efe7dc 100%),
+    url("./assets/roadtrip-hero.png")!important;
+  background-size:cover!important;
+  background-position:center top!important;
+  background-repeat:no-repeat!important;
+}
+#roadtripScreenV2Page .rtCleanHero::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:-1px!important;
+  height:45%!important;
+  pointer-events:none!important;
+  background:linear-gradient(180deg,rgba(239,231,220,0),rgba(239,231,220,.72) 56%,#efe7dc 100%)!important;
+}
+
+#roadtripScreenV2Page .rtCleanHeader{
+  position:absolute!important;
+  left:16px!important;
+  right:16px!important;
+  top:calc(env(safe-area-inset-top) + 18px)!important;
+  z-index:8!important;
+  display:grid!important;
+  grid-template-columns:50px minmax(0,1fr) 50px!important;
+  align-items:center!important;
+  gap:10px!important;
+  color:#fff7ed!important;
+  text-shadow:0 4px 22px rgba(0,0,0,.55)!important;
+}
+#roadtripScreenV2Page .rtCleanHeader span{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+  color:#efc37c!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#roadtripScreenV2Page .rtCleanHeader h2{
+  margin:3px 0 0!important;
+  color:#fff7ed!important;
+  font-family:"Playfair Display",serif!important;
+  font-size:clamp(23px,6vw,32px)!important;
+  line-height:1!important;
+  letter-spacing:-.9px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#roadtripScreenV2Page .rtCleanBack,
+#roadtripScreenV2Page .rtCleanClose{
+  width:50px!important;
+  height:50px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:rgba(255,249,239,.92)!important;
+  border:1px solid rgba(255,255,255,.68)!important;
+  color:#241914!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.76)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  font-size:34px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  text-shadow:none!important;
+}
+#roadtripScreenV2Page .rtCleanClose{font-size:32px!important;}
+
+#roadtripScreenV2Page .rtCleanScroll{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:calc(50dvh - 64px)!important;
+  bottom:calc(env(safe-area-inset-bottom) + 78px)!important;
+  z-index:5!important;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:0 16px 24px!important;
+  display:grid!important;
+  gap:12px!important;
+  align-content:start!important;
+  background:transparent!important;
+}
+
+#roadtripScreenV2Page .rtCleanStats{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:10px!important;
+  padding:10px!important;
+  border-radius:24px!important;
+  background:rgba(255,249,239,.90)!important;
+  border:1px solid rgba(255,255,255,.74)!important;
+  box-shadow:0 22px 54px rgba(34,24,14,.16),inset 0 1px 0 rgba(255,255,255,.82)!important;
+  backdrop-filter:blur(22px)!important;
+  -webkit-backdrop-filter:blur(22px)!important;
+}
+#roadtripScreenV2Page .rtCleanStats div{
+  min-height:64px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+  padding:8px 4px!important;
+  background:rgba(255,255,255,.66)!important;
+  border:1px solid rgba(70,47,24,.06)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.64)!important;
+}
+#roadtripScreenV2Page .rtCleanStats b{
+  display:block!important;
+  color:#15100d!important;
+  font-size:clamp(18px,5vw,24px)!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:-.5px!important;
+}
+#roadtripScreenV2Page .rtCleanStats small{
+  display:block!important;
+  margin-top:5px!important;
+  color:#6f6258!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+
+#roadtripScreenV2Page .rtCleanTabs{
+  display:grid!important;
+  grid-template-columns:repeat(4,1fr)!important;
+  gap:8px!important;
+  padding:8px!important;
+  border-radius:24px!important;
+  background:rgba(255,249,239,.72)!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:0 16px 36px rgba(34,24,14,.11),inset 0 1px 0 rgba(255,255,255,.72)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  overflow:visible!important;
+}
+#roadtripScreenV2Page .rtCleanTabs button{
+  height:36px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:rgba(255,255,255,.55)!important;
+  border:1px solid rgba(70,47,24,.055)!important;
+  color:#7c7066!important;
+  font-size:10.5px!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  padding:0 6px!important;
+}
+#roadtripScreenV2Page .rtCleanTabs button.active{
+  background:rgba(255,255,255,.92)!important;
+  color:#9b6429!important;
+  box-shadow:0 10px 20px rgba(50,34,16,.08)!important;
+}
+#roadtripScreenV2Page .rtCleanTabs button:disabled{opacity:.62!important;}
+
+#roadtripScreenV2Page .rtCleanTimeline{
+  display:grid!important;
+  gap:9px!important;
+  align-content:start!important;
+  min-height:170px!important;
+  padding:14px!important;
+  border-radius:26px!important;
+  background:rgba(255,249,239,.78)!important;
+  border:1px solid rgba(255,255,255,.68)!important;
+  box-shadow:0 18px 44px rgba(34,24,14,.13),inset 0 1px 0 rgba(255,255,255,.70)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+#roadtripScreenV2Page .rtCleanPoint,
+#roadtripScreenV2Page .rtCleanStop{
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+#roadtripScreenV2Page .rtCleanStop{grid-template-columns:38px 34px minmax(0,1fr) 38px!important;}
+#roadtripScreenV2Page .rtCleanPoint i,
+#roadtripScreenV2Page .rtCleanStop i{
+  width:36px!important;
+  height:36px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#211914!important;
+  color:#fff7ec!important;
+  font-style:normal!important;
+  font-size:13px!important;
+  font-weight:950!important;
+}
+#roadtripScreenV2Page .rtCleanStop strong{
+  width:34px!important;
+  height:34px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#f5ead8!important;
+  border:1px solid rgba(70,47,24,.06)!important;
+  font-size:15px!important;
+}
+#roadtripScreenV2Page .rtCleanPoint div,
+#roadtripScreenV2Page .rtCleanStop button[data-rtclean-action="focus"]{
+  min-width:0!important;
+  text-align:left!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(70,47,24,.06)!important;
+  padding:11px 13px!important;
+}
+#roadtripScreenV2Page .rtCleanPoint span,
+#roadtripScreenV2Page .rtCleanStop span{
+  display:block!important;
+  font-size:9px!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+  color:#a66e31!important;
+  font-weight:950!important;
+}
+#roadtripScreenV2Page .rtCleanPoint b,
+#roadtripScreenV2Page .rtCleanStop b{
+  display:block!important;
+  margin-top:3px!important;
+  color:#211914!important;
+  font-size:14px!important;
+  line-height:1.13!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#roadtripScreenV2Page .rtCleanStop small{
+  display:block!important;
+  margin-top:3px!important;
+  color:#75685e!important;
+  font-size:10.5px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#roadtripScreenV2Page .rtCleanRemove{
+  width:36px!important;
+  height:36px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:rgba(255,255,255,.72)!important;
+  color:#8a5f2e!important;
+  font-size:23px!important;
+  font-weight:900!important;
+}
+#roadtripScreenV2Page .rtCleanSegment{
+  display:grid!important;
+  grid-template-columns:1px 1fr auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-left:18px!important;
+  color:#7d6d5f!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#roadtripScreenV2Page .rtCleanSegment span{height:26px!important;border-left:2px solid rgba(196,134,61,.28)!important;}
+#roadtripScreenV2Page .rtCleanSegment em{font-style:normal!important;background:#f5ead8!important;border-radius:999px!important;padding:5px 8px!important;color:#8a5f2e!important;}
+#roadtripScreenV2Page .rtCleanTip{
+  border-radius:18px!important;
+  background:#fff3dc!important;
+  padding:13px 14px!important;
+  display:grid!important;
+  gap:4px!important;
+  color:#6f6257!important;
+}
+#roadtripScreenV2Page .rtCleanTip b{color:#8a5f2e!important;font-size:15px!important;}
+#roadtripScreenV2Page .rtCleanTip span{font-size:12px!important;line-height:1.35!important;}
+
+#roadtripScreenV2Page .rtCleanBottomNav{
+  position:absolute!important;
+  left:14px!important;
+  right:14px!important;
+  bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
+  height:60px!important;
+  z-index:20!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,1fr)!important;
+  align-items:center!important;
+  padding:5px!important;
+  border-radius:23px!important;
+  background:rgba(255,249,239,.94)!important;
+  border:1px solid rgba(255,255,255,.74)!important;
+  box-shadow:0 18px 44px rgba(22,15,9,.18),inset 0 1px 0 rgba(255,255,255,.82)!important;
+  backdrop-filter:blur(22px)!important;
+  -webkit-backdrop-filter:blur(22px)!important;
+}
+#roadtripScreenV2Page .rtCleanBottomNav button{
+  height:50px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  gap:1px!important;
+  color:#655d53!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  text-align:center!important;
+}
+#roadtripScreenV2Page .rtCleanBottomNav button.active{
+  background:rgba(228,188,121,.20)!important;
+  color:#9a6429!important;
+}
+#roadtripScreenV2Page .rtCleanBottomNav button:disabled{opacity:.72!important;}
+#roadtripScreenV2Page .rtCleanBottomNav svg{
+  width:18px!important;
+  height:18px!important;
+  stroke:currentColor!important;
+  stroke-width:2!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+#roadtripScreenV2Page .rtv2Header,
+#roadtripScreenV2Page .rtv2Hero,
+#roadtripScreenV2Page .rtv2Tabs,
+#roadtripScreenV2Page .rtv2Timeline,
+#roadtripScreenV2Page .rtv2Footer,
+#roadtripScreenV2Page .rtv2RealPage,
+#roadtripScreenV2Page .rtv2HeroImage{
+  display:none!important;
+}
+
+@media(max-height:760px){
+  #roadtripScreenV2Page .rtCleanHero{height:46dvh!important;min-height:310px!important;}
+  #roadtripScreenV2Page .rtCleanScroll{top:calc(46dvh - 56px)!important;}
+  #roadtripScreenV2Page .rtCleanStats div{min-height:56px!important;}
+  #roadtripScreenV2Page .rtCleanTimeline{min-height:145px!important;}
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page .rtCleanHeader{left:12px!important;right:12px!important;grid-template-columns:46px minmax(0,1fr) 46px!important;}
+  #roadtripScreenV2Page .rtCleanBack,#roadtripScreenV2Page .rtCleanClose{width:46px!important;height:46px!important;}
+  #roadtripScreenV2Page .rtCleanScroll{padding-left:12px!important;padding-right:12px!important;}
+  #roadtripScreenV2Page .rtCleanTabs{gap:5px!important;}
+  #roadtripScreenV2Page .rtCleanTabs button{font-size:9px!important;}
+}
