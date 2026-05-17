@@ -6531,7 +6531,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;}
 }
 
-/* Roadora fix: pseudo-content Roadtrip verwijderen */
+/* Roadora fix: pseudo-content verwijderen */
 #mapScreen .sheet::before,
 #mapScreen .thumb::after,
 #mapScreen .thumb::before,

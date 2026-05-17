@@ -5613,10 +5613,10 @@
 })();
 
 
-// Roadora fix: Roadtrip hero en panels neutraliseren
+// Roadora fix: fallback teksten verwijderen
 document.addEventListener('DOMContentLoaded', () => {
-  const hero = document.querySelector('.hero');
-  if(hero) hero.style.display = 'none';
-  const roadtripPanels = document.querySelectorAll('.roadtripPanelEmptyV584, .hotelPlannerHero, .hotelPlannerResultCard');
-  roadtripPanels.forEach(p => p.innerHTML = '');
+  const ids = ['mapStatusTitle','mapStatusBadge','mapStatusSub','mapStatusEta','mapStatusDistance','mapStatusNext'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ''; });
+  const panels = document.querySelectorAll('.roadtripPanelEmptyV584, .hotelPlannerHero, .hotelPlannerResultCard');
+  panels.forEach(p => p.innerHTML = '');
 });
