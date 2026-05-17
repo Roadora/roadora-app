@@ -6387,3 +6387,64 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 .rtHalfNavBtnV7825[data-rt-half-action="maps"] svg{width:22px;height:22px;}
 @media(max-width:390px){.rtHalfHeroV7825{min-height:330px}.rtHalfSheetV7825{top:calc(50dvh - 30px);padding-left:14px;padding-right:14px}.rtHalfNextGridV7825{grid-template-columns:82px minmax(0,1fr) 82px;gap:9px}.rtHalfHotelPhotoV7825,.rtHalfMiniMapV7825{width:82px;height:82px;border-radius:18px}.rtHalfStopTextV7825 b{font-size:17px}.rtHalfStopTextV7825 span,.rtHalfStopTextV7825 small{font-size:9.5px}.rtHalfNavV7825{left:12px;right:12px;height:64px}.rtHalfNavBtnV7825{font-size:8.8px}.rtHalfNavBtnV7825 svg{width:18px;height:18px}}
 @media(max-height:760px){.rtHalfHeroV7825{height:47dvh;min-height:300px}.rtHalfSheetV7825{top:calc(47dvh - 28px);padding-bottom:calc(env(safe-area-inset-bottom) + 86px)}.rtHalfTitleV7825 h1{font-size:34px}.rtHalfTitleV7825 p{font-size:13px}.rtHalfStatsV7825{display:none}.rtHalfNextCardV7825{padding:12px}.rtHalfNavV7825{height:62px;bottom:calc(env(safe-area-inset-bottom) + 10px)}}
+
+
+/* ===== Roadora v7.8.30 — REAL clean hero image in top half =====
+   Alleen Mijn Roadtrip hero/layout. ORS, Maps-export en route-core blijven onaangeraakt. */
+#roadtripScreenV2Page.rtHalfActiveV7825{
+  background:#f4ecdf !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfPageV7825{
+  background:#f4ecdf !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  width:100% !important;
+  height:50dvh !important;
+  min-height:0 !important;
+  max-height:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  background:#15110d !important;
+  background-image:none !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825 img{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  background:#15110d !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.03) 38%,rgba(0,0,0,.06) 76%,rgba(0,0,0,.10)) !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{
+  top:50dvh !important;
+  border-radius:0 !important;
+  padding-top:22px !important;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 94px) !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfTopV7825{
+  z-index:10 !important;
+}
+#roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfNavV7825{
+  bottom:calc(env(safe-area-inset-bottom) + 14px) !important;
+}
+@media(max-width:390px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-left:14px !important;padding-right:14px !important;}
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfHeroV7825{height:50dvh !important;min-height:0 !important;}
+  #roadtripScreenV2Page.rtHalfActiveV7825 .rtHalfSheetV7825{top:50dvh !important;padding-bottom:calc(env(safe-area-inset-bottom) + 86px) !important;}
+}

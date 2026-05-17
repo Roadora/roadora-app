@@ -5523,7 +5523,7 @@
     p.className='roadtripScreenV2Page active rtHalfActiveV7825';
     p.innerHTML=`
       <div class="rtHalfPageV7825">
-        <div class="rtHalfHeroV7825" aria-hidden="true"></div>
+        <div class="rtHalfHeroV7825" aria-hidden="true"><img src="./assets/roadtrip-hero.png" alt="" loading="eager" decoding="async"></div>
         <div class="rtHalfTopV7825">
           <button class="rtHalfBtnV7825" data-rt-half-action="close" type="button" aria-label="Terug naar kaart">‹</button>
           <div class="rtHalfTopRightV7825">
