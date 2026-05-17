@@ -4588,10 +4588,13 @@
       </section>
       <nav class="rtv2Tabs"><button class="active" type="button">Overzicht</button><button type="button" disabled>Trajecten</button><button type="button" disabled>Hotels</button><button type="button" disabled>Notities</button></nav>
       <section class="rtv2Timeline">${timeline.join('')}${empty}</section>
-      <footer class="rtv2Footer">
-        <button type="button" data-rtv2-action="clear" ${stops.length?'':'disabled'}>Leegmaken</button>
-        <button type="button" data-rtv2-action="maps">Start in Google Maps</button>
-      </footer>`;
+      <nav class="rtv2BottomNav" aria-label="Mijn Roadtrip navigatie">
+        <button class="active" type="button" data-rtv2-nav="overview"><span>☰</span><b>Overzicht</b></button>
+        <button type="button" data-rtv2-nav="trajecten"><span>⌘</span><b>Trajecten</b></button>
+        <button type="button" data-rtv2-action="maps"><span>➤</span><b>Start</b></button>
+        <button type="button" data-rtv2-nav="hotels"><span>▱</span><b>Hotels</b></button>
+        <button type="button" data-rtv2-nav="notities"><span>▤</span><b>Notities</b></button>
+      </nav>`;
   }
 
   function setBottomActive(){
@@ -4665,6 +4668,23 @@
     if(action==='maps') return window.RoadoraMapsExport?.open ? window.RoadoraMapsExport.open('roadtrip') : toast('Maps-export niet beschikbaar');
   },true);
 
+
+  // v7.8.42: Roadtrip subpage gebruikt alleen de nieuwe bottom nav; oude CTA-footer blijft verwijderd.
+  document.addEventListener('click',function(e){
+    const t=e.target;
+    if(!t?.closest) return;
+    const nav=t.closest('#roadtripScreenV2Page [data-rtv2-nav]');
+    if(!nav) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    $$('#roadtripScreenV2Page .rtv2BottomNav button').forEach(b=>b.classList.toggle('active', b===nav));
+    const key=nav.dataset.rtv2Nav;
+    if(key==='overview') return render();
+    toast('Deze Roadtrip-tab komt in de volgende laag');
+    return false;
+  },true);
+
   window.RoadoraRoadtripPage={open:openPage,close:closePage,render,updateBadge};
   window.addEventListener('roadora:roadtrip:update',()=>{isolateBottomRoadtripButton(); if($('#roadtripScreenV2Page')?.classList.contains('active')) render();});
   window.addEventListener('roadora:route:update',()=>{ if($('#roadtripScreenV2Page')?.classList.contains('active')) render();});
@@ -4674,120 +4694,4 @@
     ensurePage();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
-})();
-
-/* Roadora v7.8.40 — Roadtrip back/menu state guard
-   Fix: na terug vanuit Mijn Roadtrip mocht de onzichtbare roadtrip-layer geen clicks meer blokkeren.
-   Houdt ORS, Maps-export en route-core ongemoeid. */
-(function(){
-  'use strict';
-  const $=(s,r=document)=>r.querySelector(s);
-  const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-
-  function toast(msg){ try{ window.RoadoraToast ? window.RoadoraToast(msg) : console.log(msg); }catch(_){ } }
-
-  function page(){ return $('#roadtripScreenV2Page'); }
-  function phone(){ return $('.phone'); }
-
-  function hardCloseRoadtripPage(){
-    const p=page();
-    if(p){
-      p.classList.remove('active','rtHalfActiveV7825','roadtripV705Open','roadtripV63Open','open');
-      p.setAttribute('aria-hidden','true');
-      p.style.pointerEvents='none';
-      p.style.visibility='hidden';
-      p.style.opacity='0';
-    }
-    phone()?.classList.remove('roadtripV2PageOpen','rtHalfActiveV7825','roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
-    $('#roadtripMiniPanelV584')?.classList.remove('open','roadtripV63Open','roadtripV705Open');
-    $('#mapScreen')?.classList.remove('roadtripPanelOpenV621','roadtripPanelOpenV63','roadtripPanelOpenV705');
-    $$('#mapScreen .bottomNav .navItem').forEach(btn=>{
-      const active=(btn.dataset.nav||'')==='route';
-      btn.classList.toggle('active',active);
-      btn.classList.toggle('is-active',active);
-    });
-    setTimeout(()=>{
-      try{ window.RoadoraMapApi?.fitRoute?.('roadtrip-hard-close'); }catch(_){ }
-    },60);
-    return false;
-  }
-
-  function normalizeOpenState(){
-    const p=page();
-    if(!p) return;
-    if(p.classList.contains('active')){
-      p.removeAttribute('aria-hidden');
-      p.style.pointerEvents='';
-      p.style.visibility='';
-      p.style.opacity='';
-    }else{
-      p.classList.remove('rtHalfActiveV7825');
-      p.setAttribute('aria-hidden','true');
-      p.style.pointerEvents='none';
-      p.style.visibility='hidden';
-      p.style.opacity='0';
-    }
-  }
-
-  function openRoadtripPage(){
-    const p=page();
-    if(p){
-      p.style.pointerEvents='';
-      p.style.visibility='';
-      p.style.opacity='';
-    }
-    if(window.RoadoraRoadtripPage?.open){
-      window.RoadoraRoadtripPage.open();
-    }else{
-      p?.classList.add('active');
-      phone()?.classList.add('roadtripV2PageOpen');
-    }
-    setTimeout(normalizeOpenState,80);
-    return false;
-  }
-
-  // Capture vóór oudere handlers: roadtrip knop blijft altijd opnieuw klikbaar.
-  window.addEventListener('click',function(e){
-    const t=e.target;
-    if(!t?.closest) return;
-
-    const closeBtn=t.closest('#roadtripScreenV2Page [data-rtv2-action="close"], #roadtripScreenV2Page .rtv2Back, #roadtripScreenV2Page .rtv2Close');
-    if(closeBtn){
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      return hardCloseRoadtripPage();
-    }
-
-    const roadtripNav=t.closest('#mapScreen .bottomNav .navItem[data-nav="roadtrip"], #mapScreen .bottomNav .navItem[data-nav="roadtripPage"], #mapScreen .bottomNav .navItem[data-roadtrip-page="true"]');
-    if(roadtripNav){
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      return openRoadtripPage();
-    }
-
-    const menuBtn=t.closest('#menuToggle, [data-menu-open]');
-    if(menuBtn && !page()?.classList.contains('active')){
-      // Zeker weten dat een gesloten roadtrip-layer het menu niet blokkeert.
-      normalizeOpenState();
-    }
-  },true);
-
-  window.addEventListener('keydown',function(e){
-    if(e.key==='Escape' && page()?.classList.contains('active')) hardCloseRoadtripPage();
-  },true);
-
-  window.addEventListener('popstate',function(){ hardCloseRoadtripPage(); });
-  window.addEventListener('roadora:roadtrip:update',()=>setTimeout(normalizeOpenState,60));
-
-  function init(){
-    normalizeOpenState();
-    setTimeout(normalizeOpenState,250);
-    setTimeout(normalizeOpenState,800);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
-  else init();
-
-  window.RoadoraRoadtripStateGuard={close:hardCloseRoadtripPage,normalize:normalizeOpenState,open:openRoadtripPage};
 })();
