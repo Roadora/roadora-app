@@ -5394,3 +5394,50 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',patchClose,{once:true}); else patchClose();
   setTimeout(patchClose,300);
 })();
+
+
+/* Roadora v7.8.18 — clean bottom DOM guard
+   Verwijdert oude screenshot-hitzones zodra Mijn Roadtrip opent.
+   Maps blijft via RoadoraSafeMapsOpen / RoadoraMapsExport lopen. */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function cleanOldRoadtripControls(){
+    const p=qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active');
+    if(!p) return;
+    qsa('.rtFixedLayerV787,.rtImageHitLayerV785',p).forEach(el=>el.remove());
+    qsa('.rtFixedBtn,.rtHit,.rtHitTab',p).forEach(el=>el.remove());
+  }
+  function patchOpen(){
+    if(!window.RoadoraRoadtripImageOnly || window.RoadoraRoadtripImageOnly.__v7818CleanPatched) return;
+    const oldOpen=window.RoadoraRoadtripImageOnly.open;
+    window.RoadoraRoadtripImageOnly.open=function(){
+      const result=oldOpen ? oldOpen.apply(this,arguments) : false;
+      setTimeout(cleanOldRoadtripControls,0);
+      setTimeout(cleanOldRoadtripControls,80);
+      setTimeout(cleanOldRoadtripControls,240);
+      return result;
+    };
+    window.RoadoraRoadtripImageOnly.__v7818CleanPatched=true;
+  }
+  function intercept(e){
+    const p=qs('#roadtripScreenV2Page.roadtripImageOnlyActiveV783.active');
+    if(!p) return;
+    cleanOldRoadtripControls();
+    const btn=e.target?.closest?.('.rtBottomActionV7812[data-rt-bottom-action]');
+    if(!btn || !p.contains(btn)) return;
+    const action=btn.dataset.rtBottomAction;
+    if(action !== 'maps') return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    if(window.RoadoraSafeMapsOpen) return window.RoadoraSafeMapsOpen();
+    if(window.RoadoraMapsExport?.open) return window.RoadoraMapsExport.open('roadtrip-bottom-v7818');
+    return false;
+  }
+  ['pointerdown','pointerup','touchstart','touchend','click'].forEach(type=>window.addEventListener(type,intercept,true));
+  const mo=new MutationObserver(()=>cleanOldRoadtripControls());
+  function init(){patchOpen(); cleanOldRoadtripControls(); mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); setTimeout(patchOpen,300);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();

@@ -4826,7 +4826,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
    Oorzaak opgelost:
    oude pagina vroeg om ./assets/roadtrip-page-mockup.png.
    Die afbeelding bestond niet meer, daarom zag je alleen alt-tekst.
-   Deze versie gebruikt echte HTML + CSS background: ./assets/roadtrip-hero.png
+   Deze versie gebruikt echte HTML + CSS background: ./assets/roadtrip-hero-v7817.png
    ========================================================= */
 
 #roadtripScreenV2Page{
@@ -4866,7 +4866,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:url("./assets/roadtrip-hero.png");
+  background-image:url("./assets/roadtrip-hero-v7817.png");
   background-size:cover;
   background-position:center center;
   background-repeat:no-repeat;
@@ -5226,7 +5226,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   position:absolute !important;
   inset:0 !important;
   z-index:0 !important;
-  background-image:url("./assets/roadtrip-hero.png") !important;
+  background-image:url("./assets/roadtrip-hero-v7817.png") !important;
   background-size:cover !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
@@ -5530,7 +5530,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   margin:0 !important;
   display:block !important;
   overflow:hidden !important;
-  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-image:url('./assets/roadtrip-hero-v7817.png') !important;
   background-size:cover !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
@@ -5581,7 +5581,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
 }
 
 /* Roadora v7.8.4 Definitieve Mijn Roadtrip Afbeelding
-   Asset vervangen door definitieve mockup-afbeelding: ./assets/roadtrip-hero.png
+   Asset vervangen door definitieve mockup-afbeelding: ./assets/roadtrip-hero-v7817.png
    Image-only reset blijft actief: geen losse blokken/cards/timeline over de afbeelding.
 */
 
@@ -5719,7 +5719,7 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   max-height:100% !important;
   display:block !important;
   overflow:hidden !important;
-  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-image:url('./assets/roadtrip-hero-v7817.png') !important;
   background-size:100% 100% !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
@@ -6030,4 +6030,139 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
   #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
     height:138px !important;
   }
+}
+
+
+/* ===== Roadora v7.8.17 — Mijn Roadtrip mobile bottom final =====
+   - Oude baked-in CTA-row (Leegmaken / Start in Google Maps) volledig gemaskeerd.
+   - Echte bottom nav iets lager, maar veilig boven de Android/iOS systeemknoppen.
+   - Alleen echte bottom-nav knoppen blijven klikbaar. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:205px !important;
+  z-index:2147483500 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,
+    rgba(249,242,233,0) 0%,
+    rgba(249,242,233,.82) 22%,
+    rgba(251,244,234,.98) 44%,
+    #fbf4ea 100%) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 12px) !important;
+  left:18px !important;
+  right:18px !important;
+  height:62px !important;
+  border-radius:22px !important;
+  z-index:2147483640 !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  min-height:54px !important;
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedMaps,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitClear,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitDetails,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitMaps{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{height:185px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{bottom:calc(env(safe-area-inset-bottom) + 10px) !important;}
+}
+
+
+/* ===== Roadora v7.8.18 — Mijn Roadtrip clean bottom final =====
+   Doel:
+   - Oude baked-in CTA-zone onderin definitief wegmaskeren.
+   - Alleen de echte bottom action bar blijft zichtbaar/klikbaar.
+   - Bottom bar iets omhoog voor mobiel comfort.
+   - Geen wijziging aan ORS/Maps-export. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  background-image:url('./assets/roadtrip-hero-v7817.png') !important;
+  background-size:100% 100% !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:198px !important;
+  z-index:2147483500 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,
+    rgba(251,244,234,0) 0%,
+    rgba(251,244,234,.90) 18%,
+    rgba(251,244,234,.985) 36%,
+    #fbf4ea 68%,
+    #fbf4ea 100%) !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  left:18px !important;
+  right:18px !important;
+  bottom:calc(env(safe-area-inset-bottom) + 34px) !important;
+  height:62px !important;
+  border-radius:22px !important;
+  padding:5px 6px !important;
+  z-index:2147483640 !important;
+  grid-template-columns:repeat(5,1fr) !important;
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{
+  height:52px !important;
+  min-height:52px !important;
+  grid-template-rows:22px 14px !important;
+  font-size:8px !important;
+  pointer-events:auto !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionMapsV7812{
+  transform:none !important;
+  height:52px !important;
+  background:transparent !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812 svg{
+  width:18px !important;
+  height:18px !important;
+}
+/* Alle oude transparante zones definitief uit, zodat niets meer over de echte bottom bar heen ligt. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedLayerV787,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtImageHitLayerV785,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtFixedBtn,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHit,
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtHitTab{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripImageOnlyCloseV783{
+  display:block !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  z-index:2147483641 !important;
+}
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783::after{height:178px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{bottom:calc(env(safe-area-inset-bottom) + 24px) !important;height:58px !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{height:49px !important;min-height:49px !important;}
+}
+@media(max-width:380px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{left:14px !important;right:14px !important;bottom:calc(env(safe-area-inset-bottom) + 26px) !important;}
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionV7812{font-size:7.2px !important;}
 }
