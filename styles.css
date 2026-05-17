@@ -12,3 +12,18 @@ body, html{margin:0;height:100%;font-family:Inter,sans-serif;background:#f4ecdf;
 }
 #roadtripContainer{width:100%;height:calc(100% - 50vh);display:block;position:relative;z-index:5}
 #mapScreen .sheet::before,#mapScreen .thumb::after,#mapScreen .thumb::before,.hotelDetailFallback::before{content:'' !important;}
+/* Roadora fix: pseudo-elementen leeg maken en z-index hero/container */
+#roadtripHero::before,#roadtripHero::after,#roadtripContainer::before,#roadtripContainer::after {
+  content: '' !important;
+  display: block;
+  width: 0;
+  height: 0;
+}
+#roadtripHero {
+  position: relative;
+  z-index: 10;
+}
+#roadtripContainer {
+  position: relative;
+  z-index: 5;
+}
