@@ -1,6 +1,29 @@
-/* Roadora fallback + full app styles */
+/* Roadora safe clean styles.css */
 body, html{margin:0;height:100%;font-family:Inter,sans-serif;background:#f4ecdf;color:#211914}
 .app{width:100vw;height:100dvh;display:grid;place-items:flex-start;background:#fffaf3}
-#roadtripHero{position:relative;z-index:10;width:100%;height:50vh;background-size:cover;background-position:center}
-#roadtripContainer{position:relative;z-index:5;width:100%;height:calc(100% - 50vh)}
+#roadtripHero {
+  background-image: url('assets/roadtrip-bg.png');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 50vh;
+  position: relative;
+  z-index: 10;
+}
+#roadtripContainer{width:100%;height:calc(100% - 50vh);display:block;position:relative;z-index:5}
 #mapScreen .sheet::before,#mapScreen .thumb::after,#mapScreen .thumb::before,.hotelDetailFallback::before{content:'' !important;}
+/* Roadora fix: pseudo-elementen leeg maken en z-index hero/container */
+#roadtripHero::before,#roadtripHero::after,#roadtripContainer::before,#roadtripContainer::after {
+  content: '' !important;
+  display: block;
+  width: 0;
+  height: 0;
+}
+#roadtripHero {
+  position: relative;
+  z-index: 10;
+}
+#roadtripContainer {
+  position: relative;
+  z-index: 5;
+}
