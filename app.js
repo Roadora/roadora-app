@@ -5417,3 +5417,39 @@
     }
   },true);
 })();
+
+/* Roadora v7.8.23 — Safe old CTA cleanup
+   Verwijdert alleen oude destructieve CTA's uit Mijn Roadtrip-content.
+   De echte bottom-nav Start-knop (.rtBottomActionMapsV7812) blijft werken. */
+(function(){
+  'use strict';
+  const qs=(s,r=document)=>r.querySelector(s);
+  const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function cleanupOldRoadtripCtas(){
+    const page=qs('#roadtripScreenV2Page');
+    if(!page) return;
+    const selectors=[
+      '.rtv2Footer', '.roadtripV63Footer', '.roadtripV705Footer', '.rtv2Actions',
+      '[data-rtv2-action="clear"]','[data-rtv2-action="maps"]',
+      '[data-tripv63-action="clear"]','[data-tripv63-action="maps"]',
+      '[data-roadtrip705="clear"]','[data-roadtrip705="maps"]',
+      '[data-roadtrip-action="clear"]',
+      '.rtFixedClear','.rtFixedMaps','.rtHitClear','.rtHitMaps'
+    ];
+    selectors.forEach(sel=>qsa(sel,page).forEach(el=>{
+      // Bottom-nav Start in Maps nooit verwijderen.
+      if(el.closest?.('.rtBottomActionsV7812')) return;
+      el.remove();
+    }));
+    qsa('button',page).forEach(btn=>{
+      if(btn.closest?.('.rtBottomActionsV7812')) return;
+      const txt=(btn.textContent||btn.getAttribute('aria-label')||'').toLowerCase();
+      if(txt.includes('leegmaken') || txt.includes('start in google maps')) btn.remove();
+    });
+  }
+  window.RoadoraCleanOldRoadtripCtas=cleanupOldRoadtripCtas;
+  ['DOMContentLoaded','roadora:roadtrip:update','roadora:route:update'].forEach(ev=>window.addEventListener(ev,()=>setTimeout(cleanupOldRoadtripCtas,30)));
+  const mo=new MutationObserver(()=>cleanupOldRoadtripCtas());
+  function init(){ cleanupOldRoadtripCtas(); mo.observe(document.documentElement,{childList:true,subtree:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+})();

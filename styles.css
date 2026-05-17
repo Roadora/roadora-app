@@ -6279,3 +6279,52 @@ body.roadoraV631RoadtripFlowGoed #roadtripMiniDockV584{display:none!important}
     height:136px !important;
   }
 }
+
+/* ===== Roadora v7.8.23 — Remove old Mijn Roadtrip CTA row safely =====
+   Alleen oude Leegmaken/Start-in-Google-Maps knoppen in de content weg.
+   Bottom-nav Start blijft behouden. ORS/Maps-export/app core onaangeraakt. */
+#roadtripScreenV2Page .rtv2Footer,
+#roadtripScreenV2Page .roadtripV63Footer,
+#roadtripScreenV2Page .roadtripV705Footer,
+#roadtripScreenV2Page .rtv2Actions,
+#roadtripScreenV2Page [data-rtv2-action="clear"],
+#roadtripScreenV2Page [data-rtv2-action="maps"],
+#roadtripScreenV2Page [data-tripv63-action="clear"],
+#roadtripScreenV2Page [data-tripv63-action="maps"],
+#roadtripScreenV2Page [data-roadtrip705="clear"],
+#roadtripScreenV2Page [data-roadtrip705="maps"],
+#roadtripScreenV2Page [data-roadtrip-action="clear"],
+#roadtripScreenV2Page .rtFixedClear,
+#roadtripScreenV2Page .rtFixedMaps,
+#roadtripScreenV2Page .rtHitClear,
+#roadtripScreenV2Page .rtHitMaps{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  width:0 !important;
+  height:0 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+}
+
+/* Geef de content onder de volgende-stop card rust, zonder oude action-row ruimte. */
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .roadtripV2PageInner.roadtripImageOnlyV783{
+  background-image:url('./assets/roadtrip-hero.png') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-repeat:no-repeat !important;
+}
+
+#roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+  bottom:calc(env(safe-area-inset-bottom) + 36px) !important;
+}
+
+@media(max-height:760px){
+  #roadtripScreenV2Page.roadtripImageOnlyActiveV783 .rtBottomActionsV7812{
+    bottom:calc(env(safe-area-inset-bottom) + 28px) !important;
+  }
+}
