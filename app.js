@@ -1,4 +1,4 @@
-/* Roadora router active fix v3 */
+/* Roadora router fix v4 */
 
 document.addEventListener("DOMContentLoaded", () => {
   const screens = Array.from(document.querySelectorAll(".rd-screen"));
@@ -7,26 +7,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function showScreen(tab){
     const target = screens.find(screen => screen.dataset.screen === tab);
 
-    buttons.forEach(btn => {
-      const isActive = btn.dataset.tab === tab;
-      btn.classList.toggle("active", isActive);
-      if(isActive){
-        btn.setAttribute("aria-current", "page");
-      }else{
-        btn.removeAttribute("aria-current");
-      }
-    });
-
-    if(!target) return;
+    // Alleen schakelen als het scherm echt bestaat.
+    // Kaart/Dagboek/Profiel bouwen we later.
+    if(!target){
+      return;
+    }
 
     screens.forEach(screen => {
-      const isActive = screen === target;
-      screen.classList.toggle("active", isActive);
+      const active = screen.dataset.screen === tab;
+      screen.classList.toggle("active", active);
 
-      if(isActive){
+      if(active){
         screen.removeAttribute("hidden");
       }else{
         screen.setAttribute("hidden", "");
+      }
+    });
+
+    buttons.forEach(btn => {
+      const active = btn.dataset.tab === tab;
+      btn.classList.toggle("active", active);
+
+      if(active){
+        btn.setAttribute("aria-current", "page");
+      }else{
+        btn.removeAttribute("aria-current");
       }
     });
 
@@ -34,11 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   buttons.forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
       showScreen(button.dataset.tab);
     });
   });
 
-  // Belangrijk: start zichtbaar op Overzicht
   showScreen("overview");
 });

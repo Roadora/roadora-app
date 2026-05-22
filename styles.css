@@ -2083,9 +2083,13 @@ img{
 
 
 
+
+
+
 /* =========================================================
-   ROADORA ROUTER ACTIVE FIX V3
-   Veilig: Overzicht blijft zichtbaar, alleen roadtrip schakelt.
+   ROADORA ROUTER FIX V4
+   Overzicht + Mijn Roadtrip schakelen echt.
+   Andere tabs zijn nog placeholders.
    ========================================================= */
 
 .rd-screen[hidden]{
@@ -2096,13 +2100,20 @@ img{
   display:block !important;
 }
 
-.bottom-nav-item:not(.active){
-  background:transparent !important;
-  color:rgba(30,24,18,.58) !important;
-  box-shadow:none !important;
+.rd-screen:not(.active){
+  display:none !important;
+}
+
+.bottom-nav-item{
+  background:transparent;
+  color:rgba(30,24,18,.58);
+  box-shadow:none;
 }
 
 .bottom-nav-item.active{
   color:#fffaf4 !important;
   background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(137,76,20,.23),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
 }
