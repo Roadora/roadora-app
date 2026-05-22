@@ -2845,3 +2845,188 @@ body{
     --rd-hero-content-top:calc(env(safe-area-inset-top) + 62px);
   }
 }
+
+
+
+/* =========================================================
+   ROADORA MIJN ROADTRIP CARD DENSITY V1
+   Hero blijft gelijk aan Overzicht.
+   Alleen cards/spacing worden compacter zoals Overzicht.
+   ========================================================= */
+
+.rt-content{
+  margin-top:-24px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+}
+
+.rt-stack{
+  gap:9px !important;
+}
+
+.rt-day-summary{
+  min-height:210px !important;
+  padding:16px 16px 14px !important;
+  grid-template-columns:1fr 98px !important;
+  gap:12px !important;
+  border-radius:27px !important;
+}
+
+.rt-kicker{
+  font-size:10px !important;
+  letter-spacing:.75px !important;
+}
+
+.rt-day-copy h2{
+  margin-top:9px !important;
+  font-size:29px !important;
+  line-height:.9 !important;
+  letter-spacing:-1px !important;
+}
+
+.rt-day-copy p{
+  margin-top:8px !important;
+  max-width:190px !important;
+  font-size:10.8px !important;
+  line-height:1.25 !important;
+}
+
+.rt-meta-row{
+  margin-top:10px !important;
+  gap:10px !important;
+  font-size:9px !important;
+}
+
+.rt-day-photo{
+  width:98px !important;
+  height:98px !important;
+  border-radius:24px !important;
+}
+
+.rt-hotel-strip{
+  min-height:50px !important;
+  margin-top:11px !important;
+  padding:8px 10px !important;
+  border-radius:20px !important;
+}
+
+.rt-hotel-strip strong{
+  font-size:12px !important;
+}
+
+.rt-hotel-strip span{
+  margin-top:3px !important;
+  font-size:9px !important;
+}
+
+.rt-hotel-strip button{
+  height:36px !important;
+  padding:0 13px !important;
+  font-size:9.2px !important;
+}
+
+.rt-days-card{
+  padding-top:13px !important;
+  padding-bottom:13px !important;
+  border-radius:27px !important;
+}
+
+.rt-section-head{
+  padding:0 15px 12px !important;
+}
+
+.rt-days-grid{
+  gap:8px !important;
+  padding:0 12px !important;
+}
+
+.rt-day-mini{
+  min-height:94px !important;
+  padding:11px 9px !important;
+  border-radius:21px !important;
+}
+
+.rt-day-mini span{
+  font-size:7.7px !important;
+}
+
+.rt-day-mini strong{
+  margin-top:9px !important;
+  font-size:13px !important;
+}
+
+.rt-day-mini em{
+  margin-top:7px !important;
+  font-size:10.8px !important;
+}
+
+.rt-day-mini small{
+  margin-top:7px !important;
+  font-size:7.4px !important;
+}
+
+.rt-total-card{
+  padding-top:13px !important;
+  padding-bottom:12px !important;
+  border-radius:27px !important;
+}
+
+.rt-total-card > .rt-kicker{
+  padding:0 15px 11px !important;
+}
+
+.rt-total-grid strong{
+  font-size:12.5px !important;
+}
+
+.rt-total-grid span{
+  font-size:8px !important;
+}
+
+.rt-app{
+  padding-bottom:calc(124px + env(safe-area-inset-bottom)) !important;
+}
+
+@media(max-height:760px){
+  .rt-content{
+    margin-top:-24px !important;
+  }
+
+  .rt-day-summary{
+    min-height:202px !important;
+  }
+
+  .rt-day-copy h2{
+    font-size:27px !important;
+  }
+
+  .rt-day-photo{
+    width:92px !important;
+    height:92px !important;
+  }
+
+  .rt-day-mini{
+    min-height:88px !important;
+  }
+}
+
+@media(max-width:390px){
+  .rt-content{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .rt-day-summary{
+    grid-template-columns:1fr 90px !important;
+    padding:15px 14px 13px !important;
+  }
+
+  .rt-day-photo{
+    width:90px !important;
+    height:90px !important;
+  }
+
+  .rt-day-copy h2{
+    font-size:26px !important;
+  }
+}
