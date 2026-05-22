@@ -1,8 +1,8 @@
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:#f6efe6!important;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+html,body{margin:0;width:100%;height:100%;background:#f6efe6!important;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
 .shell{position:relative;width:100%;height:100dvh;min-height:100dvh;max-width:430px;margin:0 auto;background:#f6efe6!important;overflow:hidden}
-.tab-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f6efe6!important;overflow:auto}
-.tab-frame.active{display:block}
+
+
 .roadora-bottom-nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 28px);max-width:402px;z-index:9999;padding:8px 7px;border-radius:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(246,239,230,.70));border:1px solid rgba(92,66,42,.10);box-shadow:0 18px 42px rgba(48,34,22,.18),inset 0 1px 0 rgba(255,255,255,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .bottom-nav-item{min-width:0;height:52px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(30,24,18,.58);background:transparent;border:0;font-size:8.8px;line-height:1;font-weight:700;letter-spacing:-.25px;white-space:nowrap}
 .bottom-nav-item svg{width:20px;height:20px;stroke-width:2.05;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
@@ -19,9 +19,7 @@ html,body{margin:0;width:100%;height:100%;background:#f6efe6!important;font-fami
   background:#f6efe6!important;
 }
 
-.tab-frame{
-  background:#f6efe6!important;
-}
+
 
 body:before{
   content:"";
@@ -59,9 +57,7 @@ body{
 }
 
 .shell,
-.tab-frame{
-  background:#f6efe6!important;
-}
+
 
 .roadora-bottom-nav{
   background:
@@ -93,4 +89,192 @@ body::after{
 
 .roadora-bottom-nav{
   z-index:9999;
+}
+
+
+/* =========================================================
+   ROADORA DEFINITIVE BACKGROUND V4
+   Geen donkerbruine onderlaag meer.
+   ========================================================= */
+
+html,
+body,
+.shell,
+
+
+body{
+  min-height:100dvh!important;
+}
+
+.shell::after{
+  content:"";
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  height:240px;
+  background:#f6efe6;
+  z-index:9000;
+  pointer-events:none;
+}
+
+.roadora-bottom-nav{
+  z-index:9999!important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.96),
+      rgba(246,239,230,.98)
+    )!important;
+}
+
+
+/* =========================================================
+   ROADORA NO IFRAMES V1
+   ========================================================= */
+
+.app-screen{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:auto;
+  background:#f6efe6;
+  display:none;
+  -webkit-overflow-scrolling:touch;
+}
+
+.app-screen.active{
+  display:block;
+}
+
+.app-screen html,
+.app-screen body{
+  background:#f6efe6!important;
+}
+
+
+
+/* =========================================================
+   ROADORA FUTURE PROOF SHELL V1
+   ========================================================= */
+
+:root{
+  --rd-bg:#f6efe6;
+  --rd-bg-2:#f2e8dc;
+  --rd-brown:#8f4d11;
+  --rd-brown-2:#a45c18;
+  --rd-text:#15110d;
+  --rd-muted:rgba(20,18,16,.58);
+  --rd-shell-max:430px;
+  --rd-nav-max:402px;
+  --rd-nav-height:76px;
+}
+
+html,
+body{
+  margin:0!important;
+  width:100%!important;
+  height:100%!important;
+  background:var(--rd-bg)!important;
+  overflow:hidden!important;
+}
+
+body{
+  color:var(--rd-text);
+}
+
+.shell{
+  position:relative!important;
+  width:100%!important;
+  max-width:var(--rd-shell-max)!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  background:var(--rd-bg)!important;
+  isolation:isolate;
+}
+
+.app-screen{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  display:none!important;
+  background:var(--rd-bg)!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding-bottom:calc(var(--rd-nav-height) + 34px + env(safe-area-inset-bottom))!important;
+}
+
+.app-screen.active{
+  display:block!important;
+  z-index:2;
+}
+
+.app-screen.is-entering{
+  animation:rdScreenFade .18s ease both;
+}
+
+@keyframes rdScreenFade{
+  from{opacity:0; transform:translateY(4px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+.app-screen .app,
+.app-screen .phone,
+.app-screen .roadtrip-shell,
+.app-screen main{
+  background:var(--rd-bg)!important;
+}
+
+.shell::after{
+  content:"";
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:var(--rd-shell-max);
+  height:150px;
+  background:linear-gradient(180deg,rgba(246,239,230,0),var(--rd-bg) 38%,var(--rd-bg));
+  z-index:100;
+  pointer-events:none;
+}
+
+.roadora-bottom-nav{
+  position:fixed!important;
+  left:50%!important;
+  bottom:calc(12px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:calc(100% - 28px)!important;
+  max-width:var(--rd-nav-max)!important;
+  z-index:9999!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(246,239,230,.96))!important;
+  backdrop-filter:blur(20px)!important;
+  -webkit-backdrop-filter:blur(20px)!important;
+}
+
+.bottom-nav-item{
+  touch-action:manipulation;
+}
+
+.bottom-nav-item[aria-current="page"]{
+  color:#fffaf4!important;
+  background:linear-gradient(135deg,var(--rd-brown-2),var(--rd-brown))!important;
+}
+
+[data-roadora-screen]{
+  contain:layout paint;
+}
+
+@media(max-width:390px){
+  .roadora-bottom-nav{
+    width:calc(100% - 22px)!important;
+  }
 }
