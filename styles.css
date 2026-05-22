@@ -2837,116 +2837,438 @@ button{border:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transpar
 
 
 /* =========================================================
-   ROADORA MIJN ROADTRIP PIXEL APPSTRUCTUUR V2
-   Doel:
-   - zelfde appstructuur als Overzicht
-   - geen lange lege beige staart
-   - content sluit natuurlijk aan boven bottom nav
-   - geen iframe/hacks
+   ROADORA MIJN ROADTRIP REBUILD PIXEL APPSTRUCTUUR V1
+   Schone rebuild, geen oude roadtrip wrappers.
    ========================================================= */
 
-.roadora-screen-roadtrip{
-  min-height:100vh !important;
-  padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important;
+.roadtrip-rebuild{
   background:#f6efe6 !important;
+  min-height:100vh !important;
+  padding-bottom:0 !important;
   overflow-x:hidden !important;
 }
 
-.roadora-screen-roadtrip .roadtrip-shell,
-.roadora-screen-roadtrip .app,
-.roadora-screen-roadtrip main{
-  min-height:auto !important;
-  background:#f6efe6 !important;
-  padding-bottom:0 !important;
+.roadtrip-page{
+  width:100%;
+  min-height:100vh;
+  background:#f6efe6;
+  position:relative;
+  overflow:hidden;
+  padding-bottom:calc(108px + env(safe-area-inset-bottom));
 }
 
-.roadora-screen-roadtrip .hero{
-  height:41vh !important;
-  min-height:320px !important;
-  max-height:390px !important;
+.rt-hero{
+  position:relative;
+  height:31vh;
+  min-height:238px;
+  max-height:300px;
+  overflow:hidden;
+  background:#1d261f;
 }
 
-.roadora-screen-roadtrip .beige-panel{
-  margin-top:-48px !important;
-  min-height:auto !important;
-  padding-top:54px !important;
-  padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important;
+.rt-hero-img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 48%;
+  transform:scale(1.02);
+}
+
+.rt-hero-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.04) 42%,rgba(246,239,230,.10) 72%,rgba(246,239,230,.84) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.18),rgba(0,0,0,0) 54%);
+}
+
+.rt-hero::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:120px;
+  background:linear-gradient(to bottom,rgba(246,239,230,0),#f6efe6 96%);
+  z-index:3;
+  pointer-events:none;
+}
+
+.rt-progress{
+  position:absolute;
+  z-index:5;
+  left:28px;
+  right:28px;
+  bottom:48px;
+  color:#fff;
+  text-shadow:0 3px 14px rgba(0,0,0,.28);
+}
+
+.rt-progress-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:-.2px;
+}
+
+.rt-progress-bar{
+  height:7px;
+  margin-top:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.74);
+  overflow:hidden;
+}
+
+.rt-progress-bar span{
+  display:block;
+  width:30%;
+  height:100%;
+  border-radius:999px;
+  background:#fff;
+}
+
+.rt-panel{
+  position:relative;
+  z-index:6;
+  margin-top:-32px;
+  padding:0 14px;
   background:
     linear-gradient(
       to bottom,
       rgba(246,239,230,0) 0px,
-      rgba(246,239,230,.22) 26px,
-      rgba(246,239,230,.58) 58px,
-      #f6efe6 104px,
+      rgba(246,239,230,.72) 48px,
+      #f6efe6 94px,
       #f2e8dc 100%
-    ) !important;
+    );
 }
 
-.roadora-screen-roadtrip .content-stack,
-.roadora-screen-roadtrip .roadtrip-content,
-.roadora-screen-roadtrip .roadtrip-stack{
-  gap:8px !important;
-  margin-bottom:0 !important;
-  padding-bottom:0 !important;
+.rt-stack{
+  width:100%;
+  max-width:402px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-.roadora-screen-roadtrip section,
-.roadora-screen-roadtrip .surface-card,
-.roadora-screen-roadtrip .roadtrip-card{
-  margin-bottom:0 !important;
+.rt-card{
+  border-radius:28px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246,239,230,.74),
+      rgba(246,239,230,.50)
+    );
+  border:1px solid rgba(92,66,42,.045);
+  box-shadow:
+    0 8px 20px rgba(48,34,22,.035),
+    inset 0 1px 0 rgba(255,255,255,.48);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 }
 
-.roadora-screen-roadtrip .active-day-card,
-.roadora-screen-roadtrip .day-card,
-.roadora-screen-roadtrip .trip-total-card,
-.roadora-screen-roadtrip .roadtrip-total-card,
-.roadora-screen-roadtrip .route-total-card{
-  margin-bottom:8px !important;
+.rt-today-card{
+  position:relative;
+  min-height:236px;
+  padding:20px 18px 18px;
+  display:grid;
+  grid-template-columns:1fr 116px;
+  column-gap:14px;
+  overflow:hidden;
 }
 
-.roadora-screen-roadtrip .trip-total-card:last-child,
-.roadora-screen-roadtrip .roadtrip-total-card:last-child,
-.roadora-screen-roadtrip .route-total-card:last-child,
-.roadora-screen-roadtrip .surface-card:last-child{
-  margin-bottom:0 !important;
+.rt-kicker{
+  display:block;
+  color:#80502a;
+  font-size:10.5px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.85px;
+  text-transform:uppercase;
 }
 
-.roadora-screen-roadtrip .bottom-spacer,
-.roadora-screen-roadtrip .safe-bottom,
-.roadora-screen-roadtrip .nav-spacer,
-.roadora-screen-roadtrip .footer-spacer{
-  display:none !important;
-  height:0 !important;
+.rt-today-text h1{
+  margin:11px 0 0;
+  font-family:"Playfair Display",Georgia,serif;
+  color:#111;
+  font-size:35px;
+  line-height:.88;
+  letter-spacing:-1.25px;
+  font-weight:800;
 }
 
-.roadora-screen-roadtrip [style*="min-height"]{
-  min-height:initial;
+.rt-today-text p{
+  margin:11px 0 0;
+  color:rgba(20,18,16,.58);
+  font-size:12px;
+  line-height:1.25;
+  font-weight:750;
 }
 
-.roadora-bottom-nav{
-  bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+.rt-meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:13px;
+  color:#241c16;
+  font-size:10px;
+  font-weight:850;
+}
+
+.rt-day-image{
+  width:116px;
+  height:116px;
+  border-radius:28px;
+  align-self:start;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.18)),
+    linear-gradient(135deg,#d2e8ef,#5b8269 58%,#8d6339);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+.rt-hotel-strip{
+  grid-column:1 / -1;
+  margin-top:16px;
+  min-height:58px;
+  padding:10px 12px;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:rgba(255,255,255,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+.rt-hotel-strip strong{
+  display:block;
+  color:#111;
+  font-size:13px;
+  line-height:1.1;
+  font-weight:850;
+}
+
+.rt-hotel-strip span{
+  display:block;
+  margin-top:4px;
+  color:rgba(20,18,16,.55);
+  font-size:10px;
+  line-height:1.15;
+  font-weight:650;
+}
+
+.rt-hotel-strip button{
+  flex:0 0 auto;
+  height:42px;
+  padding:0 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#a45c18,#8f4d11);
+  color:#fffaf4;
+  font-size:10px;
+  font-weight:900;
+  box-shadow:0 10px 22px rgba(137,76,20,.20);
+}
+
+.rt-days-card{
+  padding:16px 0 18px;
+  overflow:hidden;
+}
+
+.rt-card-head{
+  padding:0 16px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.rt-card-head > span:last-child{
+  color:rgba(20,18,16,.50);
+  font-size:10px;
+  font-weight:800;
+}
+
+.rt-day-scroll{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:0 16px 2px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+
+.rt-day-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+.rt-day-scroll button{
+  flex:0 0 180px;
+  min-height:118px;
+  padding:16px;
+  border-radius:26px;
+  text-align:left;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(92,66,42,.032);
+  color:#111;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+.rt-day-scroll button.active{
+  background:rgba(255,255,255,.34);
+  box-shadow:
+    0 8px 18px rgba(48,34,22,.045),
+    inset 0 1px 0 rgba(255,255,255,.38);
+}
+
+.rt-day-scroll button span{
+  display:block;
+  color:#80502a;
+  font-size:9.5px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+}
+
+.rt-day-scroll button strong{
+  display:block;
+  margin-top:11px;
+  color:#111;
+  font-size:19px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.45px;
+}
+
+.rt-day-scroll button em{
+  display:block;
+  margin-top:9px;
+  color:#111;
+  font-style:normal;
+  font-size:14px;
+  line-height:1;
+  font-weight:850;
+}
+
+.rt-day-scroll button small{
+  display:block;
+  margin-top:10px;
+  color:rgba(20,18,16,.48);
+  font-size:10px;
+  line-height:1;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.rt-total-card{
+  padding:16px 0 15px;
+  margin-bottom:0;
+  overflow:hidden;
+}
+
+.rt-total-card > .rt-kicker{
+  padding:0 16px 13px;
+}
+
+.rt-total-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+
+.rt-total-grid div{
+  position:relative;
+  min-width:0;
+  text-align:center;
+  padding:0 5px;
+}
+
+.rt-total-grid div:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:8px;
+  width:1px;
+  height:38px;
+  background:rgba(92,66,42,.06);
+}
+
+.rt-total-grid strong{
+  display:block;
+  color:#080706;
+  font-size:14px;
+  line-height:1.08;
+  font-weight:900;
+  letter-spacing:-.35px;
+  white-space:nowrap;
+}
+
+.rt-total-grid span{
+  display:block;
+  margin-top:4px;
+  color:rgba(20,18,16,.50);
+  font-size:9px;
+  line-height:1;
+  font-weight:650;
 }
 
 @media(max-height:760px){
-  .roadora-screen-roadtrip .hero{
-    height:39vh !important;
-    min-height:300px !important;
+  .rt-hero{
+    height:29vh;
+    min-height:218px;
   }
 
-  .roadora-screen-roadtrip .beige-panel{
-    margin-top:-44px !important;
-    padding-top:50px !important;
-    padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
+  .rt-progress{
+    bottom:40px;
   }
 
-  .roadora-screen-roadtrip{
-    padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
+  .rt-today-card{
+    min-height:224px;
+    padding:18px 16px 16px;
+  }
+
+  .rt-today-text h1{
+    font-size:32px;
+  }
+
+  .rt-day-image{
+    width:108px;
+    height:108px;
+  }
+
+  .rt-day-scroll button{
+    min-height:110px;
   }
 }
 
 @media(max-width:390px){
-  .roadora-screen-roadtrip .beige-panel{
-    padding-left:12px !important;
-    padding-right:12px !important;
+  .rt-panel{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .rt-today-card{
+    grid-template-columns:1fr 104px;
+    column-gap:12px;
+  }
+
+  .rt-day-image{
+    width:104px;
+    height:104px;
+    border-radius:25px;
+  }
+
+  .rt-today-text h1{
+    font-size:31px;
+  }
+
+  .rt-day-scroll button{
+    flex-basis:164px;
+  }
+
+  .rt-hotel-strip button{
+    padding:0 13px;
   }
 }
