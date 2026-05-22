@@ -1,373 +1,202 @@
 <!DOCTYPE html>
+
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Roadora — Component System v1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap">
-<link rel="stylesheet" href="./styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Roadora — v7.3.3 Production Stops Cleanup Render</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@650;750&amp;display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<meta content="roadora-v7-3-0-production-places-layer; stable-core; maps-export-locked; places-cache-normalization" name="roadora-build"/>
+<link href="./styles.css" rel="stylesheet"/>
+<script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer="" src="./app.js"></script>
 </head>
 <body>
-
-<section class="rd-screen rd-overview-screen active" data-screen="overview">
-<main class="app">
-<section class="hero">
-      <img class="hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip hero" />
-      <div class="hero-shade"></div>
-
-      <div class="topbar">
-        <button class="round-btn" type="button" aria-label="Menu">☰</button>
-
-        <div class="brand">
-          <strong>R</strong>
-          <span>ROADORA</span>
-        </div>
-
-        <button class="round-btn" type="button" aria-label="Delen">↗</button>
-      </div>
-
-      <div class="hero-copy">
-        <div class="badge">
-          <i class="badge-dot"></i>
-          Dag 3 van 8
-        </div>
-
-        <h1 class="hero-title">Alpen avontuur</h1>
-        <p class="route">Rotterdam → Innsbruck</p>
-      </div>
+<div class="app">
+<main class="phone">
+<div class="bg"></div>
+<section class="content">
+<div class="top">
+<div class="logo">
+<div class="logoMark">
+<svg fill="none" height="22" viewbox="0 0 24 24" width="22">
+<path d="M4 19 12 3l8 16-8-5-8 5Z" stroke="currentColor" stroke-width="1.45"></path>
+<path d="M12 3v11" stroke="currentColor" stroke-width="1.45"></path>
+</svg>
+</div>
+<span>Roadora</span>
+</div>
+<div class="topActions">
+<button aria-label="Taal kiezen" class="langBtn" id="langBtn" type="button">NL</button>
+<button aria-label="Meldingen" class="iconBtn" type="button">
+<svg fill="none" height="18" viewbox="0 0 24 24" width="18">
+<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7Z" stroke="currentColor" stroke-width="1.7"></path>
+<path d="M10 20h4" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"></path>
+</svg>
+</button>
+</div>
+<div class="langMenu" id="langMenu">
+<button class="active" data-lang="NL" type="button">Nederlands</button>
+<button data-lang="EN" type="button">English</button>
+<button data-lang="DE" type="button">Deutsch</button>
+<button data-lang="FR" type="button">Français</button>
+</div>
+</div>
+<div class="hero">
+<h1>Jouw volgende <span>avontuur</span> begint hier.</h1>
+<p>Plan, ontdek en geniet van de mooiste routes, hotels en plekken onderweg.</p>
+</div>
+<form class="search" onsubmit="event.preventDefault();">
+<svg fill="none" height="18" viewbox="0 0 24 24" width="18">
+<path d="m21 21-4.35-4.35M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path>
+</svg>
+<input placeholder="Waar wil je naartoe?"/>
+<button aria-label="Plan route" class="go" data-action="route" type="button">
+<svg fill="none" height="20" viewbox="0 0 24 24" width="20">
+<path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"></path>
+</svg>
+</button>
+</form>
+<div class="spacer"></div>
+<div class="quick">
+<button class="card" data-action="route" type="button">
+<svg fill="none" viewbox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15" stroke="currentColor"></path></svg>
+<b>Plan je route</b><small>Stel je ideale reis samen</small>
+</button>
+<button class="card" data-action="explore" type="button">
+<svg fill="none" viewbox="0 0 24 24"><path d="M5 20c3-9 5-13 7-13s4 4 7 13M8 12h8M8 20h8" stroke="currentColor"></path></svg>
+<b>Ontdek uitjes</b><small>Beleef bijzondere plekken</small>
+</button>
+<button class="card" data-action="hotels" type="button">
+<svg fill="none" viewbox="0 0 24 24"><path d="M4 11h16v9M4 20V7M20 20v-5H4M7 11V8h5v3" stroke="currentColor"></path></svg>
+<b>Vind hotels</b><small>Overnacht op de mooiste locaties</small>
+</button>
+</div>
+<div class="sectionTitle">
+<b>Populaire roadtrips</b>
+<span>Bekijk alle ›</span>
+</div>
+<div class="trips">
+<div class="trip"><b>Zomer in de Alpen</b><small>12 dagen · 2.340 km<br/>4,8 ★</small></div>
+<div class="trip"><b>Noorwegen Fjorden</b><small>9 dagen · 1.850 km<br/>4,7 ★</small></div>
+<div class="trip"><b>Italië Highlights</b><small>10 dagen · 1.620 km<br/>4,6 ★</small></div>
+</div>
 </section>
-
-    <section class="beige-panel" aria-label="Roadora content">
-      <div class="content-stack">
-
-        <section class="roadora-summary-card surface-card" aria-label="Roadtrip overzicht">
-          <div class="summary-stats">
-            <article class="summary-stat">
-              <div class="summary-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="5" cy="12" r="2"></circle>
-                  <circle cx="19" cy="7" r="2"></circle>
-                  <circle cx="19" cy="17" r="2"></circle>
-                  <path d="M7 12h5"></path>
-                  <path d="M12 12l5-5"></path>
-                  <path d="M12 12l5 5"></path>
-                </svg>
-              </div>
-              <strong class="summary-value">1.246 km</strong>
-              <span class="summary-label">Totale afstand</span>
-            </article>
-
-            <article class="summary-stat">
-              <div class="summary-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v6l4 2"></path>
-                </svg>
-              </div>
-              <strong class="summary-value">14u 30m</strong>
-              <span class="summary-label">Rijtijd</span>
-            </article>
-
-            <article class="summary-stat">
-              <div class="summary-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M8 3v18"></path>
-                  <path d="M16 3v18"></path>
-                  <path d="M4 8h16"></path>
-                  <path d="M4 16h16"></path>
-                </svg>
-              </div>
-              <strong class="summary-value">8</strong>
-              <span class="summary-label">Tussenstops</span>
-            </article>
-
-            <article class="summary-stat">
-              <div class="summary-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 11h16"></path>
-                  <path d="M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path>
-                  <path d="M5 11v8"></path>
-                  <path d="M19 11v8"></path>
-                  <path d="M4 15h16"></path>
-                </svg>
-              </div>
-              <strong class="summary-value">Hotel vanavond</strong>
-              <span class="summary-sub">Innsbruck, AT</span>
-            </article>
-          </div>
-
-          <div class="summary-actions">
-            <button class="summary-btn primary" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"></path>
-                <path d="M9 3v15"></path>
-                <path d="M15 6v15"></path>
-              </svg>
-              Bekijk route
-            </button>
-
-            <button class="summary-btn secondary" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 7h10"></path>
-                <path d="M18 7h2"></path>
-                <circle cx="16" cy="7" r="2"></circle>
-                <path d="M4 17h2"></path>
-                <path d="M10 17h10"></path>
-                <circle cx="8" cy="17" r="2"></circle>
-              </svg>
-              Aanpassen
-            </button>
-          </div>
-        </section>
-
-        <section class="next-stop-card surface-card" aria-label="Volgende stop">
-          <div class="next-stop-image">
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="Hallstatt">
-          </div>
-
-          <div class="next-stop-left">
-            <div class="next-stop-kicker">Volgende stop</div>
-            <div class="next-stop-title">Hallstatt</div>
-            <div class="next-stop-country">Oostenrijk · Aan het meer</div>
-
-            <div class="next-stop-meta">
-              <div class="next-stop-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-                Nog 2u 14m rijden
-              </div>
-
-              <div class="next-stop-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z"></path>
-                  <circle cx="12" cy="9" r="2"></circle>
-                </svg>
-                Fotostop onderweg
-              </div>
-            </div>
-
-            <button class="next-stop-details-btn" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 18l6-6-6-6"></path>
-              </svg>
-              Bekijk details
-            </button>
-          </div>
-        </section>
-
-        <section class="today-route-card surface-card" aria-label="Vandaag op de route">
-          <h3 class="today-route-title">Vandaag op de route</h3>
-
-          <div class="today-route-grid">
-            <article class="today-route-item">
-              <div class="today-route-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"></path>
-                </svg>
-              </div>
-              <strong>Laden over<br>45 km</strong>
-              <span>Ionity Heiligenblut</span>
-            </article>
-
-            <article class="today-route-item">
-              <div class="today-route-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 10h16"></path>
-                  <path d="M6 10v3a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4v-3"></path>
-                  <path d="M18 10v2a2 2 0 0 0 2 2"></path>
-                  <path d="M8 20h8"></path>
-                </svg>
-              </div>
-              <strong>Rustmoment<br>over 2 uur</strong>
-              <span>Trafoi, Italië</span>
-            </article>
-
-            <article class="today-route-item">
-              <div class="today-route-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-              </div>
-              <strong>Verwachte<br>aankomst</strong>
-              <span>19:45</span>
-            </article>
-          </div>
-        </section>
-
-      </div>
-    </section>
-
-    
-
-  </main>
+<button aria-label="Menu openen" class="menuToggle" id="menuToggle" type="button">
+<svg fill="none" height="22" viewbox="0 0 24 24" width="22">
+<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-linecap="round" stroke-width="1.9"></path>
+</svg>
+</button>
+<aside aria-label="Navigatie" class="sideMenu" id="sideMenu">
+<button class="sideItem active" data-action="home" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" stroke="currentColor"></path></svg><span>Home</span></button>
+<button class="sideItem" data-action="route" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M6 17h12l1 4H5l1-4Z M7 17 9 7h6l2 10 M8 11h8" stroke="currentColor"></path></svg><span>Route</span></button>
+<button class="sideItem" data-action="explore" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15" stroke="currentColor"></path></svg><span>Uitjes</span></button>
+<button class="sideItem" data-action="routes" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M5 6h6v14H5zM13 4h6v14h-6z" stroke="currentColor"></path></svg><span>Routes</span></button>
+<button class="sideItem" data-action="account" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c1.5-4 14.5-4 16 0" stroke="currentColor"></path></svg><span>Account</span></button>
+</aside>
+<div class="menuScrim" id="menuScrim"></div>
+<section aria-label="Route setup" class="appScreen routeSetup" id="routeSetupScreen">
+<div class="routeInner">
+<header class="rTop rTopNav">
+<button aria-label="Menu openen" class="rIcon screenMenuBtn" data-menu-open="" type="button">☰</button>
+<button aria-label="Terug naar home" class="rIcon" id="backHomeBtn" type="button">‹</button>
+<div class="rBrand"><div class="rLogo">⌁</div><span>Roadora</span></div>
+<div class="rActions"><button class="rRound rLang" type="button">NL</button><button class="rRound" type="button">♡</button></div>
+</header>
+<section class="rHero"><h1>Plan jouw <span>volgende</span> route</h1><p>Stel je reis samen en ontdek onderweg de mooiste plekken.</p></section>
+<section class="rRouteCard rGlass">
+<div class="rInputs">
+<div class="rDots"><i></i><span></span><i></i></div>
+<div class="rGroup">
+<label>Van</label><div class="rInput"><span>Rotterdam, Nederland</span><b>×</b></div>
+<label>Naar</label><div class="rInput"><span>Innsbruck, Oostenrijk</span><b>×</b></div>
+</div>
+<button class="rSwap" type="button">⇅</button>
+</div>
+<div class="rLabel">Voertuig</div>
+<div class="rVehicles">
+<button class="rVehicle active" data-profile="driving-car" data-vehicle="car" type="button">🚘 Auto</button>
+<button class="rVehicle" data-profile="driving-car" data-vehicle="ev" type="button">⚡ EV</button>
+<button class="rVehicle" data-profile="driving-hgv" data-vehicle="camper" type="button">🚐 Camper</button>
+<button class="rVehicle" data-profile="driving-car" data-vehicle="motor" type="button">🏍️ Motor</button>
+</div>
 </section>
-
-
-<section class="rd-screen rd-roadtrip-screen" data-screen="roadtrip" hidden>
-  <main class="rt-app" aria-label="Mijn Roadtrip">
-
-    <header class="rt-hero">
-      <img class="rt-hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip hero">
-      <div class="rt-hero-layer"></div>
-
-      <div class="rt-hero-content">
-        <div class="rt-pill"><span></span>Dag 3 van 8</div>
-        <h1>Alpen avontuur</h1>
-        <p>Rotterdam → Innsbruck</p>
-      </div>
-
-      <section class="rt-hero-stats" aria-label="Roadtrip voortgang">
-        <div class="rt-stat">
-          <i>⌁</i>
-          <strong>3.420 / 10.820 km</strong>
-          <span>Totale afstand</span>
-        </div>
-        <div class="rt-stat">
-          <i>◷</i>
-          <strong>4u 15m</strong>
-          <span>Rijtijd</span>
-        </div>
-        <div class="rt-stat">
-          <i>#</i>
-          <strong>2</strong>
-          <span>Tussenstops</span>
-        </div>
-        <div class="rt-stat">
-          <i>▱</i>
-          <strong>30%</strong>
-          <span>Voltooid</span>
-        </div>
-      </section>
-
-      <div class="rt-progress"><span></span></div>
-    </header>
-
-    <section class="rt-content">
-      <div class="rt-stack">
-
-        <article class="rt-card rt-day-summary">
-          <div class="rt-day-copy">
-            <span class="rt-kicker">Vandaag · Dag 3</span>
-            <h2>Innsbruck →<br>Gardameer</h2>
-            <p>Een rustige Alpenrit richting het water.</p>
-
-            <div class="rt-meta-row">
-              <span>⌖ 320 km</span>
-              <span>◷ 4u 15m</span>
-              <span># 2 stops</span>
-            </div>
-          </div>
-
-          <div class="rt-day-photo"></div>
-
-          <div class="rt-hotel-strip">
-            <div>
-              <strong>Hotel vanavond</strong>
-              <span>Hotel Riva del Garda · vanaf 15:00</span>
-            </div>
-            <button type="button">Bekijk dag ›</button>
-          </div>
-        </article>
-
-        <article class="rt-card rt-days-card">
-          <header class="rt-section-head">
-            <span class="rt-kicker">Reis per dag</span>
-            <small>10 dagen</small>
-          </header>
-
-          <div class="rt-days-grid">
-            <button type="button" class="rt-day-mini">
-              <span>Dag 1</span>
-              <strong>Rotterdam</strong>
-              <em>→ Frankfurt</em>
-              <small>480 km · 5u 10m</small>
-            </button>
-
-            <button type="button" class="rt-day-mini">
-              <span>Dag 2</span>
-              <strong>Frankfurt</strong>
-              <em>→ Innsbruck</em>
-              <small>460 km · 5u 30m</small>
-            </button>
-
-            <button type="button" class="rt-day-mini active">
-              <span>Vandaag · Dag 3</span>
-              <strong>Innsbruck</strong>
-              <em>→ Gardameer</em>
-              <small>320 km · 4u 15m · 2 stops</small>
-            </button>
-          </div>
-        </article>
-
-        <article class="rt-card rt-total-card">
-          <span class="rt-kicker">Totaal van je roadtrip</span>
-          <div class="rt-total-grid">
-            <div><strong>10.820</strong><span>km</span></div>
-            <div><strong>68u 45m</strong><span>reistijd</span></div>
-            <div><strong>10</strong><span>dagen</span></div>
-            <div><strong>4</strong><span>landen</span></div>
-            <div><strong>18</strong><span>stops</span></div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-  </main>
+<section class="rDiscover rGlass">
+<div class="rHead"><b>Wat wil je onderweg ontdekken?</b></div>
+<div class="rCats">
+<button class="rCat active" data-filter="hotel" type="button">🏨 Hotels</button>
+<button class="rCat" data-filter="fuel" type="button">⛽ Tank</button>
+<button class="rCat active" data-filter="ev" type="button">⚡ EV</button>
+<button class="rCat" data-filter="food" type="button">🍽️ Eten</button>
+<button class="rCat active" data-filter="view" type="button">⛰️ Uitjes</button>
+<button class="rCat" type="button">••• Meer</button>
+</div>
 </section>
-
-
-<nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
-      <button class="bottom-nav-item active" type="button" data-tab="overview" aria-label="Overzicht">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 5h16"></path>
-          <path d="M4 12h10"></path>
-          <path d="M4 19h16"></path>
-        </svg>
-        <span>Overzicht</span>
-      </button>
-
-      <button class="bottom-nav-item" type="button" data-tab="roadtrip" data-tab="roadtrip" aria-label="Mijn roadtrip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="5" cy="19" r="2"></circle>
-          <circle cx="19" cy="5" r="2"></circle>
-          <path d="M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1"></path>
-        </svg>
-        <span>Mijn roadtrip</span>
-      </button>
-
-      <button class="bottom-nav-item" type="button" data-tab="kaart" aria-label="Kaart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"></path>
-          <path d="M9 3v15"></path>
-          <path d="M15 6v15"></path>
-        </svg>
-        <span>Kaart</span>
-      </button>
-
-      <button class="bottom-nav-item" type="button" data-tab="dagboek" aria-label="Mijn dagboek">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path>
-          <path d="M8 8h7"></path>
-          <path d="M8 12h6"></path>
-        </svg>
-        <span>Mijn dagboek</span>
-      </button>
-
-      <button class="bottom-nav-item" type="button" data-tab="profiel" aria-label="Profiel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="8" r="4"></circle>
-          <path d="M4 21a8 8 0 0 1 16 0"></path>
-        </svg>
-        <span>Profiel</span>
-      </button>
-    </nav>
-
-<script src="./app.js"></script>
-
+<footer class="rBottom rBottomClean"><button class="rPlan" id="openMapBtn" type="button">➤ Plan route</button></footer>
+</div>
+</section>
+<section aria-label="Routekaart" class="appScreen mapScreen" id="mapScreen">
+<div class="roadMapApp">
+<div id="routeLeafletMap"></div>
+<div class="ui">
+<section aria-label="Roadora routecockpit" class="mapCockpit">
+<header aria-label="Slimme ritstatus" class="mapTopbar smartTopbar">
+<button aria-label="Menu openen" class="mapNavBtn" data-menu-open="" type="button">☰</button>
+<button aria-label="Terug naar route setup" class="mapNavBtn mapBackBtn" data-action="route" type="button">‹</button>
+<div aria-live="polite" class="mapLiveStatus">
+<div class="mapLiveMain">
+<b id="mapStatusTitle">Rotterdam → Innsbruck</b>
+<span id="mapStatusBadge">Rustige route</span>
+</div>
+<div class="mapLiveSub" id="mapStatusSub">Auto route · slimme assist voorbereid</div>
+<div class="mapLiveChips">
+<span id="mapStatusEta">ETA —</span>
+<span id="mapStatusDistance">— km</span>
+<span id="mapStatusNext">Volgende: laadstop</span>
+</div>
+</div>
+</header>
+<section class="routePanel">
+<div class="routeTop">
+<div class="routePoints"><div class="timeline"><span class="dot"></span><span class="tl"></span><span class="dot"></span></div><div class="pointTexts"><div><div class="label">Van</div><div class="place">Rotterdam, Nederland</div></div><div><div class="label">Naar</div><div class="place">Innsbruck, Oostenrijk</div></div></div><button class="swap" type="button">⇅</button></div>
+<div class="divider"></div>
+<div class="vehicles">
+<button class="vehicle active" data-profile="driving-car" data-vehicle="car" type="button"><span>🚘</span><span>Auto</span></button>
+<button class="vehicle" data-profile="driving-car" data-vehicle="ev" type="button"><span>⚡</span><span>EV</span></button>
+<button class="vehicle" data-profile="driving-hgv" data-vehicle="camper" type="button"><span>🚐</span><span>Camper</span></button>
+<button class="vehicle" data-profile="driving-car" data-vehicle="motor" type="button"><span>🏍️</span><span>Motor</span></button>
+</div>
+</div>
+<div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>2.340 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>6–8</b><small>Stops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
+</section>
+</section>
+<button aria-controls="mapCats" aria-expanded="false" class="stopsCta" id="stopsCta" type="button">
+<span>＋</span><b>Stops</b>
+</button>
+<div aria-label="Stopcategorieën" class="cats is-collapsed" id="mapCats">
+<button class="cat" data-filter="fuel" type="button"><svg viewbox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"></path></svg><span>Tankstations</span></button>
+<button class="cat" data-filter="hotel" type="button"><svg viewbox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Overnachten</span></button>
+<button class="cat" data-filter="ev" type="button"><svg viewbox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"></path></svg><span>Laadstations</span></button>
+<button class="cat" data-filter="food" type="button"><svg viewbox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"></path></svg><span>Eten &amp; drinken</span></button>
+            <button class="cat" data-filter="wc" type="button"><svg viewbox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"></path></svg><span>WC's</span></button>
+<button class="cat" data-filter="view" type="button"><svg viewbox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"></path></svg><span>Activiteiten</span></button>
+</div>
+<div class="controls controlsV722"><button class="centerRouteBtn" id="fitRoute" type="button" aria-label="Centreer route"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><div class="ctrlGroup zoomOnly"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
+<section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="saveStop" type="button">＋ Tussenstop</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
+<nav class="bottomNav bottomNavV59">
+            <button class="navItem active" type="button" data-nav="route"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>
+            <button class="navItem" type="button" data-nav="stops"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>Stops</button>
+            <button class="navItem navCenter" type="button" data-nav="navigate"><span class="round"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>Navigeer</button>
+            <button class="navItem" type="button" data-nav="more"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Meer</button>
+            
+          </nav>
+<div class="mapToast" id="mapToast">Filters bijgewerkt</div>
+</div>
+</div>
+</section>
+</main>
+</div>
 </body>
 </html>
