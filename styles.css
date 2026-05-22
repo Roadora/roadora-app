@@ -2794,3 +2794,54 @@ body{
     font-size:28px !important;
   }
 }
+
+
+
+/* =========================================================
+   ROADORA HERO MASTER SYNC V1
+   Alle pagina's gebruiken nu dezelfde hero-basis als Overzicht.
+   ========================================================= */
+
+/* MASTER HERO */
+:root{
+  --rd-hero-height:46vh;
+  --rd-hero-min:390px;
+  --rd-hero-max:465px;
+  --rd-hero-image-position:center 65%;
+  --rd-hero-content-top:calc(env(safe-area-inset-top) + 76px);
+  --rd-hero-fade-height:145px;
+}
+
+/* Mijn Roadtrip hero synced met Overzicht */
+.rt-hero{
+  height:var(--rd-hero-height) !important;
+  min-height:var(--rd-hero-min) !important;
+  max-height:var(--rd-hero-max) !important;
+}
+
+.rt-hero-img{
+  object-position:var(--rd-hero-image-position) !important;
+}
+
+.rt-hero-content{
+  top:var(--rd-hero-content-top) !important;
+}
+
+.rt-hero::after{
+  height:var(--rd-hero-fade-height) !important;
+}
+
+/* Content begint exact hetzelfde onder hero */
+.rt-content{
+  margin-top:-22px !important;
+}
+
+/* Responsive sync */
+@media(max-height:760px){
+  :root{
+    --rd-hero-height:45vh;
+    --rd-hero-min:368px;
+    --rd-hero-max:440px;
+    --rd-hero-content-top:calc(env(safe-area-inset-top) + 62px);
+  }
+}
