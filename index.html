@@ -205,143 +205,9 @@
 
   </main>
     </section>
-
-    <section class="roadora-screen roadora-screen-roadtrip roadtrip-rebuild" id="roadtripScreen" data-screen="roadtrip" hidden>
-      <main class="roadtrip-page">
-
-        <header class="rt-hero">
-          <img class="rt-hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip hero">
-          <div class="rt-hero-shade"></div>
-
-          <div class="rt-progress">
-            <div class="rt-progress-top">
-              <strong>3.420 / 10.820 km</strong>
-              <strong>30% voltooid</strong>
-            </div>
-            <div class="rt-progress-bar">
-              <span></span>
-            </div>
-          </div>
-        </header>
-
-        <section class="rt-panel">
-          <div class="rt-stack">
-
-            <article class="rt-card rt-today-card">
-              <div class="rt-today-text">
-                <span class="rt-kicker">Vandaag · dag 3</span>
-                <h1>Innsbruck →<br>Gardameer</h1>
-                <p>Een rustige Alpenrit richting het water.</p>
-
-                <div class="rt-meta-row">
-                  <span>⌖ 320 km</span>
-                  <span>◷ 4u 15m</span>
-                  <span># 2 stops</span>
-                </div>
-              </div>
-
-              <div class="rt-day-image"></div>
-
-              <div class="rt-hotel-strip">
-                <div>
-                  <strong>Hotel vanavond</strong>
-                  <span>Hotel Riva del Garda · vanaf 15:00</span>
-                </div>
-                <button type="button">Bekijk dag ›</button>
-              </div>
-            </article>
-
-            <article class="rt-card rt-days-card">
-              <div class="rt-card-head">
-                <span class="rt-kicker">Reis per dag</span>
-                <span>10 dagen</span>
-              </div>
-
-              <div class="rt-day-scroll">
-                <button type="button">
-                  <span>Dag 1</span>
-                  <strong>Rotterdam</strong>
-                  <em>→ Frankfurt</em>
-                  <small>480 km · 5u 10m</small>
-                </button>
-
-                <button type="button">
-                  <span>Dag 2</span>
-                  <strong>Frankfurt</strong>
-                  <em>→ Innsbruck</em>
-                  <small>460 km · 5u 30m</small>
-                </button>
-
-                <button class="active" type="button">
-                  <span>Vandaag · Dag 3</span>
-                  <strong>Innsbruck</strong>
-                  <em>→ Gardameer</em>
-                  <small>320 km · 4u 15m · 2 stops</small>
-                </button>
-              </div>
-            </article>
-
-            <article class="rt-card rt-total-card">
-              <span class="rt-kicker">Totaal van je roadtrip</span>
-
-              <div class="rt-total-grid">
-                <div>
-                  <strong>10.820</strong>
-                  <span>km</span>
-                </div>
-                <div>
-                  <strong>68u 45m</strong>
-                  <span>reistijd</span>
-                </div>
-                <div>
-                  <strong>10</strong>
-                  <span>dagen</span>
-                </div>
-                <div>
-                  <strong>4</strong>
-                  <span>landen</span>
-                </div>
-                <div>
-                  <strong>18</strong>
-                  <span>stops</span>
-                </div>
-              </div>
-            </article>
-
-          </div>
-        </section>
-
-      </main>
+</main>
     </section>
-
-<section class="roadora-screen roadora-screen-map" id="mapScreen" data-screen="kaart" hidden>
-      <main class="map-app">
-        <header class="map-topbar">
-          <button class="map-round-btn" type="button" aria-label="Menu">☰</button>
-
-          <div class="map-route-pill">
-            <span>Rotterdam → Innsbruck</span>
-            <strong>1.246 km · 14u 30m</strong>
-          </div>
-
-          <button class="map-round-btn" type="button" aria-label="Instellingen">⚙</button>
-        </header>
-
-        <section class="map-canvas" aria-label="Roadora kaart">
-          <div class="map-route-line"></div>
-          <span class="map-pin start">A</span>
-          <span class="map-pin stop">1</span>
-          <span class="map-pin end">B</span>
-
-          <div class="map-category-row">
-            <button class="active" type="button">Route</button>
-            <button type="button">Hotels</button>
-            <button type="button">Stops</button>
-            <button type="button">Eten</button>
-          </div>
-        </section>
-
-        <section class="map-bottom-sheet">
+<section class="map-bottom-sheet">
           <div class="sheet-handle"></div>
 
           <div class="sheet-content">
@@ -362,19 +228,19 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
         <span>Overzicht</span>
       </button>
-      <button class="bottom-nav-item" data-tab="roadtrip" type="button">
+      <button class="bottom-nav-item" data-tab="roadtrip" disabled type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1"/></svg>
         <span>Mijn roadtrip</span>
       </button>
-      <button class="bottom-nav-item" data-tab="kaart" type="button">
+      <button class="bottom-nav-item" data-tab="kaart" disabled type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
         <span>Kaart</span>
       </button>
-      <button class="bottom-nav-item" data-tab="dagboek" type="button">
+      <button class="bottom-nav-item" data-tab="dagboek" disabled type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M8 8h7"/><path d="M8 12h6"/></svg>
         <span>Mijn dagboek</span>
       </button>
-      <button class="bottom-nav-item" data-tab="profiel" type="button">
+      <button class="bottom-nav-item" data-tab="profiel" disabled type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
         <span>Profiel</span>
       </button>
