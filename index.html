@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Roadora — Overzicht Exact Appstructuur v1</title>
+<title>Roadora — Overzicht + Mijn Roadtrip Exact Appstructuur v1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap">
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+
+<section class="rd-screen rd-overview-screen active" data-screen="overview">
 <main class="app">
 <section class="hero">
       <img class="hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip hero" />
@@ -198,8 +200,101 @@
 
       </div>
     </section>
+</main>
+</section>
 
-    <nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
+
+<section class="rd-screen rd-roadtrip-screen" data-screen="roadtrip" hidden>
+  <main class="rt-page">
+    <header class="rt-hero">
+      <img class="rt-hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip">
+      <div class="rt-hero-overlay"></div>
+
+      <div class="rt-hero-progress">
+        <div class="rt-progress-head">
+          <strong>3.420 / 10.820 km</strong>
+          <strong>30% voltooid</strong>
+        </div>
+        <div class="rt-progress-track"><span></span></div>
+      </div>
+    </header>
+
+    <section class="rt-beige">
+      <div class="rt-stack">
+
+        <article class="rt-card rt-current">
+          <div class="rt-current-copy">
+            <span class="rt-kicker">Vandaag · Dag 3</span>
+            <h1>Innsbruck →<br>Gardameer</h1>
+            <p>Een rustige Alpenrit richting het water.</p>
+
+            <div class="rt-meta">
+              <span>⌖ 320 km</span>
+              <span>◷ 4u 15m</span>
+              <span># 2 stops</span>
+            </div>
+          </div>
+
+          <div class="rt-photo"></div>
+
+          <div class="rt-hotel">
+            <div>
+              <strong>Hotel vanavond</strong>
+              <span>Hotel Riva del Garda · vanaf 15:00</span>
+            </div>
+            <button type="button">Bekijk dag ›</button>
+          </div>
+        </article>
+
+        <article class="rt-card rt-days">
+          <div class="rt-card-title">
+            <span class="rt-kicker">Reis per dag</span>
+            <small>10 dagen</small>
+          </div>
+
+          <div class="rt-days-scroll">
+            <button type="button">
+              <span>Dag 1</span>
+              <strong>Rotterdam</strong>
+              <em>→ Frankfurt</em>
+              <small>480 km · 5u 10m</small>
+            </button>
+
+            <button type="button">
+              <span>Dag 2</span>
+              <strong>Frankfurt</strong>
+              <em>→ Innsbruck</em>
+              <small>460 km · 5u 30m</small>
+            </button>
+
+            <button class="active" type="button">
+              <span>Vandaag · Dag 3</span>
+              <strong>Innsbruck</strong>
+              <em>→ Gardameer</em>
+              <small>320 km · 4u 15m · 2 stops</small>
+            </button>
+          </div>
+        </article>
+
+        <article class="rt-card rt-total">
+          <span class="rt-kicker">Totaal van je roadtrip</span>
+
+          <div class="rt-total-grid">
+            <div><strong>10.820</strong><span>km</span></div>
+            <div><strong>68u 45m</strong><span>reistijd</span></div>
+            <div><strong>10</strong><span>dagen</span></div>
+            <div><strong>4</strong><span>landen</span></div>
+            <div><strong>18</strong><span>stops</span></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+</section>
+
+
+<nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
       <button class="bottom-nav-item active" type="button" aria-label="Overzicht">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 5h16"></path>
@@ -245,7 +340,7 @@
       </button>
     </nav>
 
-  </main>
 <script src="./app.js"></script>
+
 </body>
 </html>
