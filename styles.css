@@ -581,3 +581,60 @@ button{
     font-size:8.1px;
   }
 }
+
+
+
+/* =========================================================
+   ROADORA OVERZICHT CLEAN V2 — BOTTOM POLISH
+   Nettere onderkant zonder extra kleurvlak.
+   ========================================================= */
+
+.screen{
+  padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
+}
+
+.beige-panel{
+  padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
+}
+
+.today-route-card{
+  margin-bottom:0 !important;
+}
+
+.bottom-nav{
+  bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.88),
+      rgba(246,239,230,.94)
+    ) !important;
+  box-shadow:
+    0 14px 34px rgba(48,34,22,.15),
+    inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+
+/* De achtergrond loopt rustig door achter de bottomnav */
+.app-shell::after{
+  content:"";
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  height:112px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(242,232,220,0),
+      #f2e8dc 36%,
+      #f2e8dc 100%
+    );
+  z-index:90;
+  pointer-events:none;
+}
+
+.bottom-nav{
+  z-index:200 !important;
+}
