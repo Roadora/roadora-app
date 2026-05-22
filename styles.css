@@ -2379,3 +2379,249 @@ body{
     font-size:40px !important;
   }
 }
+
+
+
+/* =========================================================
+   ROADORA MIJN ROADTRIP PIXEL POLISH V3
+   Alleen finetuning: hero, stats, cards, bottom spacing.
+   ========================================================= */
+
+.rt-hero{
+  height:48vh !important;
+  min-height:405px !important;
+  max-height:485px !important;
+}
+
+.rt-hero-img{
+  object-position:center 62% !important;
+  transform:scale(1.005) !important;
+}
+
+.rt-hero-layer{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.08) 0%,
+      rgba(0,0,0,.15) 38%,
+      rgba(0,0,0,.20) 60%,
+      rgba(246,239,230,.10) 79%,
+      rgba(246,239,230,.94) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.22),
+      rgba(0,0,0,0) 66%
+    ) !important;
+}
+
+.rt-hero-content{
+  top:calc(env(safe-area-inset-top) + 82px) !important;
+}
+
+.rt-pill{
+  height:30px !important;
+  padding:0 13px !important;
+  font-size:12.5px !important;
+}
+
+.rt-hero-content h1{
+  margin-top:20px !important;
+  font-size:42px !important;
+  letter-spacing:-1.5px !important;
+}
+
+.rt-hero-content p{
+  margin-top:9px !important;
+  font-size:17px !important;
+}
+
+.rt-hero-stats{
+  left:18px !important;
+  right:18px !important;
+  bottom:61px !important;
+}
+
+.rt-stat{
+  padding:0 5px !important;
+}
+
+.rt-stat i{
+  height:20px !important;
+  margin-bottom:5px !important;
+  font-size:18px !important;
+}
+
+.rt-stat strong{
+  font-size:12.4px !important;
+  letter-spacing:-.32px !important;
+}
+
+.rt-stat span{
+  margin-top:5px !important;
+  font-size:8.8px !important;
+}
+
+.rt-stat:not(:last-child)::after{
+  top:18px !important;
+  height:42px !important;
+  opacity:.72;
+}
+
+.rt-progress{
+  left:20px !important;
+  right:20px !important;
+  bottom:36px !important;
+  height:6px !important;
+  background:rgba(255,255,255,.54) !important;
+}
+
+.rt-content{
+  margin-top:-20px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+}
+
+.rt-stack{
+  gap:10px !important;
+}
+
+.rt-day-summary{
+  min-height:238px !important;
+  padding:18px 17px 16px !important;
+  grid-template-columns:1fr 108px !important;
+  gap:12px !important;
+  border-radius:28px !important;
+}
+
+.rt-day-copy h2{
+  margin-top:10px !important;
+  font-size:32px !important;
+  line-height:.89 !important;
+  letter-spacing:-1.15px !important;
+}
+
+.rt-day-copy p{
+  margin-top:10px !important;
+  max-width:205px !important;
+  font-size:11.5px !important;
+  line-height:1.28 !important;
+}
+
+.rt-meta-row{
+  margin-top:12px !important;
+  gap:11px !important;
+  font-size:9.6px !important;
+}
+
+.rt-day-photo{
+  width:108px !important;
+  height:108px !important;
+  border-radius:26px !important;
+}
+
+.rt-hotel-strip{
+  margin-top:13px !important;
+  min-height:56px !important;
+  border-radius:22px !important;
+}
+
+.rt-hotel-strip button{
+  height:40px !important;
+  padding:0 15px !important;
+}
+
+.rt-days-card{
+  padding-top:14px !important;
+  padding-bottom:15px !important;
+}
+
+.rt-days-grid{
+  gap:8px !important;
+  padding:0 13px !important;
+}
+
+.rt-day-mini{
+  min-height:106px !important;
+  padding:12px 10px !important;
+  border-radius:22px !important;
+}
+
+.rt-day-mini span{
+  font-size:8px !important;
+}
+
+.rt-day-mini strong{
+  margin-top:10px !important;
+  font-size:13.8px !important;
+}
+
+.rt-day-mini em{
+  margin-top:8px !important;
+  font-size:11.3px !important;
+}
+
+.rt-day-mini small{
+  margin-top:8px !important;
+  font-size:7.8px !important;
+}
+
+.rt-total-card{
+  padding-top:14px !important;
+  padding-bottom:13px !important;
+}
+
+.rt-total-card > .rt-kicker{
+  padding-bottom:12px !important;
+}
+
+.rt-total-grid strong{
+  font-size:13px !important;
+}
+
+.rt-total-grid span{
+  font-size:8.5px !important;
+}
+
+/* Bottom nav visueel iets rustiger over de content */
+.rt-app{
+  padding-bottom:calc(122px + env(safe-area-inset-bottom)) !important;
+}
+
+@media(max-height:760px){
+  .rt-hero{
+    height:46vh !important;
+    min-height:382px !important;
+  }
+
+  .rt-hero-content{
+    top:calc(env(safe-area-inset-top) + 70px) !important;
+  }
+
+  .rt-hero-content h1{
+    font-size:39px !important;
+  }
+
+  .rt-day-summary{
+    min-height:224px !important;
+  }
+}
+
+@media(max-width:390px){
+  .rt-hero-content h1{
+    font-size:38px !important;
+  }
+
+  .rt-day-summary{
+    grid-template-columns:1fr 98px !important;
+  }
+
+  .rt-day-photo{
+    width:98px !important;
+    height:98px !important;
+  }
+
+  .rt-day-copy h2{
+    font-size:29px !important;
+  }
+}
