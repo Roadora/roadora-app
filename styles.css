@@ -3272,3 +3272,192 @@ button{border:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transpar
     padding:0 13px;
   }
 }
+
+
+
+/* =========================================================
+   ROADORA ROADTRIP EXACT POLISH V1
+   Exacte compositie gebaseerd op laatste mockup.
+   ========================================================= */
+
+.rt-hero{
+  height:38vh !important;
+  min-height:320px !important;
+  max-height:420px !important;
+}
+
+.rt-hero-img{
+  object-position:center 42% !important;
+}
+
+.rt-progress{
+  left:32px !important;
+  right:32px !important;
+  bottom:34px !important;
+}
+
+.rt-progress-top{
+  font-size:14px !important;
+  font-weight:900 !important;
+}
+
+.rt-progress-bar{
+  height:8px !important;
+  margin-top:12px !important;
+}
+
+.rt-panel{
+  margin-top:-18px !important;
+  padding:0 16px !important;
+}
+
+.rt-stack{
+  gap:16px !important;
+  max-width:408px !important;
+}
+
+.rt-card{
+  border-radius:32px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(250,245,239,.88),
+      rgba(244,236,226,.74)
+    ) !important;
+}
+
+.rt-today-card{
+  min-height:332px !important;
+  padding:28px 20px 20px !important;
+  grid-template-columns:1fr 124px !important;
+  column-gap:18px !important;
+}
+
+.rt-kicker{
+  font-size:11px !important;
+  letter-spacing:1px !important;
+}
+
+.rt-today-text h1{
+  font-size:58px !important;
+  line-height:.86 !important;
+  letter-spacing:-2px !important;
+  margin-top:14px !important;
+}
+
+.rt-today-text p{
+  margin-top:14px !important;
+  font-size:15px !important;
+}
+
+.rt-meta-row{
+  gap:18px !important;
+  margin-top:18px !important;
+  font-size:12px !important;
+}
+
+.rt-day-image{
+  width:124px !important;
+  height:124px !important;
+  border-radius:34px !important;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.18)),
+    url("./assets/roadtrip-hero.jpg") center/cover !important;
+}
+
+.rt-hotel-strip{
+  margin-top:22px !important;
+  min-height:74px !important;
+  padding:14px 16px !important;
+  border-radius:26px !important;
+}
+
+.rt-hotel-strip strong{
+  font-size:16px !important;
+}
+
+.rt-hotel-strip span{
+  font-size:12px !important;
+  margin-top:6px !important;
+}
+
+.rt-hotel-strip button{
+  height:52px !important;
+  padding:0 24px !important;
+  border-radius:999px !important;
+  font-size:13px !important;
+}
+
+.rt-days-card{
+  padding:20px 0 22px !important;
+}
+
+.rt-card-head{
+  padding:0 18px 16px !important;
+}
+
+.rt-day-scroll{
+  gap:16px !important;
+  padding:0 18px 4px !important;
+}
+
+.rt-day-scroll button{
+  flex:0 0 214px !important;
+  min-height:150px !important;
+  padding:20px !important;
+  border-radius:30px !important;
+}
+
+.rt-day-scroll button.active{
+  border:2px solid rgba(164,92,24,.55) !important;
+}
+
+.rt-day-scroll button span{
+  font-size:11px !important;
+}
+
+.rt-day-scroll button strong{
+  margin-top:16px !important;
+  font-size:24px !important;
+}
+
+.rt-day-scroll button em{
+  margin-top:12px !important;
+  font-size:17px !important;
+}
+
+.rt-day-scroll button small{
+  margin-top:16px !important;
+  font-size:11px !important;
+}
+
+.rt-total-card{
+  padding:20px 0 18px !important;
+}
+
+.rt-total-card > .rt-kicker{
+  padding:0 18px 18px !important;
+}
+
+.rt-total-grid strong{
+  font-size:20px !important;
+}
+
+.rt-total-grid span{
+  margin-top:6px !important;
+  font-size:10px !important;
+}
+
+.roadora-bottom-nav{
+  bottom:calc(14px + env(safe-area-inset-bottom)) !important;
+}
+
+@media(max-width:390px){
+  .rt-today-text h1{
+    font-size:50px !important;
+  }
+
+  .rt-day-scroll button{
+    flex-basis:196px !important;
+  }
+}
