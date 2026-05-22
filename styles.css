@@ -2195,3 +2195,187 @@ body{
     font-size:14px;
   }
 }
+
+
+
+/* =========================================================
+   ROADORA MIJN ROADTRIP POLISH V2
+   Alleen visuele finetuning, geen structuurwijziging.
+   ========================================================= */
+
+.rt-hero{
+  height:50vh !important;
+  min-height:420px !important;
+  max-height:500px !important;
+}
+
+.rt-hero-img{
+  object-position:center 58% !important;
+  transform:scale(1.01) !important;
+}
+
+.rt-hero-layer{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.10) 0%,
+      rgba(0,0,0,.18) 42%,
+      rgba(0,0,0,.22) 64%,
+      rgba(246,239,230,.08) 80%,
+      rgba(246,239,230,.92) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.24),
+      rgba(0,0,0,0) 64%
+    ) !important;
+}
+
+.rt-hero-content{
+  top:calc(env(safe-area-inset-top) + 78px) !important;
+}
+
+.rt-hero-content h1{
+  margin-top:22px !important;
+  font-size:44px !important;
+  line-height:.88 !important;
+}
+
+.rt-hero-stats{
+  bottom:64px !important;
+}
+
+.rt-stat i{
+  height:22px !important;
+  margin-bottom:6px !important;
+  font-size:20px !important;
+  opacity:.95;
+}
+
+.rt-stat strong{
+  font-size:13.2px !important;
+}
+
+.rt-stat span{
+  margin-top:6px !important;
+  font-size:9.4px !important;
+}
+
+.rt-progress{
+  bottom:39px !important;
+  height:6px !important;
+  left:20px !important;
+  right:20px !important;
+}
+
+.rt-content{
+  margin-top:-18px !important;
+}
+
+.rt-stack{
+  gap:10px !important;
+}
+
+.rt-day-summary{
+  min-height:252px !important;
+  padding:19px 18px 17px !important;
+  grid-template-columns:1fr 112px !important;
+  gap:13px !important;
+}
+
+.rt-day-copy h2{
+  font-size:34px !important;
+}
+
+.rt-day-copy p{
+  max-width:210px;
+}
+
+.rt-day-photo{
+  width:112px !important;
+  height:112px !important;
+  border-radius:26px !important;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.20)),
+    linear-gradient(135deg,#cde7ee 0%,#80b7c0 38%,#52785c 72%,#85603b 100%) !important;
+}
+
+.rt-hotel-strip{
+  margin-top:14px !important;
+}
+
+.rt-days-card{
+  padding-top:15px !important;
+  padding-bottom:16px !important;
+}
+
+.rt-days-grid{
+  gap:9px !important;
+}
+
+.rt-day-mini{
+  min-height:112px !important;
+  padding:13px 10px !important;
+  border-radius:23px !important;
+}
+
+.rt-day-mini strong{
+  font-size:14.5px !important;
+}
+
+.rt-day-mini em{
+  font-size:11.8px !important;
+}
+
+.rt-day-mini small{
+  font-size:8px !important;
+}
+
+.rt-total-card{
+  padding-top:15px !important;
+  padding-bottom:14px !important;
+  margin-bottom:0 !important;
+}
+
+.rt-total-grid strong{
+  font-size:13.5px !important;
+}
+
+@media(max-height:760px){
+  .rt-hero{
+    height:48vh !important;
+    min-height:390px !important;
+  }
+
+  .rt-hero-content{
+    top:calc(env(safe-area-inset-top) + 66px) !important;
+  }
+
+  .rt-hero-content h1{
+    font-size:40px !important;
+  }
+
+  .rt-day-summary{
+    min-height:236px !important;
+  }
+}
+
+@media(max-width:390px){
+  .rt-day-summary{
+    grid-template-columns:1fr 100px !important;
+    padding:17px 15px 15px !important;
+  }
+
+  .rt-day-photo{
+    width:100px !important;
+    height:100px !important;
+  }
+
+  .rt-day-copy h2{
+    font-size:30px !important;
+  }
+
+  .rt-hero-content h1{
+    font-size:40px !important;
+  }
+}
