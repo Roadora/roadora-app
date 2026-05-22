@@ -2920,3 +2920,41 @@ var $$ = window.$$;
   },true);
   window.RoadoraPremium={showRoadtrip:()=>showPremium('roadtrip'),showDagboek:()=>showPremium('dagboek'),showProfiel:()=>showPremium('profiel'),showMap,showHome};
 })();
+
+
+
+/* =========================================================
+   ROADORA MAP NAV V2 ROUTER
+   ========================================================= */
+(function(){
+
+  document.addEventListener('click', function(event){
+
+    const nav = event.target.closest('[data-map-nav]');
+    if(!nav) return;
+
+    const action = nav.dataset.mapNav;
+
+    document.querySelectorAll('.mapNavItem').forEach(btn=>{
+      btn.classList.remove('active');
+    });
+
+    nav.classList.add('active');
+
+    if(action === 'roadtrip'){
+      window.RoadoraPremium?.showRoadtrip?.();
+    }
+
+    if(action === 'navigate'){
+      if(window.RoadoraMapsExport?.open){
+        window.RoadoraMapsExport.open('nav');
+      }
+    }
+
+    if(action === 'more'){
+      document.querySelector('.phone')?.classList.toggle('menuOpen');
+    }
+
+  });
+
+})();
