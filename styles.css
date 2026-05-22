@@ -1635,14 +1635,32 @@ img{
 
 
 /* =========================================================
-   ROADORA OVERZICHT + MIJN ROADTRIP EXACT APPSTRUCTUUR V1
-   Mijn Roadtrip gebruikt dezelfde appflow/onderkant als Overzicht.
+   ROADORA COMPONENT SYSTEM V1
+   Basis voor tabs zonder iframe.
+   Overzicht blijft exact, Mijn Roadtrip is component-first.
    ========================================================= */
+
+:root{
+  --rd-bg:#f6efe6;
+  --rd-bg-2:#f2e8dc;
+  --rd-brown:#8f4d11;
+  --rd-brown-2:#a45c18;
+  --rd-text:#111;
+  --rd-muted:rgba(20,18,16,.58);
+  --rd-card:rgba(246,239,230,.66);
+  --rd-shell:430px;
+  --rd-nav-space:calc(112px + env(safe-area-inset-bottom));
+}
+
+html,
+body{
+  background:var(--rd-bg) !important;
+}
 
 .rd-screen{
   display:none;
   min-height:100vh;
-  background:#f6efe6;
+  background:var(--rd-bg);
 }
 
 .rd-screen.active{
@@ -1653,29 +1671,50 @@ img{
   display:none !important;
 }
 
+/* Nav active-state repair, while preserving exact nav shape from Overzicht */
+.roadora-bottom-nav{
+  z-index:300 !important;
+}
+
+.bottom-nav-item{
+  background:transparent;
+  color:rgba(30,24,18,.58);
+  box-shadow:none;
+}
+
+.bottom-nav-item.active{
+  color:#fffaf4 !important;
+  background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(137,76,20,.23),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+
+/* =========================================================
+   MIJN ROADTRIP — COMPONENT-FIRST
+   ========================================================= */
+
 .rd-roadtrip-screen{
-  padding-bottom:0 !important;
   overflow-x:hidden;
 }
 
-.rt-page{
+.rt-app{
   width:100%;
   max-width:430px;
   min-height:100vh;
   margin:0 auto;
-  background:#f6efe6;
-  position:relative;
+  background:var(--rd-bg);
   overflow:hidden;
-  padding-bottom:calc(116px + env(safe-area-inset-bottom));
+  padding-bottom:var(--rd-nav-space);
 }
 
 .rt-hero{
   position:relative;
-  height:34vh;
-  min-height:260px;
-  max-height:335px;
+  min-height:455px;
+  height:53vh;
+  max-height:530px;
   overflow:hidden;
-  background:#1d261f;
+  background:#172018;
 }
 
 .rt-hero-img{
@@ -1684,16 +1723,16 @@ img{
   width:100%;
   height:100%;
   object-fit:cover;
-  object-position:center 48%;
-  transform:scale(1.02);
+  object-position:center 46%;
+  transform:scale(1.015);
 }
 
-.rt-hero-overlay{
+.rt-hero-layer{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.04) 44%,rgba(246,239,230,.07) 72%,rgba(246,239,230,.88) 100%),
-    linear-gradient(90deg,rgba(0,0,0,.20),rgba(0,0,0,0) 58%);
+    linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.22) 44%,rgba(0,0,0,.28) 68%,rgba(246,239,230,.02) 79%,rgba(246,239,230,.92) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.26),rgba(0,0,0,0) 60%);
 }
 
 .rt-hero::after{
@@ -1702,60 +1741,146 @@ img{
   left:0;
   right:0;
   bottom:-1px;
-  height:132px;
-  background:linear-gradient(to bottom,rgba(246,239,230,0),#f6efe6 94%);
+  height:145px;
+  background:linear-gradient(to bottom,rgba(246,239,230,0),var(--rd-bg) 96%);
   z-index:3;
   pointer-events:none;
 }
 
-.rt-hero-progress{
+.rt-hero-content{
   position:absolute;
   z-index:5;
-  left:28px;
-  right:28px;
-  bottom:50px;
+  left:20px;
+  right:20px;
+  top:calc(env(safe-area-inset-top) + 96px);
+  color:white;
+  text-shadow:0 5px 20px rgba(0,0,0,.34);
+}
+
+.rt-pill{
+  width:max-content;
+  height:31px;
+  padding:0 13px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(31,39,34,.72);
   color:#fff;
+  font-size:13px;
+  font-weight:900;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+.rt-pill span{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:#67d96f;
+}
+
+.rt-hero-content h1{
+  margin:28px 0 0;
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:46px;
+  line-height:.88;
+  letter-spacing:-1.7px;
+  font-weight:800;
+}
+
+.rt-hero-content p{
+  margin:11px 0 0;
+  font-size:18px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.35px;
+}
+
+.rt-hero-stats{
+  position:absolute;
+  z-index:5;
+  left:16px;
+  right:16px;
+  bottom:62px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  color:#fff;
+  text-align:center;
   text-shadow:0 3px 14px rgba(0,0,0,.28);
 }
 
-.rt-progress-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:-.2px;
+.rt-stat{
+  position:relative;
+  min-width:0;
+  padding:0 6px;
 }
 
-.rt-progress-track{
-  height:7px;
-  margin-top:10px;
+.rt-stat:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:22px;
+  width:1px;
+  height:46px;
+  background:rgba(255,255,255,.34);
+}
+
+.rt-stat i{
+  display:block;
+  height:27px;
+  margin-bottom:8px;
+  font-style:normal;
+  font-size:25px;
+  line-height:1;
+}
+
+.rt-stat strong{
+  display:block;
+  font-size:14px;
+  line-height:1.05;
+  font-weight:900;
+  white-space:nowrap;
+  letter-spacing:-.35px;
+}
+
+.rt-stat span{
+  display:block;
+  margin-top:8px;
+  font-size:10px;
+  line-height:1.05;
+  font-weight:750;
+  color:rgba(255,255,255,.78);
+}
+
+.rt-progress{
+  position:absolute;
+  z-index:5;
+  left:20px;
+  right:20px;
+  bottom:38px;
+  height:8px;
   border-radius:999px;
-  background:rgba(255,255,255,.76);
+  background:rgba(255,255,255,.52);
   overflow:hidden;
 }
 
-.rt-progress-track span{
+.rt-progress span{
   display:block;
   width:30%;
   height:100%;
   border-radius:999px;
-  background:#fff;
+  background:#fff7e8;
 }
 
-.rt-beige{
+/* Content */
+.rt-content{
   position:relative;
-  z-index:5;
-  margin-top:-38px;
+  z-index:6;
+  margin-top:-12px;
   padding:0 14px;
   background:
-    linear-gradient(
-      to bottom,
-      rgba(246,239,230,0) 0px,
-      rgba(246,239,230,.70) 46px,
-      #f6efe6 92px,
-      #f2e8dc 100%
-    );
+    linear-gradient(to bottom,rgba(246,239,230,0),var(--rd-bg) 40px,var(--rd-bg-2) 100%);
 }
 
 .rt-stack{
@@ -1771,18 +1896,16 @@ img{
   border-radius:28px;
   background:linear-gradient(180deg,rgba(246,239,230,.74),rgba(246,239,230,.50));
   border:1px solid rgba(92,66,42,.045);
-  box-shadow:0 8px 20px rgba(48,34,22,.035), inset 0 1px 0 rgba(255,255,255,.48);
+  box-shadow:0 8px 20px rgba(48,34,22,.035),inset 0 1px 0 rgba(255,255,255,.48);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
 }
 
-.rt-current{
-  position:relative;
-  min-height:236px;
+.rt-day-summary{
   padding:20px 18px 18px;
   display:grid;
-  grid-template-columns:1fr 116px;
-  column-gap:14px;
+  grid-template-columns:1fr 118px;
+  gap:14px;
   overflow:hidden;
 }
 
@@ -1796,25 +1919,25 @@ img{
   text-transform:uppercase;
 }
 
-.rt-current h1{
+.rt-day-copy h2{
   margin:11px 0 0;
   font-family:"Playfair Display",Georgia,serif;
-  color:#111;
+  color:var(--rd-text);
   font-size:35px;
   line-height:.88;
   letter-spacing:-1.25px;
   font-weight:800;
 }
 
-.rt-current p{
+.rt-day-copy p{
   margin:11px 0 0;
-  color:rgba(20,18,16,.58);
+  color:var(--rd-muted);
   font-size:12px;
   line-height:1.25;
   font-weight:750;
 }
 
-.rt-meta{
+.rt-meta-row{
   display:flex;
   flex-wrap:wrap;
   gap:12px;
@@ -1824,9 +1947,9 @@ img{
   font-weight:850;
 }
 
-.rt-photo{
-  width:116px;
-  height:116px;
+.rt-day-photo{
+  width:118px;
+  height:118px;
   border-radius:28px;
   align-self:start;
   background:
@@ -1835,9 +1958,8 @@ img{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
 }
 
-.rt-hotel{
+.rt-hotel-strip{
   grid-column:1 / -1;
-  margin-top:16px;
   min-height:58px;
   padding:10px 12px;
   border-radius:22px;
@@ -1849,7 +1971,7 @@ img{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
 }
 
-.rt-hotel strong{
+.rt-hotel-strip strong{
   display:block;
   color:#111;
   font-size:13px;
@@ -1857,7 +1979,7 @@ img{
   font-weight:850;
 }
 
-.rt-hotel span{
+.rt-hotel-strip span{
   display:block;
   margin-top:4px;
   color:rgba(20,18,16,.55);
@@ -1866,7 +1988,7 @@ img{
   font-weight:650;
 }
 
-.rt-hotel button{
+.rt-hotel-strip button{
   flex:0 0 auto;
   height:42px;
   padding:0 16px;
@@ -1878,42 +2000,36 @@ img{
   box-shadow:0 10px 22px rgba(137,76,20,.20);
 }
 
-.rt-days{
+.rt-days-card{
   padding:16px 0 18px;
   overflow:hidden;
 }
 
-.rt-card-title{
+.rt-section-head{
   padding:0 16px 14px;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
 
-.rt-card-title small{
+.rt-section-head small{
   color:rgba(20,18,16,.50);
   font-size:10px;
   font-weight:800;
 }
 
-.rt-days-scroll{
-  display:flex;
-  gap:14px;
-  overflow-x:auto;
-  padding:0 16px 2px;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
+.rt-days-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  padding:0 14px;
 }
 
-.rt-days-scroll::-webkit-scrollbar{
-  display:none;
-}
-
-.rt-days-scroll button{
-  flex:0 0 180px;
-  min-height:118px;
-  padding:16px;
-  border-radius:26px;
+.rt-day-mini{
+  min-width:0;
+  min-height:122px;
+  padding:14px 12px;
+  border-radius:24px;
   text-align:left;
   background:rgba(255,255,255,.22);
   border:1px solid rgba(92,66,42,.032);
@@ -1921,58 +2037,58 @@ img{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
 }
 
-.rt-days-scroll button.active{
+.rt-day-mini.active{
+  border-color:rgba(143,77,17,.70);
   background:rgba(255,255,255,.34);
-  box-shadow:0 8px 18px rgba(48,34,22,.045), inset 0 1px 0 rgba(255,255,255,.38);
 }
 
-.rt-days-scroll button span{
+.rt-day-mini span{
   display:block;
   color:#80502a;
-  font-size:9.5px;
+  font-size:8.5px;
   line-height:1;
   font-weight:900;
-  letter-spacing:.6px;
+  letter-spacing:.45px;
   text-transform:uppercase;
+  white-space:nowrap;
 }
 
-.rt-days-scroll button strong{
+.rt-day-mini strong{
   display:block;
   margin-top:11px;
   color:#111;
-  font-size:19px;
+  font-size:15px;
   line-height:1;
   font-weight:900;
-  letter-spacing:-.45px;
+  letter-spacing:-.35px;
 }
 
-.rt-days-scroll button em{
+.rt-day-mini em{
   display:block;
-  margin-top:9px;
+  margin-top:8px;
   color:#111;
   font-style:normal;
-  font-size:14px;
+  font-size:12px;
   line-height:1;
   font-weight:850;
 }
 
-.rt-days-scroll button small{
+.rt-day-mini small{
   display:block;
-  margin-top:10px;
+  margin-top:9px;
   color:rgba(20,18,16,.48);
-  font-size:10px;
-  line-height:1;
+  font-size:8.5px;
+  line-height:1.15;
   font-weight:700;
-  white-space:nowrap;
 }
 
-.rt-total{
+.rt-total-card{
   padding:16px 0 15px;
   margin-bottom:0;
   overflow:hidden;
 }
 
-.rt-total > .rt-kicker{
+.rt-total-card > .rt-kicker{
   padding:0 16px 13px;
 }
 
@@ -2017,103 +2133,65 @@ img{
   font-weight:650;
 }
 
-/* Zelfde onderkant als Overzicht: nav blijft leidend */
-.roadora-bottom-nav{
-  z-index:200 !important;
-}
-
 @media(max-height:760px){
   .rt-hero{
-    height:31vh;
-    min-height:238px;
+    min-height:420px;
+    height:51vh;
   }
 
-  .rt-hero-progress{
-    bottom:44px;
+  .rt-hero-content{
+    top:calc(env(safe-area-inset-top) + 78px);
   }
 
-  .rt-current{
-    min-height:224px;
-    padding:18px 16px 16px;
+  .rt-hero-content h1{
+    font-size:42px;
   }
 
-  .rt-current h1{
-    font-size:32px;
+  .rt-hero-stats{
+    bottom:58px;
   }
 
-  .rt-photo{
-    width:108px;
-    height:108px;
+  .rt-stat i{
+    font-size:23px;
   }
 
-  .rt-days-scroll button{
-    min-height:110px;
+  .rt-stat strong{
+    font-size:12.5px;
   }
 }
 
 @media(max-width:390px){
-  .rt-beige{
+  .rt-content{
     padding-left:12px;
     padding-right:12px;
   }
 
-  .rt-current{
+  .rt-day-summary{
     grid-template-columns:1fr 104px;
     column-gap:12px;
+    padding:18px 16px 16px;
   }
 
-  .rt-photo{
+  .rt-day-photo{
     width:104px;
     height:104px;
     border-radius:25px;
   }
 
-  .rt-current h1{
+  .rt-day-copy h2{
     font-size:31px;
   }
 
-  .rt-days-scroll button{
-    flex-basis:164px;
+  .rt-days-grid{
+    gap:8px;
+    padding:0 12px;
   }
 
-  .rt-hotel button{
-    padding:0 13px;
+  .rt-day-mini{
+    padding:13px 10px;
   }
-}
 
-
-
-
-
-
-/* =========================================================
-   ROADORA ROUTER FIX V4
-   Overzicht + Mijn Roadtrip schakelen echt.
-   Andere tabs zijn nog placeholders.
-   ========================================================= */
-
-.rd-screen[hidden]{
-  display:none !important;
-}
-
-.rd-screen.active{
-  display:block !important;
-}
-
-.rd-screen:not(.active){
-  display:none !important;
-}
-
-.bottom-nav-item{
-  background:transparent;
-  color:rgba(30,24,18,.58);
-  box-shadow:none;
-}
-
-.bottom-nav-item.active{
-  color:#fffaf4 !important;
-  background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%) !important;
-  box-shadow:
-    0 10px 20px rgba(137,76,20,.23),
-    inset 0 1px 0 rgba(255,255,255,.18) !important;
+  .rt-day-mini strong{
+    font-size:14px;
+  }
 }

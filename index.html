@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Roadora — Overzicht + Mijn Roadtrip Exact Appstructuur v1</title>
+<title>Roadora — Component System v1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap">
 <link rel="stylesheet" href="./styles.css">
@@ -200,44 +200,71 @@
 
       </div>
     </section>
-</main>
+
+    
+
+  </main>
 </section>
 
 
 <section class="rd-screen rd-roadtrip-screen" data-screen="roadtrip" hidden>
-  <main class="rt-page">
-    <header class="rt-hero">
-      <img class="rt-hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip">
-      <div class="rt-hero-overlay"></div>
+  <main class="rt-app" aria-label="Mijn Roadtrip">
 
-      <div class="rt-hero-progress">
-        <div class="rt-progress-head">
-          <strong>3.420 / 10.820 km</strong>
-          <strong>30% voltooid</strong>
-        </div>
-        <div class="rt-progress-track"><span></span></div>
+    <header class="rt-hero">
+      <img class="rt-hero-img" src="./assets/roadtrip-hero.png" alt="Roadora roadtrip hero">
+      <div class="rt-hero-layer"></div>
+
+      <div class="rt-hero-content">
+        <div class="rt-pill"><span></span>Dag 3 van 8</div>
+        <h1>Alpen avontuur</h1>
+        <p>Rotterdam → Innsbruck</p>
       </div>
+
+      <section class="rt-hero-stats" aria-label="Roadtrip voortgang">
+        <div class="rt-stat">
+          <i>⌁</i>
+          <strong>3.420 / 10.820 km</strong>
+          <span>Totale afstand</span>
+        </div>
+        <div class="rt-stat">
+          <i>◷</i>
+          <strong>4u 15m</strong>
+          <span>Rijtijd</span>
+        </div>
+        <div class="rt-stat">
+          <i>#</i>
+          <strong>2</strong>
+          <span>Tussenstops</span>
+        </div>
+        <div class="rt-stat">
+          <i>▱</i>
+          <strong>30%</strong>
+          <span>Voltooid</span>
+        </div>
+      </section>
+
+      <div class="rt-progress"><span></span></div>
     </header>
 
-    <section class="rt-beige">
+    <section class="rt-content">
       <div class="rt-stack">
 
-        <article class="rt-card rt-current">
-          <div class="rt-current-copy">
+        <article class="rt-card rt-day-summary">
+          <div class="rt-day-copy">
             <span class="rt-kicker">Vandaag · Dag 3</span>
-            <h1>Innsbruck →<br>Gardameer</h1>
+            <h2>Innsbruck →<br>Gardameer</h2>
             <p>Een rustige Alpenrit richting het water.</p>
 
-            <div class="rt-meta">
+            <div class="rt-meta-row">
               <span>⌖ 320 km</span>
               <span>◷ 4u 15m</span>
               <span># 2 stops</span>
             </div>
           </div>
 
-          <div class="rt-photo"></div>
+          <div class="rt-day-photo"></div>
 
-          <div class="rt-hotel">
+          <div class="rt-hotel-strip">
             <div>
               <strong>Hotel vanavond</strong>
               <span>Hotel Riva del Garda · vanaf 15:00</span>
@@ -246,28 +273,28 @@
           </div>
         </article>
 
-        <article class="rt-card rt-days">
-          <div class="rt-card-title">
+        <article class="rt-card rt-days-card">
+          <header class="rt-section-head">
             <span class="rt-kicker">Reis per dag</span>
             <small>10 dagen</small>
-          </div>
+          </header>
 
-          <div class="rt-days-scroll">
-            <button type="button">
+          <div class="rt-days-grid">
+            <button type="button" class="rt-day-mini">
               <span>Dag 1</span>
               <strong>Rotterdam</strong>
               <em>→ Frankfurt</em>
               <small>480 km · 5u 10m</small>
             </button>
 
-            <button type="button">
+            <button type="button" class="rt-day-mini">
               <span>Dag 2</span>
               <strong>Frankfurt</strong>
               <em>→ Innsbruck</em>
               <small>460 km · 5u 30m</small>
             </button>
 
-            <button class="active" type="button">
+            <button type="button" class="rt-day-mini active">
               <span>Vandaag · Dag 3</span>
               <strong>Innsbruck</strong>
               <em>→ Gardameer</em>
@@ -276,9 +303,8 @@
           </div>
         </article>
 
-        <article class="rt-card rt-total">
+        <article class="rt-card rt-total-card">
           <span class="rt-kicker">Totaal van je roadtrip</span>
-
           <div class="rt-total-grid">
             <div><strong>10.820</strong><span>km</span></div>
             <div><strong>68u 45m</strong><span>reistijd</span></div>
@@ -290,12 +316,13 @@
 
       </div>
     </section>
+
   </main>
 </section>
 
 
 <nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
-      <button class="bottom-nav-item active" data-tab="overview" type="button" aria-label="Overzicht">
+      <button class="bottom-nav-item active" type="button" data-tab="overview" aria-label="Overzicht">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 5h16"></path>
           <path d="M4 12h10"></path>
@@ -304,7 +331,7 @@
         <span>Overzicht</span>
       </button>
 
-      <button class="bottom-nav-item" data-tab="roadtrip" type="button" aria-label="Mijn roadtrip">
+      <button class="bottom-nav-item" type="button" data-tab="roadtrip" data-tab="roadtrip" aria-label="Mijn roadtrip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="5" cy="19" r="2"></circle>
           <circle cx="19" cy="5" r="2"></circle>
@@ -313,7 +340,7 @@
         <span>Mijn roadtrip</span>
       </button>
 
-      <button class="bottom-nav-item" data-tab="kaart" type="button" aria-label="Kaart">
+      <button class="bottom-nav-item" type="button" data-tab="kaart" aria-label="Kaart">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"></path>
           <path d="M9 3v15"></path>
@@ -322,7 +349,7 @@
         <span>Kaart</span>
       </button>
 
-      <button class="bottom-nav-item" data-tab="dagboek" type="button" aria-label="Mijn dagboek">
+      <button class="bottom-nav-item" type="button" data-tab="dagboek" aria-label="Mijn dagboek">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path>
           <path d="M8 8h7"></path>
@@ -331,7 +358,7 @@
         <span>Mijn dagboek</span>
       </button>
 
-      <button class="bottom-nav-item" data-tab="profiel" type="button" aria-label="Profiel">
+      <button class="bottom-nav-item" type="button" data-tab="profiel" aria-label="Profiel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="8" r="4"></circle>
           <path d="M4 21a8 8 0 0 1 16 0"></path>

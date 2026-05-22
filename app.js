@@ -1,4 +1,4 @@
-/* Roadora router fix v4 */
+/* Roadora component system router v1 */
 
 document.addEventListener("DOMContentLoaded", () => {
   const screens = Array.from(document.querySelectorAll(".rd-screen"));
@@ -6,15 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showScreen(tab){
     const target = screens.find(screen => screen.dataset.screen === tab);
-
-    // Alleen schakelen als het scherm echt bestaat.
-    // Kaart/Dagboek/Profiel bouwen we later.
-    if(!target){
-      return;
-    }
+    if(!target) return;
 
     screens.forEach(screen => {
-      const active = screen.dataset.screen === tab;
+      const active = screen === target;
       screen.classList.toggle("active", active);
 
       if(active){
@@ -24,22 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    buttons.forEach(btn => {
-      const active = btn.dataset.tab === tab;
-      btn.classList.toggle("active", active);
-
-      if(active){
-        btn.setAttribute("aria-current", "page");
-      }else{
-        btn.removeAttribute("aria-current");
-      }
+    buttons.forEach(button => {
+      const active = button.dataset.tab === tab;
+      button.classList.toggle("active", active);
+      if(active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
     });
 
     window.scrollTo(0, 0);
   }
 
   buttons.forEach(button => {
-    button.addEventListener("click", (event) => {
+    button.addEventListener("click", event => {
       event.preventDefault();
       showScreen(button.dataset.tab);
     });
