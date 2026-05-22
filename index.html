@@ -1,201 +1,4513 @@
 <!DOCTYPE html>
-
 <html lang="nl">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Roadora — Clean Core</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@650;750&amp;display=swap" rel="stylesheet"/>
-<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-<meta content="roadora-clean-split-juiste-hero-v1; home-route-map-stable" name="roadora-build"/>
-<link href="./styles.css" rel="stylesheet"/>
-<script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script defer="" src="./app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Roadora — Tabs Split v1</title>
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<div class="app">
-<main class="phone">
-<div class="bg"></div>
-<section class="content">
-<div class="top">
-<div class="logo">
-<div class="logoMark">
-<svg fill="none" height="22" viewbox="0 0 24 24" width="22">
-<path d="M4 19 12 3l8 16-8-5-8 5Z" stroke="currentColor" stroke-width="1.45"></path>
-<path d="M12 3v11" stroke="currentColor" stroke-width="1.45"></path>
-</svg>
+<div class="shell">
+<iframe class="tab-frame active" data-tab="overview" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;nl&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot; /&gt;
+  &lt;title&gt;Roadora — Hero Intact Blocks Under&lt;/title&gt;
+
+  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Playfair+Display:wght@700;800&amp;display=swap&quot; /&gt;
+
+  &lt;style&gt;
+    * {
+      box-sizing:border-box;
+    }
+
+    html,
+    body {
+      margin:0;
+      width:100%;
+      min-height:100%;
+      background:#b9ad9d;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    body {
+      display:flex;
+      justify-content:center;
+    }
+
+    button {
+      border:0;
+      font:inherit;
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .app {
+      width:100%;
+      max-width:430px;
+      min-height:100vh;
+      overflow:hidden;
+      background:#f6efe6;
+      position:relative;
+    }
+
+    /* HERO LOCKED: blijft intact, geen beige overlap over auto/weg */
+    .hero {
+      position:relative;
+      z-index:1;
+      height:43vh;
+      min-height:350px;
+      max-height:420px;
+      overflow:hidden;
+      background:#1d261f;
+      border-radius:0;
+    }
+
+    .hero-img {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center 74%;
+      transform:scale(1.02);
+    }
+
+    .hero-shade {
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.02) 48%, rgba(0,0,0,.16) 100%),
+        linear-gradient(90deg, rgba(0,0,0,.38), rgba(0,0,0,.06) 55%, rgba(0,0,0,.08));
+      pointer-events:none;
+    }
+
+    .topbar {
+      position:absolute;
+      z-index:5;
+      top:calc(env(safe-area-inset-top) + 14px);
+      left:16px;
+      right:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .round-btn {
+      width:48px;
+      height:48px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:rgba(22,28,31,.74);
+      color:#fff;
+      font-size:24px;
+      font-weight:800;
+      box-shadow:0 10px 26px rgba(0,0,0,.18);
+    }
+
+    .brand {
+      margin-top:-4px;
+      color:#fff;
+      text-align:center;
+      text-shadow:0 2px 18px rgba(0,0,0,.25);
+    }
+
+    .brand strong {
+      display:block;
+      font-size:38px;
+      line-height:.8;
+      font-weight:900;
+      letter-spacing:-2px;
+    }
+
+    .brand span {
+      display:block;
+      margin-top:8px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:5px;
+    }
+
+    .hero-copy {
+      position:absolute;
+      z-index:5;
+      left:18px;
+      top:78px;
+      width:min(305px,calc(100% - 36px));
+      color:#fff;
+      text-shadow:0 4px 18px rgba(0,0,0,.32);
+    }
+
+    .badge {
+      width:max-content;
+      height:28px;
+      padding:0 12px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      background:rgba(62,73,53,.72);
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .badge-dot {
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:#72d66d;
+    }
+
+    .hero-title {
+      margin:0;
+      font-family:&quot;Playfair Display&quot;,Georgia,serif;
+      font-size:38px;
+      line-height:.92;
+      letter-spacing:-1.4px;
+      font-weight:800;
+    }
+
+    .route {
+      margin:8px 0 0;
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:-.25px;
+    }
+
+    .hero-actions {
+      display:none !important;
+    }
+
+    /* Beige vlak begint onder de hero. Alleen zachte rounded top, geen overlap op auto/weg */
+    .beige-panel {
+      position:relative;
+      z-index:2;
+      margin-top:0;
+      min-height:57vh;
+      padding:18px 14px calc(108px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg,#f6efe6 0%,#f2e8dc 100%);
+      border-top-left-radius:38px;
+      border-top-right-radius:38px;
+      box-shadow:0 -12px 28px rgba(41,27,14,.045);
+    }
+
+    .content-stack {
+      width:100%;
+      max-width:396px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .surface-card {
+      width:100%;
+      border-radius:28px;
+      background:linear-gradient(180deg,rgba(255,255,255,.70),rgba(255,255,255,.46));
+      border:1px solid rgba(92,66,42,.07);
+      box-shadow:
+        0 12px 28px rgba(48,34,22,.06),
+        inset 0 1px 0 rgba(255,255,255,.78);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+
+    /* OVERVIEW */
+    .roadora-summary-card {
+      overflow:hidden;
+    }
+
+    .summary-stats {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      min-height:84px;
+      border-bottom:1px solid rgba(92,66,42,.08);
+    }
+
+    .summary-stat {
+      position:relative;
+      min-width:0;
+      padding:11px 7px 9px;
+      text-align:center;
+    }
+
+    .summary-stat:not(:last-child)::after {
+      content:&quot;&quot;;
+      position:absolute;
+      top:16px;
+      right:0;
+      width:1px;
+      height:42px;
+      background:rgba(92,66,42,.10);
+    }
+
+    .summary-icon {
+      height:20px;
+      margin-bottom:5px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#6f3f1c;
+    }
+
+    .summary-icon svg {
+      width:19px;
+      height:19px;
+      stroke-width:2;
+    }
+
+    .summary-value {
+      display:block;
+      color:#070707;
+      font-size:12.5px;
+      line-height:1.12;
+      font-weight:700;
+      letter-spacing:-.25px;
+      white-space:nowrap;
+    }
+
+    .summary-label {
+      display:block;
+      margin-top:4px;
+      color:rgba(20,18,16,.72);
+      font-size:8.5px;
+      line-height:1.22;
+      font-weight:500;
+    }
+
+    .summary-sub {
+      display:block;
+      margin-top:4px;
+      color:rgba(20,18,16,.58);
+      font-size:8.2px;
+      line-height:1.18;
+      font-weight:500;
+      white-space:nowrap;
+    }
+
+    .summary-actions {
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:13px;
+      padding:10px 10px 12px;
+    }
+
+    .summary-btn {
+      min-height:36px;
+      height:36px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      font-size:11.5px;
+      line-height:1;
+      font-weight:700;
+      letter-spacing:-.15px;
+    }
+
+    .summary-btn svg {
+      width:17px;
+      height:17px;
+      stroke-width:2.1;
+      flex:0 0 auto;
+    }
+
+    .summary-btn.primary {
+      color:#fffaf4;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      box-shadow:
+        0 14px 24px rgba(137,76,20,.24),
+        inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .summary-btn.secondary {
+      color:#111;
+      background:rgba(255,255,255,.70);
+      border:1px solid rgba(92,66,42,.08);
+      box-shadow:0 10px 22px rgba(45,31,18,.06);
+    }
+
+    /* NEXT STOP */
+    .next-stop-card {
+      display:grid;
+      grid-template-columns:.95fr 1.1fr;
+      gap:12px;
+      padding:12px;
+      align-items:stretch;
+    }
+
+    .next-stop-image {
+      position:relative;
+      min-height:154px;
+      border-radius:22px;
+      overflow:hidden;
+      background:#d8c8b7;
+    }
+
+    .next-stop-image img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center center;
+      display:block;
+    }
+
+    .next-stop-left {
+      position:relative;
+      min-width:0;
+      padding-bottom:46px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .next-stop-kicker {
+      margin:0 0 7px;
+      color:#8d531f;
+      font-size:10px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.65px;
+      text-transform:uppercase;
+    }
+
+    .next-stop-title {
+      color:#12100d;
+      font-size:30px;
+      line-height:.92;
+      letter-spacing:-1px;
+      font-weight:800;
+    }
+
+    .next-stop-country {
+      margin-top:6px;
+      color:rgba(20,18,16,.60);
+      font-size:11px;
+      line-height:1.2;
+      font-weight:600;
+    }
+
+    .next-stop-meta {
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      margin-top:12px;
+    }
+
+    .next-stop-row {
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:#221d18;
+      font-size:10px;
+      line-height:1.15;
+      font-weight:650;
+    }
+
+    .next-stop-row svg {
+      width:13px;
+      height:13px;
+      color:#8d531f;
+      flex:0 0 auto;
+    }
+
+    .next-stop-details-btn {
+      position:absolute;
+      right:0;
+      bottom:0;
+      height:34px;
+      padding:0 14px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      color:#fffaf4;
+      font-size:10.5px;
+      line-height:1;
+      font-weight:760;
+      letter-spacing:-.15px;
+      box-shadow:
+        0 10px 22px rgba(137,76,20,.24),
+        inset 0 1px 0 rgba(255,255,255,.14);
+    }
+
+    .next-stop-details-btn svg {
+      width:14px;
+      height:14px;
+      stroke-width:2.2;
+      flex:0 0 auto;
+    }
+
+    /* TODAY ROUTE */
+    .today-route-card {
+      padding:14px 16px;
+      border-radius:24px;
+    }
+
+    .today-route-title {
+      margin:0 0 13px;
+      color:#80502a;
+      font-size:10.5px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
+
+    .today-route-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .today-route-item {
+      position:relative;
+      min-width:0;
+      padding:0 10px;
+    }
+
+    .today-route-item:first-child {
+      padding-left:0;
+    }
+
+    .today-route-item:last-child {
+      padding-right:0;
+    }
+
+    .today-route-item:not(:last-child)::after {
+      content:&quot;&quot;;
+      position:absolute;
+      top:12px;
+      right:0;
+      width:1px;
+      height:68px;
+      background:rgba(92,66,42,.085);
+    }
+
+    .today-route-icon {
+      width:40px;
+      height:40px;
+      margin:0 0 10px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(246,239,230,.80);
+      color:#7b4b25;
+    }
+
+    .today-route-icon svg {
+      width:18px;
+      height:18px;
+      stroke-width:2;
+    }
+
+    .today-route-item strong {
+      display:block;
+      color:#111;
+      font-size:13px;
+      line-height:1.1;
+      font-weight:760;
+      letter-spacing:-.25px;
+    }
+
+    .today-route-item span {
+      display:block;
+      margin-top:6px;
+      color:rgba(20,18,16,.60);
+      font-size:10px;
+      line-height:1.2;
+      font-weight:500;
+    }
+
+    /* BOTTOM NAV */
+    .roadora-bottom-nav {
+      position:fixed;
+      left:50%;
+      bottom:calc(12px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      width:calc(100% - 28px);
+      max-width:402px;
+      z-index:200;
+      padding:8px 7px;
+      border-radius:28px;
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:4px;
+      background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.56));
+      border:1px solid rgba(92,66,42,.10);
+      box-shadow:
+        0 18px 42px rgba(48,34,22,.18),
+        inset 0 1px 0 rgba(255,255,255,.86);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+    }
+
+    .bottom-nav-item {
+      min-width:0;
+      height:52px;
+      border-radius:20px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      color:rgba(30,24,18,.58);
+      background:transparent;
+      font-size:9px;
+      line-height:1;
+      font-weight:650;
+      letter-spacing:-.15px;
+      white-space:nowrap;
+    }
+
+    .bottom-nav-item svg {
+      width:20px;
+      height:20px;
+      stroke-width:2.05;
+    }
+
+    .bottom-nav-item.active {
+      color:#fffaf4;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      box-shadow:
+        0 10px 20px rgba(137,76,20,.23),
+        inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    @media (max-height:760px) {
+      .hero {
+        height:43vh;
+        min-height:340px;
+      }
+
+      .hero-copy {
+        top:72px;
+      }
+
+      .hero-title {
+        font-size:34px;
+      }
+    }
+
+    @media (max-width:390px) {
+      .beige-panel {
+        padding-left:12px;
+        padding-right:12px;
+      }
+
+      .next-stop-card {
+        grid-template-columns:.95fr 1.1fr;
+        gap:10px;
+        padding:11px;
+      }
+
+      .next-stop-title {
+        font-size:27px;
+      }
+
+      .next-stop-image {
+        min-height:144px;
+      }
+
+      .next-stop-left {
+        padding-bottom:42px;
+      }
+
+      .next-stop-details-btn {
+        height:32px;
+        padding:0 12px;
+        font-size:10px;
+      }
+
+      .today-route-item {
+        padding:0 8px;
+      }
+
+      .today-route-item strong {
+        font-size:12.5px;
+      }
+
+      .today-route-item span {
+        font-size:9.5px;
+      }
+
+      .roadora-bottom-nav {
+        width:calc(100% - 22px);
+        padding:7px 6px;
+        border-radius:26px;
+      }
+
+      .bottom-nav-item {
+        height:49px;
+        border-radius:18px;
+        font-size:8px;
+      }
+
+      .bottom-nav-item svg {
+        width:18px;
+        height:18px;
+      }
+    }
+  
+/* =========================================================
+   ROADORA HERO FADE BLOCKS V2
+   Hero blijft intact, maar beige vlak vloeit weer zacht over.
+   Blokken blijven netjes in de beige content-flow.
+   ========================================================= */
+
+/* Hero krijgt alleen onderaan een lange zachte fade */
+.hero{
+  position:relative !important;
+  z-index:1 !important;
+  overflow:hidden !important;
+}
+
+.hero::before{
+  content:&quot;&quot; !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:-1px !important;
+  height:155px !important;
+  z-index:6 !important;
+  pointer-events:none !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0%,
+      rgba(246,239,230,.05) 24%,
+      rgba(246,239,230,.18) 46%,
+      rgba(246,239,230,.42) 66%,
+      rgba(246,239,230,.74) 84%,
+      #f6efe6 100%
+    ) !important;
+}
+
+/* Donkere onderkant uit de hero halen, zodat de fade warm blijft */
+.hero-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.03) 48%,
+      rgba(0,0,0,.01) 78%,
+      rgba(0,0,0,0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.34),
+      rgba(0,0,0,.05) 55%,
+      rgba(0,0,0,.06)
+    ) !important;
+}
+
+/* Beige vlak schuift subtiel omhoog in de fade,
+   maar niet zo hoog dat auto/weg verdwijnen */
+.beige-panel{
+  position:relative !important;
+  z-index:3 !important;
+
+  margin-top:-44px !important;
+  min-height:calc(57vh + 44px) !important;
+
+  padding-top:58px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+  padding-bottom:calc(108px + env(safe-area-inset-bottom)) !important;
+
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0px,
+      rgba(246,239,230,.18) 22px,
+      rgba(246,239,230,.46) 48px,
+      rgba(246,239,230,.78) 76px,
+      #f6efe6 104px,
+      #f2e8dc 100%
+    ) !important;
+}
+
+/* Extra zachte overlap achter de bovenkant van de content */
+.beige-panel::before{
+  content:&quot;&quot; !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:-64px !important;
+  height:130px !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0%,
+      rgba(246,239,230,.14) 28%,
+      rgba(246,239,230,.42) 58%,
+      rgba(246,239,230,.78) 84%,
+      #f6efe6 100%
+    ) !important;
+}
+
+/* Content staat niet meer als losse plaat direct tegen de hero,
+   maar zweeft rustig in de fade/achtergrond */
+.content-stack{
+  position:relative !important;
+  z-index:10 !important;
+  margin-top:0 !important;
+  gap:10px !important;
+}
+
+/* Cards iets zachter zodat ze meer in de achtergrond vallen,
+   zonder de hero te bedekken */
+.surface-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.66),
+      rgba(255,255,255,.44)
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.065) !important;
+
+  box-shadow:
+    0 10px 26px rgba(48,34,22,.052),
+    inset 0 1px 0 rgba(255,255,255,.76) !important;
+}
+
+/* Eerste card mag net iets sterker blijven als hoofdblok */
+.roadora-summary-card{
+  box-shadow:
+    0 14px 32px rgba(48,34,22,.078),
+    inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+
+/* Mobiel iets veiliger zodat de hero-compositie zichtbaar blijft */
+@media (max-width:390px){
+  .beige-panel{
+    margin-top:-38px !important;
+    padding-top:52px !important;
+  }
+
+  .hero::before{
+    height:145px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA HERO FADE TIGHT V3
+   Blokken iets hoger + dichter op elkaar,
+   zonder overlap over auto/weg.
+   ========================================================= */
+
+/* Beige vlak subtiel hoger */
+.beige-panel{
+  margin-top:-56px !important;
+  min-height:calc(57vh + 56px) !important;
+
+  padding-top:64px !important;
+}
+
+/* Fade iets langer zodat overgang smooth blijft */
+.hero::before{
+  height:172px !important;
+}
+
+/* Content compacter stapelen */
+.content-stack{
+  gap:7px !important;
+}
+
+/* Eerste blok iets hoger in de fade */
+.roadora-summary-card{
+  position:relative !important;
+  top:-4px !important;
+}
+
+/* Compactere verticale spacing */
+.next-stop-card,
+.today-route-card{
+  margin-top:0 !important;
+}
+
+/* Mobiel veilig houden */
+@media (max-width:390px){
+
+  .beige-panel{
+    margin-top:-48px !important;
+    padding-top:58px !important;
+  }
+
+  .hero::before{
+    height:158px !important;
+  }
+
+  .content-stack{
+    gap:6px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA POSITION CLEAN V8
+   Terug naar de goede locked hero/fade basis.
+   Fix:
+   - geen agressieve fixed viewport
+   - geen lege fade-zone
+   - overview-card netjes in overgang
+   - weg/auto blijven zichtbaar
+   ========================================================= */
+
+/* Scroll niet hard forceren; layout blijft natuurlijk en stabiel */
+html,
+body{
+  overflow-x:hidden !important;
+}
+
+/* Hero/fade blijft locked zoals v3 */
+.hero{
+  position:relative !important;
+  z-index:1 !important;
+  overflow:hidden !important;
+}
+
+.hero::before{
+  height:172px !important;
+}
+
+/* Beige vlak iets onder de hero/fade laten starten */
+.beige-panel{
+  position:relative !important;
+  z-index:3 !important;
+
+  margin-top:-56px !important;
+  min-height:calc(57vh + 56px) !important;
+
+  padding-top:50px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+  padding-bottom:calc(108px + env(safe-area-inset-bottom)) !important;
+
+  overflow:visible !important;
+}
+
+/* Content direct in de overgang, niet pas na een lege zone */
+.content-stack{
+  position:relative !important;
+  z-index:10 !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  gap:8px !important;
+
+  margin-top:-18px !important;
+}
+
+/* Bovenste blok iets hoger, maar niet afgesneden */
+.roadora-summary-card{
+  position:relative !important;
+  top:-8px !important;
+  margin-bottom:-8px !important;
+}
+
+/* Volgende blokken volgen strak */
+.next-stop-card,
+.today-route-card{
+  margin-top:0 !important;
+}
+
+/* Cards blijven compact genoeg */
+.summary-stats{
+  min-height:76px !important;
+}
+
+.summary-stat{
+  padding:9px 6px 7px !important;
+}
+
+.summary-actions{
+  padding:8px 9px 10px !important;
+}
+
+.summary-btn{
+  height:32px !important;
+  min-height:32px !important;
+}
+
+/* Volgende stop niet te groot maken */
+.next-stop-card{
+  padding:10px !important;
+  gap:10px !important;
+}
+
+.next-stop-image{
+  min-height:132px !important;
+}
+
+.next-stop-title{
+  font-size:27px !important;
+}
+
+.next-stop-left{
+  padding-bottom:40px !important;
+}
+
+/* Vandaag blok compact houden */
+.today-route-card{
+  padding:12px 14px !important;
+}
+
+.today-route-title{
+  margin-bottom:10px !important;
+}
+
+/* Bottom nav blijft vast */
+.roadora-bottom-nav{
+  bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Kleinere schermen */
+@media (max-height:760px){
+  .beige-panel{
+    margin-top:-52px !important;
+    padding-top:46px !important;
+  }
+
+  .content-stack{
+    margin-top:-16px !important;
+    gap:7px !important;
+  }
+
+  .roadora-summary-card{
+    top:-6px !important;
+    margin-bottom:-6px !important;
+  }
+
+  .summary-stats{
+    min-height:70px !important;
+  }
+
+  .next-stop-image{
+    min-height:118px !important;
+  }
+
+  .next-stop-title{
+    font-size:25px !important;
+  }
+
+  .today-route-card{
+    padding:11px 13px !important;
+  }
+}
+
+@media (max-width:390px){
+  .beige-panel{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .content-stack{
+    gap:7px !important;
+  }
+
+  .next-stop-image{
+    min-height:112px !important;
+  }
+
+  .next-stop-title{
+    font-size:24px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM SAFE FIX V9
+   Fix:
+   onderste blok viel onder fixed bottom navigation.
+   ========================================================= */
+
+/* Meer veilige ruimte onder content */
+.beige-panel{
+  padding-bottom:calc(168px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Bottom nav iets lager en netter */
+.roadora-bottom-nav{
+  bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Vandaag blok mag niet onder nav komen */
+.today-route-card{
+  margin-bottom:10px !important;
+}
+
+/* Kleine schermen */
+@media (max-height:760px){
+
+  .beige-panel{
+    padding-bottom:calc(152px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .today-route-card{
+    margin-bottom:8px !important;
+  }
+}
+
+@media (max-width:390px){
+
+  .beige-panel{
+    padding-bottom:calc(158px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA HOTEL TEXT ALIGN FIX V10
+   Hotel vanavond iets meer naar links.
+   ========================================================= */
+
+.summary-stat:last-child{
+  padding-left:2px !important;
+  padding-right:12px !important;
+}
+
+.summary-value{
+  letter-spacing:-0.45px !important;
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP V11
+   Mijn route -&gt; Mijn roadtrip
+   ========================================================= */
+
+.bottom-nav-item span{
+  white-space:nowrap !important;
+}
+
+.bottom-nav-item:nth-child(2){
+  letter-spacing:-0.25px !important;
+}
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:7.1px !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:6.7px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP READABLE V12
+   Mijn roadtrip weer even groot/leesbaar als andere nav items.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:7.5px !important;
+  letter-spacing:-0.15px !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:7px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP BIGGER V13
+   Mijn roadtrip groter en beter leesbaar.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:8.2px !important;
+  line-height:1 !important;
+  letter-spacing:-0.2px !important;
+  font-weight:700 !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:7.6px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP EQUAL V14
+   Mijn roadtrip even groot/leesbaar als de andere labels.
+   ========================================================= */
+
+/* Alle labels gelijk behandelen */
+.bottom-nav-item span{
+  font-size:8.8px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  letter-spacing:-0.25px !important;
+  white-space:nowrap !important;
+}
+
+/* Mijn roadtrip niet meer kleiner forceren */
+.bottom-nav-item:nth-child(2) span{
+  font-size:8.8px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  letter-spacing:-0.35px !important;
+}
+
+/* Iets meer breedtegevoel voor de 2e knop */
+.bottom-nav-item:nth-child(2){
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item span,
+  .bottom-nav-item:nth-child(2) span{
+    font-size:8.1px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP RIGHT V15
+   Mijn roadtrip iets meer naar rechts.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2){
+  transform:translateX(6px) !important;
+}
+
+
+/* =========================================================
+   ROADORA BACKGROUND INTEGRATED CARDS V16
+   Blokken minder als losse kaarten:
+   - warmer/beiger
+   - minder border
+   - minder shadow
+   - zachtere glass
+   - meer één geheel met achtergrond
+   Hero/fade/positie blijven locked.
+   ========================================================= */
+
+.surface-card,
+.roadora-summary-card,
+.next-stop-card,
+.today-route-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246,239,230,.70),
+      rgba(246,239,230,.46)
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.035) !important;
+
+  box-shadow:
+    0 7px 18px rgba(48,34,22,.028),
+    inset 0 1px 0 rgba(255,255,255,.45) !important;
+
+  backdrop-filter:blur(8px) !important;
+  -webkit-backdrop-filter:blur(8px) !important;
+}
+
+/* Het eerste blok mag nog nét iets meer contrast houden */
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.54),
+      rgba(246,239,230,.44)
+    ) !important;
+
+  box-shadow:
+    0 9px 22px rgba(48,34,22,.045),
+    inset 0 1px 0 rgba(255,255,255,.56) !important;
+}
+
+/* Binnenlijnen subtieler */
+.summary-stats,
+.summary-stat:not(:last-child)::after,
+.today-route-item:not(:last-child)::after{
+  border-color:rgba(92,66,42,.045) !important;
+}
+
+.summary-stat:not(:last-child)::after,
+.today-route-item:not(:last-child)::after{
+  background:rgba(92,66,42,.045) !important;
+}
+
+/* CTA&#x27;s blijven duidelijk, maar secondaries zachter */
+.summary-btn.secondary{
+  background:rgba(255,255,255,.48) !important;
+  border-color:rgba(92,66,42,.045) !important;
+  box-shadow:none !important;
+}
+
+/* Vandaag-iconen minder losse bolletjes */
+.today-route-icon{
+  background:rgba(255,255,255,.34) !important;
+}
+
+/* Foto blijft de enige echte sterke kaartlaag */
+.next-stop-image{
+  box-shadow:none !important;
+}
+
+/* Bottom nav iets meer in dezelfde zachte stijl */
+.roadora-bottom-nav{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.66),
+      rgba(246,239,230,.52)
+    ) !important;
+
+  border-color:rgba(92,66,42,.055) !important;
+
+  box-shadow:
+    0 12px 30px rgba(48,34,22,.12),
+    inset 0 1px 0 rgba(255,255,255,.60) !important;
+}
+
+/* Minder harde card-randen visueel */
+.roadora-summary-card,
+.next-stop-card,
+.today-route-card{
+  outline:0 !important;
+}
+
+
+/* =========================================================
+   ROADORA OVERVIEW BAR FADE V17
+   Niet de topbar, maar de overview-card:
+   afstand · rijtijd · tussenstops · hotel vanavond
+   zachter laten vervagen in hero/beige achtergrond.
+   ========================================================= */
+
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.46) 0%,
+      rgba(246,239,230,.36) 58%,
+      rgba(246,239,230,.24) 100%
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.028) !important;
+
+  box-shadow:
+    0 6px 18px rgba(48,34,22,.025),
+    inset 0 1px 0 rgba(255,255,255,.42) !important;
+
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+/* Binnenlijnen nog subtieler */
+.summary-stats{
+  border-bottom:1px solid rgba(92,66,42,.038) !important;
+}
+
+.summary-stat:not(:last-child)::after{
+  background:rgba(92,66,42,.038) !important;
+}
+
+/* Tekst blijft leesbaar maar minder hard */
+.summary-value{
+  color:rgba(12,10,8,.88) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.54) !important;
+}
+
+/* Iconen iets zachter */
+.summary-icon{
+  color:rgba(111,63,28,.84) !important;
+}
+
+/* Onderste CTA-zone minder als aparte balk */
+.summary-actions{
+  background:transparent !important;
+}
+
+.summary-btn.secondary{
+  background:rgba(255,255,255,.34) !important;
+  border-color:rgba(92,66,42,.035) !important;
+  box-shadow:none !important;
+}
+
+/* Primary blijft duidelijk, maar iets rustiger */
+.summary-btn.primary{
+  box-shadow:
+    0 8px 18px rgba(137,76,20,.18),
+    inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+
+
+/* =========================================================
+   ROADORA OVERVIEW INTEGRATED FADE V18
+   Overview voelt niet meer als los blok, maar als info-laag
+   in de hero/beige overgang.
+   ========================================================= */
+
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246,239,230,.20) 0%,
+      rgba(246,239,230,.34) 42%,
+      rgba(246,239,230,.48) 100%
+    ) !important;
+
+  border:0 !important;
+  box-shadow:none !important;
+  outline:0 !important;
+
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+
+  border-radius:24px !important;
+  overflow:visible !important;
+}
+
+/* Geen harde card-rand meer */
+.roadora-summary-card::before,
+.roadora-summary-card::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Stats zelf worden de laag, niet de kaart */
+.summary-stats{
+  min-height:76px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.24),
+      rgba(255,255,255,.10)
+    ) !important;
+
+  border:0 !important;
+  border-radius:24px 24px 16px 16px !important;
+}
+
+/* Binnenlijnen bijna weg */
+.summary-stat:not(:last-child)::after{
+  background:rgba(92,66,42,.025) !important;
+}
+
+/* CTA zone losser, zonder cardgevoel */
+.summary-actions{
+  padding:7px 2px 0 !important;
+  gap:8px !important;
+  background:transparent !important;
+}
+
+/* Primaire knop blijft actie, maar minder massief */
+.summary-btn.primary{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(164,92,24,.92),
+      rgba(143,77,17,.88)
+    ) !important;
+
+  box-shadow:
+    0 8px 16px rgba(137,76,20,.14) !important;
+}
+
+/* Secundaire knop als zachte glass-pill */
+.summary-btn.secondary{
+  background:rgba(246,239,230,.42) !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+/* Tekst/iconen rustig maar duidelijk */
+.summary-value{
+  color:rgba(10,8,6,.90) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.50) !important;
+}
+
+.summary-icon{
+  color:rgba(111,63,28,.76) !important;
+}
+
+/* Iets meer lucht richting volgende blok zodat het natuurlijker voelt */
+.next-stop-card{
+  margin-top:2px !important;
+}
+
+
+/* =========================================================
+   ROADORA STATS IN HERO FADE V19
+   Overview is geen blok/card meer:
+   - stats liggen direct in de hero-fade
+   - geen container/background/rand/schaduw
+   - CTA&#x27;s zijn losse floating pills
+   ========================================================= */
+
+/* Summary container wordt alleen een layout-wrapper */
+.roadora-summary-card{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  outline:0 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+
+  position:relative !important;
+  z-index:40 !important;
+}
+
+/* Stats direct op de fade, geen cardvlak */
+.summary-stats{
+  min-height:66px !important;
+
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+
+/* Items voelen als losse informatie, niet als vakjes */
+.summary-stat{
+  padding:6px 4px 4px !important;
+  text-align:center !important;
+  background:transparent !important;
+}
+
+/* Binnenlijnen bijna onzichtbaar, alleen subtiel ritme */
+.summary-stat:not(:last-child)::after{
+  top:10px !important;
+  height:34px !important;
+  background:rgba(92,66,42,.035) !important;
+}
+
+/* Iconen en tekst sterker leesbaar op fade */
+.summary-icon{
+  height:17px !important;
+  margin-bottom:4px !important;
+  color:rgba(111,63,28,.86) !important;
+}
+
+.summary-icon svg{
+  width:17px !important;
+  height:17px !important;
+}
+
+.summary-value{
+  color:rgba(8,7,6,.94) !important;
+  font-size:12.2px !important;
+  line-height:1.08 !important;
+  font-weight:760 !important;
+  letter-spacing:-.35px !important;
+  text-shadow:0 1px 10px rgba(246,239,230,.35) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.58) !important;
+  font-size:8px !important;
+  line-height:1.12 !important;
+  margin-top:3px !important;
+  text-shadow:0 1px 8px rgba(246,239,230,.30) !important;
+}
+
+/* CTA&#x27;s los onder de stats als floating pills */
+.summary-actions{
+  display:grid !important;
+  grid-template-columns:1.15fr .85fr !important;
+  gap:12px !important;
+  padding:8px 0 0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+.summary-btn{
+  height:36px !important;
+  min-height:36px !important;
+  border-radius:999px !important;
+
+  box-shadow:none !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+.summary-btn.primary{
+  background:
+    linear-gradient(135deg,rgba(164,92,24,.96),rgba(143,77,17,.92)) !important;
+  color:#fffaf4 !important;
+
+  box-shadow:
+    0 10px 22px rgba(137,76,20,.20),
+    inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+
+.summary-btn.secondary{
+  background:rgba(246,239,230,.42) !important;
+  color:#111 !important;
+  border:1px solid rgba(92,66,42,.035) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42) !important;
+}
+
+/* Content eronder mag iets dichter aansluiten */
+.next-stop-card{
+  margin-top:0 !important;
+}
+
+/* Verberg elke oude card-achtige laag rond summary */
+.roadora-summary-card::before,
+.roadora-summary-card::after,
+.summary-actions::before,
+.summary-actions::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Zorg dat hotel tekst binnen ruimte blijft */
+.summary-stat:last-child{
+  padding-left:1px !important;
+  padding-right:8px !important;
+}
+
+@media (max-width:390px){
+
+  .summary-value{
+    font-size:11.2px !important;
+  }
+
+  .summary-label,
+  .summary-sub{
+    font-size:7.4px !important;
+  }
+
+  .summary-actions{
+    gap:9px !important;
+  }
+
+  .summary-btn{
+    height:34px !important;
+    min-height:34px !important;
+    font-size:10.5px !important;
+  }
+}
+
+&lt;/style&gt;
+
+&lt;style id=&quot;roadoraSingleTabFix&quot;&gt;
+html,body{
+  min-height:100%;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  padding-bottom:92px!important;
+}
+.roadora-bottom-nav,
+.premiumBottomNav,
+.bottomNav,
+.roadoraMapNav{
+  display:none!important;
+}
+.app,.phone,.roadtrip-shell{
+  min-height:100vh!important;
+}
+&lt;/style&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;main class=&quot;app&quot;&gt;
+&lt;section class=&quot;hero&quot;&gt;
+      &lt;img class=&quot;hero-img&quot; src=&quot;./assets/roadtrip-hero.png&quot; alt=&quot;Roadora roadtrip hero&quot; /&gt;
+      &lt;div class=&quot;hero-shade&quot;&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;topbar&quot;&gt;
+        &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Menu&quot;&gt;☰&lt;/button&gt;
+
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;strong&gt;R&lt;/strong&gt;
+          &lt;span&gt;ROADORA&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Delen&quot;&gt;↗&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;hero-copy&quot;&gt;
+        &lt;div class=&quot;badge&quot;&gt;
+          &lt;i class=&quot;badge-dot&quot;&gt;&lt;/i&gt;
+          Dag 3 van 8
+        &lt;/div&gt;
+
+        &lt;h1 class=&quot;hero-title&quot;&gt;Alpen avontuur&lt;/h1&gt;
+        &lt;p class=&quot;route&quot;&gt;Rotterdam → Innsbruck&lt;/p&gt;
+      &lt;/div&gt;
+&lt;/section&gt;
+
+    &lt;section class=&quot;beige-panel&quot; aria-label=&quot;Roadora content&quot;&gt;
+      &lt;div class=&quot;content-stack&quot;&gt;
+
+        &lt;section class=&quot;roadora-summary-card surface-card&quot; aria-label=&quot;Roadtrip overzicht&quot;&gt;
+          &lt;div class=&quot;summary-stats&quot;&gt;
+            &lt;article class=&quot;summary-stat&quot;&gt;
+              &lt;div class=&quot;summary-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;circle cx=&quot;5&quot; cy=&quot;12&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+                  &lt;circle cx=&quot;19&quot; cy=&quot;7&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+                  &lt;circle cx=&quot;19&quot; cy=&quot;17&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+                  &lt;path d=&quot;M7 12h5&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M12 12l5-5&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M12 12l5 5&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong class=&quot;summary-value&quot;&gt;1.246 km&lt;/strong&gt;
+              &lt;span class=&quot;summary-label&quot;&gt;Totale afstand&lt;/span&gt;
+            &lt;/article&gt;
+
+            &lt;article class=&quot;summary-stat&quot;&gt;
+              &lt;div class=&quot;summary-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;&gt;&lt;/circle&gt;
+                  &lt;path d=&quot;M12 7v6l4 2&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong class=&quot;summary-value&quot;&gt;14u 30m&lt;/strong&gt;
+              &lt;span class=&quot;summary-label&quot;&gt;Rijtijd&lt;/span&gt;
+            &lt;/article&gt;
+
+            &lt;article class=&quot;summary-stat&quot;&gt;
+              &lt;div class=&quot;summary-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;path d=&quot;M8 3v18&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M16 3v18&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M4 8h16&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M4 16h16&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong class=&quot;summary-value&quot;&gt;8&lt;/strong&gt;
+              &lt;span class=&quot;summary-label&quot;&gt;Tussenstops&lt;/span&gt;
+            &lt;/article&gt;
+
+            &lt;article class=&quot;summary-stat&quot;&gt;
+              &lt;div class=&quot;summary-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;path d=&quot;M4 11h16&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M5 11v8&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M19 11v8&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M4 15h16&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong class=&quot;summary-value&quot;&gt;Hotel vanavond&lt;/strong&gt;
+              &lt;span class=&quot;summary-sub&quot;&gt;Innsbruck, AT&lt;/span&gt;
+            &lt;/article&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;summary-actions&quot;&gt;
+            &lt;button class=&quot;summary-btn primary&quot; type=&quot;button&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                &lt;path d=&quot;M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M9 3v15&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M15 6v15&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+              Bekijk route
+            &lt;/button&gt;
+
+            &lt;button class=&quot;summary-btn secondary&quot; type=&quot;button&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                &lt;path d=&quot;M4 7h10&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M18 7h2&quot;&gt;&lt;/path&gt;
+                &lt;circle cx=&quot;16&quot; cy=&quot;7&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+                &lt;path d=&quot;M4 17h2&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M10 17h10&quot;&gt;&lt;/path&gt;
+                &lt;circle cx=&quot;8&quot; cy=&quot;17&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+              &lt;/svg&gt;
+              Aanpassen
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;next-stop-card surface-card&quot; aria-label=&quot;Volgende stop&quot;&gt;
+          &lt;div class=&quot;next-stop-image&quot;&gt;
+            &lt;img src=&quot;https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&amp;w=1200&amp;auto=format&amp;fit=crop&quot; alt=&quot;Hallstatt&quot;&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;next-stop-left&quot;&gt;
+            &lt;div class=&quot;next-stop-kicker&quot;&gt;Volgende stop&lt;/div&gt;
+            &lt;div class=&quot;next-stop-title&quot;&gt;Hallstatt&lt;/div&gt;
+            &lt;div class=&quot;next-stop-country&quot;&gt;Oostenrijk · Aan het meer&lt;/div&gt;
+
+            &lt;div class=&quot;next-stop-meta&quot;&gt;
+              &lt;div class=&quot;next-stop-row&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;&gt;&lt;/circle&gt;
+                  &lt;path d=&quot;M12 7v5l3 2&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+                Nog 2u 14m rijden
+              &lt;/div&gt;
+
+              &lt;div class=&quot;next-stop-row&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;path d=&quot;M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z&quot;&gt;&lt;/path&gt;
+                  &lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+                &lt;/svg&gt;
+                Fotostop onderweg
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;button class=&quot;next-stop-details-btn&quot; type=&quot;button&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                &lt;path d=&quot;M9 18l6-6-6-6&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+              Bekijk details
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;today-route-card surface-card&quot; aria-label=&quot;Vandaag op de route&quot;&gt;
+          &lt;h3 class=&quot;today-route-title&quot;&gt;Vandaag op de route&lt;/h3&gt;
+
+          &lt;div class=&quot;today-route-grid&quot;&gt;
+            &lt;article class=&quot;today-route-item&quot;&gt;
+              &lt;div class=&quot;today-route-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;path d=&quot;M13 2L3 14h7l-1 8 10-12h-7l1-8z&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong&gt;Laden over&lt;br&gt;45 km&lt;/strong&gt;
+              &lt;span&gt;Ionity Heiligenblut&lt;/span&gt;
+            &lt;/article&gt;
+
+            &lt;article class=&quot;today-route-item&quot;&gt;
+              &lt;div class=&quot;today-route-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;path d=&quot;M4 10h16&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M6 10v3a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4v-3&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M18 10v2a2 2 0 0 0 2 2&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M8 20h8&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong&gt;Rustmoment&lt;br&gt;over 2 uur&lt;/strong&gt;
+              &lt;span&gt;Trafoi, Italië&lt;/span&gt;
+            &lt;/article&gt;
+
+            &lt;article class=&quot;today-route-item&quot;&gt;
+              &lt;div class=&quot;today-route-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                  &lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;&gt;&lt;/circle&gt;
+                  &lt;path d=&quot;M12 7v5l3 2&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+              &lt;strong&gt;Verwachte&lt;br&gt;aankomst&lt;/strong&gt;
+              &lt;span&gt;19:45&lt;/span&gt;
+            &lt;/article&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;nav class=&quot;roadora-bottom-nav&quot; aria-label=&quot;Roadora navigatie&quot;&gt;
+      &lt;button class=&quot;bottom-nav-item active&quot; type=&quot;button&quot; aria-label=&quot;Overzicht&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+          &lt;path d=&quot;M4 5h16&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M4 12h10&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M4 19h16&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+        &lt;span&gt;Overzicht&lt;/span&gt;
+      &lt;/button&gt;
+
+      &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot; aria-label=&quot;Mijn route&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+          &lt;circle cx=&quot;5&quot; cy=&quot;19&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+          &lt;circle cx=&quot;19&quot; cy=&quot;5&quot; r=&quot;2&quot;&gt;&lt;/circle&gt;
+          &lt;path d=&quot;M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+        &lt;span&gt;Mijn roadtrip&lt;/span&gt;
+      &lt;/button&gt;
+
+      &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot; aria-label=&quot;Kaart&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+          &lt;path d=&quot;M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M9 3v15&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M15 6v15&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+        &lt;span&gt;Kaart&lt;/span&gt;
+      &lt;/button&gt;
+
+      &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot; aria-label=&quot;Mijn dagboek&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+          &lt;path d=&quot;M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M8 8h7&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M8 12h6&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+        &lt;span&gt;Mijn dagboek&lt;/span&gt;
+      &lt;/button&gt;
+
+      &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot; aria-label=&quot;Profiel&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+          &lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;&gt;&lt;/circle&gt;
+          &lt;path d=&quot;M4 21a8 8 0 0 1 16 0&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+        &lt;span&gt;Profiel&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/nav&gt;
+
+  &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe><iframe class="tab-frame" data-tab="roadtrip" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;nl&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot; /&gt;
+&lt;title&gt;Roadora — Mijn Roadtrip Module v1&lt;/title&gt;
+&lt;!-- ROADORA LOCKED: Mijn Roadtrip v1 basis --&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Playfair+Display:wght@700;800&amp;display=swap&quot; /&gt;
+&lt;style&gt;
+
+/* =========================================================
+   ROADORA MIJN ROADTRIP MODULE V1
+   Losse testmodule: roadtrip.html + roadtrip.css + roadtrip.js
+   ========================================================= */
+
+html, body{
+  min-height:100%;
+}
+
+body{
+  margin:0;
+}
+
+button{
+  font:inherit;
+}
+
+
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:#b9ad9d;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center}
+button{border:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{width:100%;max-width:430px;min-height:100vh;overflow:hidden;background:#f6efe6;position:relative}
+
+.hero{position:relative;z-index:1;height:43vh;min-height:350px;max-height:420px;overflow:hidden;background:#1d261f}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 74%;transform:scale(1.02)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12) 0%,rgba(0,0,0,.03) 48%,rgba(0,0,0,.01) 78%,rgba(0,0,0,0) 100%),linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.05) 55%,rgba(0,0,0,.06));pointer-events:none}
+.hero::before{content:&quot;&quot;;position:absolute;left:0;right:0;bottom:-1px;height:172px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,rgba(246,239,230,0) 0%,rgba(246,239,230,.05) 24%,rgba(246,239,230,.18) 46%,rgba(246,239,230,.42) 66%,rgba(246,239,230,.74) 84%,#f6efe6 100%)}
+
+.topbar{position:absolute;z-index:9;top:calc(env(safe-area-inset-top) + 14px);left:16px;right:16px;display:flex;align-items:flex-start;justify-content:space-between}
+.round-btn{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;background:rgba(22,28,31,.74);color:#fff;font-size:24px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.brand{margin-top:-4px;color:#fff;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.brand strong{display:block;font-size:38px;line-height:.8;font-weight:900;letter-spacing:-2px}
+.brand span{display:block;margin-top:8px;font-size:11px;font-weight:900;letter-spacing:5px}
+
+.hero-copy{position:absolute;z-index:9;left:18px;top:86px;width:min(330px,calc(100% - 36px));color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.32)}
+.badge{width:max-content;height:28px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;background:rgba(62,73,53,.72);color:#fff;font-size:11px;font-weight:800}
+.badge-dot{width:7px;height:7px;border-radius:999px;background:#72d66d}
+.hero-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;font-size:38px;line-height:.92;letter-spacing:-1.4px;font-weight:800}
+.route{margin:8px 0 0;font-size:15px;font-weight:900;letter-spacing:-.25px}
+.hero-progress{position:absolute;z-index:10;left:18px;right:18px;bottom:56px;color:#fff}
+.progress-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;font-size:11px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.25)}
+.progress-track{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.28)}
+.progress-fill{width:30%;height:100%;border-radius:999px;background:#fff7ec}
+
+.beige-panel{position:relative;z-index:3;margin-top:-56px;min-height:calc(57vh + 56px);padding:50px 14px calc(112px + env(safe-area-inset-bottom));overflow:visible;background:linear-gradient(to bottom,rgba(246,239,230,0) 0px,rgba(246,239,230,.18) 22px,rgba(246,239,230,.46) 48px,rgba(246,239,230,.78) 76px,#f6efe6 104px,#f2e8dc 100%)}
+.content-stack{width:100%;max-width:396px;margin:0 auto;display:flex;flex-direction:column;gap:8px;position:relative;z-index:10}
+.surface{background:linear-gradient(180deg,rgba(246,239,230,.48),rgba(246,239,230,.30));border:1px solid rgba(92,66,42,.03);box-shadow:0 7px 18px rgba(48,34,22,.022),inset 0 1px 0 rgba(255,255,255,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+.active-day{border-radius:28px;padding:14px}
+.active-kicker{margin:0 0 7px;color:#80502a;font-size:10px;line-height:1;font-weight:800;letter-spacing:.75px;text-transform:uppercase}
+.active-main{display:grid;grid-template-columns:1fr 112px;gap:12px;align-items:stretch}
+.active-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;color:#111;font-size:30px;line-height:.96;letter-spacing:-1px;font-weight:800}
+.active-sub{margin-top:8px;color:rgba(20,18,16,.62);font-size:11px;line-height:1.25;font-weight:600}
+.active-stats{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px;color:#251d16;font-size:10px;font-weight:750}
+.active-stat{display:inline-flex;align-items:center;gap:5px}
+.active-stat svg{width:13px;height:13px;color:#8d531f}
+.active-photo{border-radius:22px;overflow:hidden;min-height:112px;background:#d8c8b7}
+.active-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hotel-row{margin-top:14px;padding:10px;border-radius:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.25)}
+.hotel-row strong{display:block;color:#111;font-size:12px;line-height:1.12;font-weight:780}
+.hotel-row span{display:block;margin-top:3px;color:rgba(20,18,16,.55);font-size:9px;line-height:1.15;font-weight:500}
+.details-btn{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,rgba(164,92,24,.96),rgba(143,77,17,.92));color:#fffaf4;font-size:10px;font-weight:800;box-shadow:0 10px 20px rgba(137,76,20,.18)}
+.details-btn svg{width:13px;height:13px}
+
+.day-flow{border-radius:28px;padding:12px 14px}
+.flow-title{margin:0 0 12px;color:#80502a;font-size:10px;line-height:1;font-weight:800;letter-spacing:.75px;text-transform:uppercase}
+.day-list{display:flex;flex-direction:column}
+.day-item{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;min-height:54px;position:relative}
+.day-item:not(:last-child)::after{content:&quot;&quot;;position:absolute;left:14px;top:36px;bottom:-18px;width:1px;background:rgba(92,66,42,.08)}
+.day-num{width:30px;height:30px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.34);color:#7b4b25;font-size:12px;font-weight:800;position:relative;z-index:2}
+.day-item.active .day-num{background:linear-gradient(135deg,#a45c18,#8f4d11);color:#fffaf4}
+.day-text strong{display:block;color:#12100d;font-size:13px;line-height:1.1;font-weight:780;letter-spacing:-.25px}
+.day-text span{display:block;margin-top:4px;color:rgba(20,18,16,.54);font-size:9.5px;line-height:1.1;font-weight:550}
+.day-thumb{width:52px;height:42px;border-radius:14px;overflow:hidden;background:#d8c8b7}
+.day-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+.total-strip{border-radius:24px;padding:13px 12px}
+.total-title{margin:0 0 10px;color:#80502a;font-size:10px;line-height:1;font-weight:800;letter-spacing:.75px;text-transform:uppercase}
+.total-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.total-item{position:relative;text-align:center;min-width:0}
+.total-item:not(:last-child)::after{content:&quot;&quot;;position:absolute;top:6px;right:0;width:1px;height:32px;background:rgba(92,66,42,.07)}
+.total-item strong{display:block;color:#111;font-size:12px;font-weight:760;line-height:1.1;letter-spacing:-.25px}
+.total-item span{display:block;margin-top:4px;color:rgba(20,18,16,.55);font-size:7.5px;line-height:1.1;font-weight:550}
+
+.roadora-bottom-nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 28px);max-width:402px;z-index:200;padding:8px 7px;border-radius:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(246,239,230,.52));border:1px solid rgba(92,66,42,.055);box-shadow:0 12px 30px rgba(48,34,22,.12),inset 0 1px 0 rgba(255,255,255,.60);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.bottom-nav-item{min-width:0;height:52px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(30,24,18,.58);background:transparent;font-size:8.8px;line-height:1;font-weight:700;letter-spacing:-.25px;white-space:nowrap}
+.bottom-nav-item svg{width:20px;height:20px;stroke-width:2.05}
+.bottom-nav-item.active{color:#fffaf4;background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);box-shadow:0 10px 20px rgba(137,76,20,.23),inset 0 1px 0 rgba(255,255,255,.18)}
+.bottom-nav-item:nth-child(2){transform:translateX(6px)}
+
+@media (max-height:760px){
+  .hero{height:41vh;min-height:330px}
+  .hero-copy{top:76px}
+  .hero-title{font-size:34px}
+  .hero-progress{bottom:48px}
+  .beige-panel{padding-top:44px}
+  .active-day{padding:12px}
+  .active-title{font-size:26px}
+  .active-photo{min-height:100px}
+  .day-item{min-height:49px}
+}
+@media (max-width:390px){
+  .beige-panel{padding-left:12px;padding-right:12px}
+  .active-main{grid-template-columns:1fr 96px;gap:10px}
+  .active-title{font-size:25px}
+  .active-photo{min-height:98px}
+  .details-btn{height:32px;padding:0 12px;font-size:9.5px}
+  .day-thumb{width:48px;height:38px}
+  .bottom-nav-item span,.bottom-nav-item{font-size:8.1px}
+}
+
+/* =========================================================
+   ROADORA DAY SCROLL V2
+   Reis per dag als horizontaal scrollmenu.
+   Werkt voor zoveel dagen als de roadtrip heeft.
+   ========================================================= */
+
+.day-flow{
+  border-radius:28px !important;
+  padding:12px 0 13px !important;
+  overflow:hidden !important;
+}
+
+.flow-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  padding:0 14px !important;
+  margin-bottom:10px !important;
+}
+
+.flow-title{
+  margin:0 !important;
+}
+
+.flow-count{
+  color:rgba(20,18,16,.48) !important;
+  font-size:9px !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  white-space:nowrap !important;
+}
+
+.day-scroll{
+  display:flex !important;
+  gap:8px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+
+  padding:0 14px 2px !important;
+
+  scroll-snap-type:x mandatory !important;
+  -webkit-overflow-scrolling:touch !important;
+
+  scrollbar-width:none !important;
+}
+
+.day-scroll::-webkit-scrollbar{
+  display:none !important;
+}
+
+.day-card{
+  flex:0 0 142px !important;
+  min-height:96px !important;
+
+  scroll-snap-align:start !important;
+
+  border-radius:22px !important;
+  padding:12px !important;
+
+  background:rgba(255,255,255,.24) !important;
+  border:1px solid rgba(92,66,42,.03) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+.day-card.active{
+  flex-basis:164px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.40),
+      rgba(246,239,230,.38)
+    ) !important;
+
+  border-color:rgba(143,77,17,.12) !important;
+
+  box-shadow:
+    0 8px 18px rgba(137,76,20,.08),
+    inset 0 1px 0 rgba(255,255,255,.40) !important;
+}
+
+.day-card-top{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+}
+
+.day-card-top span{
+  color:#80502a !important;
+  font-size:8.5px !important;
+  line-height:1 !important;
+  font-weight:850 !important;
+  letter-spacing:.35px !important;
+  text-transform:uppercase !important;
+}
+
+.day-card-top strong{
+  display:block !important;
+  color:#111 !important;
+  font-size:15px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+  letter-spacing:-.35px !important;
+}
+
+.day-card p{
+  margin:8px 0 0 !important;
+
+  color:#17120e !important;
+  font-size:12px !important;
+  line-height:1.1 !important;
+  font-weight:720 !important;
+  letter-spacing:-.2px !important;
+}
+
+.day-card small{
+  display:block !important;
+  margin-top:7px !important;
+
+  color:rgba(20,18,16,.54) !important;
+  font-size:9px !important;
+  line-height:1.15 !important;
+  font-weight:560 !important;
+}
+
+/* Oude verticale daglijst zeker uitschakelen als CSS nog bestaat */
+.day-list,
+.day-item,
+.day-num,
+.day-thumb{
+  display:none;
+}
+
+/* Compact op kleinere schermen */
+@media (max-height:760px){
+  .day-flow{
+    padding-top:10px !important;
+    padding-bottom:11px !important;
+  }
+
+  .day-card{
+    flex-basis:132px !important;
+    min-height:86px !important;
+    border-radius:20px !important;
+    padding:10px !important;
+  }
+
+  .day-card.active{
+    flex-basis:152px !important;
+  }
+
+  .day-card-top strong{
+    font-size:14px !important;
+  }
+
+  .day-card p{
+    font-size:11px !important;
+    margin-top:7px !important;
+  }
+
+  .day-card small{
+    font-size:8.2px !important;
+    margin-top:6px !important;
+  }
+}
+
+@media (max-width:390px){
+  .day-scroll{
+    gap:7px !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .flow-head{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .day-card{
+    flex-basis:126px !important;
+  }
+
+  .day-card.active{
+    flex-basis:146px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA DAY DETAIL POPUP V3
+   Tik op een dag -&gt; popup met horizontale reis
+   van begin tot eind, stop voor stop.
+   ========================================================= */
+
+.day-card{
+  cursor:pointer !important;
+}
+
+.day-detail-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:500 !important;
+
+  display:none !important;
+  align-items:flex-end !important;
+  justify-content:center !important;
+
+  background:rgba(17,13,9,.18) !important;
+  backdrop-filter:blur(4px) !important;
+  -webkit-backdrop-filter:blur(4px) !important;
+}
+
+.day-detail-overlay.open{
+  display:flex !important;
+}
+
+.day-detail-sheet{
+  width:calc(100% - 24px) !important;
+  max-width:406px !important;
+
+  margin:0 auto calc(92px + env(safe-area-inset-bottom)) !important;
+
+  border-radius:30px !important;
+  overflow:hidden !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.76),
+      rgba(246,239,230,.68)
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.07) !important;
+
+  box-shadow:
+    0 22px 52px rgba(48,34,22,.22),
+    inset 0 1px 0 rgba(255,255,255,.72) !important;
+
+  backdrop-filter:blur(22px) !important;
+  -webkit-backdrop-filter:blur(22px) !important;
+
+  transform:translateY(10px) !important;
+  animation:sheetUp .22s ease forwards !important;
+}
+
+@keyframes sheetUp{
+  to{ transform:translateY(0); }
+}
+
+.day-detail-head{
+  padding:16px 16px 12px !important;
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+}
+
+.day-detail-kicker{
+  margin:0 0 6px !important;
+  color:#80502a !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:850 !important;
+  letter-spacing:.7px !important;
+  text-transform:uppercase !important;
+}
+
+.day-detail-title{
+  margin:0 !important;
+  color:#111 !important;
+  font-family:&quot;Playfair Display&quot;,Georgia,serif !important;
+  font-size:28px !important;
+  line-height:.95 !important;
+  letter-spacing:-.9px !important;
+  font-weight:800 !important;
+}
+
+.day-detail-sub{
+  display:block !important;
+  margin-top:7px !important;
+  color:rgba(20,18,16,.58) !important;
+  font-size:10.5px !important;
+  line-height:1.2 !important;
+  font-weight:600 !important;
+}
+
+.day-close-btn{
+  width:38px !important;
+  height:38px !important;
+  border-radius:999px !important;
+  flex:0 0 auto !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  background:rgba(255,255,255,.48) !important;
+  color:#2b2118 !important;
+
+  font-size:22px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+}
+
+.day-route-scroll{
+  display:flex !important;
+  gap:10px !important;
+
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+
+  padding:4px 16px 16px !important;
+
+  scroll-snap-type:x mandatory !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+}
+
+.day-route-scroll::-webkit-scrollbar{
+  display:none !important;
+}
+
+.route-stop{
+  position:relative !important;
+  flex:0 0 128px !important;
+  min-height:134px !important;
+
+  scroll-snap-align:start !important;
+
+  border-radius:22px !important;
+  padding:12px !important;
+
+  background:rgba(255,255,255,.35) !important;
+  border:1px solid rgba(92,66,42,.045) !important;
+}
+
+.route-stop:not(:last-child)::after{
+  content:&quot;&quot; !important;
+  position:absolute !important;
+  top:32px !important;
+  right:-12px !important;
+  width:14px !important;
+  height:2px !important;
+  border-radius:999px !important;
+  background:rgba(143,77,17,.28) !important;
+}
+
+.route-stop-icon{
+  width:34px !important;
+  height:34px !important;
+  border-radius:14px !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  background:rgba(246,239,230,.78) !important;
+  color:#7b4b25 !important;
+
+  margin-bottom:12px !important;
+}
+
+.route-stop-icon svg{
+  width:17px !important;
+  height:17px !important;
+  stroke-width:2.1 !important;
+}
+
+.route-stop strong{
+  display:block !important;
+  color:#111 !important;
+  font-size:13px !important;
+  line-height:1.08 !important;
+  font-weight:800 !important;
+  letter-spacing:-.25px !important;
+}
+
+.route-stop span{
+  display:block !important;
+  margin-top:6px !important;
+  color:rgba(20,18,16,.58) !important;
+  font-size:9px !important;
+  line-height:1.18 !important;
+  font-weight:550 !important;
+}
+
+.route-stop small{
+  display:inline-flex !important;
+  margin-top:10px !important;
+  height:24px !important;
+  padding:0 9px !important;
+  border-radius:999px !important;
+
+  align-items:center !important;
+
+  background:rgba(164,92,24,.10) !important;
+  color:#7b4b25 !important;
+
+  font-size:8.5px !important;
+  font-weight:800 !important;
+}
+
+.day-detail-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+  padding:0 16px 16px !important;
+}
+
+.day-detail-action{
+  height:38px !important;
+  border-radius:999px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  font-size:10.5px !important;
+  font-weight:800 !important;
+}
+
+.day-detail-action.primary{
+  background:linear-gradient(135deg,#a45c18,#8f4d11) !important;
+  color:#fffaf4 !important;
+}
+
+.day-detail-action.secondary{
+  background:rgba(255,255,255,.40) !important;
+  color:#2b2118 !important;
+}
+
+@media(max-width:390px){
+  .day-detail-sheet{
+    width:calc(100% - 20px) !important;
+    margin-bottom:calc(88px + env(safe-area-inset-bottom)) !important;
+    border-radius:28px !important;
+  }
+
+  .route-stop{
+    flex-basis:118px !important;
+    min-height:126px !important;
+  }
+
+  .day-detail-title{
+    font-size:25px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA VERTICAL DAY POPUP V4
+   Popup route nu verticaal i.p.v. horizontaal.
+   ========================================================= */
+
+.day-route-scroll{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+
+  max-height:340px !important;
+
+  padding:4px 16px 16px !important;
+
+  scroll-snap-type:y proximity !important;
+}
+
+.route-stop{
+  flex:none !important;
+  min-height:unset !important;
+
+  display:grid !important;
+  grid-template-columns:34px 1fr auto !important;
+  align-items:center !important;
+  gap:12px !important;
+
+  padding:12px !important;
+}
+
+.route-stop:not(:last-child)::after{
+  content:&quot;&quot; !important;
+  position:absolute !important;
+
+  left:28px !important;
+  top:56px !important;
+  bottom:-14px !important;
+
+  width:2px !important;
+  height:auto !important;
+
+  border-radius:999px !important;
+  background:rgba(143,77,17,.18) !important;
+}
+
+.route-stop-icon{
+  margin-bottom:0 !important;
+}
+
+.route-stop-content{
+  min-width:0 !important;
+}
+
+.route-stop strong{
+  font-size:12.5px !important;
+}
+
+.route-stop span{
+  margin-top:4px !important;
+  font-size:8.8px !important;
+}
+
+.route-stop small{
+  margin-top:0 !important;
+  align-self:center !important;
+}
+
+@media(max-width:390px){
+  .day-route-scroll{
+    max-height:310px !important;
+  }
+
+  .route-stop{
+    gap:10px !important;
+    padding:11px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA FULLSHEET DAY POPUP V5
+   Popup groter zodat volledige dagroute in 1 sheet past
+   zonder verticale scroll.
+   ========================================================= */
+
+.day-detail-overlay{
+  align-items:flex-end !important;
+}
+
+.day-detail-sheet{
+  width:calc(100% - 16px) !important;
+  max-width:414px !important;
+
+  margin:0 auto calc(78px + env(safe-area-inset-bottom)) !important;
+
+  border-radius:34px !important;
+
+  overflow:hidden !important;
+}
+
+/* Meer verticale ruimte */
+.day-detail-head{
+  padding:18px 18px 14px !important;
+}
+
+.day-detail-title{
+  font-size:31px !important;
+}
+
+.day-detail-sub{
+  margin-top:8px !important;
+  font-size:11px !important;
+}
+
+/* Route volledig zichtbaar */
+.day-route-scroll{
+  display:flex !important;
+  flex-direction:column !important;
+
+  overflow:visible !important;
+
+  max-height:none !important;
+
+  gap:10px !important;
+
+  padding:2px 18px 18px !important;
+}
+
+/* Stops compacter maar groter leesbaar */
+.route-stop{
+  grid-template-columns:38px 1fr auto !important;
+
+  gap:13px !important;
+
+  min-height:70px !important;
+
+  border-radius:24px !important;
+
+  padding:13px !important;
+}
+
+.route-stop:not(:last-child)::after{
+  left:31px !important;
+  top:60px !important;
+  bottom:-16px !important;
+}
+
+.route-stop-icon{
+  width:38px !important;
+  height:38px !important;
+  border-radius:16px !important;
+}
+
+.route-stop-icon svg{
+  width:18px !important;
+  height:18px !important;
+}
+
+.route-stop strong{
+  font-size:13.5px !important;
+}
+
+.route-stop span{
+  margin-top:4px !important;
+  font-size:9.2px !important;
+}
+
+.route-stop small{
+  height:26px !important;
+  padding:0 10px !important;
+  font-size:8.8px !important;
+}
+
+/* CTA&#x27;s iets strakker onderin */
+.day-detail-actions{
+  padding:0 18px 18px !important;
+}
+
+.day-detail-action{
+  height:40px !important;
+  font-size:11px !important;
+}
+
+/* Kleine schermen */
+@media(max-height:760px){
+
+  .day-detail-sheet{
+    margin-bottom:calc(72px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .day-detail-head{
+    padding:16px 16px 12px !important;
+  }
+
+  .day-detail-title{
+    font-size:28px !important;
+  }
+
+  .route-stop{
+    min-height:64px !important;
+    padding:12px !important;
+  }
+
+  .route-stop-icon{
+    width:34px !important;
+    height:34px !important;
+  }
+
+  .route-stop:not(:last-child)::after{
+    top:56px !important;
+    bottom:-14px !important;
+  }
+}
+
+@media(max-width:390px){
+
+  .day-detail-sheet{
+    width:calc(100% - 12px) !important;
+    border-radius:30px !important;
+  }
+
+  .day-detail-title{
+    font-size:27px !important;
+  }
+
+  .route-stop{
+    grid-template-columns:34px 1fr auto !important;
+    gap:11px !important;
+    padding:11px !important;
+  }
+
+  .route-stop-icon{
+    width:32px !important;
+    height:32px !important;
+  }
+
+  .route-stop strong{
+    font-size:12.5px !important;
+  }
+
+  .route-stop span{
+    font-size:8.5px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BEKIJK DAG WORKING V6
+   Bekijk dag opent automatisch de popup van actieve dag.
+   ========================================================= */
+
+.details-btn{
+  transition:transform .16s ease, box-shadow .16s ease !important;
+}
+
+.details-btn:active{
+  transform:scale(.97) !important;
+}
+&lt;/style&gt;
+
+&lt;style id=&quot;roadoraSingleTabFix&quot;&gt;
+html,body{
+  min-height:100%;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  padding-bottom:92px!important;
+}
+.roadora-bottom-nav,
+.premiumBottomNav,
+.bottomNav,
+.roadoraMapNav{
+  display:none!important;
+}
+.app,.phone,.roadtrip-shell{
+  min-height:100vh!important;
+}
+&lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main class=&quot;app&quot;&gt;
+  &lt;section class=&quot;hero&quot;&gt;
+    &lt;img class=&quot;hero-img&quot; src=&quot;./assets/roadtrip-hero.png&quot; alt=&quot;Roadora roadtrip hero&quot;&gt;
+    &lt;div class=&quot;hero-shade&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Menu&quot;&gt;☰&lt;/button&gt;
+      &lt;div class=&quot;brand&quot;&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;span&gt;ROADORA&lt;/span&gt;&lt;/div&gt;
+      &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Meer&quot;&gt;↗&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;hero-copy&quot;&gt;
+      &lt;div class=&quot;badge&quot;&gt;&lt;span class=&quot;badge-dot&quot;&gt;&lt;/span&gt; Dag 3 van 10&lt;/div&gt;
+      &lt;h1 class=&quot;hero-title&quot;&gt;Mijn roadtrip&lt;/h1&gt;
+      &lt;p class=&quot;route&quot;&gt;Oostenrijk → Italië&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;hero-progress&quot;&gt;
+      &lt;div class=&quot;progress-meta&quot;&gt;&lt;span&gt;3.420 / 10.820 km&lt;/span&gt;&lt;span&gt;30% voltooid&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;progress-track&quot;&gt;&lt;div class=&quot;progress-fill&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;beige-panel&quot;&gt;
+    &lt;div class=&quot;content-stack&quot;&gt;
+      &lt;section class=&quot;active-day surface&quot;&gt;
+        &lt;div class=&quot;active-kicker&quot;&gt;Vandaag · Dag 3&lt;/div&gt;
+        &lt;div class=&quot;active-main&quot;&gt;
+          &lt;div&gt;
+            &lt;h2 class=&quot;active-title&quot;&gt;Innsbruck → Gardameer&lt;/h2&gt;
+            &lt;div class=&quot;active-sub&quot;&gt;Een rustige Alpenrit richting het water.&lt;/div&gt;
+            &lt;div class=&quot;active-stats&quot;&gt;
+              &lt;span class=&quot;active-stat&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;320 km&lt;/span&gt;
+              &lt;span class=&quot;active-stat&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;/&gt;&lt;path d=&quot;M12 7v5l3 2&quot;/&gt;&lt;/svg&gt;4u 15m&lt;/span&gt;
+              &lt;span class=&quot;active-stat&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 3v18&quot;/&gt;&lt;path d=&quot;M16 3v18&quot;/&gt;&lt;path d=&quot;M4 8h16&quot;/&gt;&lt;path d=&quot;M4 16h16&quot;/&gt;&lt;/svg&gt;2 stops&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;active-photo&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&amp;w=800&amp;auto=format&amp;fit=crop&quot; alt=&quot;Gardameer&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;hotel-row&quot;&gt;
+          &lt;div&gt;&lt;strong&gt;Hotel vanavond&lt;/strong&gt;&lt;span&gt;Hotel Riva del Garda · vanaf 15:00&lt;/span&gt;&lt;/div&gt;
+          &lt;button class=&quot;details-btn&quot; type=&quot;button&quot;&gt;Bekijk dag &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M9 18l6-6-6-6&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;day-flow surface&quot;&gt;
+        &lt;div class=&quot;flow-head&quot;&gt;
+          &lt;h3 class=&quot;flow-title&quot;&gt;Reis per dag&lt;/h3&gt;
+          &lt;span class=&quot;flow-count&quot;&gt;10 dagen&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;day-scroll&quot; aria-label=&quot;Horizontale dagenlijst&quot;&gt;
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 1&lt;/span&gt;
+              &lt;strong&gt;Rotterdam&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Frankfurt&lt;/p&gt;
+            &lt;small&gt;480 km · 5u 10m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 2&lt;/span&gt;
+              &lt;strong&gt;Frankfurt&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Innsbruck&lt;/p&gt;
+            &lt;small&gt;460 km · 5u 30m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card active&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Vandaag · Dag 3&lt;/span&gt;
+              &lt;strong&gt;Innsbruck&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Gardameer&lt;/p&gt;
+            &lt;small&gt;320 km · 4u 15m · 2 stops&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 4&lt;/span&gt;
+              &lt;strong&gt;Gardameer&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Toscane&lt;/p&gt;
+            &lt;small&gt;410 km · 5u 20m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 5&lt;/span&gt;
+              &lt;strong&gt;Toscane&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Rome&lt;/p&gt;
+            &lt;small&gt;280 km · 3u 45m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 6&lt;/span&gt;
+              &lt;strong&gt;Rome&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Amalfi&lt;/p&gt;
+            &lt;small&gt;275 km · 3u 50m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 7&lt;/span&gt;
+              &lt;strong&gt;Amalfi&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;Rustdag&lt;/p&gt;
+            &lt;small&gt;0 km · vrije dag&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 8&lt;/span&gt;
+              &lt;strong&gt;Amalfi&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Florence&lt;/p&gt;
+            &lt;small&gt;520 km · 6u 10m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 9&lt;/span&gt;
+              &lt;strong&gt;Florence&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Zwitserland&lt;/p&gt;
+            &lt;small&gt;610 km · 7u 05m&lt;/small&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;day-card&quot;&gt;
+            &lt;div class=&quot;day-card-top&quot;&gt;
+              &lt;span&gt;Dag 10&lt;/span&gt;
+              &lt;strong&gt;Zwitserland&lt;/strong&gt;
+            &lt;/div&gt;
+            &lt;p&gt;→ Rotterdam&lt;/p&gt;
+            &lt;small&gt;720 km · 8u 20m&lt;/small&gt;
+          &lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+
+
+      &lt;section class=&quot;total-strip surface&quot;&gt;
+        &lt;h3 class=&quot;total-title&quot;&gt;Totaal van je roadtrip&lt;/h3&gt;
+        &lt;div class=&quot;total-grid&quot;&gt;
+          &lt;div class=&quot;total-item&quot;&gt;&lt;strong&gt;10.820&lt;/strong&gt;&lt;span&gt;km&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;total-item&quot;&gt;&lt;strong&gt;68u 45m&lt;/strong&gt;&lt;span&gt;reistijd&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;total-item&quot;&gt;&lt;strong&gt;10&lt;/strong&gt;&lt;span&gt;dagen&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;total-item&quot;&gt;&lt;strong&gt;4&lt;/strong&gt;&lt;span&gt;landen&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;total-item&quot;&gt;&lt;strong&gt;18&lt;/strong&gt;&lt;span&gt;stops&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+
+  &lt;div class=&quot;day-detail-overlay&quot; id=&quot;dayDetailOverlay&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;section class=&quot;day-detail-sheet&quot; role=&quot;dialog&quot; aria-label=&quot;Dagdetails&quot;&gt;
+      &lt;div class=&quot;day-detail-head&quot;&gt;
+        &lt;div&gt;
+          &lt;p class=&quot;day-detail-kicker&quot; id=&quot;detailKicker&quot;&gt;Vandaag · Dag 3&lt;/p&gt;
+          &lt;h2 class=&quot;day-detail-title&quot; id=&quot;detailTitle&quot;&gt;Innsbruck → Gardameer&lt;/h2&gt;
+          &lt;span class=&quot;day-detail-sub&quot; id=&quot;detailSub&quot;&gt;320 km · 4u 15m · 2 stops onderweg&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;button class=&quot;day-close-btn&quot; type=&quot;button&quot; id=&quot;closeDayDetail&quot; aria-label=&quot;Sluiten&quot;&gt;×&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;day-route-scroll&quot; id=&quot;dayRouteScroll&quot;&gt;
+        &lt;article class=&quot;route-stop&quot;&gt;
+          &lt;div class=&quot;route-stop-icon&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;/&gt;&lt;path d=&quot;M12 7v5l3 2&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;route-stop-content&quot;&gt;&lt;strong&gt;Vertrek&lt;/strong&gt;&lt;span&gt;Innsbruck centrum&lt;/span&gt;&lt;/div&gt;
+          &lt;small&gt;09:10&lt;/small&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;route-stop&quot;&gt;
+          &lt;div class=&quot;route-stop-icon&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M13 2L3 14h7l-1 8 10-12h-7l1-8z&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;route-stop-content&quot;&gt;&lt;strong&gt;Laadstop&lt;/strong&gt;&lt;span&gt;Ionity Brenner&lt;/span&gt;&lt;/div&gt;
+          &lt;small&gt;45 km&lt;/small&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;route-stop&quot;&gt;
+          &lt;div class=&quot;route-stop-icon&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 10h16&quot;/&gt;&lt;path d=&quot;M6 10v3a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4v-3&quot;/&gt;&lt;path d=&quot;M8 20h8&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;route-stop-content&quot;&gt;&lt;strong&gt;Rustmoment&lt;/strong&gt;&lt;span&gt;Trafoi, Italië&lt;/span&gt;&lt;/div&gt;
+          &lt;small&gt;2u rijden&lt;/small&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;route-stop&quot;&gt;
+          &lt;div class=&quot;route-stop-icon&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;route-stop-content&quot;&gt;&lt;strong&gt;Uitje&lt;/strong&gt;&lt;span&gt;Fotostop aan het meer&lt;/span&gt;&lt;/div&gt;
+          &lt;small&gt;15:20&lt;/small&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;route-stop&quot;&gt;
+          &lt;div class=&quot;route-stop-icon&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 11h16&quot;/&gt;&lt;path d=&quot;M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4&quot;/&gt;&lt;path d=&quot;M5 11v8&quot;/&gt;&lt;path d=&quot;M19 11v8&quot;/&gt;&lt;path d=&quot;M4 15h16&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;route-stop-content&quot;&gt;&lt;strong&gt;Aankomst&lt;/strong&gt;&lt;span&gt;Hotel Riva del Garda&lt;/span&gt;&lt;/div&gt;
+          &lt;small&gt;17:45&lt;/small&gt;
+        &lt;/article&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;day-detail-actions&quot;&gt;
+        &lt;button class=&quot;day-detail-action secondary&quot; type=&quot;button&quot;&gt;Bewerk dag&lt;/button&gt;
+        &lt;button class=&quot;day-detail-action primary&quot; type=&quot;button&quot;&gt;Bekijk op kaart&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+
+
+  &lt;nav class=&quot;roadora-bottom-nav&quot;&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 5h16&quot;/&gt;&lt;path d=&quot;M4 12h10&quot;/&gt;&lt;path d=&quot;M4 19h16&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Overzicht&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item active&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;5&quot; cy=&quot;19&quot; r=&quot;2&quot;/&gt;&lt;circle cx=&quot;19&quot; cy=&quot;5&quot; r=&quot;2&quot;/&gt;&lt;path d=&quot;M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn roadtrip&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z&quot;/&gt;&lt;path d=&quot;M9 3v15&quot;/&gt;&lt;path d=&quot;M15 6v15&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Kaart&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z&quot;/&gt;&lt;path d=&quot;M8 8h7&quot;/&gt;&lt;path d=&quot;M8 12h6&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn dagboek&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M4 21a8 8 0 0 1 16 0&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Profiel&lt;/span&gt;&lt;/button&gt;
+  &lt;/nav&gt;
+&lt;/main&gt;
+
+&lt;script&gt;
+document.addEventListener(&#x27;DOMContentLoaded&#x27;, () =&gt; {
+
+  const dayCards = document.querySelectorAll(&#x27;.day-card&#x27;);
+  const overlay = document.getElementById(&#x27;dayDetailOverlay&#x27;);
+  const closeBtn = document.getElementById(&#x27;closeDayDetail&#x27;);
+  const detailKicker = document.getElementById(&#x27;detailKicker&#x27;);
+  const detailTitle = document.getElementById(&#x27;detailTitle&#x27;);
+  const detailSub = document.getElementById(&#x27;detailSub&#x27;);
+  const routeScroll = document.getElementById(&#x27;dayRouteScroll&#x27;);
+  const bekijkDagBtn = document.querySelector(&#x27;.details-btn&#x27;);
+
+  const dayDetails = {
+    1: [&#x27;Dag 1&#x27;, &#x27;Rotterdam → Frankfurt&#x27;, &#x27;480 km · 5u 10m · 2 stops onderweg&#x27;],
+    2: [&#x27;Dag 2&#x27;, &#x27;Frankfurt → Innsbruck&#x27;, &#x27;460 km · 5u 30m · 2 stops onderweg&#x27;],
+    3: [&#x27;Vandaag · Dag 3&#x27;, &#x27;Innsbruck → Gardameer&#x27;, &#x27;320 km · 4u 15m · 2 stops onderweg&#x27;],
+    4: [&#x27;Dag 4&#x27;, &#x27;Gardameer → Toscane&#x27;, &#x27;410 km · 5u 20m · 3 stops onderweg&#x27;],
+    5: [&#x27;Dag 5&#x27;, &#x27;Toscane → Rome&#x27;, &#x27;280 km · 3u 45m · 1 stop onderweg&#x27;],
+    6: [&#x27;Dag 6&#x27;, &#x27;Rome → Amalfi&#x27;, &#x27;275 km · 3u 50m · 2 stops onderweg&#x27;],
+    7: [&#x27;Dag 7&#x27;, &#x27;Rustdag Amalfi&#x27;, &#x27;0 km · vrije dag · hotel blijft hetzelfde&#x27;],
+    8: [&#x27;Dag 8&#x27;, &#x27;Amalfi → Florence&#x27;, &#x27;520 km · 6u 10m · 3 stops onderweg&#x27;],
+    9: [&#x27;Dag 9&#x27;, &#x27;Florence → Zwitserland&#x27;, &#x27;610 km · 7u 05m · 3 stops onderweg&#x27;],
+    10: [&#x27;Dag 10&#x27;, &#x27;Zwitserland → Rotterdam&#x27;, &#x27;720 km · 8u 20m · 4 stops onderweg&#x27;]
+  };
+
+  function openDayDetail(dayNumber){
+    const detail = dayDetails[dayNumber] || dayDetails[3];
+
+    detailKicker.textContent = detail[0];
+    detailTitle.textContent = detail[1];
+    detailSub.textContent = detail[2];
+
+    overlay.classList.add(&#x27;open&#x27;);
+    overlay.setAttribute(&#x27;aria-hidden&#x27;,&#x27;false&#x27;);
+
+    document.body.style.overflow = &#x27;hidden&#x27;;
+
+    if(routeScroll){
+      routeScroll.scrollTop = 0;
+    }
+  }
+
+  function closeDayDetail(){
+    overlay.classList.remove(&#x27;open&#x27;);
+    overlay.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);
+    document.body.style.overflow = &#x27;&#x27;;
+  }
+
+  // Dagen scrollcards
+  dayCards.forEach((card, index) =&gt; {
+    card.addEventListener(&#x27;click&#x27;, () =&gt; {
+      openDayDetail(index + 1);
+    });
+  });
+
+  // Bekijk dag knop -&gt; opent actieve dag
+  if(bekijkDagBtn){
+    bekijkDagBtn.addEventListener(&#x27;click&#x27;, () =&gt; {
+      openDayDetail(3);
+    });
+  }
+
+  if(closeBtn){
+    closeBtn.addEventListener(&#x27;click&#x27;, closeDayDetail);
+  }
+
+  overlay.addEventListener(&#x27;click&#x27;, (event) =&gt; {
+    if(event.target === overlay){
+      closeDayDetail();
+    }
+  });
+
+  document.addEventListener(&#x27;keydown&#x27;, (event) =&gt; {
+    if(event.key === &#x27;Escape&#x27;){
+      closeDayDetail();
+    }
+  });
+});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe><iframe class="tab-frame" data-tab="kaart" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;nl&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;&gt;
+&lt;title&gt;Roadora — Kaart&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=Playfair+Display:wght@700;800&amp;display=swap&quot;&gt;
+&lt;style&gt;
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#b9ad9d;font-family:Inter,system-ui,sans-serif;overflow:auto}
+body{display:flex;justify-content:center;padding-bottom:92px}
+button{border:0;font:inherit}
+.app{width:100%;max-width:430px;min-height:100vh;overflow:hidden;background:#f6efe6;position:relative}
+.hero{position:relative;height:43vh;min-height:350px;max-height:420px;overflow:hidden;background:#1d261f}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 74%;transform:scale(1.02)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.02) 48%,rgba(0,0,0,.16) 100%),linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.06) 55%,rgba(0,0,0,.08))}
+.hero:before{content:&quot;&quot;;position:absolute;left:0;right:0;bottom:-1px;height:172px;z-index:6;background:linear-gradient(to bottom,rgba(246,239,230,0),rgba(246,239,230,.42) 66%,#f6efe6 100%)}
+.topbar{position:absolute;z-index:8;top:calc(env(safe-area-inset-top) + 14px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start}
+.round-btn{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;background:rgba(22,28,31,.74);color:#fff;font-size:22px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+.brand{margin-top:-4px;color:#fff;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.25)}.brand strong{display:block;font-size:38px;line-height:.8;font-weight:900;letter-spacing:-2px}.brand span{display:block;margin-top:8px;font-size:11px;font-weight:900;letter-spacing:5px}
+.hero-copy{position:absolute;z-index:8;left:18px;top:78px;width:min(305px,calc(100% - 36px));color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.32)}.badge{height:28px;width:max-content;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;background:rgba(62,73,53,.72);font-size:11px;font-weight:800}.badge-dot{width:7px;height:7px;border-radius:999px;background:#72d66d}.hero-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;font-size:38px;line-height:.92;letter-spacing:-1.4px}.route{margin:8px 0 0;font-size:15px;font-weight:900}
+.beige-panel{position:relative;z-index:4;margin-top:-56px;min-height:calc(57vh + 56px);padding:50px 14px 130px;background:linear-gradient(to bottom,rgba(246,239,230,0) 0px,rgba(246,239,230,.46) 48px,#f6efe6 104px,#f2e8dc 100%)}
+.content-stack{max-width:396px;margin:0 auto;display:flex;flex-direction:column;gap:8px;position:relative;z-index:6}
+.map-card{height:355px;border-radius:30px;background:radial-gradient(circle at 28% 34%,rgba(164,92,24,.22),transparent 24%),radial-gradient(circle at 68% 62%,rgba(111,63,28,.16),transparent 25%),linear-gradient(135deg,#efe2d3,#d8c8b7);position:relative;box-shadow:0 10px 26px rgba(48,34,22,.05),inset 0 1px 0 rgba(255,255,255,.56);overflow:hidden}
+.map-card:before{content:&quot;&quot;;position:absolute;left:16%;top:32%;width:70%;height:45%;border:5px solid rgba(143,77,17,.58);border-left:0;border-bottom:0;border-radius:999px;transform:rotate(9deg)}
+.map-pin{position:absolute;width:28px;height:28px;border-radius:999px;background:linear-gradient(135deg,#fff4dc,#ca8d44);border:3px solid #fff;box-shadow:0 10px 24px rgba(48,34,22,.22)}
+.p1{left:28%;top:58%}.p2{left:55%;top:37%}.p3{left:70%;top:66%}
+.map-info{border-radius:26px;padding:14px;background:linear-gradient(180deg,rgba(246,239,230,.50),rgba(246,239,230,.32));border:1px solid rgba(92,66,42,.035);box-shadow:0 7px 18px rgba(48,34,22,.022)}
+.map-info strong{display:block;color:#111;font-size:15px;font-weight:830}.map-info span{display:block;margin-top:6px;color:rgba(20,18,16,.56);font-size:10px;line-height:1.25}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main class=&quot;app&quot;&gt;
+&lt;section class=&quot;hero&quot;&gt;
+&lt;img class=&quot;hero-img&quot; src=&quot;./assets/roadtrip-hero.png&quot; alt=&quot;Roadora kaart hero&quot;&gt;
+&lt;div class=&quot;hero-shade&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;topbar&quot;&gt;&lt;button class=&quot;round-btn&quot; type=&quot;button&quot;&gt;☰&lt;/button&gt;&lt;div class=&quot;brand&quot;&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;span&gt;ROADORA&lt;/span&gt;&lt;/div&gt;&lt;button class=&quot;round-btn&quot; type=&quot;button&quot;&gt;⚙&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;hero-copy&quot;&gt;&lt;div class=&quot;badge&quot;&gt;&lt;span class=&quot;badge-dot&quot;&gt;&lt;/span&gt; Live route&lt;/div&gt;&lt;h1 class=&quot;hero-title&quot;&gt;Kaart&lt;/h1&gt;&lt;p class=&quot;route&quot;&gt;Bekijk je roadtrip live&lt;/p&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;section class=&quot;beige-panel&quot;&gt;
+&lt;div class=&quot;content-stack&quot;&gt;
+&lt;div class=&quot;map-card&quot;&gt;&lt;span class=&quot;map-pin p1&quot;&gt;&lt;/span&gt;&lt;span class=&quot;map-pin p2&quot;&gt;&lt;/span&gt;&lt;span class=&quot;map-pin p3&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;map-info&quot;&gt;&lt;strong&gt;Live kaart&lt;/strong&gt;&lt;span&gt;Deze tab is gekoppeld in één bestand. Later koppelen we hier de echte Roadora kaart-engine aan.&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe><iframe class="tab-frame" data-tab="dagboek" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;nl&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot; /&gt;
+&lt;title&gt;Roadora — Mijn Dagboek v1&lt;/title&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Playfair+Display:wght@700;800&amp;display=swap&quot; /&gt;
+&lt;style&gt;
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:#b9ad9d;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center}
+button{border:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{width:100%;max-width:430px;min-height:100vh;overflow:hidden;background:#f6efe6;position:relative}
+
+.hero{position:relative;z-index:1;height:43vh;min-height:350px;max-height:420px;overflow:hidden;background:#1d261f}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 74%;transform:scale(1.02)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12) 0%,rgba(0,0,0,.03) 48%,rgba(0,0,0,.01) 78%,rgba(0,0,0,0) 100%),linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.05) 55%,rgba(0,0,0,.06));pointer-events:none}
+.hero::before{content:&quot;&quot;;position:absolute;left:0;right:0;bottom:-1px;height:172px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,rgba(246,239,230,0) 0%,rgba(246,239,230,.05) 24%,rgba(246,239,230,.18) 46%,rgba(246,239,230,.42) 66%,rgba(246,239,230,.74) 84%,#f6efe6 100%)}
+
+.topbar{position:absolute;z-index:9;top:calc(env(safe-area-inset-top) + 14px);left:16px;right:16px;display:flex;align-items:flex-start;justify-content:space-between}
+.round-btn{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;background:rgba(22,28,31,.74);color:#fff;font-size:24px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.brand{margin-top:-4px;color:#fff;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.brand strong{display:block;font-size:38px;line-height:.8;font-weight:900;letter-spacing:-2px}
+.brand span{display:block;margin-top:8px;font-size:11px;font-weight:900;letter-spacing:5px}
+
+.hero-copy{position:absolute;z-index:9;left:18px;top:86px;width:min(330px,calc(100% - 36px));color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.32)}
+.badge{width:max-content;height:28px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;background:rgba(62,73,53,.72);color:#fff;font-size:11px;font-weight:800}
+.badge-dot{width:7px;height:7px;border-radius:999px;background:#72d66d}
+.hero-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;font-size:38px;line-height:.92;letter-spacing:-1.4px;font-weight:800}
+.route{margin:8px 0 0;font-size:15px;font-weight:900;letter-spacing:-.25px}
+
+.hero-memory{position:absolute;z-index:10;left:18px;right:18px;bottom:56px;color:#fff;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hero-memory-item{padding:10px 8px;border-radius:18px;background:rgba(255,255,255,.16);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08)}
+.hero-memory-item strong{display:block;font-size:15px;line-height:1;font-weight:900;letter-spacing:-.3px}
+.hero-memory-item span{display:block;margin-top:5px;font-size:8px;line-height:1.05;font-weight:750;opacity:.82}
+
+.beige-panel{position:relative;z-index:3;margin-top:-56px;min-height:calc(57vh + 56px);padding:50px 14px calc(112px + env(safe-area-inset-bottom));overflow:visible;background:linear-gradient(to bottom,rgba(246,239,230,0) 0px,rgba(246,239,230,.18) 22px,rgba(246,239,230,.46) 48px,rgba(246,239,230,.78) 76px,#f6efe6 104px,#f2e8dc 100%)}
+.content-stack{width:100%;max-width:396px;margin:0 auto;display:flex;flex-direction:column;gap:8px;position:relative;z-index:10}
+.surface{background:linear-gradient(180deg,rgba(246,239,230,.48),rgba(246,239,230,.30));border:1px solid rgba(92,66,42,.03);box-shadow:0 7px 18px rgba(48,34,22,.022),inset 0 1px 0 rgba(255,255,255,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+.featured-memory{border-radius:28px;padding:12px;display:grid;grid-template-columns:1fr 126px;gap:12px;align-items:stretch}
+.memory-kicker{margin:0 0 7px;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.memory-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;color:#111;font-size:30px;line-height:.96;letter-spacing:-1px;font-weight:800}
+.memory-sub{margin-top:8px;color:rgba(20,18,16,.62);font-size:11px;line-height:1.25;font-weight:600}
+.memory-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;color:#251d16;font-size:10px;font-weight:750}
+.memory-pill{height:25px;padding:0 10px;border-radius:999px;display:inline-flex;align-items:center;background:rgba(255,255,255,.26)}
+.memory-photo{border-radius:22px;overflow:hidden;min-height:132px;background:#d8c8b7}
+.memory-photo img{width:100%;height:100%;object-fit:cover;display:block}
+
+.new-moment{border-radius:26px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.new-moment strong{display:block;color:#111;font-size:14px;line-height:1.1;font-weight:800;letter-spacing:-.25px}
+.new-moment span{display:block;margin-top:5px;color:rgba(20,18,16,.55);font-size:9.5px;line-height:1.2;font-weight:550}
+.new-btn{height:36px;padding:0 14px;border-radius:999px;background:linear-gradient(135deg,rgba(164,92,24,.96),rgba(143,77,17,.92));color:#fffaf4;font-size:10.5px;font-weight:850;white-space:nowrap;box-shadow:0 10px 20px rgba(137,76,20,.18)}
+
+.moment-scroll-card{border-radius:28px;padding:12px 0 13px;overflow:hidden}
+.flow-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;margin-bottom:10px}
+.flow-title{margin:0;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.flow-count{color:rgba(20,18,16,.48);font-size:9px;line-height:1;font-weight:750;white-space:nowrap}
+.moment-scroll{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:0 14px 2px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.moment-scroll::-webkit-scrollbar{display:none}
+.moment-card{flex:0 0 132px;min-height:126px;border-radius:22px;overflow:hidden;position:relative;scroll-snap-align:start;background:#d8c8b7}
+.moment-card.wide{flex-basis:158px}
+.moment-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.moment-card::after{content:&quot;&quot;;position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 36%,rgba(0,0,0,.52) 100%)}
+.moment-card-content{position:absolute;left:10px;right:10px;bottom:10px;z-index:2;color:#fff}
+.moment-card-content strong{display:block;font-size:12px;line-height:1.05;font-weight:850;text-shadow:0 2px 12px rgba(0,0,0,.26)}
+.moment-card-content span{display:block;margin-top:4px;font-size:8px;line-height:1.1;font-weight:700;opacity:.86}
+
+.day-memory-strip{border-radius:24px;padding:13px 12px}
+.day-memory-title{margin:0 0 10px;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.day-memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.day-memory-item{position:relative;text-align:center;min-width:0}
+.day-memory-item:not(:last-child)::after{content:&quot;&quot;;position:absolute;top:6px;right:0;width:1px;height:32px;background:rgba(92,66,42,.07)}
+.day-memory-item strong{display:block;color:#111;font-size:12px;font-weight:800;line-height:1.1;letter-spacing:-.25px}
+.day-memory-item span{display:block;margin-top:4px;color:rgba(20,18,16,.55);font-size:7.5px;line-height:1.1;font-weight:550}
+
+.memory-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:flex-end;justify-content:center;background:rgba(17,13,9,.18);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.memory-overlay.open{display:flex}
+.memory-sheet{width:calc(100% - 16px);max-width:414px;margin:0 auto calc(78px + env(safe-area-inset-bottom));border-radius:34px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.76),rgba(246,239,230,.68));border:1px solid rgba(92,66,42,.07);box-shadow:0 22px 52px rgba(48,34,22,.22),inset 0 1px 0 rgba(255,255,255,.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.memory-sheet-head{padding:18px 18px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.memory-sheet-kicker{margin:0 0 6px;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.7px;text-transform:uppercase}
+.memory-sheet-title{margin:0;color:#111;font-family:&quot;Playfair Display&quot;,Georgia,serif;font-size:29px;line-height:.95;letter-spacing:-.9px;font-weight:800}
+.close-btn{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.48);color:#2b2118;font-size:22px;line-height:1;font-weight:700}
+.memory-options{padding:0 18px 18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.memory-option{min-height:82px;border-radius:22px;padding:12px;background:rgba(255,255,255,.34);border:1px solid rgba(92,66,42,.045);text-align:left}
+.memory-option strong{display:block;color:#111;font-size:13px;font-weight:850}
+.memory-option span{display:block;margin-top:6px;color:rgba(20,18,16,.56);font-size:9px;line-height:1.15}
+
+.roadora-bottom-nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 28px);max-width:402px;z-index:200;padding:8px 7px;border-radius:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(246,239,230,.52));border:1px solid rgba(92,66,42,.055);box-shadow:0 12px 30px rgba(48,34,22,.12),inset 0 1px 0 rgba(255,255,255,.60);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.bottom-nav-item{min-width:0;height:52px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(30,24,18,.58);background:transparent;font-size:8.8px;line-height:1;font-weight:700;letter-spacing:-.25px;white-space:nowrap}
+.bottom-nav-item svg{width:20px;height:20px;stroke-width:2.05}
+.bottom-nav-item.active{color:#fffaf4;background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);box-shadow:0 10px 20px rgba(137,76,20,.23),inset 0 1px 0 rgba(255,255,255,.18)}
+.bottom-nav-item:nth-child(2){transform:translateX(6px)}
+
+@media(max-height:760px){
+.hero{height:41vh;min-height:330px}
+.hero-copy{top:76px}
+.hero-title{font-size:34px}
+.hero-memory{bottom:48px}
+.beige-panel{padding-top:44px}
+.memory-title{font-size:26px}
+.memory-photo{min-height:116px}
+.moment-card{min-height:112px}
+}
+@media(max-width:390px){
+.beige-panel{padding-left:12px;padding-right:12px}
+.featured-memory{grid-template-columns:1fr 108px;gap:10px}
+.memory-title{font-size:25px}
+.memory-photo{min-height:108px}
+.moment-card{flex-basis:124px}
+.moment-card.wide{flex-basis:146px}
+.bottom-nav-item span,.bottom-nav-item{font-size:8.1px}
+}
+
+/* ROADORA DAGBOEK GALLERY FLOW V2 */
+.memory-step{display:none!important}
+.memory-step.active{display:block!important}
+.photo-picker{position:relative!important;min-height:118px!important;border-radius:24px!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(246,239,230,.44))!important;border:1px dashed rgba(143,77,17,.22)!important;color:#7b4b25!important;font-size:12px!important;font-weight:800!important}
+.photo-picker input{position:absolute!important;inset:0!important;opacity:0!important;cursor:pointer!important}
+.photo-preview{display:none!important;width:100%!important;height:156px!important;border-radius:24px!important;object-fit:cover!important}
+.photo-preview.show{display:block!important}
+.memory-form{padding:0 18px 18px!important;display:flex!important;flex-direction:column!important;gap:10px!important}
+.memory-field-label{color:#80502a!important;font-size:9px!important;line-height:1!important;font-weight:850!important;letter-spacing:.65px!important;text-transform:uppercase!important}
+.day-choice-row,.stop-choice-row{display:flex!important;gap:8px!important;overflow-x:auto!important;padding-bottom:2px!important;scrollbar-width:none!important}
+.day-choice-row::-webkit-scrollbar,.stop-choice-row::-webkit-scrollbar{display:none!important}
+.choice-pill{flex:0 0 auto!important;height:34px!important;padding:0 12px!important;border-radius:999px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(255,255,255,.38)!important;color:#2b2118!important;border:1px solid rgba(92,66,42,.04)!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important}
+.choice-pill.active{background:linear-gradient(135deg,#a45c18,#8f4d11)!important;color:#fffaf4!important;box-shadow:0 8px 16px rgba(137,76,20,.16)!important}
+.memory-note{width:100%!important;min-height:70px!important;border:0!important;outline:0!important;resize:none!important;border-radius:20px!important;padding:12px!important;background:rgba(255,255,255,.36)!important;color:#18120e!important;font-family:Inter,system-ui,sans-serif!important;font-size:12px!important;line-height:1.35!important;font-weight:600!important}
+.memory-actions{display:grid!important;grid-template-columns:.85fr 1.15fr!important;gap:10px!important;margin-top:2px!important}
+.memory-action{height:40px!important;border-radius:999px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:11px!important;font-weight:850!important}
+.memory-action.secondary{background:rgba(255,255,255,.38)!important;color:#2b2118!important}
+.memory-action.primary{background:linear-gradient(135deg,#a45c18,#8f4d11)!important;color:#fffaf4!important;box-shadow:0 10px 20px rgba(137,76,20,.18)!important}
+.memory-saved-toast{position:fixed!important;left:50%!important;bottom:calc(96px + env(safe-area-inset-bottom))!important;transform:translateX(-50%) translateY(16px)!important;z-index:700!important;height:42px!important;padding:0 16px!important;border-radius:999px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(24,18,12,.84)!important;color:#fffaf4!important;font-size:12px!important;font-weight:800!important;opacity:0!important;pointer-events:none!important;transition:opacity .18s ease,transform .18s ease!important}
+.memory-saved-toast.show{opacity:1!important;transform:translateX(-50%) translateY(0)!important}
+
+
+/* =========================================================
+   ROADORA DAGBOEK HERO STATS + SOLID NAV V3
+   Alleen deze 2 fixes:
+   1. Momenten/foto&#x27;s/notities beter verwerkt in hero
+   2. Bottom navigation solid, niet transparant bij scroll
+   ========================================================= */
+
+.hero-memory{
+  position:absolute !important;
+  z-index:10 !important;
+  left:18px !important;
+  right:18px !important;
+  bottom:112px !important;
+
+  display:flex !important;
+  gap:10px !important;
+
+  color:#fff !important;
+  pointer-events:none !important;
+}
+
+.hero-memory-item{
+  flex:1 !important;
+
+  padding:14px 12px !important;
+
+  border-radius:22px !important;
+
+  background:rgba(255,255,255,.10) !important;
+
+  border:1px solid rgba(255,255,255,.08) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+
+  backdrop-filter:blur(18px) !important;
+  -webkit-backdrop-filter:blur(18px) !important;
+
+  pointer-events:auto !important;
+}
+
+.hero-memory-item strong{
+  display:block !important;
+
+  font-size:22px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.8px !important;
+}
+
+.hero-memory-item span{
+  display:block !important;
+
+  margin-top:6px !important;
+
+  font-size:10px !important;
+  line-height:1.1 !important;
+  font-weight:700 !important;
+
+  opacity:.84 !important;
+}
+
+/* Bottom nav wordt solid zodat hij niet transparant wordt bij scrollen */
+.roadora-bottom-nav{
+  position:fixed !important;
+  left:50% !important;
+  bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+
+  width:calc(100% - 28px) !important;
+  max-width:402px !important;
+
+  z-index:300 !important;
+
+  padding:8px 7px !important;
+
+  border-radius:28px !important;
+
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:4px !important;
+
+  background:#f6efe6 !important;
+
+  border:1px solid rgba(92,66,42,.05) !important;
+
+  box-shadow:
+    0 18px 40px rgba(48,34,22,.16),
+    inset 0 1px 0 rgba(255,255,255,.55) !important;
+
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+@media(max-height:760px){
+  .hero-memory{
+    bottom:104px !important;
+  }
+
+  .hero-memory-item{
+    padding:12px 11px !important;
+    border-radius:20px !important;
+  }
+
+  .hero-memory-item strong{
+    font-size:20px !important;
+  }
+}
+
+@media(max-width:390px){
+  .hero-memory{
+    left:14px !important;
+    right:14px !important;
+    gap:8px !important;
+  }
+
+  .hero-memory-item{
+    padding:12px 10px !important;
+  }
+
+  .hero-memory-item strong{
+    font-size:19px !important;
+  }
+
+  .hero-memory-item span{
+    font-size:9px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA DAGBOEK HERO STATS REMOVED V4
+   Hero blokken 24 momenten / 8 foto&#x27;s / 3 notities verwijderd.
+   ========================================================= */
+
+.hero-memory{
+  display:none !important;
+}
+
+.hero-copy{
+  top:92px !important;
+}
+
+&lt;/style&gt;
+
+&lt;style id=&quot;roadoraSingleTabFix&quot;&gt;
+html,body{
+  min-height:100%;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  padding-bottom:92px!important;
+}
+.roadora-bottom-nav,
+.premiumBottomNav,
+.bottomNav,
+.roadoraMapNav{
+  display:none!important;
+}
+.app,.phone,.roadtrip-shell{
+  min-height:100vh!important;
+}
+&lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main class=&quot;app&quot;&gt;
+  &lt;section class=&quot;hero&quot;&gt;
+    &lt;img class=&quot;hero-img&quot; src=&quot;./assets/roadtrip-hero.png&quot; alt=&quot;Roadora dagboek hero&quot;&gt;
+    &lt;div class=&quot;hero-shade&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Menu&quot;&gt;☰&lt;/button&gt;
+      &lt;div class=&quot;brand&quot;&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;span&gt;ROADORA&lt;/span&gt;&lt;/div&gt;
+      &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Delen&quot;&gt;↗&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;hero-copy&quot;&gt;
+      &lt;div class=&quot;badge&quot;&gt;&lt;span class=&quot;badge-dot&quot;&gt;&lt;/span&gt; Dagboek actief&lt;/div&gt;
+      &lt;h1 class=&quot;hero-title&quot;&gt;Mijn dagboek&lt;/h1&gt;
+      &lt;p class=&quot;route&quot;&gt;Momenten van je roadtrip&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;beige-panel&quot;&gt;
+    &lt;div class=&quot;content-stack&quot;&gt;
+      &lt;section class=&quot;featured-memory surface&quot;&gt;
+        &lt;div&gt;
+          &lt;div class=&quot;memory-kicker&quot;&gt;Laatste herinnering&lt;/div&gt;
+          &lt;h2 class=&quot;memory-title&quot;&gt;Zonsondergang bij Hallstatt&lt;/h2&gt;
+          &lt;div class=&quot;memory-sub&quot;&gt;Een kort moment langs het water, net voor vertrek richting Italië.&lt;/div&gt;
+          &lt;div class=&quot;memory-meta&quot;&gt;&lt;span class=&quot;memory-pill&quot;&gt;Dag 3&lt;/span&gt;&lt;span class=&quot;memory-pill&quot;&gt;Fotostop&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;memory-photo&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&amp;w=800&amp;auto=format&amp;fit=crop&quot; alt=&quot;Hallstatt herinnering&quot;&gt;&lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;new-moment surface&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Leg dit moment vast&lt;/strong&gt;&lt;span&gt;Voeg een foto, notitie of korte herinnering toe aan je reis.&lt;/span&gt;&lt;/div&gt;
+        &lt;button class=&quot;new-btn&quot; id=&quot;openMemorySheet&quot; type=&quot;button&quot;&gt;Nieuw moment&lt;/button&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;moment-scroll-card surface&quot;&gt;
+        &lt;div class=&quot;flow-head&quot;&gt;&lt;h3 class=&quot;flow-title&quot;&gt;Momenten onderweg&lt;/h3&gt;&lt;span class=&quot;flow-count&quot;&gt;Vandaag&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;moment-scroll&quot;&gt;
+          &lt;article class=&quot;moment-card wide&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&amp;w=500&amp;auto=format&amp;fit=crop&quot; alt=&quot;&quot;&gt;&lt;div class=&quot;moment-card-content&quot;&gt;&lt;strong&gt;Alpenrit&lt;/strong&gt;&lt;span&gt;09:40 · Dag 3&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;
+          &lt;article class=&quot;moment-card&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&amp;w=500&amp;auto=format&amp;fit=crop&quot; alt=&quot;&quot;&gt;&lt;div class=&quot;moment-card-content&quot;&gt;&lt;strong&gt;Koffiestop&lt;/strong&gt;&lt;span&gt;11:20&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;
+          &lt;article class=&quot;moment-card&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&amp;w=500&amp;auto=format&amp;fit=crop&quot; alt=&quot;&quot;&gt;&lt;div class=&quot;moment-card-content&quot;&gt;&lt;strong&gt;Dorpje&lt;/strong&gt;&lt;span&gt;14:10&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;
+          &lt;article class=&quot;moment-card&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&amp;w=500&amp;auto=format&amp;fit=crop&quot; alt=&quot;&quot;&gt;&lt;div class=&quot;moment-card-content&quot;&gt;&lt;strong&gt;Meer&lt;/strong&gt;&lt;span&gt;17:45&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;day-memory-strip surface&quot;&gt;
+        &lt;h3 class=&quot;day-memory-title&quot;&gt;Dagboek overzicht&lt;/h3&gt;
+        &lt;div class=&quot;day-memory-grid&quot;&gt;
+          &lt;div class=&quot;day-memory-item&quot;&gt;&lt;strong&gt;10&lt;/strong&gt;&lt;span&gt;dagen&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;day-memory-item&quot;&gt;&lt;strong&gt;24&lt;/strong&gt;&lt;span&gt;momenten&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;day-memory-item&quot;&gt;&lt;strong&gt;8&lt;/strong&gt;&lt;span&gt;foto’s&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;day-memory-item&quot;&gt;&lt;strong&gt;3&lt;/strong&gt;&lt;span&gt;notities&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;div class=&quot;memory-overlay&quot; id=&quot;memoryOverlay&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;section class=&quot;memory-sheet&quot; role=&quot;dialog&quot; aria-label=&quot;Nieuw moment&quot;&gt;
+      &lt;div class=&quot;memory-sheet-head&quot;&gt;
+        &lt;div&gt;&lt;p class=&quot;memory-sheet-kicker&quot;&gt;Nieuw moment&lt;/p&gt;&lt;h2 class=&quot;memory-sheet-title&quot;&gt;Wat wil je bewaren?&lt;/h2&gt;&lt;/div&gt;
+        &lt;button class=&quot;close-btn&quot; id=&quot;closeMemorySheet&quot; type=&quot;button&quot;&gt;×&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;memory-step active&quot; id=&quot;memoryStepStart&quot;&gt;
+        &lt;div class=&quot;memory-options&quot;&gt;
+          &lt;button class=&quot;memory-option&quot; type=&quot;button&quot; id=&quot;startPhotoFlow&quot;&gt;&lt;strong&gt;Foto toevoegen&lt;/strong&gt;&lt;span&gt;Kies uit je galerij of camera.&lt;/span&gt;&lt;/button&gt;
+          &lt;button class=&quot;memory-option&quot; type=&quot;button&quot;&gt;&lt;strong&gt;Notitie schrijven&lt;/strong&gt;&lt;span&gt;Leg vast wat je niet wilt vergeten.&lt;/span&gt;&lt;/button&gt;
+          &lt;button class=&quot;memory-option&quot; type=&quot;button&quot;&gt;&lt;strong&gt;Stop bewaren&lt;/strong&gt;&lt;span&gt;Koppel een plek aan je dagboek.&lt;/span&gt;&lt;/button&gt;
+          &lt;button class=&quot;memory-option&quot; type=&quot;button&quot;&gt;&lt;strong&gt;Dag samenvatten&lt;/strong&gt;&lt;span&gt;Maak later een deelbare memory.&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;memory-step&quot; id=&quot;memoryStepPhoto&quot;&gt;
+        &lt;div class=&quot;memory-form&quot;&gt;
+          &lt;label class=&quot;photo-picker&quot; id=&quot;photoPicker&quot;&gt;
+            &lt;input type=&quot;file&quot; id=&quot;photoInput&quot; accept=&quot;image/*&quot; /&gt;
+            &lt;span&gt;Galerij of camera openen&lt;/span&gt;
+          &lt;/label&gt;
+          &lt;img class=&quot;photo-preview&quot; id=&quot;photoPreview&quot; alt=&quot;Voorbeeld foto&quot; /&gt;
+
+          &lt;div&gt;
+            &lt;div class=&quot;memory-field-label&quot;&gt;Kies dag&lt;/div&gt;
+            &lt;div class=&quot;day-choice-row&quot; id=&quot;dayChoiceRow&quot;&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Vandaag&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 1&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 2&lt;/button&gt;
+              &lt;button class=&quot;choice-pill active&quot; type=&quot;button&quot;&gt;Dag 3&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 4&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 5&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 6&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Dag 7&lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div&gt;
+            &lt;div class=&quot;memory-field-label&quot;&gt;Koppel aan stop&lt;/div&gt;
+            &lt;div class=&quot;stop-choice-row&quot; id=&quot;stopChoiceRow&quot;&gt;
+              &lt;button class=&quot;choice-pill active&quot; type=&quot;button&quot;&gt;Geen stop&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Hallstatt&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Hotel&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Laadstop&lt;/button&gt;
+              &lt;button class=&quot;choice-pill&quot; type=&quot;button&quot;&gt;Restaurant&lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;textarea class=&quot;memory-note&quot; id=&quot;memoryNote&quot; placeholder=&quot;Schrijf eventueel een korte herinnering...&quot;&gt;&lt;/textarea&gt;
+
+          &lt;div class=&quot;memory-actions&quot;&gt;
+            &lt;button class=&quot;memory-action secondary&quot; id=&quot;backToMemoryStart&quot; type=&quot;button&quot;&gt;Terug&lt;/button&gt;
+            &lt;button class=&quot;memory-action primary&quot; id=&quot;saveMemoryMoment&quot; type=&quot;button&quot;&gt;Opslaan&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;roadora-bottom-nav&quot;&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 5h16&quot;/&gt;&lt;path d=&quot;M4 12h10&quot;/&gt;&lt;path d=&quot;M4 19h16&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Overzicht&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;5&quot; cy=&quot;19&quot; r=&quot;2&quot;/&gt;&lt;circle cx=&quot;19&quot; cy=&quot;5&quot; r=&quot;2&quot;/&gt;&lt;path d=&quot;M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn roadtrip&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z&quot;/&gt;&lt;path d=&quot;M9 3v15&quot;/&gt;&lt;path d=&quot;M15 6v15&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Kaart&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item active&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z&quot;/&gt;&lt;path d=&quot;M8 8h7&quot;/&gt;&lt;path d=&quot;M8 12h6&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn dagboek&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M4 21a8 8 0 0 1 16 0&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Profiel&lt;/span&gt;&lt;/button&gt;
+  &lt;/nav&gt;
+&lt;div class=&quot;memory-saved-toast&quot; id=&quot;memorySavedToast&quot;&gt;Moment opgeslagen&lt;/div&gt;
+&lt;/main&gt;
+
+&lt;script&gt;
+const openBtn=document.getElementById(&#x27;openMemorySheet&#x27;);
+const closeBtn=document.getElementById(&#x27;closeMemorySheet&#x27;);
+const overlay=document.getElementById(&#x27;memoryOverlay&#x27;);
+const stepStart=document.getElementById(&#x27;memoryStepStart&#x27;);
+const stepPhoto=document.getElementById(&#x27;memoryStepPhoto&#x27;);
+const startPhotoFlow=document.getElementById(&#x27;startPhotoFlow&#x27;);
+const backToMemoryStart=document.getElementById(&#x27;backToMemoryStart&#x27;);
+const photoInput=document.getElementById(&#x27;photoInput&#x27;);
+const photoPreview=document.getElementById(&#x27;photoPreview&#x27;);
+const photoPicker=document.getElementById(&#x27;photoPicker&#x27;);
+const saveMemoryMoment=document.getElementById(&#x27;saveMemoryMoment&#x27;);
+const toast=document.getElementById(&#x27;memorySavedToast&#x27;);
+
+function showStartStep(){stepStart.classList.add(&#x27;active&#x27;);stepPhoto.classList.remove(&#x27;active&#x27;)}
+function showPhotoStep(){stepStart.classList.remove(&#x27;active&#x27;);stepPhoto.classList.add(&#x27;active&#x27;)}
+function openMemorySheet(){overlay.classList.add(&#x27;open&#x27;);overlay.setAttribute(&#x27;aria-hidden&#x27;,&#x27;false&#x27;);document.body.style.overflow=&#x27;hidden&#x27;;showStartStep()}
+function closeMemorySheet(){overlay.classList.remove(&#x27;open&#x27;);overlay.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);document.body.style.overflow=&#x27;&#x27;}
+function activateChoice(container){container.querySelectorAll(&#x27;.choice-pill&#x27;).forEach(button=&gt;button.addEventListener(&#x27;click&#x27;,()=&gt;{container.querySelectorAll(&#x27;.choice-pill&#x27;).forEach(item=&gt;item.classList.remove(&#x27;active&#x27;));button.classList.add(&#x27;active&#x27;)}))}
+function showToast(){toast.classList.add(&#x27;show&#x27;);setTimeout(()=&gt;toast.classList.remove(&#x27;show&#x27;),1800)}
+
+openBtn.addEventListener(&#x27;click&#x27;,openMemorySheet);
+closeBtn.addEventListener(&#x27;click&#x27;,closeMemorySheet);
+startPhotoFlow.addEventListener(&#x27;click&#x27;,showPhotoStep);
+backToMemoryStart.addEventListener(&#x27;click&#x27;,showStartStep);
+photoInput.addEventListener(&#x27;change&#x27;,()=&gt;{const file=photoInput.files&amp;&amp;photoInput.files[0];if(!file)return;photoPreview.src=URL.createObjectURL(file);photoPreview.classList.add(&#x27;show&#x27;);photoPicker.style.display=&#x27;none&#x27;});
+saveMemoryMoment.addEventListener(&#x27;click&#x27;,()=&gt;{closeMemorySheet();showToast()});
+activateChoice(document.getElementById(&#x27;dayChoiceRow&#x27;));
+activateChoice(document.getElementById(&#x27;stopChoiceRow&#x27;));
+overlay.addEventListener(&#x27;click&#x27;,event=&gt;{if(event.target===overlay)closeMemorySheet()});
+document.addEventListener(&#x27;keydown&#x27;,event=&gt;{if(event.key===&#x27;Escape&#x27;)closeMemorySheet()});
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;"></iframe><iframe class="tab-frame" data-tab="profiel" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;nl&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot; /&gt;
+&lt;title&gt;Roadora — Profiel Beige Premium v1&lt;/title&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Playfair+Display:wght@700;800&amp;display=swap&quot; /&gt;
+&lt;style&gt;
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:#b9ad9d;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center}
+button{border:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{width:100%;max-width:430px;min-height:100vh;overflow:hidden;background:#f6efe6;position:relative}
+
+.hero{position:relative;z-index:1;height:43vh;min-height:350px;max-height:420px;overflow:hidden;background:#1d261f}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 74%;transform:scale(1.02)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12) 0%,rgba(0,0,0,.03) 48%,rgba(0,0,0,.01) 78%,rgba(0,0,0,0) 100%),linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.05) 55%,rgba(0,0,0,.06));pointer-events:none}
+.hero::before{content:&quot;&quot;;position:absolute;left:0;right:0;bottom:-1px;height:172px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,rgba(246,239,230,0) 0%,rgba(246,239,230,.05) 24%,rgba(246,239,230,.18) 46%,rgba(246,239,230,.42) 66%,rgba(246,239,230,.74) 84%,#f6efe6 100%)}
+
+.topbar{position:absolute;z-index:9;top:calc(env(safe-area-inset-top) + 14px);left:16px;right:16px;display:flex;align-items:flex-start;justify-content:space-between}
+.round-btn{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;background:rgba(22,28,31,.74);color:#fff;font-size:24px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.brand{margin-top:-4px;color:#fff;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.brand strong{display:block;font-size:38px;line-height:.8;font-weight:900;letter-spacing:-2px}
+.brand span{display:block;margin-top:8px;font-size:11px;font-weight:900;letter-spacing:5px}
+
+.hero-copy{position:absolute;z-index:9;left:18px;right:18px;top:88px;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.32)}
+.profile-hero-row{display:flex;align-items:center;gap:14px}
+.avatar{width:68px;height:68px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.14));border:1px solid rgba(255,255,255,.16);box-shadow:0 12px 26px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font-size:28px;font-weight:900}
+.badge{width:max-content;height:28px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;margin-bottom:8px;background:rgba(62,73,53,.72);color:#fff;font-size:11px;font-weight:800}
+.badge-dot{width:7px;height:7px;border-radius:999px;background:#72d66d}
+.hero-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;font-size:38px;line-height:.92;letter-spacing:-1.4px;font-weight:800}
+.route{margin:8px 0 0;font-size:14px;font-weight:850;letter-spacing:-.2px;opacity:.94}
+
+.hero-profile-stats{position:absolute;z-index:10;left:18px;right:18px;bottom:58px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;color:#fff}
+.hero-profile-stat{text-align:center;position:relative}
+.hero-profile-stat:not(:last-child)::after{content:&quot;&quot;;position:absolute;right:0;top:7px;width:1px;height:34px;background:rgba(255,255,255,.18)}
+.hero-profile-stat strong{display:block;font-size:17px;line-height:1;font-weight:900;letter-spacing:-.55px;text-shadow:0 2px 12px rgba(0,0,0,.2)}
+.hero-profile-stat span{display:block;margin-top:6px;font-size:8px;line-height:1.05;font-weight:760;opacity:.82}
+
+.beige-panel{position:relative;z-index:3;margin-top:-56px;min-height:calc(57vh + 56px);padding:50px 14px calc(112px + env(safe-area-inset-bottom));overflow:visible;background:linear-gradient(to bottom,rgba(246,239,230,0) 0px,rgba(246,239,230,.18) 22px,rgba(246,239,230,.46) 48px,rgba(246,239,230,.78) 76px,#f6efe6 104px,#f2e8dc 100%)}
+.content-stack{width:100%;max-width:396px;margin:0 auto;display:flex;flex-direction:column;gap:8px;position:relative;z-index:10}
+.surface{background:linear-gradient(180deg,rgba(246,239,230,.50),rgba(246,239,230,.32));border:1px solid rgba(92,66,42,.035);box-shadow:0 7px 18px rgba(48,34,22,.022),inset 0 1px 0 rgba(255,255,255,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+.identity-card{border-radius:28px;padding:14px}
+.card-kicker{margin:0 0 8px;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.identity-main{display:grid;grid-template-columns:1fr 112px;gap:12px;align-items:stretch}
+.identity-title{margin:0;font-family:&quot;Playfair Display&quot;,Georgia,serif;color:#111;font-size:30px;line-height:.96;letter-spacing:-1px;font-weight:800}
+.identity-sub{margin-top:8px;color:rgba(20,18,16,.62);font-size:11px;line-height:1.25;font-weight:600}
+.identity-photo{border-radius:22px;overflow:hidden;min-height:116px;background:#d8c8b7;position:relative}
+.identity-photo::before{content:&quot;&quot;;position:absolute;inset:0;background:linear-gradient(135deg,rgba(164,92,24,.30),rgba(246,239,230,.08)),url(&quot;https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&amp;w=800&amp;auto=format&amp;fit=crop&quot;);background-size:cover;background-position:center}
+
+.quick-preferences{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:13px}
+.pref-pill{min-height:56px;border-radius:19px;padding:10px;background:rgba(255,255,255,.25)}
+.pref-pill strong{display:block;color:#111;font-size:12px;line-height:1.05;font-weight:830;letter-spacing:-.2px}
+.pref-pill span{display:block;margin-top:5px;color:rgba(20,18,16,.54);font-size:8px;line-height:1.1;font-weight:600}
+
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.profile-tile{min-height:106px;border-radius:24px;padding:13px;position:relative;overflow:hidden}
+.profile-tile-icon{width:34px;height:34px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.30);color:#7b4b25;margin-bottom:12px}
+.profile-tile-icon svg{width:18px;height:18px;stroke-width:2.05}
+.profile-tile strong{display:block;color:#111;font-size:14px;line-height:1.06;font-weight:830;letter-spacing:-.25px}
+.profile-tile span{display:block;margin-top:6px;color:rgba(20,18,16,.56);font-size:9px;line-height:1.18;font-weight:560}
+
+.preference-card{border-radius:28px;padding:13px 14px}
+.preference-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}
+.preference-head h3{margin:0;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.preference-head span{color:rgba(20,18,16,.48);font-size:9px;font-weight:760}
+.preference-list{display:flex;flex-direction:column;gap:8px}
+.preference-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:8px 0;border-bottom:1px solid rgba(92,66,42,.055)}
+.preference-row:last-child{border-bottom:0}
+.preference-row strong{display:block;color:#111;font-size:13px;font-weight:800;letter-spacing:-.2px}
+.preference-row span{display:block;margin-top:3px;color:rgba(20,18,16,.52);font-size:8.8px;font-weight:560}
+.toggle{width:42px;height:24px;border-radius:999px;position:relative;flex:0 0 auto;background:rgba(255,255,255,.45)}
+.toggle::after{content:&quot;&quot;;position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:999px;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.toggle.on{background:linear-gradient(135deg,#a45c18,#8f4d11)}
+.toggle.on::after{left:21px}
+
+.settings-strip{border-radius:24px;padding:13px 12px}
+.settings-title{margin:0 0 10px;color:#80502a;font-size:10px;line-height:1;font-weight:850;letter-spacing:.75px;text-transform:uppercase}
+.settings-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.settings-item{position:relative;text-align:center;min-width:0}
+.settings-item:not(:last-child)::after{content:&quot;&quot;;position:absolute;top:6px;right:0;width:1px;height:32px;background:rgba(92,66,42,.07)}
+.settings-item strong{display:block;color:#111;font-size:12px;font-weight:800;line-height:1.1;letter-spacing:-.25px}
+.settings-item span{display:block;margin-top:4px;color:rgba(20,18,16,.55);font-size:7.5px;line-height:1.1;font-weight:550}
+
+.roadora-bottom-nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 28px);max-width:402px;z-index:300;padding:8px 7px;border-radius:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:#f6efe6;border:1px solid rgba(92,66,42,.05);box-shadow:0 18px 40px rgba(48,34,22,.16),inset 0 1px 0 rgba(255,255,255,.55);backdrop-filter:none;-webkit-backdrop-filter:none}
+.bottom-nav-item{min-width:0;height:52px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(30,24,18,.58);background:transparent;font-size:8.8px;line-height:1;font-weight:700;letter-spacing:-.25px;white-space:nowrap}
+.bottom-nav-item svg{width:20px;height:20px;stroke-width:2.05}
+.bottom-nav-item.active{color:#fffaf4;background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);box-shadow:0 10px 20px rgba(137,76,20,.23),inset 0 1px 0 rgba(255,255,255,.18)}
+.bottom-nav-item:nth-child(2){transform:translateX(6px)}
+
+@media(max-height:760px){
+.hero{height:41vh;min-height:330px}
+.hero-copy{top:76px}
+.hero-title{font-size:34px}
+.hero-profile-stats{bottom:50px}
+.beige-panel{padding-top:44px}
+.identity-title{font-size:26px}
+.identity-photo{min-height:104px}
+.profile-tile{min-height:96px}
+}
+@media(max-width:390px){
+.beige-panel{padding-left:12px;padding-right:12px}
+.profile-hero-row{gap:12px}
+.avatar{width:62px;height:62px;font-size:25px}
+.identity-main{grid-template-columns:1fr 96px;gap:10px}
+.identity-title{font-size:25px}
+.identity-photo{min-height:100px}
+.profile-tile{padding:12px;min-height:98px}
+.bottom-nav-item span,.bottom-nav-item{font-size:8.1px}
+}
+
+/* =========================================================
+   ROADORA PROFIEL VOORKEUREN CARDS V2
+   Voorkeuren als compacte premium blokjes.
+   ========================================================= */
+
+.preference-card{
+  border-radius:28px !important;
+  padding:13px 14px 14px !important;
+}
+
+.preference-grid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+
+.preference-tile{
+  min-height:94px !important;
+
+  border-radius:22px !important;
+  padding:12px !important;
+
+  background:rgba(255,255,255,.23) !important;
+
+  border:1px solid rgba(92,66,42,.035) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.26) !important;
+}
+
+.preference-tile.active{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.36),
+      rgba(246,239,230,.34)
+    ) !important;
+
+  border-color:rgba(143,77,17,.11) !important;
+
+  box-shadow:
+    0 8px 18px rgba(137,76,20,.055),
+    inset 0 1px 0 rgba(255,255,255,.36) !important;
+}
+
+.preference-icon{
+  width:33px !important;
+  height:33px !important;
+
+  border-radius:14px !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  margin-bottom:10px !important;
+
+  background:rgba(255,255,255,.32) !important;
+  color:#7b4b25 !important;
+}
+
+.preference-icon svg{
+  width:17px !important;
+  height:17px !important;
+  stroke-width:2.05 !important;
+}
+
+.preference-tile strong{
+  display:block !important;
+
+  color:#111 !important;
+
+  font-size:13px !important;
+  line-height:1.06 !important;
+  font-weight:830 !important;
+  letter-spacing:-.25px !important;
+}
+
+.preference-tile span{
+  display:block !important;
+
+  margin-top:6px !important;
+
+  color:rgba(20,18,16,.55) !important;
+
+  font-size:8.7px !important;
+  line-height:1.18 !important;
+  font-weight:560 !important;
+}
+
+/* Oude toggle/list styles uitschakelen */
+.preference-list,
+.preference-row,
+.toggle{
+  display:none !important;
+}
+
+@media(max-height:760px){
+  .preference-tile{
+    min-height:86px !important;
+    padding:11px !important;
+  }
+
+  .preference-icon{
+    width:30px !important;
+    height:30px !important;
+    margin-bottom:8px !important;
+  }
+}
+
+@media(max-width:390px){
+  .preference-grid{
+    gap:7px !important;
+  }
+
+  .preference-tile{
+    padding:11px !important;
+  }
+
+  .preference-tile strong{
+    font-size:12.4px !important;
+  }
+
+  .preference-tile span{
+    font-size:8.2px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA ACCOUNT ROWS V3
+   Account omgezet naar duidelijke premium rows.
+   ========================================================= */
+
+.account-card{
+  border-radius:28px !important;
+  padding:13px 14px !important;
+}
+
+.account-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+
+  margin-bottom:8px !important;
+}
+
+.account-head h3{
+  margin:0 !important;
+
+  color:#80502a !important;
+
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:850 !important;
+  letter-spacing:.75px !important;
+  text-transform:uppercase !important;
+}
+
+.account-head span{
+  color:rgba(20,18,16,.48) !important;
+
+  font-size:9px !important;
+  font-weight:760 !important;
+}
+
+.account-list{
+  display:flex !important;
+  flex-direction:column !important;
+}
+
+.account-row{
+  min-height:68px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+
+  gap:12px !important;
+
+  padding:12px 0 !important;
+
+  background:transparent !important;
+
+  border-bottom:1px solid rgba(92,66,42,.055) !important;
+}
+
+.account-row:last-child{
+  border-bottom:0 !important;
+}
+
+.account-row-left{
+  display:flex !important;
+  align-items:center !important;
+  gap:12px !important;
+
+  min-width:0 !important;
+}
+
+.account-icon{
+  width:38px !important;
+  height:38px !important;
+
+  border-radius:16px !important;
+
+  flex:0 0 auto !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  background:rgba(255,255,255,.32) !important;
+  color:#7b4b25 !important;
+}
+
+.account-icon svg{
+  width:18px !important;
+  height:18px !important;
+
+  stroke-width:2.05 !important;
+}
+
+.account-row strong{
+  display:block !important;
+
+  color:#111 !important;
+
+  font-size:13px !important;
+  line-height:1.08 !important;
+  font-weight:820 !important;
+
+  letter-spacing:-.22px !important;
+}
+
+.account-row span{
+  display:block !important;
+
+  margin-top:4px !important;
+
+  color:rgba(20,18,16,.54) !important;
+
+  font-size:8.8px !important;
+  line-height:1.18 !important;
+  font-weight:560 !important;
+}
+
+.account-arrow{
+  flex:0 0 auto !important;
+
+  color:rgba(20,18,16,.34) !important;
+
+  font-size:22px !important;
+  line-height:1 !important;
+  font-weight:500 !important;
+}
+
+/* Oude account grid uitschakelen */
+.settings-strip,
+.settings-grid,
+.settings-item{
+  display:none !important;
+}
+
+@media(max-height:760px){
+  .account-row{
+    min-height:62px !important;
+    padding:10px 0 !important;
+  }
+
+  .account-icon{
+    width:34px !important;
+    height:34px !important;
+  }
+}
+
+@media(max-width:390px){
+  .account-row strong{
+    font-size:12.5px !important;
+  }
+
+  .account-row span{
+    font-size:8.2px !important;
+  }
+
+  .account-arrow{
+    font-size:20px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA HERO CONSISTENCY LOCK V1
+   Unified hero architecture for all subpages
+   ========================================================= */
+
+:root{
+  --roadora-hero-height:44vh;
+  --roadora-hero-min:350px;
+  --roadora-hero-max:430px;
+
+  --roadora-topbar-top:calc(env(safe-area-inset-top) + 14px);
+
+  --roadora-hero-text-top:92px;
+
+  --roadora-fade-height:182px;
+
+  --roadora-radius-xl:28px;
+}
+
+/* HERO SYSTEM */
+.hero{
+  position:relative !important;
+
+  z-index:1 !important;
+
+  height:var(--roadora-hero-height) !important;
+  min-height:var(--roadora-hero-min) !important;
+  max-height:var(--roadora-hero-max) !important;
+
+  overflow:hidden !important;
+
+  background:#1d261f !important;
+}
+
+.hero-img{
+  position:absolute !important;
+  inset:0 !important;
+
+  width:100% !important;
+  height:100% !important;
+
+  object-fit:cover !important;
+  object-position:center 74% !important;
+
+  transform:scale(1.02) !important;
+}
+
+.hero-shade{
+  position:absolute !important;
+  inset:0 !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.03) 48%,
+      rgba(0,0,0,.01) 78%,
+      rgba(0,0,0,0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.34),
+      rgba(0,0,0,.05) 55%,
+      rgba(0,0,0,.06)
+    ) !important;
+
+  pointer-events:none !important;
+}
+
+.hero::before{
+  content:&quot;&quot; !important;
+
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:-1px !important;
+
+  height:var(--roadora-fade-height) !important;
+
+  z-index:6 !important;
+
+  pointer-events:none !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0%,
+      rgba(246,239,230,.05) 24%,
+      rgba(246,239,230,.18) 46%,
+      rgba(246,239,230,.42) 66%,
+      rgba(246,239,230,.74) 84%,
+      #f6efe6 100%
+    ) !important;
+}
+
+/* TOPBAR */
+.topbar{
+  position:absolute !important;
+
+  z-index:9 !important;
+
+  top:var(--roadora-topbar-top) !important;
+  left:16px !important;
+  right:16px !important;
+
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+}
+
+.round-btn{
+  width:48px !important;
+  height:48px !important;
+
+  border-radius:999px !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  background:rgba(22,28,31,.74) !important;
+
+  color:#fff !important;
+
+  font-size:24px !important;
+  font-weight:800 !important;
+
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.18) !important;
+
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+}
+
+.brand{
+  margin-top:-4px !important;
+
+  color:#fff !important;
+
+  text-align:center !important;
+
+  text-shadow:0 2px 18px rgba(0,0,0,.25) !important;
+}
+
+.brand strong{
+  display:block !important;
+
+  font-size:38px !important;
+  line-height:.8 !important;
+
+  font-weight:900 !important;
+
+  letter-spacing:-2px !important;
+}
+
+.brand span{
+  display:block !important;
+
+  margin-top:8px !important;
+
+  font-size:11px !important;
+  font-weight:900 !important;
+
+  letter-spacing:5px !important;
+}
+
+/* HERO CONTENT */
+.hero-copy{
+  position:absolute !important;
+
+  z-index:9 !important;
+
+  left:18px !important;
+  right:18px !important;
+
+  top:var(--roadora-hero-text-top) !important;
+
+  color:#fff !important;
+
+  text-shadow:0 4px 18px rgba(0,0,0,.32) !important;
+}
+
+/* PANEL OVERLAY SYSTEM */
+.beige-panel{
+  position:relative !important;
+
+  z-index:3 !important;
+
+  margin-top:-56px !important;
+
+  min-height:calc(57vh + 56px) !important;
+
+  padding:
+    50px
+    14px
+    calc(112px + env(safe-area-inset-bottom)) !important;
+
+  overflow:visible !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0px,
+      rgba(246,239,230,.18) 22px,
+      rgba(246,239,230,.46) 48px,
+      rgba(246,239,230,.78) 76px,
+      #f6efe6 104px,
+      #f2e8dc 100%
+    ) !important;
+}
+
+/* MOBILE LOCK */
+@media(max-height:760px){
+
+  :root{
+    --roadora-hero-height:42vh;
+    --roadora-hero-min:330px;
+    --roadora-hero-text-top:78px;
+    --roadora-fade-height:170px;
+  }
+
+}
+
+@media(max-width:390px){
+
+  :root{
+    --roadora-hero-text-top:84px;
+  }
+
+  .beige-panel{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+}
+
+
+/* =========================================================
+   ROADORA PREMIUM SETTINGS ICON V2
+   Rechter hero-pijl vervangen door duidelijk premium instellingen-icoon.
+   ========================================================= */
+
+.hero-action-settings svg{
+  width:22px !important;
+  height:22px !important;
+  stroke-width:1.85 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+
+.hero-action-settings{
+  font-size:0 !important;
+}
+
+&lt;/style&gt;
+
+&lt;style id=&quot;roadoraSingleTabFix&quot;&gt;
+html,body{
+  min-height:100%;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  padding-bottom:92px!important;
+}
+.roadora-bottom-nav,
+.premiumBottomNav,
+.bottomNav,
+.roadoraMapNav{
+  display:none!important;
+}
+.app,.phone,.roadtrip-shell{
+  min-height:100vh!important;
+}
+&lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main class=&quot;app&quot;&gt;
+  &lt;section class=&quot;hero&quot;&gt;
+    &lt;img class=&quot;hero-img&quot; src=&quot;./assets/roadtrip-hero.png&quot; alt=&quot;Roadora profiel hero&quot;&gt;
+    &lt;div class=&quot;hero-shade&quot;&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;button class=&quot;round-btn&quot; type=&quot;button&quot; aria-label=&quot;Menu&quot;&gt;☰&lt;/button&gt;
+      &lt;div class=&quot;brand&quot;&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;span&gt;ROADORA&lt;/span&gt;&lt;/div&gt;
+      &lt;button class=&quot;round-btn hero-action-settings&quot; type=&quot;button&quot; aria-label=&quot;Instellingen&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;path d=&quot;M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z&quot;&gt;&lt;/path&gt;
+          &lt;path d=&quot;M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.1 2.1 0 0 1-2.98 2.98l-.04-.04A1.8 1.8 0 0 0 14.8 19.6a1.8 1.8 0 0 0-1 .58V20.3a2.1 2.1 0 0 1-4.2 0v-.06a1.8 1.8 0 0 0-1-.58 1.8 1.8 0 0 0-1.98.36l-.04.04a2.1 2.1 0 0 1-2.98-2.98l.04-.04A1.8 1.8 0 0 0 4 15.2a1.8 1.8 0 0 0-.58-1H3.3a2.1 2.1 0 0 1 0-4.2h.06a1.8 1.8 0 0 0 .58-1 1.8 1.8 0 0 0-.36-1.98l-.04-.04A2.1 2.1 0 0 1 6.52 4l.04.04A1.8 1.8 0 0 0 8.4 4.4a1.8 1.8 0 0 0 1-.58V3.7a2.1 2.1 0 0 1 4.2 0v.06a1.8 1.8 0 0 0 1 .58 1.8 1.8 0 0 0 1.98-.36l.04-.04A2.1 2.1 0 0 1 19.6 6.92l-.04.04A1.8 1.8 0 0 0 19.2 8.8c.1.36.3.7.58 1h.12a2.1 2.1 0 0 1 0 4.2h-.06a1.8 1.8 0 0 0-.44 1Z&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;hero-copy&quot;&gt;
+      &lt;div class=&quot;profile-hero-row&quot;&gt;
+        &lt;div class=&quot;avatar&quot;&gt;S&lt;/div&gt;
+        &lt;div&gt;
+          &lt;div class=&quot;badge&quot;&gt;&lt;span class=&quot;badge-dot&quot;&gt;&lt;/span&gt; Roadora traveler&lt;/div&gt;
+          &lt;h1 class=&quot;hero-title&quot;&gt;Stephan&lt;/h1&gt;
+          &lt;p class=&quot;route&quot;&gt;Jouw persoonlijke reisprofiel&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;hero-profile-stats&quot;&gt;
+      &lt;div class=&quot;hero-profile-stat&quot;&gt;&lt;strong&gt;7&lt;/strong&gt;&lt;span&gt;roadtrips&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;hero-profile-stat&quot;&gt;&lt;strong&gt;18k&lt;/strong&gt;&lt;span&gt;kilometer&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;hero-profile-stat&quot;&gt;&lt;strong&gt;9&lt;/strong&gt;&lt;span&gt;landen&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;hero-profile-stat&quot;&gt;&lt;strong&gt;42&lt;/strong&gt;&lt;span&gt;memories&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;beige-panel&quot;&gt;
+    &lt;div class=&quot;content-stack&quot;&gt;
+
+      &lt;section class=&quot;identity-card surface&quot;&gt;
+        &lt;div class=&quot;card-kicker&quot;&gt;Reisidentiteit&lt;/div&gt;
+        &lt;div class=&quot;identity-main&quot;&gt;
+          &lt;div&gt;
+            &lt;h2 class=&quot;identity-title&quot;&gt;Rustige routes, mooie stops&lt;/h2&gt;
+            &lt;div class=&quot;identity-sub&quot;&gt;Roadora leert straks jouw reisstijl kennen en past routes, hotels en stops daarop aan.&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;identity-photo&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;quick-preferences&quot;&gt;
+          &lt;div class=&quot;pref-pill&quot;&gt;&lt;strong&gt;EV&lt;/strong&gt;&lt;span&gt;Laadstops slim&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;pref-pill&quot;&gt;&lt;strong&gt;Hotels&lt;/strong&gt;&lt;span&gt;Comfort &amp; parking&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;pref-pill&quot;&gt;&lt;strong&gt;Uitjes&lt;/strong&gt;&lt;span&gt;Scenic stops&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;profile-grid&quot;&gt;
+        &lt;article class=&quot;profile-tile surface&quot;&gt;
+          &lt;div class=&quot;profile-tile-icon&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M5 16l1-5a4 4 0 0 1 4-3h4a4 4 0 0 1 4 3l1 5&quot;/&gt;&lt;path d=&quot;M3 16h18&quot;/&gt;&lt;circle cx=&quot;7&quot; cy=&quot;18&quot; r=&quot;2&quot;/&gt;&lt;circle cx=&quot;17&quot; cy=&quot;18&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;strong&gt;Mijn voertuig&lt;/strong&gt;&lt;span&gt;Auto · EV voorkeuren later gekoppeld.&lt;/span&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;profile-tile surface&quot;&gt;
+          &lt;div class=&quot;profile-tile-icon&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 11h16&quot;/&gt;&lt;path d=&quot;M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4&quot;/&gt;&lt;path d=&quot;M5 11v8&quot;/&gt;&lt;path d=&quot;M19 11v8&quot;/&gt;&lt;path d=&quot;M4 15h16&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;strong&gt;Opgeslagen hotels&lt;/strong&gt;&lt;span&gt;Bewaarde verblijven en favorieten.&lt;/span&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;profile-tile surface&quot;&gt;
+          &lt;div class=&quot;profile-tile-icon&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;strong&gt;Favoriete stops&lt;/strong&gt;&lt;span&gt;Uitzichtpunten, eten en uitjes.&lt;/span&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;profile-tile surface&quot;&gt;
+          &lt;div class=&quot;profile-tile-icon&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z&quot;/&gt;&lt;path d=&quot;M8 8h7&quot;/&gt;&lt;path d=&quot;M8 12h6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;strong&gt;Mijn memories&lt;/strong&gt;&lt;span&gt;Foto’s en herinneringen onderweg.&lt;/span&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;preference-card surface&quot;&gt;
+        &lt;div class=&quot;preference-head&quot;&gt;
+          &lt;h3&gt;Voorkeuren&lt;/h3&gt;
+          &lt;span&gt;Later slim gekoppeld&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;preference-grid&quot;&gt;
+          &lt;article class=&quot;preference-tile active&quot;&gt;
+            &lt;div class=&quot;preference-icon&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                &lt;path d=&quot;M4 17c4-7 9-10 16-10&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M4 17h6&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M16 7h4v4&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+            &lt;/div&gt;
+            &lt;strong&gt;Rustige routes&lt;/strong&gt;
+            &lt;span&gt;Scenic &amp; minder snelweg&lt;/span&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;preference-tile&quot;&gt;
+            &lt;div class=&quot;preference-icon&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                &lt;path d=&quot;M9 18h6&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M10 22h4&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M8 14a6 6 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5c0-1-.5-2-1.5-3z&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+            &lt;/div&gt;
+            &lt;strong&gt;Slimme stops&lt;/strong&gt;
+            &lt;span&gt;Op tijd pauze &amp; laden&lt;/span&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;preference-tile active&quot;&gt;
+            &lt;div class=&quot;preference-icon&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                &lt;path d=&quot;M4 11h16&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M5 11v8&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M19 11v8&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M4 15h16&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+            &lt;/div&gt;
+            &lt;strong&gt;Hotel met parking&lt;/strong&gt;
+            &lt;span&gt;Comfort voor onderweg&lt;/span&gt;
+          &lt;/article&gt;
+
+          &lt;article class=&quot;preference-tile&quot;&gt;
+            &lt;div class=&quot;preference-icon&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;3&quot;&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;16&quot; cy=&quot;8&quot; r=&quot;3&quot;&gt;&lt;/circle&gt;
+                &lt;path d=&quot;M3 21a5 5 0 0 1 10 0&quot;&gt;&lt;/path&gt;
+                &lt;path d=&quot;M11 21a5 5 0 0 1 10 0&quot;&gt;&lt;/path&gt;
+              &lt;/svg&gt;
+            &lt;/div&gt;
+            &lt;strong&gt;Gezin &amp; dieren&lt;/strong&gt;
+            &lt;span&gt;Later los instellen&lt;/span&gt;
+          &lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;account-card surface&quot;&gt;
+        &lt;div class=&quot;account-head&quot;&gt;
+          &lt;h3&gt;Account&lt;/h3&gt;
+          &lt;span&gt;Roadora instellingen&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;account-list&quot;&gt;
+
+          &lt;button class=&quot;account-row&quot; type=&quot;button&quot;&gt;
+            &lt;div class=&quot;account-row-left&quot;&gt;
+              &lt;div class=&quot;account-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                  &lt;path d=&quot;M12 3v18&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M7 8l5-5 5 5&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+
+              &lt;div&gt;
+                &lt;strong&gt;Cloud synchronisatie&lt;/strong&gt;
+                &lt;span&gt;Bewaar routes en memories veilig.&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class=&quot;account-arrow&quot;&gt;›&lt;/div&gt;
+          &lt;/button&gt;
+
+          &lt;button class=&quot;account-row&quot; type=&quot;button&quot;&gt;
+            &lt;div class=&quot;account-row-left&quot;&gt;
+              &lt;div class=&quot;account-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                  &lt;path d=&quot;M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+
+              &lt;div&gt;
+                &lt;strong&gt;Privacy &amp; veiligheid&lt;/strong&gt;
+                &lt;span&gt;Controle over gegevens en locaties.&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class=&quot;account-arrow&quot;&gt;›&lt;/div&gt;
+          &lt;/button&gt;
+
+          &lt;button class=&quot;account-row&quot; type=&quot;button&quot;&gt;
+            &lt;div class=&quot;account-row-left&quot;&gt;
+              &lt;div class=&quot;account-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                  &lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M9 12l2 2 4-4&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+
+              &lt;div&gt;
+                &lt;strong&gt;Roadora Pro&lt;/strong&gt;
+                &lt;span&gt;Later premium functies en voordelen.&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class=&quot;account-arrow&quot;&gt;›&lt;/div&gt;
+          &lt;/button&gt;
+
+          &lt;button class=&quot;account-row&quot; type=&quot;button&quot;&gt;
+            &lt;div class=&quot;account-row-left&quot;&gt;
+              &lt;div class=&quot;account-icon&quot;&gt;
+                &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+                  &lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;&gt;&lt;/circle&gt;
+                  &lt;path d=&quot;M12 8v4&quot;&gt;&lt;/path&gt;
+                  &lt;path d=&quot;M12 16h.01&quot;&gt;&lt;/path&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+
+              &lt;div&gt;
+                &lt;strong&gt;Help &amp; support&lt;/strong&gt;
+                &lt;span&gt;Vragen, feedback en ondersteuning.&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class=&quot;account-arrow&quot;&gt;›&lt;/div&gt;
+          &lt;/button&gt;
+
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;nav class=&quot;roadora-bottom-nav&quot;&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M4 5h16&quot;/&gt;&lt;path d=&quot;M4 12h10&quot;/&gt;&lt;path d=&quot;M4 19h16&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Overzicht&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;5&quot; cy=&quot;19&quot; r=&quot;2&quot;/&gt;&lt;circle cx=&quot;19&quot; cy=&quot;5&quot; r=&quot;2&quot;/&gt;&lt;path d=&quot;M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn roadtrip&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z&quot;/&gt;&lt;path d=&quot;M9 3v15&quot;/&gt;&lt;path d=&quot;M15 6v15&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Kaart&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;path d=&quot;M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z&quot;/&gt;&lt;path d=&quot;M8 8h7&quot;/&gt;&lt;path d=&quot;M8 12h6&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mijn dagboek&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;bottom-nav-item active&quot; type=&quot;button&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M4 21a8 8 0 0 1 16 0&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Profiel&lt;/span&gt;&lt;/button&gt;
+  &lt;/nav&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
 </div>
-<span>Roadora</span>
-</div>
-<div class="topActions">
-<button aria-label="Taal kiezen" class="langBtn" id="langBtn" type="button">NL</button>
-<button aria-label="Meldingen" class="iconBtn" type="button">
-<svg fill="none" height="18" viewbox="0 0 24 24" width="18">
-<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7Z" stroke="currentColor" stroke-width="1.7"></path>
-<path d="M10 20h4" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"></path>
-</svg>
+
+<nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
+<button class="bottom-nav-item active" data-tab="overview" type="button">
+  <svg viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
+  <span>Overzicht</span>
 </button>
-</div>
-<div class="langMenu" id="langMenu">
-<button class="active" data-lang="NL" type="button">Nederlands</button>
-<button data-lang="EN" type="button">English</button>
-<button data-lang="DE" type="button">Deutsch</button>
-<button data-lang="FR" type="button">Français</button>
-</div>
-</div>
-<div class="hero">
-<h1>Jouw volgende <span>avontuur</span> begint hier.</h1>
-<p>Plan, ontdek en geniet van de mooiste routes, hotels en plekken onderweg.</p>
-</div>
-<form class="search" onsubmit="event.preventDefault();">
-<svg fill="none" height="18" viewbox="0 0 24 24" width="18">
-<path d="m21 21-4.35-4.35M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path>
-</svg>
-<input placeholder="Waar wil je naartoe?"/>
-<button aria-label="Plan route" class="go" data-action="route" type="button">
-<svg fill="none" height="20" viewbox="0 0 24 24" width="20">
-<path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"></path>
-</svg>
+<button class="bottom-nav-item" data-tab="roadtrip" type="button">
+  <svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h3a4 4 0 0 0 4-4v-6a4 4 0 0 1 4-4h1"/></svg>
+  <span>Mijn roadtrip</span>
 </button>
-</form>
-<div class="spacer"></div>
-<div class="quick">
-<button class="card" data-action="route" type="button">
-<svg fill="none" viewbox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15" stroke="currentColor"></path></svg>
-<b>Plan je route</b><small>Stel je ideale reis samen</small>
+<button class="bottom-nav-item" data-tab="kaart" type="button">
+  <svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
+  <span>Kaart</span>
 </button>
-<button class="card" data-action="explore" type="button">
-<svg fill="none" viewbox="0 0 24 24"><path d="M5 20c3-9 5-13 7-13s4 4 7 13M8 12h8M8 20h8" stroke="currentColor"></path></svg>
-<b>Ontdek uitjes</b><small>Beleef bijzondere plekken</small>
+<button class="bottom-nav-item" data-tab="dagboek" type="button">
+  <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M8 8h7"/><path d="M8 12h6"/></svg>
+  <span>Mijn dagboek</span>
 </button>
-<button class="card" data-action="hotels" type="button">
-<svg fill="none" viewbox="0 0 24 24"><path d="M4 11h16v9M4 20V7M20 20v-5H4M7 11V8h5v3" stroke="currentColor"></path></svg>
-<b>Vind hotels</b><small>Overnacht op de mooiste locaties</small>
+<button class="bottom-nav-item" data-tab="profiel" type="button">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+  <span>Profiel</span>
 </button>
-</div>
-<div class="sectionTitle">
-<b>Populaire roadtrips</b>
-<span>Bekijk alle ›</span>
-</div>
-<div class="trips">
-<div class="trip"><b>Zomer in de Alpen</b><small>12 dagen · 2.340 km<br/>4,8 ★</small></div>
-<div class="trip"><b>Noorwegen Fjorden</b><small>9 dagen · 1.850 km<br/>4,7 ★</small></div>
-<div class="trip"><b>Italië Highlights</b><small>10 dagen · 1.620 km<br/>4,6 ★</small></div>
-</div>
-</section>
-<button aria-label="Menu openen" class="menuToggle" id="menuToggle" type="button">
-<svg fill="none" height="22" viewbox="0 0 24 24" width="22">
-<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-linecap="round" stroke-width="1.9"></path>
-</svg>
-</button>
-<aside aria-label="Navigatie" class="sideMenu" id="sideMenu">
-<button class="sideItem active" data-action="home" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" stroke="currentColor"></path></svg><span>Home</span></button>
-<button class="sideItem" data-action="route" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M6 17h12l1 4H5l1-4Z M7 17 9 7h6l2 10 M8 11h8" stroke="currentColor"></path></svg><span>Route</span></button>
-<button class="sideItem" data-action="explore" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M4 5v15l5-3 6 3 5-3V2l-5 3-6-3-5 3Z M9 2v15 M15 5v15" stroke="currentColor"></path></svg><span>Uitjes</span></button>
-<button class="sideItem" data-action="routes" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M5 6h6v14H5zM13 4h6v14h-6z" stroke="currentColor"></path></svg><span>Routes</span></button>
-<button class="sideItem" data-action="account" type="button"><svg fill="none" viewbox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c1.5-4 14.5-4 16 0" stroke="currentColor"></path></svg><span>Account</span></button>
-</aside>
-<div class="menuScrim" id="menuScrim"></div>
-<section aria-label="Route setup" class="appScreen routeSetup" id="routeSetupScreen">
-<div class="routeInner">
-<header class="rTop rTopNav">
-<button aria-label="Menu openen" class="rIcon screenMenuBtn" data-menu-open="" type="button">☰</button>
-<button aria-label="Terug naar home" class="rIcon" id="backHomeBtn" type="button">‹</button>
-<div class="rBrand"><div class="rLogo">⌁</div><span>Roadora</span></div>
-<div class="rActions"><button class="rRound rLang" type="button">NL</button><button class="rRound" type="button">♡</button></div>
-</header>
-<section class="rHero"><h1>Plan jouw <span>volgende</span> route</h1><p>Stel je reis samen en ontdek onderweg de mooiste plekken.</p></section>
-<section class="rRouteCard rGlass">
-<div class="rInputs">
-<div class="rDots"><i></i><span></span><i></i></div>
-<div class="rGroup">
-<label>Van</label><div class="rInput"><span>Rotterdam, Nederland</span><b>×</b></div>
-<label>Naar</label><div class="rInput"><span>Innsbruck, Oostenrijk</span><b>×</b></div>
-</div>
-<button class="rSwap" type="button">⇅</button>
-</div>
-<div class="rLabel">Voertuig</div>
-<div class="rVehicles">
-<button class="rVehicle active" data-profile="driving-car" data-vehicle="car" type="button">🚘 Auto</button>
-<button class="rVehicle" data-profile="driving-car" data-vehicle="ev" type="button">⚡ EV</button>
-<button class="rVehicle" data-profile="driving-hgv" data-vehicle="camper" type="button">🚐 Camper</button>
-<button class="rVehicle" data-profile="driving-car" data-vehicle="motor" type="button">🏍️ Motor</button>
-</div>
-</section>
-<section class="rDiscover rGlass">
-<div class="rHead"><b>Wat wil je onderweg ontdekken?</b></div>
-<div class="rCats">
-<button class="rCat active" data-filter="hotel" type="button">🏨 Hotels</button>
-<button class="rCat" data-filter="fuel" type="button">⛽ Tank</button>
-<button class="rCat active" data-filter="ev" type="button">⚡ EV</button>
-<button class="rCat" data-filter="food" type="button">🍽️ Eten</button>
-<button class="rCat active" data-filter="view" type="button">⛰️ Uitjes</button>
-<button class="rCat" type="button">••• Meer</button>
-</div>
-</section>
-<footer class="rBottom rBottomClean"><button class="rPlan" id="openMapBtn" type="button">➤ Plan route</button></footer>
-</div>
-</section>
-<section aria-label="Routekaart" class="appScreen mapScreen" id="mapScreen">
-<div class="roadMapApp">
-<div id="routeLeafletMap"></div>
-<div class="ui">
-<section aria-label="Roadora routecockpit" class="mapCockpit">
-<header aria-label="Slimme ritstatus" class="mapTopbar smartTopbar">
-<button aria-label="Menu openen" class="mapNavBtn" data-menu-open="" type="button">☰</button>
-<button aria-label="Terug naar route setup" class="mapNavBtn mapBackBtn" data-action="route" type="button">‹</button>
-<div aria-live="polite" class="mapLiveStatus">
-<div class="mapLiveMain">
-<b id="mapStatusTitle">Rotterdam → Innsbruck</b>
-<span id="mapStatusBadge">Rustige route</span>
-</div>
-<div class="mapLiveSub" id="mapStatusSub">Auto route · slimme assist voorbereid</div>
-<div class="mapLiveChips">
-<span id="mapStatusEta">ETA —</span>
-<span id="mapStatusDistance">— km</span>
-<span id="mapStatusNext">Volgende: laadstop</span>
-</div>
-</div>
-</header>
-<section class="routePanel">
-<div class="routeTop">
-<div class="routePoints"><div class="timeline"><span class="dot"></span><span class="tl"></span><span class="dot"></span></div><div class="pointTexts"><div><div class="label">Van</div><div class="place">Rotterdam, Nederland</div></div><div><div class="label">Naar</div><div class="place">Innsbruck, Oostenrijk</div></div></div><button class="swap" type="button">⇅</button></div>
-<div class="divider"></div>
-<div class="vehicles">
-<button class="vehicle active" data-profile="driving-car" data-vehicle="car" type="button"><span>🚘</span><span>Auto</span></button>
-<button class="vehicle" data-profile="driving-car" data-vehicle="ev" type="button"><span>⚡</span><span>EV</span></button>
-<button class="vehicle" data-profile="driving-hgv" data-vehicle="camper" type="button"><span>🚐</span><span>Camper</span></button>
-<button class="vehicle" data-profile="driving-car" data-vehicle="motor" type="button"><span>🏍️</span><span>Motor</span></button>
-</div>
-</div>
-<div class="stats"><div class="stat"><span class="statIcon">▣</span><div><b>12 dagen</b><small>Reisduur</small></div></div><div class="stat"><span class="statIcon">⌁</span><div><b>2.340 km</b><small>Totale afstand</small></div></div><div class="stat"><span class="statIcon">⌖</span><div><b>6–8</b><small>Stops</small></div></div><button class="adjust" data-action="route" type="button">Route aanpassen</button></div>
-</section>
-</section>
-<button aria-controls="mapCats" aria-expanded="false" class="stopsCta" id="stopsCta" type="button">
-<span>＋</span><b>Stops</b>
-</button>
-<div aria-label="Stopcategorieën" class="cats is-collapsed" id="mapCats">
-<button class="cat" data-filter="fuel" type="button"><svg viewbox="0 0 24 24"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M8 9h8M17 8h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2M7 21h10"></path></svg><span>Tankstations</span></button>
-<button class="cat" data-filter="hotel" type="button"><svg viewbox="0 0 24 24"><path d="M3 11h18v8M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M7 11V9h4v2"></path></svg><span>Overnachten</span></button>
-<button class="cat" data-filter="ev" type="button"><svg viewbox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"></path></svg><span>Laadstations</span></button>
-<button class="cat" data-filter="food" type="button"><svg viewbox="0 0 24 24"><path d="M7 3v8M11 3v8M7 7h4M9 11v10M17 3v18M17 3c3 3 3 7 0 9"></path></svg><span>Eten &amp; drinken</span></button>
-            <button class="cat" data-filter="wc" type="button"><svg viewbox="0 0 24 24"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4M10 13v7M14 13v7M9 20h6"></path></svg><span>WC's</span></button>
-<button class="cat" data-filter="view" type="button"><svg viewbox="0 0 24 24"><path d="M3 20l7-14 4 8 2-4 5 10H3z"></path></svg><span>Activiteiten</span></button>
-</div>
-<div class="controls controlsV722"><button class="centerRouteBtn" id="fitRoute" type="button" aria-label="Centreer route"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button><div class="ctrlGroup zoomOnly"><button class="ctrl" id="zoomIn" type="button">+</button><button class="ctrl" id="zoomOut" type="button">−</button></div></div>
-<section class="sheet"><div class="grab"></div><div class="sheetGrid"><div class="thumb"></div><div><div class="overline">Eindbestemming</div><h2 id="stopTitle">Innsbruck, Oostenrijk</h2><div class="meta" id="stopMeta">Route wordt geladen…</div><div class="desc" id="stopDesc">Je route naar Innsbruck is gepland. Kies onderweg een categorie of stop om details in dit blok te bekijken.</div></div><div class="sheetActions"><button class="primary" type="button">⌁ Navigeer naar bestemming</button><button class="saveStop" type="button">＋ Tussenstop</button><button class="secondary" type="button">ⓘ Route info</button></div></div></section>
-<nav class="bottomNav bottomNavV59">
-            <button class="navItem active" type="button" data-nav="route"><svg viewBox="0 0 24 24"><path d="M9 18l6-12M5 6h14M5 18h14"></path></svg>Route</button>
-            <button class="navItem" type="button" data-nav="stops"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>Stops</button>
-            <button class="navItem navCenter" type="button" data-nav="navigate"><span class="round"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>Navigeer</button>
-            <button class="navItem" type="button" data-nav="more"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Meer</button>
-          </nav>
-<div class="mapToast" id="mapToast">Filters bijgewerkt</div>
-</div>
-</div>
-</section>
-</main>
-</div>
+</nav>
+
+<script src="./app.js"></script>
 </body>
 </html>
