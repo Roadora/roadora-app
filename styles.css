@@ -2084,20 +2084,16 @@ img{
 
 
 /* =========================================================
-   ROADORA ROUTER ACTIVE FIX V2
-   Er is altijd maar één scherm en één nav-item actief.
+   ROADORA ROUTER ACTIVE FIX V3
+   Veilig: Overzicht blijft zichtbaar, alleen roadtrip schakelt.
    ========================================================= */
 
-.rd-screen{
+.rd-screen[hidden]{
   display:none !important;
 }
 
 .rd-screen.active{
   display:block !important;
-}
-
-.rd-screen[hidden]{
-  display:none !important;
 }
 
 .bottom-nav-item:not(.active){

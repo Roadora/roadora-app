@@ -1,4 +1,4 @@
-/* Roadora router active fix v2 */
+/* Roadora router active fix v3 */
 
 document.addEventListener("DOMContentLoaded", () => {
   const screens = Array.from(document.querySelectorAll(".rd-screen"));
@@ -7,30 +7,30 @@ document.addEventListener("DOMContentLoaded", () => {
   function showScreen(tab){
     const target = screens.find(screen => screen.dataset.screen === tab);
 
-    // Eerst ALLES resetten
     buttons.forEach(btn => {
-      btn.classList.remove("active");
-      btn.removeAttribute("aria-current");
+      const isActive = btn.dataset.tab === tab;
+      btn.classList.toggle("active", isActive);
+      if(isActive){
+        btn.setAttribute("aria-current", "page");
+      }else{
+        btn.removeAttribute("aria-current");
+      }
     });
+
+    if(!target) return;
 
     screens.forEach(screen => {
-      screen.classList.remove("active");
-      screen.setAttribute("hidden", "");
+      const isActive = screen === target;
+      screen.classList.toggle("active", isActive);
+
+      if(isActive){
+        screen.removeAttribute("hidden");
+      }else{
+        screen.setAttribute("hidden", "");
+      }
     });
 
-    // Dan alleen gevraagde knop actief
-    const activeButton = buttons.find(btn => btn.dataset.tab === tab);
-    if(activeButton){
-      activeButton.classList.add("active");
-      activeButton.setAttribute("aria-current", "page");
-    }
-
-    // Alleen scherm tonen als het bestaat
-    if(target){
-      target.removeAttribute("hidden");
-      target.classList.add("active");
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
   }
 
   buttons.forEach(button => {
@@ -39,6 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Start altijd schoon op Overzicht
+  // Belangrijk: start zichtbaar op Overzicht
   showScreen("overview");
 });
