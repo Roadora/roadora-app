@@ -432,6 +432,50 @@
 
     </section>
 
+
+    <section class="roadora-screen roadora-screen-map" id="mapScreen" data-screen="kaart" hidden>
+      <main class="map-app">
+        <header class="map-topbar">
+          <button class="map-round-btn" type="button" aria-label="Menu">☰</button>
+
+          <div class="map-route-pill">
+            <span>Rotterdam → Innsbruck</span>
+            <strong>1.246 km · 14u 30m</strong>
+          </div>
+
+          <button class="map-round-btn" type="button" aria-label="Instellingen">⚙</button>
+        </header>
+
+        <section class="map-canvas" aria-label="Roadora kaart">
+          <div class="map-route-line"></div>
+          <span class="map-pin start">A</span>
+          <span class="map-pin stop">1</span>
+          <span class="map-pin end">B</span>
+
+          <div class="map-category-row">
+            <button class="active" type="button">Route</button>
+            <button type="button">Hotels</button>
+            <button type="button">Stops</button>
+            <button type="button">Eten</button>
+          </div>
+        </section>
+
+        <section class="map-bottom-sheet">
+          <div class="sheet-handle"></div>
+
+          <div class="sheet-content">
+            <div>
+              <span class="sheet-kicker">Volgende stop</span>
+              <h2>Hallstatt</h2>
+              <p>188 km · ongeveer 2u 15m rijden</p>
+            </div>
+
+            <button class="sheet-cta" type="button">Navigeer</button>
+          </div>
+        </section>
+      </main>
+    </section>
+
     <nav class="roadora-bottom-nav" aria-label="Roadora navigatie">
       <button class="bottom-nav-item active" data-tab="overview" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
