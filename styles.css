@@ -1,7 +1,7 @@
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:#f6efe6;overflow:hidden}
-.shell{position:relative;width:100%;height:100dvh;max-width:430px;margin:0 auto;background:#f6efe6;overflow:hidden}
-.tab-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f6efe6;overflow:auto}
+html,body{margin:0;width:100%;height:100%;background:#f6efe6!important;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+.shell{position:relative;width:100%;height:100dvh;min-height:100dvh;max-width:430px;margin:0 auto;background:#f6efe6!important;overflow:hidden}
+.tab-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f6efe6!important;overflow:auto}
 .tab-frame.active{display:block}
 .roadora-bottom-nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 28px);max-width:402px;z-index:9999;padding:8px 7px;border-radius:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(246,239,230,.70));border:1px solid rgba(92,66,42,.10);box-shadow:0 18px 42px rgba(48,34,22,.18),inset 0 1px 0 rgba(255,255,255,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .bottom-nav-item{min-width:0;height:52px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(30,24,18,.58);background:transparent;border:0;font-size:8.8px;line-height:1;font-weight:700;letter-spacing:-.25px;white-space:nowrap}
@@ -41,4 +41,56 @@ body:before{
       rgba(255,255,255,.86),
       rgba(246,239,230,.92)
     )!important;
+}
+
+
+/* =========================================================
+   ROADORA DEFINITIVE BOTTOM BACKGROUND FIX V3
+   Fix echte oorzaak:
+   - parent shell beige
+   - tab iframes beige
+   - child pages beige
+   - geen bruine browser/body achtergrond onder bottom nav
+   ========================================================= */
+
+html,
+body{
+  background:#f6efe6!important;
+}
+
+.shell,
+.tab-frame{
+  background:#f6efe6!important;
+}
+
+.roadora-bottom-nav{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.92),
+      rgba(246,239,230,.96)
+    )!important;
+  backdrop-filter:blur(20px)!important;
+  -webkit-backdrop-filter:blur(20px)!important;
+}
+
+/* beige veiligheidslaag achter de vaste bottom nav */
+body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:180px;
+  background:#f6efe6;
+  z-index:0;
+  pointer-events:none;
+}
+
+.shell{
+  z-index:1;
+}
+
+.roadora-bottom-nav{
+  z-index:9999;
 }
