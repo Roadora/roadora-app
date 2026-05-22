@@ -1,82 +1,668 @@
+/* ROADORA OVERZICHT PIXEL APPSTRUCTUUR V1 */
 
-*{
-  box-sizing:border-box;
-}
+/* Originele Overzicht CSS uit locked v3 */
+* {
+      box-sizing:border-box;
+    }
 
-html,
-body{
-  margin:0;
-  width:100%;
-  min-height:100%;
-  background:#f6efe6;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
+    html,
+    body {
+      margin:0;
+      width:100%;
+      min-height:100%;
+      background:#b9ad9d;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
 
-body{
-  display:flex;
-  justify-content:center;
-}
+    body {
+      display:flex;
+      justify-content:center;
+    }
 
-button{
-  border:0;
-  font:inherit;
-  cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-}
+    button {
+      border:0;
+      font:inherit;
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-.app-shell{
-  width:100%;
-  max-width:430px;
-  min-height:100vh;
-  overflow:hidden;
-  background:#f6efe6;
-  position:relative;
-}
+    .app {
+      width:100%;
+      max-width:430px;
+      min-height:100vh;
+      overflow:hidden;
+      background:#f6efe6;
+      position:relative;
+    }
 
-.screen{
-  min-height:100vh;
-  background:#f6efe6;
-  padding-bottom:calc(118px + env(safe-area-inset-bottom));
-}
+    /* HERO LOCKED: blijft intact, geen beige overlap over auto/weg */
+    .hero {
+      position:relative;
+      z-index:1;
+      height:43vh;
+      min-height:350px;
+      max-height:420px;
+      overflow:hidden;
+      background:#1d261f;
+      border-radius:0;
+    }
 
+    .hero-img {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center 74%;
+      transform:scale(1.02);
+    }
+
+    .hero-shade {
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.02) 48%, rgba(0,0,0,.16) 100%),
+        linear-gradient(90deg, rgba(0,0,0,.38), rgba(0,0,0,.06) 55%, rgba(0,0,0,.08));
+      pointer-events:none;
+    }
+
+    .topbar {
+      position:absolute;
+      z-index:5;
+      top:calc(env(safe-area-inset-top) + 14px);
+      left:16px;
+      right:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .round-btn {
+      width:48px;
+      height:48px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:rgba(22,28,31,.74);
+      color:#fff;
+      font-size:24px;
+      font-weight:800;
+      box-shadow:0 10px 26px rgba(0,0,0,.18);
+    }
+
+    .brand {
+      margin-top:-4px;
+      color:#fff;
+      text-align:center;
+      text-shadow:0 2px 18px rgba(0,0,0,.25);
+    }
+
+    .brand strong {
+      display:block;
+      font-size:38px;
+      line-height:.8;
+      font-weight:900;
+      letter-spacing:-2px;
+    }
+
+    .brand span {
+      display:block;
+      margin-top:8px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:5px;
+    }
+
+    .hero-copy {
+      position:absolute;
+      z-index:5;
+      left:18px;
+      top:78px;
+      width:min(305px,calc(100% - 36px));
+      color:#fff;
+      text-shadow:0 4px 18px rgba(0,0,0,.32);
+    }
+
+    .badge {
+      width:max-content;
+      height:28px;
+      padding:0 12px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      background:rgba(62,73,53,.72);
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .badge-dot {
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:#72d66d;
+    }
+
+    .hero-title {
+      margin:0;
+      font-family:"Playfair Display",Georgia,serif;
+      font-size:38px;
+      line-height:.92;
+      letter-spacing:-1.4px;
+      font-weight:800;
+    }
+
+    .route {
+      margin:8px 0 0;
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:-.25px;
+    }
+
+    .hero-actions {
+      display:none !important;
+    }
+
+    /* Beige vlak begint onder de hero. Alleen zachte rounded top, geen overlap op auto/weg */
+    .beige-panel {
+      position:relative;
+      z-index:2;
+      margin-top:0;
+      min-height:57vh;
+      padding:18px 14px calc(108px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg,#f6efe6 0%,#f2e8dc 100%);
+      border-top-left-radius:38px;
+      border-top-right-radius:38px;
+      box-shadow:0 -12px 28px rgba(41,27,14,.045);
+    }
+
+    .content-stack {
+      width:100%;
+      max-width:396px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .surface-card {
+      width:100%;
+      border-radius:28px;
+      background:linear-gradient(180deg,rgba(255,255,255,.70),rgba(255,255,255,.46));
+      border:1px solid rgba(92,66,42,.07);
+      box-shadow:
+        0 12px 28px rgba(48,34,22,.06),
+        inset 0 1px 0 rgba(255,255,255,.78);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+
+    /* OVERVIEW */
+    .roadora-summary-card {
+      overflow:hidden;
+    }
+
+    .summary-stats {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      min-height:84px;
+      border-bottom:1px solid rgba(92,66,42,.08);
+    }
+
+    .summary-stat {
+      position:relative;
+      min-width:0;
+      padding:11px 7px 9px;
+      text-align:center;
+    }
+
+    .summary-stat:not(:last-child)::after {
+      content:"";
+      position:absolute;
+      top:16px;
+      right:0;
+      width:1px;
+      height:42px;
+      background:rgba(92,66,42,.10);
+    }
+
+    .summary-icon {
+      height:20px;
+      margin-bottom:5px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#6f3f1c;
+    }
+
+    .summary-icon svg {
+      width:19px;
+      height:19px;
+      stroke-width:2;
+    }
+
+    .summary-value {
+      display:block;
+      color:#070707;
+      font-size:12.5px;
+      line-height:1.12;
+      font-weight:700;
+      letter-spacing:-.25px;
+      white-space:nowrap;
+    }
+
+    .summary-label {
+      display:block;
+      margin-top:4px;
+      color:rgba(20,18,16,.72);
+      font-size:8.5px;
+      line-height:1.22;
+      font-weight:500;
+    }
+
+    .summary-sub {
+      display:block;
+      margin-top:4px;
+      color:rgba(20,18,16,.58);
+      font-size:8.2px;
+      line-height:1.18;
+      font-weight:500;
+      white-space:nowrap;
+    }
+
+    .summary-actions {
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:13px;
+      padding:10px 10px 12px;
+    }
+
+    .summary-btn {
+      min-height:36px;
+      height:36px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      font-size:11.5px;
+      line-height:1;
+      font-weight:700;
+      letter-spacing:-.15px;
+    }
+
+    .summary-btn svg {
+      width:17px;
+      height:17px;
+      stroke-width:2.1;
+      flex:0 0 auto;
+    }
+
+    .summary-btn.primary {
+      color:#fffaf4;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      box-shadow:
+        0 14px 24px rgba(137,76,20,.24),
+        inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .summary-btn.secondary {
+      color:#111;
+      background:rgba(255,255,255,.70);
+      border:1px solid rgba(92,66,42,.08);
+      box-shadow:0 10px 22px rgba(45,31,18,.06);
+    }
+
+    /* NEXT STOP */
+    .next-stop-card {
+      display:grid;
+      grid-template-columns:.95fr 1.1fr;
+      gap:12px;
+      padding:12px;
+      align-items:stretch;
+    }
+
+    .next-stop-image {
+      position:relative;
+      min-height:154px;
+      border-radius:22px;
+      overflow:hidden;
+      background:#d8c8b7;
+    }
+
+    .next-stop-image img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center center;
+      display:block;
+    }
+
+    .next-stop-left {
+      position:relative;
+      min-width:0;
+      padding-bottom:46px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .next-stop-kicker {
+      margin:0 0 7px;
+      color:#8d531f;
+      font-size:10px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.65px;
+      text-transform:uppercase;
+    }
+
+    .next-stop-title {
+      color:#12100d;
+      font-size:30px;
+      line-height:.92;
+      letter-spacing:-1px;
+      font-weight:800;
+    }
+
+    .next-stop-country {
+      margin-top:6px;
+      color:rgba(20,18,16,.60);
+      font-size:11px;
+      line-height:1.2;
+      font-weight:600;
+    }
+
+    .next-stop-meta {
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      margin-top:12px;
+    }
+
+    .next-stop-row {
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:#221d18;
+      font-size:10px;
+      line-height:1.15;
+      font-weight:650;
+    }
+
+    .next-stop-row svg {
+      width:13px;
+      height:13px;
+      color:#8d531f;
+      flex:0 0 auto;
+    }
+
+    .next-stop-details-btn {
+      position:absolute;
+      right:0;
+      bottom:0;
+      height:34px;
+      padding:0 14px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      color:#fffaf4;
+      font-size:10.5px;
+      line-height:1;
+      font-weight:760;
+      letter-spacing:-.15px;
+      box-shadow:
+        0 10px 22px rgba(137,76,20,.24),
+        inset 0 1px 0 rgba(255,255,255,.14);
+    }
+
+    .next-stop-details-btn svg {
+      width:14px;
+      height:14px;
+      stroke-width:2.2;
+      flex:0 0 auto;
+    }
+
+    /* TODAY ROUTE */
+    .today-route-card {
+      padding:14px 16px;
+      border-radius:24px;
+    }
+
+    .today-route-title {
+      margin:0 0 13px;
+      color:#80502a;
+      font-size:10.5px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
+
+    .today-route-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .today-route-item {
+      position:relative;
+      min-width:0;
+      padding:0 10px;
+    }
+
+    .today-route-item:first-child {
+      padding-left:0;
+    }
+
+    .today-route-item:last-child {
+      padding-right:0;
+    }
+
+    .today-route-item:not(:last-child)::after {
+      content:"";
+      position:absolute;
+      top:12px;
+      right:0;
+      width:1px;
+      height:68px;
+      background:rgba(92,66,42,.085);
+    }
+
+    .today-route-icon {
+      width:40px;
+      height:40px;
+      margin:0 0 10px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(246,239,230,.80);
+      color:#7b4b25;
+    }
+
+    .today-route-icon svg {
+      width:18px;
+      height:18px;
+      stroke-width:2;
+    }
+
+    .today-route-item strong {
+      display:block;
+      color:#111;
+      font-size:13px;
+      line-height:1.1;
+      font-weight:760;
+      letter-spacing:-.25px;
+    }
+
+    .today-route-item span {
+      display:block;
+      margin-top:6px;
+      color:rgba(20,18,16,.60);
+      font-size:10px;
+      line-height:1.2;
+      font-weight:500;
+    }
+
+    /* BOTTOM NAV */
+    .roadora-bottom-nav {
+      position:fixed;
+      left:50%;
+      bottom:calc(12px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      width:calc(100% - 28px);
+      max-width:402px;
+      z-index:200;
+      padding:8px 7px;
+      border-radius:28px;
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:4px;
+      background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.56));
+      border:1px solid rgba(92,66,42,.10);
+      box-shadow:
+        0 18px 42px rgba(48,34,22,.18),
+        inset 0 1px 0 rgba(255,255,255,.86);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+    }
+
+    .bottom-nav-item {
+      min-width:0;
+      height:52px;
+      border-radius:20px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      color:rgba(30,24,18,.58);
+      background:transparent;
+      font-size:9px;
+      line-height:1;
+      font-weight:650;
+      letter-spacing:-.15px;
+      white-space:nowrap;
+    }
+
+    .bottom-nav-item svg {
+      width:20px;
+      height:20px;
+      stroke-width:2.05;
+    }
+
+    .bottom-nav-item.active {
+      color:#fffaf4;
+      background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
+      box-shadow:
+        0 10px 20px rgba(137,76,20,.23),
+        inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    @media (max-height:760px) {
+      .hero {
+        height:43vh;
+        min-height:340px;
+      }
+
+      .hero-copy {
+        top:72px;
+      }
+
+      .hero-title {
+        font-size:34px;
+      }
+    }
+
+    @media (max-width:390px) {
+      .beige-panel {
+        padding-left:12px;
+        padding-right:12px;
+      }
+
+      .next-stop-card {
+        grid-template-columns:.95fr 1.1fr;
+        gap:10px;
+        padding:11px;
+      }
+
+      .next-stop-title {
+        font-size:27px;
+      }
+
+      .next-stop-image {
+        min-height:144px;
+      }
+
+      .next-stop-left {
+        padding-bottom:42px;
+      }
+
+      .next-stop-details-btn {
+        height:32px;
+        padding:0 12px;
+        font-size:10px;
+      }
+
+      .today-route-item {
+        padding:0 8px;
+      }
+
+      .today-route-item strong {
+        font-size:12.5px;
+      }
+
+      .today-route-item span {
+        font-size:9.5px;
+      }
+
+      .roadora-bottom-nav {
+        width:calc(100% - 22px);
+        padding:7px 6px;
+        border-radius:26px;
+      }
+
+      .bottom-nav-item {
+        height:49px;
+        border-radius:18px;
+        font-size:8px;
+      }
+
+      .bottom-nav-item svg {
+        width:18px;
+        height:18px;
+      }
+    }
+  
+/* =========================================================
+   ROADORA HERO FADE BLOCKS V2
+   Hero blijft intact, maar beige vlak vloeit weer zacht over.
+   Blokken blijven netjes in de beige content-flow.
+   ========================================================= */
+
+/* Hero krijgt alleen onderaan een lange zachte fade */
 .hero{
-  position:relative;
-  z-index:1;
-  height:43vh;
-  min-height:350px;
-  max-height:420px;
-  overflow:hidden;
-  background:#1d261f;
-}
-
-.hero-img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center 74%;
-  transform:scale(1.02);
-}
-
-.hero-shade{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.03) 48%,rgba(0,0,0,0) 100%),
-    linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.05) 55%,rgba(0,0,0,.06));
+  position:relative !important;
+  z-index:1 !important;
+  overflow:hidden !important;
 }
 
 .hero::before{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-1px;
-  height:172px;
-  z-index:4;
-  pointer-events:none;
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:-1px !important;
+  height:155px !important;
+  z-index:6 !important;
+  pointer-events:none !important;
+
   background:
     linear-gradient(
       to bottom,
@@ -86,112 +672,46 @@ button{
       rgba(246,239,230,.42) 66%,
       rgba(246,239,230,.74) 84%,
       #f6efe6 100%
-    );
+    ) !important;
 }
 
-.topbar{
-  position:absolute;
-  z-index:6;
-  top:calc(env(safe-area-inset-top) + 14px);
-  left:16px;
-  right:16px;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
+/* Donkere onderkant uit de hero halen, zodat de fade warm blijft */
+.hero-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.03) 48%,
+      rgba(0,0,0,.01) 78%,
+      rgba(0,0,0,0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.34),
+      rgba(0,0,0,.05) 55%,
+      rgba(0,0,0,.06)
+    ) !important;
 }
 
-.round-btn{
-  width:48px;
-  height:48px;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:rgba(22,28,31,.74);
-  color:#fff;
-  font-size:22px;
-  font-weight:800;
-  box-shadow:0 10px 26px rgba(0,0,0,.18);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-
-.brand{
-  margin-top:-4px;
-  color:#fff;
-  text-align:center;
-  text-shadow:0 2px 18px rgba(0,0,0,.25);
-}
-
-.brand strong{
-  display:block;
-  font-size:38px;
-  line-height:.8;
-  font-weight:900;
-  letter-spacing:-2px;
-}
-
-.brand span{
-  display:block;
-  margin-top:8px;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:5px;
-}
-
-.hero-copy{
-  position:absolute;
-  z-index:6;
-  left:18px;
-  top:78px;
-  width:min(305px,calc(100% - 36px));
-  color:#fff;
-  text-shadow:0 4px 18px rgba(0,0,0,.32);
-}
-
-.badge{
-  width:max-content;
-  height:28px;
-  padding:0 12px;
-  border-radius:999px;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  margin-bottom:10px;
-  background:rgba(62,73,53,.72);
-  color:#fff;
-  font-size:11px;
-  font-weight:800;
-}
-
-.badge-dot{
-  width:7px;
-  height:7px;
-  border-radius:999px;
-  background:#72d66d;
-}
-
-.hero-title{
-  margin:0;
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:38px;
-  line-height:.92;
-  letter-spacing:-1.4px;
-  font-weight:800;
-}
-
-.route{
-  margin:8px 0 0;
-  font-size:15px;
-  font-weight:900;
-  letter-spacing:-.25px;
-}
-
+/* Beige vlak schuift subtiel omhoog in de fade,
+   maar niet zo hoog dat auto/weg verdwijnen */
 .beige-panel{
-  position:relative;
-  z-index:3;
-  margin-top:-56px;
-  min-height:calc(57vh + 56px);
-  padding:50px 14px 0;
+  position:relative !important;
+  z-index:3 !important;
+
+  margin-top:-44px !important;
+  min-height:calc(57vh + 44px) !important;
+
+  padding-top:58px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+  padding-bottom:calc(108px + env(safe-area-inset-bottom)) !important;
+
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+
   background:
     linear-gradient(
       to bottom,
@@ -201,268 +721,928 @@ button{
       rgba(246,239,230,.78) 76px,
       #f6efe6 104px,
       #f2e8dc 100%
-    );
+    ) !important;
 }
 
+/* Extra zachte overlap achter de bovenkant van de content */
+.beige-panel::before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:-64px !important;
+  height:130px !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(246,239,230,0) 0%,
+      rgba(246,239,230,.14) 28%,
+      rgba(246,239,230,.42) 58%,
+      rgba(246,239,230,.78) 84%,
+      #f6efe6 100%
+    ) !important;
+}
+
+/* Content staat niet meer als losse plaat direct tegen de hero,
+   maar zweeft rustig in de fade/achtergrond */
 .content-stack{
-  width:100%;
-  max-width:396px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  position:relative;
-  z-index:10;
+  position:relative !important;
+  z-index:10 !important;
+  margin-top:0 !important;
+  gap:10px !important;
 }
 
-.summary-layer{
-  background:transparent;
+/* Cards iets zachter zodat ze meer in de achtergrond vallen,
+   zonder de hero te bedekken */
+.surface-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.66),
+      rgba(255,255,255,.44)
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.065) !important;
+
+  box-shadow:
+    0 10px 26px rgba(48,34,22,.052),
+    inset 0 1px 0 rgba(255,255,255,.76) !important;
 }
 
+/* Eerste card mag net iets sterker blijven als hoofdblok */
+.roadora-summary-card{
+  box-shadow:
+    0 14px 32px rgba(48,34,22,.078),
+    inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+
+/* Mobiel iets veiliger zodat de hero-compositie zichtbaar blijft */
+@media (max-width:390px){
+  .beige-panel{
+    margin-top:-38px !important;
+    padding-top:52px !important;
+  }
+
+  .hero::before{
+    height:145px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA HERO FADE TIGHT V3
+   Blokken iets hoger + dichter op elkaar,
+   zonder overlap over auto/weg.
+   ========================================================= */
+
+/* Beige vlak subtiel hoger */
+.beige-panel{
+  margin-top:-56px !important;
+  min-height:calc(57vh + 56px) !important;
+
+  padding-top:64px !important;
+}
+
+/* Fade iets langer zodat overgang smooth blijft */
+.hero::before{
+  height:172px !important;
+}
+
+/* Content compacter stapelen */
+.content-stack{
+  gap:7px !important;
+}
+
+/* Eerste blok iets hoger in de fade */
+.roadora-summary-card{
+  position:relative !important;
+  top:-4px !important;
+}
+
+/* Compactere verticale spacing */
+.next-stop-card,
+.today-route-card{
+  margin-top:0 !important;
+}
+
+/* Mobiel veilig houden */
+@media (max-width:390px){
+
+  .beige-panel{
+    margin-top:-48px !important;
+    padding-top:58px !important;
+  }
+
+  .hero::before{
+    height:158px !important;
+  }
+
+  .content-stack{
+    gap:6px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA POSITION CLEAN V8
+   Terug naar de goede locked hero/fade basis.
+   Fix:
+   - geen agressieve fixed viewport
+   - geen lege fade-zone
+   - overview-card netjes in overgang
+   - weg/auto blijven zichtbaar
+   ========================================================= */
+
+/* Scroll niet hard forceren; layout blijft natuurlijk en stabiel */
+html,
+body{
+  overflow-x:hidden !important;
+}
+
+/* Hero/fade blijft locked zoals v3 */
+.hero{
+  position:relative !important;
+  z-index:1 !important;
+  overflow:hidden !important;
+}
+
+.hero::before{
+  height:172px !important;
+}
+
+/* Beige vlak iets onder de hero/fade laten starten */
+.beige-panel{
+  position:relative !important;
+  z-index:3 !important;
+
+  margin-top:-56px !important;
+  min-height:calc(57vh + 56px) !important;
+
+  padding-top:50px !important;
+  padding-left:14px !important;
+  padding-right:14px !important;
+  padding-bottom:calc(108px + env(safe-area-inset-bottom)) !important;
+
+  overflow:visible !important;
+}
+
+/* Content direct in de overgang, niet pas na een lege zone */
+.content-stack{
+  position:relative !important;
+  z-index:10 !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  gap:8px !important;
+
+  margin-top:-18px !important;
+}
+
+/* Bovenste blok iets hoger, maar niet afgesneden */
+.roadora-summary-card{
+  position:relative !important;
+  top:-8px !important;
+  margin-bottom:-8px !important;
+}
+
+/* Volgende blokken volgen strak */
+.next-stop-card,
+.today-route-card{
+  margin-top:0 !important;
+}
+
+/* Cards blijven compact genoeg */
 .summary-stats{
-  min-height:66px;
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+  min-height:76px !important;
 }
 
 .summary-stat{
-  position:relative;
-  min-width:0;
-  padding:6px 4px 4px;
-  text-align:center;
-}
-
-.summary-stat:not(:last-child)::after{
-  content:"";
-  position:absolute;
-  top:10px;
-  right:0;
-  width:1px;
-  height:34px;
-  background:rgba(92,66,42,.035);
-}
-
-.summary-icon{
-  height:17px;
-  margin-bottom:4px;
-  color:rgba(111,63,28,.86);
-  font-size:15px;
-  line-height:1;
-}
-
-.summary-stat strong{
-  display:block;
-  color:rgba(8,7,6,.94);
-  font-size:12.2px;
-  line-height:1.08;
-  font-weight:760;
-  letter-spacing:-.35px;
-  white-space:nowrap;
-}
-
-.summary-stat span{
-  display:block;
-  margin-top:3px;
-  color:rgba(20,18,16,.58);
-  font-size:8px;
-  line-height:1.12;
+  padding:9px 6px 7px !important;
 }
 
 .summary-actions{
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:12px;
-  padding:8px 0 0;
+  padding:8px 9px 10px !important;
 }
 
 .summary-btn{
-  height:36px;
-  min-height:36px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11.5px;
-  line-height:1;
-  font-weight:800;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  height:32px !important;
+  min-height:32px !important;
 }
 
-.summary-btn.primary{
-  background:linear-gradient(135deg,rgba(164,92,24,.96),rgba(143,77,17,.92));
-  color:#fffaf4;
-  box-shadow:0 10px 22px rgba(137,76,20,.20),inset 0 1px 0 rgba(255,255,255,.16);
-}
-
-.summary-btn.secondary{
-  background:rgba(246,239,230,.42);
-  color:#111;
-  border:1px solid rgba(92,66,42,.035);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
-}
-
-.surface-card{
-  width:100%;
-  border-radius:28px;
-  background:linear-gradient(180deg,rgba(246,239,230,.70),rgba(246,239,230,.46));
-  border:1px solid rgba(92,66,42,.035);
-  box-shadow:0 7px 18px rgba(48,34,22,.028),inset 0 1px 0 rgba(255,255,255,.45);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-
+/* Volgende stop niet te groot maken */
 .next-stop-card{
-  display:grid;
-  grid-template-columns:.95fr 1.1fr;
-  gap:10px;
-  padding:10px;
-  align-items:stretch;
-}
-
-.next-stop-left{
-  position:relative;
-  min-width:0;
-  padding-bottom:40px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-
-.next-stop-kicker{
-  margin:0 0 7px;
-  color:#8d531f;
-  font-size:10px;
-  line-height:1;
-  font-weight:800;
-  letter-spacing:.65px;
-  text-transform:uppercase;
-}
-
-.next-stop-title{
-  margin:0;
-  color:#12100d;
-  font-size:27px;
-  line-height:.92;
-  letter-spacing:-1px;
-  font-weight:800;
-}
-
-.next-stop-country{
-  margin:6px 0 0;
-  color:rgba(20,18,16,.60);
-  font-size:11px;
-  line-height:1.2;
-  font-weight:600;
-}
-
-.next-stop-meta{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-  margin-top:12px;
-}
-
-.next-stop-row{
-  color:#221d18;
-  font-size:10px;
-  line-height:1.15;
-  font-weight:650;
-}
-
-.next-stop-details-btn{
-  position:absolute;
-  right:0;
-  bottom:0;
-  height:34px;
-  padding:0 14px;
-  border-radius:14px;
-  background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
-  color:#fffaf4;
-  font-size:10.5px;
-  font-weight:760;
-  box-shadow:0 10px 22px rgba(137,76,20,.24),inset 0 1px 0 rgba(255,255,255,.14);
+  padding:10px !important;
+  gap:10px !important;
 }
 
 .next-stop-image{
-  min-height:132px;
-  border-radius:22px;
-  overflow:hidden;
-  background:
-    linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.30)),
-    linear-gradient(135deg,#d8c8b7,#8f6a3d);
+  min-height:132px !important;
 }
 
+.next-stop-title{
+  font-size:27px !important;
+}
+
+.next-stop-left{
+  padding-bottom:40px !important;
+}
+
+/* Vandaag blok compact houden */
 .today-route-card{
-  padding:12px 14px;
-  border-radius:24px;
-  margin-bottom:10px;
+  padding:12px 14px !important;
 }
 
 .today-route-title{
-  margin:0 0 10px;
-  color:#80502a;
-  font-size:10.5px;
-  line-height:1;
-  font-weight:800;
-  letter-spacing:.7px;
-  text-transform:uppercase;
+  margin-bottom:10px !important;
 }
 
-.today-route-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+/* Bottom nav blijft vast */
+.roadora-bottom-nav{
+  bottom:calc(10px + env(safe-area-inset-bottom)) !important;
 }
 
-.today-route-item{
-  position:relative;
-  min-width:0;
-  padding:0 8px;
+/* Kleinere schermen */
+@media (max-height:760px){
+  .beige-panel{
+    margin-top:-52px !important;
+    padding-top:46px !important;
+  }
+
+  .content-stack{
+    margin-top:-16px !important;
+    gap:7px !important;
+  }
+
+  .roadora-summary-card{
+    top:-6px !important;
+    margin-bottom:-6px !important;
+  }
+
+  .summary-stats{
+    min-height:70px !important;
+  }
+
+  .next-stop-image{
+    min-height:118px !important;
+  }
+
+  .next-stop-title{
+    font-size:25px !important;
+  }
+
+  .today-route-card{
+    padding:11px 13px !important;
+  }
 }
 
-.today-route-item:first-child{
-  padding-left:0;
+@media (max-width:390px){
+  .beige-panel{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .content-stack{
+    gap:7px !important;
+  }
+
+  .next-stop-image{
+    min-height:112px !important;
+  }
+
+  .next-stop-title{
+    font-size:24px !important;
+  }
 }
 
+
+/* =========================================================
+   ROADORA BOTTOM SAFE FIX V9
+   Fix:
+   onderste blok viel onder fixed bottom navigation.
+   ========================================================= */
+
+/* Meer veilige ruimte onder content */
+.beige-panel{
+  padding-bottom:calc(168px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Bottom nav iets lager en netter */
+.roadora-bottom-nav{
+  bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Vandaag blok mag niet onder nav komen */
+.today-route-card{
+  margin-bottom:10px !important;
+}
+
+/* Kleine schermen */
+@media (max-height:760px){
+
+  .beige-panel{
+    padding-bottom:calc(152px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .today-route-card{
+    margin-bottom:8px !important;
+  }
+}
+
+@media (max-width:390px){
+
+  .beige-panel{
+    padding-bottom:calc(158px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA HOTEL TEXT ALIGN FIX V10
+   Hotel vanavond iets meer naar links.
+   ========================================================= */
+
+.summary-stat:last-child{
+  padding-left:2px !important;
+  padding-right:12px !important;
+}
+
+.summary-value{
+  letter-spacing:-0.45px !important;
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP V11
+   Mijn route -> Mijn roadtrip
+   ========================================================= */
+
+.bottom-nav-item span{
+  white-space:nowrap !important;
+}
+
+.bottom-nav-item:nth-child(2){
+  letter-spacing:-0.25px !important;
+}
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:7.1px !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:6.7px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP READABLE V12
+   Mijn roadtrip weer even groot/leesbaar als andere nav items.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:7.5px !important;
+  letter-spacing:-0.15px !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:7px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP BIGGER V13
+   Mijn roadtrip groter en beter leesbaar.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2) span{
+  font-size:8.2px !important;
+  line-height:1 !important;
+  letter-spacing:-0.2px !important;
+  font-weight:700 !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item:nth-child(2) span{
+    font-size:7.6px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP EQUAL V14
+   Mijn roadtrip even groot/leesbaar als de andere labels.
+   ========================================================= */
+
+/* Alle labels gelijk behandelen */
+.bottom-nav-item span{
+  font-size:8.8px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  letter-spacing:-0.25px !important;
+  white-space:nowrap !important;
+}
+
+/* Mijn roadtrip niet meer kleiner forceren */
+.bottom-nav-item:nth-child(2) span{
+  font-size:8.8px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  letter-spacing:-0.35px !important;
+}
+
+/* Iets meer breedtegevoel voor de 2e knop */
+.bottom-nav-item:nth-child(2){
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+
+@media (max-width:390px){
+
+  .bottom-nav-item span,
+  .bottom-nav-item:nth-child(2) span{
+    font-size:8.1px !important;
+  }
+}
+
+
+/* =========================================================
+   ROADORA BOTTOM NAV ROADTRIP RIGHT V15
+   Mijn roadtrip iets meer naar rechts.
+   ========================================================= */
+
+.bottom-nav-item:nth-child(2){
+  transform:translateX(6px) !important;
+}
+
+
+/* =========================================================
+   ROADORA BACKGROUND INTEGRATED CARDS V16
+   Blokken minder als losse kaarten:
+   - warmer/beiger
+   - minder border
+   - minder shadow
+   - zachtere glass
+   - meer één geheel met achtergrond
+   Hero/fade/positie blijven locked.
+   ========================================================= */
+
+.surface-card,
+.roadora-summary-card,
+.next-stop-card,
+.today-route-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246,239,230,.70),
+      rgba(246,239,230,.46)
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.035) !important;
+
+  box-shadow:
+    0 7px 18px rgba(48,34,22,.028),
+    inset 0 1px 0 rgba(255,255,255,.45) !important;
+
+  backdrop-filter:blur(8px) !important;
+  -webkit-backdrop-filter:blur(8px) !important;
+}
+
+/* Het eerste blok mag nog nét iets meer contrast houden */
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.54),
+      rgba(246,239,230,.44)
+    ) !important;
+
+  box-shadow:
+    0 9px 22px rgba(48,34,22,.045),
+    inset 0 1px 0 rgba(255,255,255,.56) !important;
+}
+
+/* Binnenlijnen subtieler */
+.summary-stats,
+.summary-stat:not(:last-child)::after,
 .today-route-item:not(:last-child)::after{
-  content:"";
-  position:absolute;
-  top:12px;
-  right:0;
-  width:1px;
-  height:68px;
-  background:rgba(92,66,42,.045);
+  border-color:rgba(92,66,42,.045) !important;
 }
 
+.summary-stat:not(:last-child)::after,
+.today-route-item:not(:last-child)::after{
+  background:rgba(92,66,42,.045) !important;
+}
+
+/* CTA's blijven duidelijk, maar secondaries zachter */
+.summary-btn.secondary{
+  background:rgba(255,255,255,.48) !important;
+  border-color:rgba(92,66,42,.045) !important;
+  box-shadow:none !important;
+}
+
+/* Vandaag-iconen minder losse bolletjes */
 .today-route-icon{
-  width:40px;
-  height:40px;
-  margin:0 0 10px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,.34);
-  color:#7b4b25;
+  background:rgba(255,255,255,.34) !important;
 }
 
-.today-route-item strong{
-  display:block;
-  color:#111;
-  font-size:12.5px;
-  line-height:1.1;
-  font-weight:760;
+/* Foto blijft de enige echte sterke kaartlaag */
+.next-stop-image{
+  box-shadow:none !important;
 }
 
-.today-route-item span{
-  display:block;
-  margin-top:6px;
-  color:rgba(20,18,16,.60);
-  font-size:9.5px;
-  line-height:1.2;
+/* Bottom nav iets meer in dezelfde zachte stijl */
+.roadora-bottom-nav{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.66),
+      rgba(246,239,230,.52)
+    ) !important;
+
+  border-color:rgba(92,66,42,.055) !important;
+
+  box-shadow:
+    0 12px 30px rgba(48,34,22,.12),
+    inset 0 1px 0 rgba(255,255,255,.60) !important;
 }
 
-.bottom-nav{
+/* Minder harde card-randen visueel */
+.roadora-summary-card,
+.next-stop-card,
+.today-route-card{
+  outline:0 !important;
+}
+
+
+/* =========================================================
+   ROADORA OVERVIEW BAR FADE V17
+   Niet de topbar, maar de overview-card:
+   afstand · rijtijd · tussenstops · hotel vanavond
+   zachter laten vervagen in hero/beige achtergrond.
+   ========================================================= */
+
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.46) 0%,
+      rgba(246,239,230,.36) 58%,
+      rgba(246,239,230,.24) 100%
+    ) !important;
+
+  border:1px solid rgba(92,66,42,.028) !important;
+
+  box-shadow:
+    0 6px 18px rgba(48,34,22,.025),
+    inset 0 1px 0 rgba(255,255,255,.42) !important;
+
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+/* Binnenlijnen nog subtieler */
+.summary-stats{
+  border-bottom:1px solid rgba(92,66,42,.038) !important;
+}
+
+.summary-stat:not(:last-child)::after{
+  background:rgba(92,66,42,.038) !important;
+}
+
+/* Tekst blijft leesbaar maar minder hard */
+.summary-value{
+  color:rgba(12,10,8,.88) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.54) !important;
+}
+
+/* Iconen iets zachter */
+.summary-icon{
+  color:rgba(111,63,28,.84) !important;
+}
+
+/* Onderste CTA-zone minder als aparte balk */
+.summary-actions{
+  background:transparent !important;
+}
+
+.summary-btn.secondary{
+  background:rgba(255,255,255,.34) !important;
+  border-color:rgba(92,66,42,.035) !important;
+  box-shadow:none !important;
+}
+
+/* Primary blijft duidelijk, maar iets rustiger */
+.summary-btn.primary{
+  box-shadow:
+    0 8px 18px rgba(137,76,20,.18),
+    inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+
+
+/* =========================================================
+   ROADORA OVERVIEW INTEGRATED FADE V18
+   Overview voelt niet meer als los blok, maar als info-laag
+   in de hero/beige overgang.
+   ========================================================= */
+
+.roadora-summary-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246,239,230,.20) 0%,
+      rgba(246,239,230,.34) 42%,
+      rgba(246,239,230,.48) 100%
+    ) !important;
+
+  border:0 !important;
+  box-shadow:none !important;
+  outline:0 !important;
+
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+
+  border-radius:24px !important;
+  overflow:visible !important;
+}
+
+/* Geen harde card-rand meer */
+.roadora-summary-card::before,
+.roadora-summary-card::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Stats zelf worden de laag, niet de kaart */
+.summary-stats{
+  min-height:76px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.24),
+      rgba(255,255,255,.10)
+    ) !important;
+
+  border:0 !important;
+  border-radius:24px 24px 16px 16px !important;
+}
+
+/* Binnenlijnen bijna weg */
+.summary-stat:not(:last-child)::after{
+  background:rgba(92,66,42,.025) !important;
+}
+
+/* CTA zone losser, zonder cardgevoel */
+.summary-actions{
+  padding:7px 2px 0 !important;
+  gap:8px !important;
+  background:transparent !important;
+}
+
+/* Primaire knop blijft actie, maar minder massief */
+.summary-btn.primary{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(164,92,24,.92),
+      rgba(143,77,17,.88)
+    ) !important;
+
+  box-shadow:
+    0 8px 16px rgba(137,76,20,.14) !important;
+}
+
+/* Secundaire knop als zachte glass-pill */
+.summary-btn.secondary{
+  background:rgba(246,239,230,.42) !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+/* Tekst/iconen rustig maar duidelijk */
+.summary-value{
+  color:rgba(10,8,6,.90) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.50) !important;
+}
+
+.summary-icon{
+  color:rgba(111,63,28,.76) !important;
+}
+
+/* Iets meer lucht richting volgende blok zodat het natuurlijker voelt */
+.next-stop-card{
+  margin-top:2px !important;
+}
+
+
+/* =========================================================
+   ROADORA STATS IN HERO FADE V19
+   Overview is geen blok/card meer:
+   - stats liggen direct in de hero-fade
+   - geen container/background/rand/schaduw
+   - CTA's zijn losse floating pills
+   ========================================================= */
+
+/* Summary container wordt alleen een layout-wrapper */
+.roadora-summary-card{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  outline:0 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+
+  position:relative !important;
+  z-index:40 !important;
+}
+
+/* Stats direct op de fade, geen cardvlak */
+.summary-stats{
+  min-height:66px !important;
+
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+
+/* Items voelen als losse informatie, niet als vakjes */
+.summary-stat{
+  padding:6px 4px 4px !important;
+  text-align:center !important;
+  background:transparent !important;
+}
+
+/* Binnenlijnen bijna onzichtbaar, alleen subtiel ritme */
+.summary-stat:not(:last-child)::after{
+  top:10px !important;
+  height:34px !important;
+  background:rgba(92,66,42,.035) !important;
+}
+
+/* Iconen en tekst sterker leesbaar op fade */
+.summary-icon{
+  height:17px !important;
+  margin-bottom:4px !important;
+  color:rgba(111,63,28,.86) !important;
+}
+
+.summary-icon svg{
+  width:17px !important;
+  height:17px !important;
+}
+
+.summary-value{
+  color:rgba(8,7,6,.94) !important;
+  font-size:12.2px !important;
+  line-height:1.08 !important;
+  font-weight:760 !important;
+  letter-spacing:-.35px !important;
+  text-shadow:0 1px 10px rgba(246,239,230,.35) !important;
+}
+
+.summary-label,
+.summary-sub{
+  color:rgba(20,18,16,.58) !important;
+  font-size:8px !important;
+  line-height:1.12 !important;
+  margin-top:3px !important;
+  text-shadow:0 1px 8px rgba(246,239,230,.30) !important;
+}
+
+/* CTA's los onder de stats als floating pills */
+.summary-actions{
+  display:grid !important;
+  grid-template-columns:1.15fr .85fr !important;
+  gap:12px !important;
+  padding:8px 0 0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+.summary-btn{
+  height:36px !important;
+  min-height:36px !important;
+  border-radius:999px !important;
+
+  box-shadow:none !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+.summary-btn.primary{
+  background:
+    linear-gradient(135deg,rgba(164,92,24,.96),rgba(143,77,17,.92)) !important;
+  color:#fffaf4 !important;
+
+  box-shadow:
+    0 10px 22px rgba(137,76,20,.20),
+    inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+
+.summary-btn.secondary{
+  background:rgba(246,239,230,.42) !important;
+  color:#111 !important;
+  border:1px solid rgba(92,66,42,.035) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42) !important;
+}
+
+/* Content eronder mag iets dichter aansluiten */
+.next-stop-card{
+  margin-top:0 !important;
+}
+
+/* Verberg elke oude card-achtige laag rond summary */
+.roadora-summary-card::before,
+.roadora-summary-card::after,
+.summary-actions::before,
+.summary-actions::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Zorg dat hotel tekst binnen ruimte blijft */
+.summary-stat:last-child{
+  padding-left:1px !important;
+  padding-right:8px !important;
+}
+
+@media (max-width:390px){
+
+  .summary-value{
+    font-size:11.2px !important;
+  }
+
+  .summary-label,
+  .summary-sub{
+    font-size:7.4px !important;
+  }
+
+  .summary-actions{
+    gap:9px !important;
+  }
+
+  .summary-btn{
+    height:34px !important;
+    min-height:34px !important;
+    font-size:10.5px !important;
+  }
+}
+
+/* Minimale echte appstructuur zonder iframe */
+html,
+body{
+  background:#f6efe6 !important;
+}
+
+.roadora-app-shell{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  margin:0 auto;
+  background:#f6efe6;
+  position:relative;
+  overflow:hidden;
+}
+
+.roadora-screen{
+  min-height:100vh;
+  background:#f6efe6;
+  position:relative;
+}
+
+.roadora-screen .app{
+  min-height:100vh;
+  background:#f6efe6;
+}
+
+/* Externe bottom nav: zelfde stijl als locked v3 */
+.roadora-bottom-nav{
   position:fixed;
   left:50%;
   bottom:calc(12px + env(safe-area-inset-bottom));
@@ -475,9 +1655,11 @@ button{
   display:grid;
   grid-template-columns:repeat(5,minmax(0,1fr));
   gap:4px;
-  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(246,239,230,.70));
+  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.56));
   border:1px solid rgba(92,66,42,.10);
-  box-shadow:0 18px 42px rgba(48,34,22,.18),inset 0 1px 0 rgba(255,255,255,.86);
+  box-shadow:
+    0 18px 42px rgba(48,34,22,.18),
+    inset 0 1px 0 rgba(255,255,255,.86);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
 }
@@ -493,12 +1675,6 @@ button{
   gap:4px;
   color:rgba(30,24,18,.58);
   background:transparent;
-  font-size:19px;
-  line-height:1;
-  font-weight:700;
-}
-
-.bottom-nav-item span{
   font-size:8.8px;
   line-height:1;
   font-weight:700;
@@ -506,67 +1682,26 @@ button{
   white-space:nowrap;
 }
 
+.bottom-nav-item svg{
+  width:20px;
+  height:20px;
+  stroke-width:2.05;
+}
+
 .bottom-nav-item.active{
   color:#fffaf4;
   background:linear-gradient(135deg,#a45c18 0%,#8f4d11 100%);
-  box-shadow:0 10px 20px rgba(137,76,20,.23),inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow:
+    0 10px 20px rgba(137,76,20,.23),
+    inset 0 1px 0 rgba(255,255,255,.18);
 }
 
-@media(max-height:760px){
-  .hero{
-    min-height:340px;
-  }
-
-  .hero-copy{
-    top:72px;
-  }
-
-  .hero-title{
-    font-size:34px;
-  }
-
-  .next-stop-image{
-    min-height:118px;
-  }
-
-  .next-stop-title{
-    font-size:25px;
-  }
+.bottom-nav-item:nth-child(2){
+  transform:translateX(6px);
 }
 
-@media(max-width:390px){
-  .beige-panel{
-    padding-left:12px;
-    padding-right:12px;
-  }
-
-  .summary-stat strong{
-    font-size:11.2px;
-  }
-
-  .summary-stat span{
-    font-size:7.4px;
-  }
-
-  .summary-actions{
-    gap:9px;
-  }
-
-  .summary-btn{
-    height:34px;
-    min-height:34px;
-    font-size:10.5px;
-  }
-
-  .next-stop-image{
-    min-height:112px;
-  }
-
-  .next-stop-title{
-    font-size:24px;
-  }
-
-  .bottom-nav{
+@media (max-width:390px){
+  .roadora-bottom-nav{
     width:calc(100% - 22px);
     padding:7px 6px;
     border-radius:26px;
@@ -575,66 +1710,11 @@ button{
   .bottom-nav-item{
     height:49px;
     border-radius:18px;
-  }
-
-  .bottom-nav-item span{
     font-size:8.1px;
   }
-}
 
-
-
-/* =========================================================
-   ROADORA OVERZICHT CLEAN V2 — BOTTOM POLISH
-   Nettere onderkant zonder extra kleurvlak.
-   ========================================================= */
-
-.screen{
-  padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
-}
-
-.beige-panel{
-  padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
-}
-
-.today-route-card{
-  margin-bottom:0 !important;
-}
-
-.bottom-nav{
-  bottom:calc(10px + env(safe-area-inset-bottom)) !important;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.88),
-      rgba(246,239,230,.94)
-    ) !important;
-  box-shadow:
-    0 14px 34px rgba(48,34,22,.15),
-    inset 0 1px 0 rgba(255,255,255,.82) !important;
-}
-
-/* De achtergrond loopt rustig door achter de bottomnav */
-.app-shell::after{
-  content:"";
-  position:fixed;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:430px;
-  height:112px;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(242,232,220,0),
-      #f2e8dc 36%,
-      #f2e8dc 100%
-    );
-  z-index:90;
-  pointer-events:none;
-}
-
-.bottom-nav{
-  z-index:200 !important;
+  .bottom-nav-item svg{
+    width:18px;
+    height:18px;
+  }
 }
