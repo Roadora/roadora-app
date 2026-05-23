@@ -485,3 +485,83 @@ font-weight:500;
     border-radius: 11px;
   }
 }
+
+/* === Roadora bottom nav photos only v3 === */
+
+/* Hide old SVG/icon symbols in bottom navigation so only mini photos + labels remain */
+.hero-nav-integrated .bottom-nav svg,
+.hero-nav-integrated .tabbar svg,
+.hero-nav-integrated .app-nav svg,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] svg,
+.hero-nav-integrated .bottom-nav i,
+.hero-nav-integrated .tabbar i,
+.hero-nav-integrated .app-nav i,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] i,
+.hero-nav-integrated .bottom-nav .icon,
+.hero-nav-integrated .tabbar .icon,
+.hero-nav-integrated .app-nav .icon,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] .icon{
+  display:none !important;
+}
+
+/* Rebalance nav items after icons are removed */
+.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .tabbar a,
+.hero-nav-integrated .tabbar button,
+.hero-nav-integrated .app-nav a,
+.hero-nav-integrated .app-nav button,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] a,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] button{
+  padding-top:38px !important;
+  padding-bottom:7px !important;
+  min-height:62px !important;
+  justify-content:flex-end !important;
+}
+
+/* Mini photos position */
+.hero-nav-integrated .bottom-nav a::before,
+.hero-nav-integrated .bottom-nav button::before,
+.hero-nav-integrated .tabbar a::before,
+.hero-nav-integrated .tabbar button::before,
+.hero-nav-integrated .app-nav a::before,
+.hero-nav-integrated .app-nav button::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] a::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] button::before{
+  top:7px !important;
+  width:31px !important;
+  height:31px !important;
+  border-radius:13px !important;
+}
+
+/* Labels a little calmer under the photos */
+.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .tabbar a,
+.hero-nav-integrated .tabbar button,
+.hero-nav-integrated .app-nav a,
+.hero-nav-integrated .app-nav button{
+  font-size:11px !important;
+  font-weight:700 !important;
+  letter-spacing:-.15px;
+}
+
+/* Cleaner active state: no old icon block, just photo emphasis + underline */
+.hero-nav-integrated .bottom-nav .active,
+.hero-nav-integrated .tabbar .active,
+.hero-nav-integrated .app-nav .active,
+.hero-nav-integrated .bottom-nav [aria-current="page"],
+.hero-nav-integrated .tabbar [aria-current="page"],
+.hero-nav-integrated .app-nav [aria-current="page"]{
+  background:rgba(165,101,36,.08) !important;
+  border-radius:20px !important;
+}
+
+.hero-nav-integrated .bottom-nav .active::after,
+.hero-nav-integrated .tabbar .active::after,
+.hero-nav-integrated .app-nav .active::after,
+.hero-nav-integrated .bottom-nav [aria-current="page"]::after,
+.hero-nav-integrated .tabbar [aria-current="page"]::after,
+.hero-nav-integrated .app-nav [aria-current="page"]::after{
+  bottom:4px !important;
+}
