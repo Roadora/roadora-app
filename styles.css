@@ -566,297 +566,116 @@ font-weight:500;
   bottom:4px !important;
 }
 
-/* === Roadora Cinematic Polish v1 === */
+/* === Roadora mini photos no active pill v3.1 === */
 
-:root{
-  --roadora-beige:#efe1d0;
-  --roadora-warm:#c08a52;
-  --roadora-dark:#1d1712;
+/* keep the floating nav shell, but remove the tab pill behind active item */
+.hero-nav-integrated .bottom-nav .active,
+.hero-nav-integrated .bottom-nav [aria-current="page"],
+.hero-nav-integrated .tabbar .active,
+.hero-nav-integrated .tabbar [aria-current="page"],
+.hero-nav-integrated .app-nav .active,
+.hero-nav-integrated .app-nav [aria-current="page"]{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
-/* HERO ATMOSPHERE */
-.hero,
-.hero-section,
-.home-hero{
-  position:relative;
-  overflow:hidden;
-}
-
-.hero::before,
-.hero-section::before,
-.home-hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-  background:
-    radial-gradient(circle at 50% 18%,
-      rgba(255,244,228,.22),
-      transparent 42%),
-    linear-gradient(
-      to bottom,
-      rgba(255,250,240,.10) 0%,
-      rgba(255,240,219,.05) 22%,
-      rgba(210,172,132,.06) 55%,
-      rgba(36,23,14,.20) 100%
-    );
-}
-
-.hero::after,
-.hero-section::after,
-.home-hero::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:2;
-  background:
-    linear-gradient(
-      to top,
-      rgba(26,16,10,.44) 0%,
-      rgba(26,16,10,.16) 28%,
-      rgba(26,16,10,0) 62%
-    );
-  mix-blend-mode:soft-light;
-}
-
-/* HERO TEXT */
-.hero-copy{
-  z-index:5 !important;
-}
-
-.hero-copy h1{
-  font-family:"Playfair Display", serif !important;
-  font-weight:800 !important;
-  line-height:.92 !important;
-  letter-spacing:-1.5px !important;
-  text-shadow:
-    0 2px 14px rgba(255,255,255,.16),
-    0 8px 40px rgba(0,0,0,.10);
-}
-
-.hero-copy h1 span{
-  color:#bb8146 !important;
-}
-
-.hero-copy p{
-  opacity:.88;
-  line-height:1.45 !important;
-  text-shadow:0 2px 18px rgba(255,255,255,.14);
-}
-
-/* FLOATING NAV */
-.bottom-nav,
-.tabbar,
-.app-nav,
-nav[aria-label="Bottom navigation"]{
-  backdrop-filter:blur(26px) saturate(1.08) !important;
-  -webkit-backdrop-filter:blur(26px) saturate(1.08) !important;
+/* calmer nav shell */
+.hero-nav-integrated .bottom-nav,
+.hero-nav-integrated .tabbar,
+.hero-nav-integrated .app-nav,
+.hero-nav-integrated nav[aria-label="Bottom navigation"]{
   background:
     linear-gradient(
       180deg,
-      rgba(255,250,244,.64),
-      rgba(240,223,199,.40)
+      rgba(255,249,243,.68),
+      rgba(241,227,206,.42)
     ) !important;
-  border:1px solid rgba(255,255,255,.24) !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
   box-shadow:
-    0 12px 40px rgba(31,18,10,.18),
-    inset 0 1px 0 rgba(255,255,255,.28) !important;
+    0 12px 34px rgba(31,18,10,.14),
+    inset 0 1px 0 rgba(255,255,255,.20) !important;
 }
 
-/* MINI PHOTO NAV */
-.bottom-nav a::before,
-.bottom-nav button::before,
-.tabbar a::before,
-.tabbar button::before,
-.app-nav a::before,
-.app-nav button::before{
+/* nav items: no block feeling */
+.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .tabbar a,
+.hero-nav-integrated .tabbar button,
+.hero-nav-integrated .app-nav a,
+.hero-nav-integrated .app-nav button,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] a,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] button{
+  background: transparent !important;
+  min-height: 60px !important;
+}
+
+/* slightly smaller mini photos for a more premium editorial look */
+.hero-nav-integrated .bottom-nav a::before,
+.hero-nav-integrated .bottom-nav button::before,
+.hero-nav-integrated .tabbar a::before,
+.hero-nav-integrated .tabbar button::before,
+.hero-nav-integrated .app-nav a::before,
+.hero-nav-integrated .app-nav button::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] a::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] button::before{
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 11px !important;
+  top: 8px !important;
   box-shadow:
-    0 8px 18px rgba(28,16,10,.22),
-    inset 0 0 0 1px rgba(255,255,255,.36) !important;
-  transition:
-    transform .28s ease,
-    opacity .28s ease,
-    box-shadow .28s ease;
+    0 5px 14px rgba(20,12,8,.18),
+    inset 0 0 0 1px rgba(255,255,255,.28) !important;
 }
 
-.bottom-nav .active::before,
-.bottom-nav [aria-current="page"]::before,
-.tabbar .active::before,
-.tabbar [aria-current="page"]::before,
-.app-nav .active::before,
-.app-nav [aria-current="page"]::before{
-  transform:translateX(-50%) translateY(-2px) scale(1.08) !important;
+/* active state only via subtle emphasis, not a pill */
+.hero-nav-integrated .bottom-nav .active::before,
+.hero-nav-integrated .bottom-nav [aria-current="page"]::before,
+.hero-nav-integrated .tabbar .active::before,
+.hero-nav-integrated .tabbar [aria-current="page"]::before,
+.hero-nav-integrated .app-nav .active::before,
+.hero-nav-integrated .app-nav [aria-current="page"]::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] [aria-current="page"]::before{
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(-1px) scale(1.04) !important;
   box-shadow:
-    0 10px 24px rgba(192,138,82,.30),
-    inset 0 0 0 1px rgba(255,255,255,.52) !important;
+    0 8px 18px rgba(185,122,61,.16),
+    inset 0 0 0 1px rgba(255,255,255,.38) !important;
 }
 
-/* PREMIUM MOTION */
-.bottom-nav a,
-.bottom-nav button,
-.tabbar a,
-.tabbar button,
-.app-nav a,
-.app-nav button,
-.hero-copy,
-.hero-cta,
-.primary-cta{
-  transition:
-    transform .28s ease,
-    opacity .28s ease,
-    background .28s ease,
-    box-shadow .28s ease,
-    color .28s ease;
+/* label state */
+.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .tabbar a,
+.hero-nav-integrated .tabbar button,
+.hero-nav-integrated .app-nav a,
+.hero-nav-integrated .app-nav button{
+  font-size: 10.8px !important;
+  font-weight: 700 !important;
+  color: rgba(47,35,25,.68) !important;
 }
 
-.bottom-nav a:active,
-.bottom-nav button:active,
-.hero-cta:active,
-.primary-cta:active{
-  transform:scale(.96);
+.hero-nav-integrated .bottom-nav .active,
+.hero-nav-integrated .bottom-nav [aria-current="page"],
+.hero-nav-integrated .tabbar .active,
+.hero-nav-integrated .tabbar [aria-current="page"],
+.hero-nav-integrated .app-nav .active,
+.hero-nav-integrated .app-nav [aria-current="page"]{
+  color: #a7682d !important;
 }
 
-/* SOFT UI */
-.card,
-.panel,
-.glass,
-.trip-card{
-  border:1px solid rgba(255,255,255,.16);
-  box-shadow:
-    0 10px 32px rgba(30,18,10,.10),
-    inset 0 1px 0 rgba(255,255,255,.16);
-}
-
-/* PREMIUM SPACING */
-section{
-  scroll-margin-top:24px;
-}
-
-@media (max-width:390px){
-  .hero-copy h1{
-    letter-spacing:-1.2px !important;
-  }
-}
-
-
-/* === Roadora Clean Premium Nav v4 === */
-
-/* remove chunky active backgrounds */
-.bottom-nav .active,
-.bottom-nav [aria-current="page"],
-.tabbar .active,
-.tabbar [aria-current="page"],
-.app-nav .active,
-.app-nav [aria-current="page"]{
-  background:transparent !important;
-  box-shadow:none !important;
-  border:none !important;
-}
-
-/* cleaner nav shell */
-.bottom-nav,
-.tabbar,
-.app-nav,
-nav[aria-label="Bottom navigation"]{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,248,241,.54),
-      rgba(238,225,206,.32)
-    ) !important;
-
-  backdrop-filter:blur(30px) saturate(1.04) !important;
-  -webkit-backdrop-filter:blur(30px) saturate(1.04) !important;
-
-  border:1px solid rgba(255,255,255,.16) !important;
-
-  box-shadow:
-    0 10px 34px rgba(27,16,10,.14),
-    inset 0 1px 0 rgba(255,255,255,.16) !important;
-}
-
-/* smaller editorial thumbnails */
-.bottom-nav a::before,
-.bottom-nav button::before,
-.tabbar a::before,
-.tabbar button::before,
-.app-nav a::before,
-.app-nav button::before{
-  width:24px !important;
-  height:24px !important;
-  border-radius:10px !important;
-
-  opacity:.92;
-
-  box-shadow:
-    0 4px 12px rgba(20,12,8,.16),
-    inset 0 0 0 1px rgba(255,255,255,.22) !important;
-}
-
-/* subtle active state only */
-.bottom-nav .active::before,
-.bottom-nav [aria-current="page"]::before,
-.tabbar .active::before,
-.tabbar [aria-current="page"]::before,
-.app-nav .active::before,
-.app-nav [aria-current="page"]::before{
-  transform:translateX(-50%) translateY(-1px) scale(1.03) !important;
-
-  box-shadow:
-    0 6px 18px rgba(192,138,82,.16),
-    inset 0 0 0 1px rgba(255,255,255,.30) !important;
-}
-
-/* labels calmer */
-.bottom-nav a,
-.bottom-nav button,
-.tabbar a,
-.tabbar button,
-.app-nav a,
-.app-nav button{
-  font-size:10.5px !important;
-  font-weight:650 !important;
-  color:rgba(34,25,18,.72) !important;
-  letter-spacing:-.1px !important;
-  gap:5px !important;
-}
-
-/* active label */
-.bottom-nav .active,
-.bottom-nav [aria-current="page"],
-.tabbar .active,
-.tabbar [aria-current="page"],
-.app-nav .active,
-.app-nav [aria-current="page"]{
-  color:#9f6837 !important;
-}
-
-/* elegant underline only */
-.bottom-nav .active::after,
-.bottom-nav [aria-current="page"]::after,
-.tabbar .active::after,
-.tabbar [aria-current="page"]::after,
-.app-nav .active::after,
-.app-nav [aria-current="page"]::after{
-  width:18px !important;
-  height:2px !important;
-  border-radius:999px !important;
-  background:#b97a3d !important;
-  opacity:.82 !important;
-  bottom:3px !important;
-}
-
-/* more breathing room */
-.bottom-nav a,
-.bottom-nav button{
-  padding-bottom:9px !important;
-}
-
-/* overall less visual weight */
-.bottom-nav::before,
-.tabbar::before,
-.app-nav::before{
-  opacity:.45 !important;
+/* only a small underline for selection */
+.hero-nav-integrated .bottom-nav .active::after,
+.hero-nav-integrated .bottom-nav [aria-current="page"]::after,
+.hero-nav-integrated .tabbar .active::after,
+.hero-nav-integrated .tabbar [aria-current="page"]::after,
+.hero-nav-integrated .app-nav .active::after,
+.hero-nav-integrated .app-nav [aria-current="page"]::after{
+  width: 18px !important;
+  height: 2px !important;
+  bottom: 4px !important;
+  border-radius: 999px !important;
+  background: #b1733a !important;
+  opacity: .78 !important;
 }
