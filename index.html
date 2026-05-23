@@ -3,147 +3,143 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Roadora — Clean Core v1</title>
+  <title>Roadora — Clean Core v3 Real App Shell</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@650;750;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <main class="app" id="app">
-    <section class="screen screen-overview is-active" data-screen="overview">
-      <div class="hero-full">
-        <img src="assets/hero-roadora.jpg" alt="Roadora hero" />
-        <div class="hero-overlay"></div>
-        <header class="hero-topbar">
-          <button class="circle-btn" data-action="profile" aria-label="Profiel">♡</button>
-          <div class="brand">ROADORA</div>
-          <button class="circle-btn" aria-label="Meldingen">♧</button>
-        </header>
-        <div class="hero-copy">
-          <p>JOUW AVONTUUR.</p>
-          <h1>Jouw verhaal.</h1>
-          <span>Plan. Beleef. Herinner.</span>
-        </div>
-        <button class="hero-cta" data-screen-target="plan">
-          <span class="cta-icon">⌘</span>
-          <strong>Nieuwe roadtrip plannen</strong>
-          <span>→</span>
-        </button>
-      </div>
-    </section>
+<body class="hero-nav-integrated">
 
-    <section class="screen screen-map" data-screen="map">
-      <div class="map-bg">
-        <div class="map-topbar">
-          <button class="circle-btn light" data-screen-target="overview">‹</button>
-          <div class="map-search">Waar wil je naartoe?</div>
-          <button class="circle-btn light">▧</button>
-        </div>
-        <div class="fake-route"><span></span><span></span><span></span></div>
-        <div class="map-controls"><button>+</button><button>−</button></div>
-        <div class="map-sheet">
-          <small data-empty-label>Nog geen route gepland</small>
-          <h2>Plan je eerste roadtrip</h2>
-          <p>Zoek een bestemming en begin met plannen.</p>
-          <button class="primary-pill" data-screen-target="plan">Route plannen</button>
-        </div>
-      </div>
-    </section>
 
-    <section class="screen" data-screen="roadtrip">
-      <div class="soft-screen">
-        <header class="screen-head">
-          <button class="avatar-dot">●</button>
-          <button class="circle-btn light">♧</button>
-        </header>
-        <div class="title-block">
-          <h1>Mijn Roadtrip</h1>
-          <p>Alles voor jouw reis op één plek.</p>
-        </div>
-        <div class="roadtrip-menu">
-          <button class="menu-row" data-screen-target="routeplan"><span>▱</span><strong>Routeplan</strong><small>Plan en bewerk je route</small><b>›</b></button>
-          <button class="menu-row" data-screen-target="hotels"><span>▭</span><strong>Hotels</strong><small>Jouw accommodaties</small><b>›</b></button>
-          <button class="menu-row" data-screen-target="diary"><span>▤</span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small><b>›</b></button>
-          <button class="menu-row" data-screen-target="routes"><span>▧</span><strong>Trajecten</strong><small>Overzicht van je trajecten</small><b>›</b></button>
-        </div>
-      </div>
-    </section>
 
-    <section class="screen" data-screen="plan">
-      <div class="soft-screen">
-        <header class="plain-top"><button data-screen-target="overview">‹</button><strong>Nieuwe roadtrip</strong><button data-screen-target="overview">×</button></header>
-        <div class="title-block plan-title"><h1>Waar gaat de reis naartoe?</h1><p>Plan jouw avontuur in een paar stappen.</p></div>
-        <div class="form-list">
-          <button class="input-row"><span>⌖</span><strong>Vertrekpunt</strong><small>Kies je vertrekpunt</small><b>›</b></button>
-          <button class="input-row"><span>⚐</span><strong>Bestemming</strong><small>Kies je bestemming</small><b>›</b></button>
-          <button class="input-row"><span>▰</span><strong>Voertuig</strong><small>Kies je voertuig</small><b>›</b></button>
-          <button class="input-row"><span>◎</span><strong>Reisvoorkeuren</strong><small>Snelste route</small><b>›</b></button>
-        </div>
-        <button class="primary-pill wide" data-action="demoTrip">Route genereren</button>
-      </div>
-    </section>
 
-    <section class="screen" data-screen="hotels">
-      <div class="soft-screen subpage">
-        <header class="plain-top"><button data-screen-target="roadtrip">‹</button><strong>Hotels</strong><button>•••</button></header>
-        <div class="tabs"><button class="active">Aanbevolen</button><button>Alle</button><button>Favorieten</button></div>
-        <div class="photo-empty hotel-photo"></div>
-        <h2>Nog geen hotels toegevoegd</h2><p>Zoek accommodaties en sla je favorieten op voor onderweg.</p>
-        <button class="primary-pill wide">Hotel toevoegen</button>
-      </div>
-    </section>
+<main class="app" id="app" data-trip="empty">
 
-    <section class="screen" data-screen="diary">
-      <div class="soft-screen subpage">
-        <header class="plain-top"><button data-screen-target="roadtrip">‹</button><strong>Dagboek</strong><button>•••</button></header>
-        <div class="photo-empty diary-photo"></div>
-        <h2>Nog geen verhalen</h2><p>Schrijf je eerste dagboeknotitie en bewaar je herinneringen.</p>
-        <button class="primary-pill wide">Nieuw dagboekitem</button>
+  <section class="screen screen-overview is-active" data-screen="overview">
+    <div class="overview-hero">
+      <img src="assets/hero-overview.png" alt="Roadora hero" />
+      <div class="shade"></div>
+      <header class="topbar hero-topbar">
+        <button class="circle-btn" data-screen-target="profile" aria-label="Profiel">⌾</button>
+        <div class="brand">ROADORA</div>
+        <button class="circle-btn" aria-label="Meldingen">♢</button>
+      </header>
+      
+      
+      <div class="hero-copy">
+        <h1>Jouw volgende<br><span>avontuur</span> begint hier.</h1>
+        <p>Plan, ontdek en geniet van de mooiste<br>routes, hotels en plekken onderweg.</p>
       </div>
-    </section>
 
-    <section class="screen" data-screen="routes">
-      <div class="soft-screen subpage">
-        <header class="plain-top"><button data-screen-target="roadtrip">‹</button><strong>Trajecten</strong><button>•••</button></header>
-        <div class="photo-empty route-photo"></div>
-        <h2>Nog geen trajecten</h2><p>Zodra je een route maakt, zie je hier alle trajecten overzichtelijk terug.</p>
-        <button class="primary-pill wide" data-screen-target="plan">Route plannen</button>
-      </div>
-    </section>
+      <button class="hero-cta" data-screen-target="plan"><span>＋</span>Nieuwe roadtrip plannen <b>→</b></button>
+    </div>
 
-    <section class="screen" data-screen="routeplan">
-      <div class="soft-screen subpage">
-        <header class="plain-top"><button data-screen-target="roadtrip">‹</button><strong>Routeplan</strong><button>•••</button></header>
-        <div class="tabs"><button class="active">Route</button><button>Hoogtepunten</button><button>Notities</button></div>
-        <div class="photo-empty routeplan-photo"></div>
-        <h2>Je route is nog leeg</h2><p>Voeg een bestemming toe en begin met plannen.</p>
-        <button class="primary-pill wide" data-screen-target="plan">Bestemming toevoegen</button>
-      </div>
-    </section>
+    <div class="planned-content">
+      <article class="soft-card progress-card">
+        <div><h3>Voorbereiding</h3><p>Nog 4 taken deze week</p></div>
+        <b class="ring">72%</b>
+        <div class="bar"><span style="width:72%"></span></div>
+      </article>
+      <article class="soft-card next-card">
+        <h3>Volgende stop</h3>
+        <button data-screen-target="map"><img src="assets/hero-hotels.png" alt="San Sebastián"><span><strong>San Sebastián</strong><small>2 nachten · 17–19 mei</small></span><b>›</b></button>
+      </article>
+      <article class="soft-card stats-card">
+        <h3>Reisoverzicht</h3>
+        <div><span><strong>1.842 km</strong><small>Totale afstand</small></span><span><strong>6</strong><small>Stops</small></span><span><strong>12 dagen</strong><small>Reisduur</small></span></div>
+      </article>
+    </div>
+  </section>
 
-    <section class="screen" data-screen="profile">
-      <div class="profile-hero">
-        <img src="assets/hero-roadora.jpg" alt="Profiel achtergrond" />
-        <div class="profile-shade"></div>
-        <button class="circle-btn light profile-settings">⚙</button>
-        <div class="profile-user"><div class="big-avatar">○</div><h1>Profiel</h1><p>Reiziger sinds 2026</p></div>
-        <div class="profile-panel">
-          <button>Mijn gegevens <span>›</span></button>
-          <button>Instellingen <span>›</span></button>
-          <button>Meldingen <span>›</span></button>
-          <button>Help & ondersteuning <span>›</span></button>
-        </div>
-      </div>
-    </section>
+  <section class="screen screen-map" data-screen="map">
+    <div class="map-canvas">
+      <div class="map-bg"></div>
+      <header class="map-ui map-top"><button class="circle-btn light" data-screen-target="overview">‹</button><div class="map-search">Zoek een plek of adres</div><button class="circle-btn light">▧</button></header>
+      <div class="route-line"><i></i><i></i><i></i><i></i></div>
+      <div class="map-controls"><button>+</button><button>−</button></div>
+      <section class="map-sheet">
+        <small>Roadora kaart</small>
+        <h2>Nog geen route gepland</h2>
+        <p>Plan je eerste route en ontdek onderweg hotels, stops en uitjes.</p>
+        <button class="primary" data-screen-target="plan">Route plannen</button>
+      </section>
+    </div>
+  </section>
 
-    <nav class="bottom-nav" aria-label="Hoofdnavigatie">
-      <button class="nav-item active" data-screen-target="overview"><span>⌂</span><small>Overzicht</small></button>
-      <button class="nav-item" data-screen-target="map"><span>⌖</span><small>Kaart</small></button>
-      <button class="nav-item" data-screen-target="roadtrip"><span>▣</span><small>Mijn Roadtrip</small></button>
-      <button class="nav-item" data-screen-target="profile"><span>♙</span><small>Profiel</small></button>
-    </nav>
-  </main>
-  <script src="app.js"></script>
+  <section class="screen screen-roadtrip" data-screen="roadtrip">
+    <header class="screen-head photo-head compact">
+      <img src="assets/hero-roadtrip.png" alt="Mijn Roadtrip" />
+      <div class="shade soft"></div>
+      <div class="inner-top"><button class="circle-btn light" data-screen-target="overview">‹</button><span>Mijn Roadtrip</span><button class="circle-btn light">•••</button></div>
+      <div class="head-copy"><small>REISCENTRUM</small><h1>Alles voor je reis op één plek.</h1><p>Route, verblijven, trajecten en herinneringen rustig georganiseerd.</p></div>
+    </header>
+    <div class="content hub-list">
+      <button class="hub-row" data-screen-target="plan"><b>▱</b><span><strong>Routeplan</strong><small>Plan en bewerk je route</small></span><i>›</i></button>
+      <button class="hub-row" data-screen-target="hotels"><b>▭</b><span><strong>Hotels</strong><small>Jouw verblijven onderweg</small></span><i>›</i></button>
+      <button class="hub-row" data-screen-target="routes"><b>⌁</b><span><strong>Trajecten</strong><small>Bekijk je etappes</small></span><i>›</i></button>
+      <button class="hub-row" data-screen-target="diary"><b>◇</b><span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small></span><i>›</i></button>
+    </div>
+  </section>
+
+  <section class="screen screen-plan" data-screen="plan">
+    <header class="screen-head photo-head functional">
+      <img src="assets/hero-routeplan.png" alt="Route plannen" />
+      <div class="shade soft"></div>
+      <div class="inner-top"><button class="circle-btn light" data-screen-target="overview">‹</button><span>Nieuwe roadtrip</span><button class="circle-btn light">×</button></div>
+      <div class="head-copy"><small>ROUTEPLAN</small><h1>Waar gaat de reis naartoe?</h1><p>Plan je avontuur in een paar rustige stappen.</p></div>
+    </header>
+    <div class="content input-list">
+      <button><b>⌖</b><span><strong>Vertrekpunt</strong><small>Kies je vertrekpunt</small></span><i>›</i></button>
+      <button><b>⚑</b><span><strong>Bestemming</strong><small>Kies je bestemming</small></span><i>›</i></button>
+      <button><b>▣</b><span><strong>Voertuig</strong><small>Kies je voertuig</small></span><i>›</i></button>
+      <button><b>◌</b><span><strong>Reisvoorkeuren</strong><small>Snelste route</small></span><i>›</i></button>
+      <button class="primary wide" data-action="demo-trip">Route genereren</button>
+    </div>
+  </section>
+
+  <section class="screen screen-hotels" data-screen="hotels">
+    <header class="plain-top"><button class="circle-btn light" data-screen-target="roadtrip">‹</button><h1>Hotels</h1><button class="circle-btn light">•••</button></header>
+    <div class="content hotel-layout">
+      <div class="hotel-photo"><img src="assets/hero-hotels.png" alt="Verblijven"><div><h2>Nog geen hotels toegevoegd</h2><p>Zoek accommodaties en sla je favorieten op voor onderweg.</p></div></div>
+      <button class="primary wide">Hotel toevoegen</button>
+    </div>
+  </section>
+
+  <section class="screen screen-diary" data-screen="diary">
+    <header class="plain-top"><button class="circle-btn light" data-screen-target="roadtrip">‹</button><h1>Dagboek</h1><button class="circle-btn light">•••</button></header>
+    <div class="content diary-layout">
+      <img class="diary-strip" src="assets/hero-diary.png" alt="Dagboek" />
+      <div class="story-empty"><small>JOUW HERINNERINGEN</small><h2>Nog geen verhalen</h2><p>Schrijf je eerste dagboeknotitie en bewaar je mooiste momenten.</p></div>
+      <button class="primary wide">Nieuw dagboekitem</button>
+    </div>
+  </section>
+
+  <section class="screen screen-routes" data-screen="routes">
+    <header class="plain-top"><button class="circle-btn light" data-screen-target="roadtrip">‹</button><h1>Trajecten</h1><button class="circle-btn light">•••</button></header>
+    <div class="content routes-layout">
+      <img src="assets/hero-routes.png" alt="Trajecten" />
+      <div class="story-empty"><small>ETAPPES</small><h2>Nog geen trajecten</h2><p>Plan een route en je etappes verschijnen hier vanzelf.</p></div>
+      <button class="primary wide" data-screen-target="plan">Traject toevoegen</button>
+    </div>
+  </section>
+
+  <section class="screen screen-profile" data-screen="profile">
+    <header class="profile-hero"><img src="assets/hero-profile.png" alt="Profiel"><div class="shade soft"></div><button class="circle-btn light" data-screen-target="overview">‹</button><div><b>Profiel</b><h1>Jouw Roadora</h1><p>Reiziger sinds 2026</p></div></header>
+    <div class="content profile-list">
+      <button>Mijn gegevens <span>›</span></button><button>Instellingen <span>›</span></button><button>Meldingen <span>›</span></button><button>Help & ondersteuning <span>›</span></button>
+    </div>
+  </section>
+
+  <nav class="bottom-nav" aria-label="Roadora navigatie">
+    <button class="active" data-screen-target="overview"><span>⌂</span><b>Overzicht</b></button>
+    <button data-screen-target="map"><span>⌖</span><b>Kaart</b></button>
+    <button data-screen-target="roadtrip"><span>▣</span><b>Mijn Roadtrip</b></button>
+    <button data-screen-target="profile"><span>♙</span><b>Profiel</b></button>
+  </nav>
+
+  <div class="toast" id="toast">Roadtrip gepland</div>
+</main>
+<script src="app.js"></script>
 </body>
 </html>

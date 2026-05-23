@@ -1,26 +1,55 @@
+const DEMO_TRIP_ENABLED = false;
+
 const RoadoraState = {
   activeScreen: 'overview',
-  activeTrip: null
+  activeTrip: DEMO_TRIP_ENABLED ? {
+    title: 'Noord-Spanje Roadtrip',
+    meta: '12 dagen · 6 stops · 16 – 27 mei 2025'
+  } : null
 };
+
+const app = document.querySelector('#app');
 const screens = [...document.querySelectorAll('[data-screen]')];
-const navItems = [...document.querySelectorAll('.nav-item')];
+const navButtons = [...document.querySelectorAll('.bottom-nav [data-screen-target]')];
+const toast = document.querySelector('#toast');
+
+function renderTripState(){
+  app.dataset.trip = RoadoraState.activeTrip ? 'planned' : 'empty';
+}
+
 function openScreen(name){
+  const target = screens.find(s => s.dataset.screen === name);
+  if(!target) return;
+  screens.forEach(screen => screen.classList.toggle('is-active', screen === target));
+  navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.screenTarget === name));
   RoadoraState.activeScreen = name;
-  screens.forEach(s => s.classList.toggle('is-active', s.dataset.screen === name));
-  navItems.forEach(n => n.classList.toggle('active', n.dataset.screenTarget === mainTab(name)));
+  try { localStorage.setItem('roadora_active_screen', name); } catch(e) {}
 }
-function mainTab(name){
-  if(['hotels','diary','routes','routeplan','plan'].includes(name)) return 'roadtrip';
-  return name;
+
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 1700);
 }
-document.addEventListener('click', (e)=>{
-  const target = e.target.closest('[data-screen-target]');
-  if(target){ openScreen(target.dataset.screenTarget); return; }
-  const action = e.target.closest('[data-action]');
-  if(action?.dataset.action === 'profile') openScreen('profile');
-  if(action?.dataset.action === 'demoTrip') {
-    RoadoraState.activeTrip = { title:'Je roadtrip', days:3, hotels:2 };
-    openScreen('map');
+
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('[data-screen-target]');
+  if(target){
+    event.preventDefault();
+    openScreen(target.dataset.screenTarget);
+    return;
+  }
+  const action = event.target.closest('[data-action]');
+  if(action?.dataset.action === 'demo-trip'){
+    RoadoraState.activeTrip = { title:'Noord-Spanje Roadtrip', meta:'12 dagen · 6 stops · 16 – 27 mei 2025' };
+    renderTripState();
+    showToast('Roadtrip gepland');
+    openScreen('overview');
   }
 });
-window.Roadora = { state: RoadoraState, openScreen };
+
+renderTripState();
+openScreen('overview');
+window.RoadoraState = RoadoraState;
+window.RoadoraRouter = { open: openScreen };
