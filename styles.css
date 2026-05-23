@@ -373,3 +373,662 @@ font-weight:500;
     transform: translateX(-50%);
   }
 }
+
+/* === Roadora bottom nav image thumbnails only v1 === */
+.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .tabbar a,
+.hero-nav-integrated .tabbar button,
+.hero-nav-integrated .app-nav a,
+.hero-nav-integrated .app-nav button{
+  gap:4px !important;
+}
+
+.nav-thumb{
+  width:30px;
+  height:30px;
+  border-radius:12px;
+  display:block;
+  flex:0 0 auto;
+  background-size:cover;
+  background-position:center;
+  box-shadow:
+    0 5px 12px rgba(34,22,13,.16),
+    inset 0 0 0 1px rgba(255,255,255,.28);
+  opacity:.82;
+  transform:translateY(-1px);
+  position:relative;
+}
+
+.nav-thumb::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(67,38,18,.18));
+  pointer-events:none;
+}
+
+.hero-nav-integrated .bottom-nav .active .nav-thumb,
+.hero-nav-integrated .tabbar .active .nav-thumb,
+.hero-nav-integrated .app-nav .active .nav-thumb,
+.hero-nav-integrated .bottom-nav [aria-current="page"] .nav-thumb,
+.hero-nav-integrated .tabbar [aria-current="page"] .nav-thumb,
+.hero-nav-integrated .app-nav [aria-current="page"] .nav-thumb{
+  opacity:1;
+  transform:translateY(-2px) scale(1.05);
+  box-shadow:
+    0 7px 16px rgba(155,92,24,.25),
+    inset 0 0 0 1px rgba(255,255,255,.44);
+}
+
+@media(max-width:390px){
+  .nav-thumb{
+    width:28px;
+    height:28px;
+    border-radius:11px;
+  }
+}
+
+/* === Roadora premium photo bottom nav v2 ===
+   Built in the real app-shell. No generated images/mockups. */
+.hero-nav-integrated .bottom-nav{
+  position:fixed !important;
+  left:max(16px, env(safe-area-inset-left)) !important;
+  right:max(16px, env(safe-area-inset-right)) !important;
+  bottom:calc(18px + env(safe-area-inset-bottom)) !important;
+  height:132px !important;
+  padding:18px 22px 16px !important;
+  border-radius:34px !important;
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0,1fr)) !important;
+  gap:14px !important;
+  background:linear-gradient(180deg, rgba(66,55,43,.66), rgba(38,33,27,.58)) !important;
+  border:1px solid rgba(255,244,230,.18) !important;
+  box-shadow:
+    0 24px 56px rgba(13,9,6,.38),
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.16) !important;
+  backdrop-filter:blur(24px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.08) !important;
+  overflow:hidden !important;
+}
+
+.hero-nav-integrated .bottom-nav::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,229,188,.16), transparent 32%),
+    radial-gradient(circle at 72% 30%, rgba(255,244,225,.08), transparent 36%);
+}
+
+.hero-nav-integrated .bottom-nav button{
+  position:relative !important;
+  z-index:1 !important;
+  min-height:0 !important;
+  height:100% !important;
+  padding:0 !important;
+  border-radius:24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:11px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:rgba(248,238,224,.86) !important;
+}
+
+.hero-nav-integrated .bottom-nav button.active{
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#e5b46e !important;
+}
+
+.hero-nav-integrated .bottom-nav button.active::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:34px;
+  height:4px;
+  border-radius:999px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg, rgba(228,178,110,.25), #e8bb77, rgba(228,178,110,.25));
+  box-shadow:0 0 18px rgba(232,187,119,.28);
+}
+
+.hero-nav-integrated .bottom-nav .nav-thumb{
+  width:70px !important;
+  height:70px !important;
+  border-radius:22px !important;
+  display:block !important;
+  flex:0 0 auto !important;
+  background-size:cover !important;
+  background-position:center !important;
+  opacity:.96 !important;
+  transform:none !important;
+  box-shadow:
+    0 12px 22px rgba(10,7,5,.28),
+    inset 0 0 0 1px rgba(255,255,255,.22) !important;
+  overflow:hidden !important;
+}
+
+.hero-nav-integrated .bottom-nav .nav-thumb::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(42,26,14,.20));
+  pointer-events:none;
+}
+
+.hero-nav-integrated .bottom-nav .active .nav-thumb{
+  opacity:1 !important;
+  transform:none !important;
+  box-shadow:
+    0 13px 24px rgba(12,8,5,.30),
+    0 0 0 1px rgba(232,187,119,.32),
+    inset 0 0 0 1px rgba(255,255,255,.34) !important;
+}
+
+.hero-nav-integrated .bottom-nav b{
+  display:block !important;
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:16px !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  letter-spacing:-.25px !important;
+  white-space:nowrap !important;
+  text-shadow:0 2px 12px rgba(0,0,0,.25) !important;
+}
+
+.hero-nav-integrated .hero-cta{
+  margin-bottom:158px !important;
+}
+
+.hero-nav-integrated .screen{
+  padding-bottom:168px !important;
+}
+
+.hero-nav-integrated .map-sheet{
+  bottom:166px !important;
+}
+
+@media (min-width:520px){
+  .hero-nav-integrated .bottom-nav{
+    left:50% !important;
+    right:auto !important;
+    width:min(430px, calc(100% - 32px)) !important;
+    transform:translateX(-50%) !important;
+  }
+}
+
+@media (max-width:390px){
+  .hero-nav-integrated .bottom-nav{
+    left:12px !important;
+    right:12px !important;
+    height:124px !important;
+    padding:15px 16px 14px !important;
+    gap:10px !important;
+    border-radius:31px !important;
+  }
+  .hero-nav-integrated .bottom-nav .nav-thumb{
+    width:62px !important;
+    height:62px !important;
+    border-radius:20px !important;
+  }
+  .hero-nav-integrated .bottom-nav b{
+    font-size:15px !important;
+  }
+}
+
+@media (max-width:350px){
+  .hero-nav-integrated .bottom-nav{
+    gap:6px !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+  .hero-nav-integrated .bottom-nav .nav-thumb{
+    width:56px !important;
+    height:56px !important;
+    border-radius:18px !important;
+  }
+  .hero-nav-integrated .bottom-nav b{
+    font-size:13px !important;
+  }
+}
+
+/* === Roadora photo nav v3 — no glass pill, blended into hero ===
+   Built directly in the real app-shell. The large nav container is removed;
+   only the photo CTA tabs remain, floating inside the background. */
+.hero-nav-integrated .bottom-nav{
+  position:fixed !important;
+  left:max(18px, env(safe-area-inset-left)) !important;
+  right:max(18px, env(safe-area-inset-right)) !important;
+  bottom:calc(18px + env(safe-area-inset-bottom)) !important;
+  height:122px !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0,1fr)) !important;
+  gap:12px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  overflow:visible !important;
+}
+
+.hero-nav-integrated .bottom-nav::before{
+  display:none !important;
+  content:none !important;
+}
+
+/* A soft cinematic base shadow instead of a visible pill */
+.hero-nav-integrated [data-screen="overview"]::after,
+.hero-nav-integrated .screen-overview::after,
+.hero-nav-integrated .overview-screen::after{
+  height:250px !important;
+  background:linear-gradient(
+    to top,
+    rgba(22,15,10,.56) 0%,
+    rgba(49,34,22,.30) 38%,
+    rgba(49,34,22,.00) 100%
+  ) !important;
+}
+
+.hero-nav-integrated .bottom-nav button{
+  position:relative !important;
+  z-index:1 !important;
+  min-height:0 !important;
+  height:100% !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:10px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:rgba(255,244,229,.88) !important;
+  text-shadow:0 2px 14px rgba(0,0,0,.55) !important;
+}
+
+.hero-nav-integrated .bottom-nav button.active{
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#e8b977 !important;
+}
+
+.hero-nav-integrated .bottom-nav button.active::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:4px;
+  width:34px;
+  height:4px;
+  border-radius:999px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg, rgba(232,185,119,.10), #e8b977, rgba(232,185,119,.10));
+  box-shadow:0 0 18px rgba(232,185,119,.34);
+}
+
+.hero-nav-integrated .bottom-nav .nav-thumb{
+  width:66px !important;
+  height:66px !important;
+  border-radius:22px !important;
+  display:block !important;
+  flex:0 0 auto !important;
+  background-size:cover !important;
+  background-position:center !important;
+  opacity:.98 !important;
+  transform:none !important;
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.34),
+    0 0 0 1px rgba(255,238,215,.16),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+  overflow:hidden !important;
+}
+
+.hero-nav-integrated .bottom-nav .nav-thumb::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(42,26,14,.22));
+  pointer-events:none;
+}
+
+.hero-nav-integrated .bottom-nav .active .nav-thumb{
+  opacity:1 !important;
+  box-shadow:
+    0 15px 30px rgba(0,0,0,.38),
+    0 0 0 1px rgba(232,185,119,.36),
+    0 0 24px rgba(232,185,119,.10),
+    inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+.hero-nav-integrated .bottom-nav b{
+  display:block !important;
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:15.5px !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  letter-spacing:-.25px !important;
+  white-space:nowrap !important;
+}
+
+.hero-nav-integrated .hero-cta{
+  margin-bottom:150px !important;
+}
+
+.hero-nav-integrated .screen{
+  padding-bottom:154px !important;
+}
+
+.hero-nav-integrated .map-sheet{
+  bottom:154px !important;
+}
+
+@media (min-width:520px){
+  .hero-nav-integrated .bottom-nav{
+    left:50% !important;
+    right:auto !important;
+    width:min(430px, calc(100% - 36px)) !important;
+    transform:translateX(-50%) !important;
+  }
+}
+
+@media (max-width:390px){
+  .hero-nav-integrated .bottom-nav{
+    left:12px !important;
+    right:12px !important;
+    height:116px !important;
+    gap:8px !important;
+  }
+  .hero-nav-integrated .bottom-nav .nav-thumb{
+    width:60px !important;
+    height:60px !important;
+    border-radius:20px !important;
+  }
+  .hero-nav-integrated .bottom-nav b{
+    font-size:14.5px !important;
+  }
+}
+
+@media (max-width:350px){
+  .hero-nav-integrated .bottom-nav{
+    gap:4px !important;
+  }
+  .hero-nav-integrated .bottom-nav .nav-thumb{
+    width:54px !important;
+    height:54px !important;
+    border-radius:18px !important;
+  }
+  .hero-nav-integrated .bottom-nav b{
+    font-size:13px !important;
+  }
+}
+
+
+/* === Roadora route CTA card v4 — above photo bottom nav ===
+   Built directly in the real app-shell. Keeps the no-pill nav direction. */
+.hero-nav-integrated .route-create-card,
+.hero-nav-integrated .hero-cta.route-create-card{
+  position:fixed !important;
+  left:max(24px, env(safe-area-inset-left)) !important;
+  right:max(24px, env(safe-area-inset-right)) !important;
+  bottom:calc(144px + env(safe-area-inset-bottom)) !important;
+  height:74px !important;
+  margin:0 !important;
+  z-index:78 !important;
+  display:grid !important;
+  grid-template-columns:48px 1fr 36px !important;
+  align-items:center !important;
+  gap:13px !important;
+  padding:10px 13px 10px 12px !important;
+  border-radius:28px !important;
+  color:#fff4e2 !important;
+  text-align:left !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(236,190,121,.25), transparent 34%),
+    linear-gradient(135deg, rgba(48,36,27,.58), rgba(31,25,20,.40)) !important;
+  border:1px solid rgba(255,235,204,.18) !important;
+  box-shadow:
+    0 18px 44px rgba(10,7,5,.30),
+    inset 0 1px 0 rgba(255,255,255,.16) !important;
+  backdrop-filter:blur(18px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.08) !important;
+  overflow:hidden !important;
+}
+
+.hero-nav-integrated .route-create-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0) 48%, rgba(0,0,0,.10));
+}
+
+.hero-nav-integrated .route-create-card .cta-icon{
+  position:relative;
+  z-index:1;
+  width:48px !important;
+  height:48px !important;
+  border-radius:18px !important;
+  display:grid !important;
+  place-items:center !important;
+  flex:0 0 auto !important;
+  font-size:25px !important;
+  line-height:1 !important;
+  color:#2a1b10 !important;
+  background:linear-gradient(135deg, #f4c47f, #d89a4d) !important;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.38) !important;
+}
+
+.hero-nav-integrated .route-create-card .cta-copy{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.hero-nav-integrated .route-create-card .cta-copy strong{
+  display:block;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:20px;
+  line-height:1.02;
+  font-weight:750;
+  letter-spacing:-.35px;
+  color:#fff2df;
+  text-shadow:0 2px 14px rgba(0,0,0,.34);
+}
+
+.hero-nav-integrated .route-create-card .cta-copy small{
+  display:block;
+  margin-top:5px;
+  font-family:Inter, system-ui, sans-serif;
+  font-size:12px;
+  line-height:1;
+  font-weight:650;
+  letter-spacing:.1px;
+  color:rgba(255,239,218,.70);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.hero-nav-integrated .route-create-card b{
+  position:relative;
+  z-index:1;
+  width:36px;
+  height:36px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:24px !important;
+  font-weight:500 !important;
+  color:#f3c17b;
+  background:rgba(255,235,205,.09);
+  box-shadow:inset 0 0 0 1px rgba(255,235,205,.10);
+}
+
+.hero-nav-integrated .route-create-card:active{
+  transform:scale(.985) !important;
+}
+
+/* More breathing room in the lower hero because CTA now sits above the nav */
+.hero-nav-integrated [data-screen="overview"]::after,
+.hero-nav-integrated .screen-overview::after,
+.hero-nav-integrated .overview-screen::after{
+  height:330px !important;
+  background:linear-gradient(
+    to top,
+    rgba(16,11,7,.64) 0%,
+    rgba(37,26,18,.42) 44%,
+    rgba(37,26,18,.00) 100%
+  ) !important;
+}
+
+@media (min-width:520px){
+  .hero-nav-integrated .route-create-card,
+  .hero-nav-integrated .hero-cta.route-create-card{
+    left:50% !important;
+    right:auto !important;
+    width:min(382px, calc(100% - 48px)) !important;
+    transform:translateX(-50%) !important;
+  }
+  .hero-nav-integrated .route-create-card:active{
+    transform:translateX(-50%) scale(.985) !important;
+  }
+}
+
+@media (max-width:390px){
+  .hero-nav-integrated .route-create-card,
+  .hero-nav-integrated .hero-cta.route-create-card{
+    left:18px !important;
+    right:18px !important;
+    bottom:calc(136px + env(safe-area-inset-bottom)) !important;
+    height:70px !important;
+    border-radius:25px !important;
+    grid-template-columns:44px 1fr 34px !important;
+    gap:11px !important;
+  }
+  .hero-nav-integrated .route-create-card .cta-icon{
+    width:44px !important;
+    height:44px !important;
+    border-radius:16px !important;
+    font-size:23px !important;
+  }
+  .hero-nav-integrated .route-create-card .cta-copy strong{
+    font-size:18.5px;
+  }
+  .hero-nav-integrated .route-create-card .cta-copy small{
+    font-size:11.5px;
+  }
+}
+
+@media (max-width:350px){
+  .hero-nav-integrated .route-create-card,
+  .hero-nav-integrated .hero-cta.route-create-card{
+    left:14px !important;
+    right:14px !important;
+    grid-template-columns:42px 1fr 32px !important;
+    gap:9px !important;
+  }
+  .hero-nav-integrated .route-create-card .cta-copy strong{
+    font-size:17px;
+  }
+}
+
+/* === Roadora route CTA beige v5 — lifted, calm premium beige ===
+   Built directly in the real app-shell. Keeps the no-pill photo nav intact. */
+.hero-nav-integrated .route-create-card,
+.hero-nav-integrated .hero-cta.route-create-card{
+  bottom:calc(158px + env(safe-area-inset-bottom)) !important;
+  height:76px !important;
+  color:#3a2618 !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,.70), transparent 36%),
+    linear-gradient(135deg, rgba(239,222,201,.96), rgba(210,184,153,.92)) !important;
+  border:1px solid rgba(255,246,234,.72) !important;
+  box-shadow:
+    0 18px 42px rgba(21,13,7,.28),
+    0 0 0 1px rgba(116,76,39,.08),
+    inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(16px) saturate(1.05) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.05) !important;
+}
+
+.hero-nav-integrated .route-create-card::before{
+  background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 52%, rgba(84,52,27,.07)) !important;
+}
+
+.hero-nav-integrated .route-create-card .cta-icon{
+  color:#fff5e6 !important;
+  background:linear-gradient(135deg, #9f682b, #6f421e) !important;
+  box-shadow:
+    0 10px 22px rgba(96,54,24,.24),
+    inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+
+.hero-nav-integrated .route-create-card .cta-copy strong{
+  color:#3b2617 !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.42) !important;
+}
+
+.hero-nav-integrated .route-create-card .cta-copy small{
+  color:rgba(75,50,31,.74) !important;
+}
+
+.hero-nav-integrated .route-create-card b{
+  color:#6f421e !important;
+  background:rgba(255,250,244,.46) !important;
+  box-shadow:inset 0 0 0 1px rgba(111,66,30,.14) !important;
+}
+
+@media (max-width:390px){
+  .hero-nav-integrated .route-create-card,
+  .hero-nav-integrated .hero-cta.route-create-card{
+    bottom:calc(150px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* === Roadora bottom nav beige labels v6 — readable on every tab ===
+   Built directly in the real app-shell. Only typography/contrast is adjusted. */
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .bottom-nav button b{
+  color:#f1dfc6 !important;
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.72),
+    0 1px 0 rgba(71,45,25,.42) !important;
+}
+
+.hero-nav-integrated .bottom-nav button.active,
+.hero-nav-integrated .bottom-nav button.active b{
+  color:#f6c982 !important;
+  text-shadow:
+    0 2px 14px rgba(0,0,0,.72),
+    0 0 18px rgba(246,201,130,.22) !important;
+}
+
+.hero-nav-integrated .bottom-nav b{
+  font-weight:800 !important;
+  letter-spacing:-.15px !important;
+}
+
+.hero-nav-integrated .bottom-nav button:not(.active) b{
+  opacity:.96 !important;
+}
