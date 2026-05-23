@@ -739,3 +739,124 @@ section{
     letter-spacing:-1.2px !important;
   }
 }
+
+
+/* === Roadora Clean Premium Nav v4 === */
+
+/* remove chunky active backgrounds */
+.bottom-nav .active,
+.bottom-nav [aria-current="page"],
+.tabbar .active,
+.tabbar [aria-current="page"],
+.app-nav .active,
+.app-nav [aria-current="page"]{
+  background:transparent !important;
+  box-shadow:none !important;
+  border:none !important;
+}
+
+/* cleaner nav shell */
+.bottom-nav,
+.tabbar,
+.app-nav,
+nav[aria-label="Bottom navigation"]{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,248,241,.54),
+      rgba(238,225,206,.32)
+    ) !important;
+
+  backdrop-filter:blur(30px) saturate(1.04) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(1.04) !important;
+
+  border:1px solid rgba(255,255,255,.16) !important;
+
+  box-shadow:
+    0 10px 34px rgba(27,16,10,.14),
+    inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+
+/* smaller editorial thumbnails */
+.bottom-nav a::before,
+.bottom-nav button::before,
+.tabbar a::before,
+.tabbar button::before,
+.app-nav a::before,
+.app-nav button::before{
+  width:24px !important;
+  height:24px !important;
+  border-radius:10px !important;
+
+  opacity:.92;
+
+  box-shadow:
+    0 4px 12px rgba(20,12,8,.16),
+    inset 0 0 0 1px rgba(255,255,255,.22) !important;
+}
+
+/* subtle active state only */
+.bottom-nav .active::before,
+.bottom-nav [aria-current="page"]::before,
+.tabbar .active::before,
+.tabbar [aria-current="page"]::before,
+.app-nav .active::before,
+.app-nav [aria-current="page"]::before{
+  transform:translateX(-50%) translateY(-1px) scale(1.03) !important;
+
+  box-shadow:
+    0 6px 18px rgba(192,138,82,.16),
+    inset 0 0 0 1px rgba(255,255,255,.30) !important;
+}
+
+/* labels calmer */
+.bottom-nav a,
+.bottom-nav button,
+.tabbar a,
+.tabbar button,
+.app-nav a,
+.app-nav button{
+  font-size:10.5px !important;
+  font-weight:650 !important;
+  color:rgba(34,25,18,.72) !important;
+  letter-spacing:-.1px !important;
+  gap:5px !important;
+}
+
+/* active label */
+.bottom-nav .active,
+.bottom-nav [aria-current="page"],
+.tabbar .active,
+.tabbar [aria-current="page"],
+.app-nav .active,
+.app-nav [aria-current="page"]{
+  color:#9f6837 !important;
+}
+
+/* elegant underline only */
+.bottom-nav .active::after,
+.bottom-nav [aria-current="page"]::after,
+.tabbar .active::after,
+.tabbar [aria-current="page"]::after,
+.app-nav .active::after,
+.app-nav [aria-current="page"]::after{
+  width:18px !important;
+  height:2px !important;
+  border-radius:999px !important;
+  background:#b97a3d !important;
+  opacity:.82 !important;
+  bottom:3px !important;
+}
+
+/* more breathing room */
+.bottom-nav a,
+.bottom-nav button{
+  padding-bottom:9px !important;
+}
+
+/* overall less visual weight */
+.bottom-nav::before,
+.tabbar::before,
+.app-nav::before{
+  opacity:.45 !important;
+}
