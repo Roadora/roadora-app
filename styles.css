@@ -565,3 +565,177 @@ font-weight:500;
 .hero-nav-integrated .app-nav [aria-current="page"]::after{
   bottom:4px !important;
 }
+
+/* === Roadora Cinematic Polish v1 === */
+
+:root{
+  --roadora-beige:#efe1d0;
+  --roadora-warm:#c08a52;
+  --roadora-dark:#1d1712;
+}
+
+/* HERO ATMOSPHERE */
+.hero,
+.hero-section,
+.home-hero{
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::before,
+.hero-section::before,
+.home-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  background:
+    radial-gradient(circle at 50% 18%,
+      rgba(255,244,228,.22),
+      transparent 42%),
+    linear-gradient(
+      to bottom,
+      rgba(255,250,240,.10) 0%,
+      rgba(255,240,219,.05) 22%,
+      rgba(210,172,132,.06) 55%,
+      rgba(36,23,14,.20) 100%
+    );
+}
+
+.hero::after,
+.hero-section::after,
+.home-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  background:
+    linear-gradient(
+      to top,
+      rgba(26,16,10,.44) 0%,
+      rgba(26,16,10,.16) 28%,
+      rgba(26,16,10,0) 62%
+    );
+  mix-blend-mode:soft-light;
+}
+
+/* HERO TEXT */
+.hero-copy{
+  z-index:5 !important;
+}
+
+.hero-copy h1{
+  font-family:"Playfair Display", serif !important;
+  font-weight:800 !important;
+  line-height:.92 !important;
+  letter-spacing:-1.5px !important;
+  text-shadow:
+    0 2px 14px rgba(255,255,255,.16),
+    0 8px 40px rgba(0,0,0,.10);
+}
+
+.hero-copy h1 span{
+  color:#bb8146 !important;
+}
+
+.hero-copy p{
+  opacity:.88;
+  line-height:1.45 !important;
+  text-shadow:0 2px 18px rgba(255,255,255,.14);
+}
+
+/* FLOATING NAV */
+.bottom-nav,
+.tabbar,
+.app-nav,
+nav[aria-label="Bottom navigation"]{
+  backdrop-filter:blur(26px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(26px) saturate(1.08) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,250,244,.64),
+      rgba(240,223,199,.40)
+    ) !important;
+  border:1px solid rgba(255,255,255,.24) !important;
+  box-shadow:
+    0 12px 40px rgba(31,18,10,.18),
+    inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+/* MINI PHOTO NAV */
+.bottom-nav a::before,
+.bottom-nav button::before,
+.tabbar a::before,
+.tabbar button::before,
+.app-nav a::before,
+.app-nav button::before{
+  box-shadow:
+    0 8px 18px rgba(28,16,10,.22),
+    inset 0 0 0 1px rgba(255,255,255,.36) !important;
+  transition:
+    transform .28s ease,
+    opacity .28s ease,
+    box-shadow .28s ease;
+}
+
+.bottom-nav .active::before,
+.bottom-nav [aria-current="page"]::before,
+.tabbar .active::before,
+.tabbar [aria-current="page"]::before,
+.app-nav .active::before,
+.app-nav [aria-current="page"]::before{
+  transform:translateX(-50%) translateY(-2px) scale(1.08) !important;
+  box-shadow:
+    0 10px 24px rgba(192,138,82,.30),
+    inset 0 0 0 1px rgba(255,255,255,.52) !important;
+}
+
+/* PREMIUM MOTION */
+.bottom-nav a,
+.bottom-nav button,
+.tabbar a,
+.tabbar button,
+.app-nav a,
+.app-nav button,
+.hero-copy,
+.hero-cta,
+.primary-cta{
+  transition:
+    transform .28s ease,
+    opacity .28s ease,
+    background .28s ease,
+    box-shadow .28s ease,
+    color .28s ease;
+}
+
+.bottom-nav a:active,
+.bottom-nav button:active,
+.hero-cta:active,
+.primary-cta:active{
+  transform:scale(.96);
+}
+
+/* SOFT UI */
+.card,
+.panel,
+.glass,
+.trip-card{
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:
+    0 10px 32px rgba(30,18,10,.10),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+/* PREMIUM SPACING */
+section{
+  scroll-margin-top:24px;
+}
+
+@media (max-width:390px){
+  .hero-copy h1{
+    letter-spacing:-1.2px !important;
+  }
+}
