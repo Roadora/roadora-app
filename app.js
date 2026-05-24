@@ -53,3 +53,31 @@ renderTripState();
 openScreen('overview');
 window.RoadoraState = RoadoraState;
 window.RoadoraRouter = { open: openScreen };
+
+
+// ROADORA HAMBURGER MENU
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('sideMenu');
+  const closeBtn = document.getElementById('menuClose');
+
+  if(toggle && menu){
+    toggle.addEventListener('click', () => {
+      menu.classList.add('open');
+    });
+  }
+
+  if(closeBtn && menu){
+    closeBtn.addEventListener('click', () => {
+      menu.classList.remove('open');
+    });
+  }
+
+  if(menu){
+    menu.addEventListener('click', (e) => {
+      if(e.target === menu){
+        menu.classList.remove('open');
+      }
+    });
+  }
+});
