@@ -732,9 +732,12 @@ font-weight:500;
 }
 
 
-/* ROADORA TOPBAR HARD REMOVE */
-.topbar,
+/* ROADORA HERO TOP BUTTONS REMOVED - PROFILE SAFE */
 .hero-topbar,
-.circle-btn{
+.hero-topbar .circle-btn,
+.hero-topbar button,
+.hero-action,
+.hero-actions{
   display:none !important;
+  pointer-events:none !important;
 }
