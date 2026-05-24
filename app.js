@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'roadora_phase1_state_v42';
+const STORAGE_KEY = 'roadora_phase1_state_v44_clean';
 const DEMO_TRIP_ENABLED = false;
 
 const defaultState = {

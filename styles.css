@@ -421,7 +421,7 @@ font-weight:500;
 .hero-nav-integrated .app-nav button:nth-child(1)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(1)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(1)::before{
-  background-image: url("assets/images/nav/overview.png");
+  background-image: url("assets/hero-overview.png");
 }
 
 .hero-nav-integrated .bottom-nav a:nth-child(2)::before,
@@ -432,7 +432,7 @@ font-weight:500;
 .hero-nav-integrated .app-nav button:nth-child(2)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(2)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(2)::before{
-  background-image: url("assets/images/nav/map.png");
+  background-image: url("assets/hero-routes.png");
 }
 
 .hero-nav-integrated .bottom-nav a:nth-child(3)::before,
@@ -443,7 +443,7 @@ font-weight:500;
 .hero-nav-integrated .app-nav button:nth-child(3)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(3)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(3)::before{
-  background-image: url("assets/images/nav/roadtrip.png");
+  background-image: url("assets/hero-roadtrip.png");
 }
 
 .hero-nav-integrated .bottom-nav a:nth-child(4)::before,
@@ -454,7 +454,7 @@ font-weight:500;
 .hero-nav-integrated .app-nav button:nth-child(4)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(4)::before,
 .hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(4)::before{
-  background-image: url("assets/images/nav/profile.png");
+  background-image: url("assets/hero-profile.png");
 }
 
 .hero-nav-integrated .bottom-nav .active::before,
@@ -3200,13 +3200,13 @@ body.hero-nav-integrated .bottom-nav a::before{
   box-shadow: 0 6px 14px rgba(34,22,13,.20), inset 0 0 0 1px rgba(255,255,255,.38) !important;
 }
 body.hero-nav-integrated .bottom-nav button:nth-child(1)::before,
-body.hero-nav-integrated .bottom-nav a:nth-child(1)::before{ background-image: url("assets/images/nav/overview.png") !important; }
+body.hero-nav-integrated .bottom-nav a:nth-child(1)::before{ background-image: url("assets/hero-overview.png") !important; }
 body.hero-nav-integrated .bottom-nav button:nth-child(2)::before,
-body.hero-nav-integrated .bottom-nav a:nth-child(2)::before{ background-image: url("assets/images/nav/map.png") !important; }
+body.hero-nav-integrated .bottom-nav a:nth-child(2)::before{ background-image: url("assets/hero-routes.png") !important; }
 body.hero-nav-integrated .bottom-nav button:nth-child(3)::before,
-body.hero-nav-integrated .bottom-nav a:nth-child(3)::before{ background-image: url("assets/images/nav/roadtrip.png") !important; }
+body.hero-nav-integrated .bottom-nav a:nth-child(3)::before{ background-image: url("assets/hero-roadtrip.png") !important; }
 body.hero-nav-integrated .bottom-nav button:nth-child(4)::before,
-body.hero-nav-integrated .bottom-nav a:nth-child(4)::before{ background-image: url("assets/images/nav/profile.png") !important; }
+body.hero-nav-integrated .bottom-nav a:nth-child(4)::before{ background-image: url("assets/hero-profile.png") !important; }
 body.hero-nav-integrated .bottom-nav button.active::before,
 body.hero-nav-integrated .bottom-nav a.active::before{
   opacity: 1 !important;
@@ -3378,5 +3378,65 @@ body.hero-nav-integrated .bottom-nav a.active::before{
   .routeplan-main-cta,
   .luxury-main-cta{
     margin-bottom:72px !important;
+  }
+}
+
+/* ROADORA ROUTE CARD FLATTER v44
+   Maakt het vertrek/bestemming-blok platter en rustiger zonder de flow of structuur te breken. */
+.luxury-route-card{
+  border-radius:30px !important;
+  padding-top:2px !important;
+  padding-bottom:2px !important;
+}
+
+.luxury-route-row{
+  min-height:74px !important;
+  padding-top:6px !important;
+  padding-bottom:6px !important;
+}
+
+.luxury-divider{
+  height:22px !important;
+  margin-top:-2px !important;
+  margin-bottom:-2px !important;
+}
+
+.luxury-marker{
+  width:15px !important;
+  height:15px !important;
+}
+
+.luxury-marker::after{
+  inset:-7px !important;
+}
+
+.luxury-route-copy small{
+  margin-bottom:3px !important;
+}
+
+.route-input{
+  padding-bottom:6px !important;
+  font-size:22px !important;
+  line-height:1.02 !important;
+}
+
+@media (max-width:390px){
+  .luxury-route-card{
+    border-radius:28px !important;
+  }
+
+  .luxury-route-row{
+    min-height:70px !important;
+    padding-top:5px !important;
+    padding-bottom:5px !important;
+  }
+
+  .luxury-divider{
+    height:20px !important;
+  }
+
+  .route-input{
+    font-size:19px !important;
+    padding-bottom:5px !important;
   }
 }
