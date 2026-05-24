@@ -2789,3 +2789,46 @@ body{
     margin-bottom:138px !important;
   }
 }
+
+/* ROADORA PLAN CTA STOP FIX v34
+   Laat de scroll op het routeplan precies eindigen met de Plan route-knop
+   net boven de floating bottom navigation, zonder lange lege beige zone. */
+.routeplan-panel{
+  padding-bottom:184px !important;
+}
+
+.routeplan-main-cta,
+.luxury-main-cta{
+  margin-top:18px !important;
+  margin-bottom:20px !important;
+  position:relative !important;
+  z-index:3 !important;
+}
+
+/* Houd de native fade achter de navigatie, maar laat hem niet zo hoog over de content vallen. */
+.app::after{
+  height:158px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(239,226,210,0) 0%,
+      rgba(239,226,210,.52) 38%,
+      rgba(239,226,210,.95) 68%,
+      #cdbdad 100%
+    ) !important;
+}
+
+@media (max-width:390px){
+  .routeplan-panel{
+    padding-bottom:176px !important;
+  }
+
+  .routeplan-main-cta,
+  .luxury-main-cta{
+    margin-bottom:18px !important;
+  }
+
+  .app::after{
+    height:154px !important;
+  }
+}
