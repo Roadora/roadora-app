@@ -683,30 +683,40 @@ font-weight:500;
 }
 
 
-/* ROADORA TOP LOGO */
-.roadora-top-logo{
+/* ROADORA WORDMARK */
+.roadora-wordmark{
   position:absolute;
   top:18px;
   left:50%;
   transform:translateX(-50%);
   z-index:100;
-  width:170px;
-  display:flex;
-  justify-content:center;
+  text-align:center;
   pointer-events:none;
 }
 
-.roadora-top-logo img{
-  width:100%;
-  height:auto;
-  object-fit:contain;
-  opacity:.96;
-  filter:drop-shadow(0 6px 18px rgba(0,0,0,.18));
+.roadora-title{
+  font-size:28px;
+  letter-spacing:.42em;
+  color:#f2dfcb;
+  font-family:serif;
+  font-weight:500;
+  line-height:1;
+}
+
+.roadora-tagline{
+  margin-top:6px;
+  font-size:9px;
+  letter-spacing:.34em;
+  color:#caa57b;
+  font-weight:500;
 }
 
 @media (max-width:768px){
-  .roadora-top-logo{
-    width:145px;
-    top:16px;
+  .roadora-title{
+    font-size:22px;
+  }
+
+  .roadora-tagline{
+    font-size:8px;
   }
 }
