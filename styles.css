@@ -3287,3 +3287,96 @@ body.hero-nav-integrated .bottom-nav a.active::before{
     font-size:22px;
   }
 }
+
+/* ROADORA ROUTEPLAN SAFE CONTENT FIX v43
+   Fix: bestemmingstekst blijft binnen de kaart, voertuigknoppen blijven boven de bottom nav,
+   en de Plan route CTA krijgt opnieuw een echte safe stop-zone. */
+.screen-plan.routeplan-premium{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  padding-bottom:0 !important;
+}
+
+.luxury-route-copy{
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+
+.luxury-route-row{
+  grid-template-columns:28px minmax(0,1fr) !important;
+  gap:15px !important;
+}
+
+.route-input{
+  max-width:100% !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* Houd de voertuigselector compact en native: nooit meer onder de bottom nav in 2 rijen. */
+.luxury-vehicle-switch{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:6px !important;
+  padding:7px !important;
+}
+
+.luxury-vehicle-switch button{
+  min-width:0 !important;
+  min-height:50px !important;
+  padding:0 4px !important;
+  font-size:14px !important;
+  border-radius:17px !important;
+}
+
+.routeplan-panel{
+  padding-bottom:188px !important;
+}
+
+.routeplan-main-cta,
+.luxury-main-cta{
+  margin-top:18px !important;
+  margin-bottom:68px !important;
+}
+
+@media (max-width:390px){
+  .luxury-route-row{
+    grid-template-columns:24px minmax(0,1fr) !important;
+    gap:13px !important;
+    padding-left:20px !important;
+    padding-right:20px !important;
+  }
+
+  .route-input{
+    font-size:20px !important;
+    letter-spacing:-.045em !important;
+  }
+
+  .luxury-route-copy small{
+    font-size:9px !important;
+    letter-spacing:.18em !important;
+  }
+
+  .luxury-vehicle-switch{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:5px !important;
+    padding:6px !important;
+  }
+
+  .luxury-vehicle-switch button{
+    min-height:48px !important;
+    font-size:13px !important;
+    border-radius:16px !important;
+  }
+
+  .routeplan-panel{
+    padding-bottom:184px !important;
+  }
+
+  .routeplan-main-cta,
+  .luxury-main-cta{
+    margin-bottom:72px !important;
+  }
+}
