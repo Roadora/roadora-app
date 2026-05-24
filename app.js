@@ -81,3 +81,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+// ROADORA LANGUAGE MENU
+document.addEventListener('DOMContentLoaded', () => {
+  const langToggle = document.getElementById('languageToggle');
+  const langMenu = document.getElementById('languageMenu');
+
+  if(langToggle && langMenu){
+    langToggle.addEventListener('click', () => {
+      langMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if(!langMenu.contains(e.target) && !langToggle.contains(e.target)){
+        langMenu.classList.remove('open');
+      }
+    });
+  }
+});

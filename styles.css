@@ -20,473 +20,6 @@
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
 
-/* ===== Roadora hero tekst exact uit voorbeeld ===== */
-.hero-copy,
-.overview-copy,
-.home-hero-copy,
-.hero-copy-exact{
-  position:absolute;
-  left:23px;
-  right:18px;
-  top:16px;
-  z-index:8;
-  text-align:left;
-  max-width:430px;
-}
-
-.hero-title,
-.overview-copy h1,
-.home-hero-copy h1,
-.hero-copy-exact h1{
-  margin:0;
-  max-width:430px;
-  font-family:"Playfair Display", Georgia, "Times New Roman", serif;
-  font-size: clamp(28px, 7vw, 40px);
-  line-height:.90;
-  letter-spacing:-1.9px;
-  font-weight:750;
-  color:#171411;
-  text-shadow:none;
-}
-
-.hero-word-gold{
-  color:#b98238;
-}
-
-.hero-subtitle,
-.overview-copy p,
-.home-hero-copy p,
-.hero-copy-exact p{
-  margin:20px 0 0 0;
-  max-width:335px;
-  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size:16px;
-  line-height:1.45;
-  font-weight:400;
-  letter-spacing:-.2px;
-  color:#1f1b17;
-  text-shadow:none;
-}
-
-@media (max-width:390px){
-  .hero-copy,
-  .overview-copy,
-  .home-hero-copy,
-  .hero-copy-exact{
-    left:20px;
-    top:14px;
-  }
-
-  .hero-title,
-  .overview-copy h1,
-  .home-hero-copy h1,
-  .hero-copy-exact h1{
-    font-size:43px;
-  }
-
-  .hero-subtitle,
-  .overview-copy p,
-  .home-hero-copy p,
-  .hero-copy-exact p{
-    font-size:15px;
-    margin-top:18px;
-  }
-}
-
-
-/* ROADORA OVERZICHT HERO — EDITORIAL TYPOGRAPHY */
-
-.overview-hero-copy{
-  position:absolute;
-  top:78px;
-  left:22px;
-  right:22px;
-  z-index:8;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-}
-
-.overview-hero-title{
-  margin:0;
-
-  font-family:'Playfair Display', serif;
-  font-size:clamp(2.35rem, 6.1vw, 3.35rem);
-  line-height:0.92;
-  letter-spacing:-0.055em;
-  font-weight:700;
-
-  color:#121212;
-
-  max-width:300px;
-
-  text-shadow:
-    0 2px 10px rgba(255,255,255,0.08);
-}
-
-.overview-hero-title .accent{
-  color:#b88a52;
-}
-
-.overview-hero-sub{
-  margin-top:14px;
-
-  font-family:'Inter', sans-serif;
-  font-size:.94rem;
-  line-height:1.42;
-  font-weight:400;
-
-  color:rgba(20,20,20,0.88);
-
-  max-width:210px;
-}
-
-
-
-.overview-hero-copy{
-  position:absolute;
-  top:18px;
-  left:18px;
-  right:18px;
-  z-index:10;
-}
-
-.overview-hero-title{
-  margin:0;
-
-  font-family:'Playfair Display', serif;
-  font-size:clamp(2.95rem, 7vw, 4rem);
-  line-height:.90;
-  letter-spacing:-0.055em;
-  font-weight:700;
-
-  color:#111;
-
-  max-width:345px;
-}
-
-.overview-hero-title .accent{
-  color:#bc8d55;
-}
-
-.overview-hero-sub{
-  margin-top:14px;
-
-  font-family:'Inter', sans-serif;
-  font-size:1rem;
-  line-height:1.42;
-  font-weight:400;
-
-  color:rgba(20,20,20,.82);
-
-  max-width:315px;
-}
-
-.hero-copy{
-position:absolute;
-left:22px;
-right:22px;
-top:120px;
-z-index:5;
-color:#2d2117;
-}
-.hero-copy h1{
-margin:0;
-font-family:Georgia,serif;
-font-weight:700;
-font-size:52px;
-line-height:.95;
-letter-spacing:-1.8px;
-max-width:340px;
-}
-.hero-copy h1 span{
-display:inline;
-font-size:.78em;
-font-weight:600;
-}
-.hero-copy h1 strong{
-display:inline;
-color:#b7863f;
-font-weight:700;
-}
-.hero-copy p{
-margin-top:18px;
-max-width:300px;
-font-size:15px;
-line-height:1.5;
-color:rgba(35,25,18,.82);
-font-weight:500;
-}
-
-/* === Roadora hero overview text exact v1 === */
-.hero-copy{
-  position:absolute;
-  left:20px;
-  top:112px;
-  z-index:5;
-  width:calc(100% - 40px);
-  max-width:380px;
-  text-align:left;
-  pointer-events:none;
-}
-
-.hero-copy h1{
-  margin:0;
-  font-family:"Playfair Display", Georgia, serif;
-  font-size:clamp(31px, 8.6vw, 43px);
-  line-height:.91;
-  letter-spacing:-1.35px;
-  font-weight:800;
-  color:#120f0b;
-  text-shadow:0 1px 10px rgba(255,255,255,.18);
-}
-
-.hero-copy h1 span{
-  color:#b17a36;
-}
-
-.hero-copy p{
-  margin:18px 0 0;
-  max-width:330px;
-  font-family:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size:15.5px;
-  line-height:1.35;
-  font-weight:500;
-  letter-spacing:-.25px;
-  color:#201b16;
-  text-shadow:0 1px 10px rgba(255,255,255,.22);
-}
-
-/* Keep the editorial text readable on very small phones */
-@media (max-width:380px){
-  .hero-copy{
-    left:18px;
-    top:106px;
-    width:calc(100% - 36px);
-  }
-  .hero-copy h1{
-    font-size:34px;
-    letter-spacing:-1.25px;
-  }
-  .hero-copy p{
-    font-size:14.5px;
-    margin-top:16px;
-  }
-}
-
-/* === Roadora bottom nav integrated in hero v1 === */
-.hero-nav-integrated .bottom-nav,
-.hero-nav-integrated .tabbar,
-.hero-nav-integrated .app-nav,
-.hero-nav-integrated nav[aria-label="Bottom navigation"],
-.hero-nav-integrated nav.bottom-navigation{
-  position: fixed;
-  left: max(14px, env(safe-area-inset-left));
-  right: max(14px, env(safe-area-inset-right));
-  bottom: calc(12px + env(safe-area-inset-bottom));
-  z-index: 80;
-  height: 74px;
-  padding: 7px 9px;
-  border-radius: 25px;
-  background: linear-gradient(180deg, rgba(255,250,242,.92), rgba(248,238,224,.84));
-  border: 1px solid rgba(255,255,255,.58);
-  box-shadow:
-    0 18px 48px rgba(28,18,10,.22),
-    0 2px 10px rgba(255,255,255,.20) inset;
-  backdrop-filter: blur(22px) saturate(1.12);
-  -webkit-backdrop-filter: blur(22px) saturate(1.12);
-}
-
-/* Soft lower hero vignette so the floating nav feels part of the image */
-.hero-nav-integrated [data-screen="overview"]::after,
-.hero-nav-integrated .screen-overview::after,
-.hero-nav-integrated .overview-screen::after{
-  content:"";
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  height:230px;
-  pointer-events:none;
-  z-index:20;
-  background:linear-gradient(
-    to top,
-    rgba(61,41,24,.50) 0%,
-    rgba(117,82,49,.22) 42%,
-    rgba(117,82,49,.00) 100%
-  );
-}
-
-/* Keep CTA above the nav with enough cinematic breathing room */
-.hero-nav-integrated .hero-cta,
-.hero-nav-integrated .primary-cta,
-.hero-nav-integrated .cta-main,
-.hero-nav-integrated [data-action="plan-trip"],
-.hero-nav-integrated [data-action="new-trip"]{
-  margin-bottom: 104px;
-}
-
-/* Native active tab: soft warm capsule instead of a hard block */
-.hero-nav-integrated .bottom-nav .active,
-.hero-nav-integrated .tabbar .active,
-.hero-nav-integrated .app-nav .active,
-.hero-nav-integrated .bottom-nav [aria-current="page"],
-.hero-nav-integrated .tabbar [aria-current="page"],
-.hero-nav-integrated .app-nav [aria-current="page"]{
-  background: rgba(169,111,50,.12);
-  color:#9b5c18;
-  border-radius: 19px;
-  box-shadow: inset 0 -2px 0 rgba(155,92,24,.65);
-}
-
-/* Make inactive nav items softer and calmer */
-.hero-nav-integrated .bottom-nav a,
-.hero-nav-integrated .bottom-nav button,
-.hero-nav-integrated .tabbar a,
-.hero-nav-integrated .tabbar button,
-.hero-nav-integrated .app-nav a,
-.hero-nav-integrated .app-nav button{
-  min-height: 58px;
-  border-radius: 18px;
-  color: rgba(49,43,37,.68);
-  transition: transform .18s ease, background .18s ease, color .18s ease;
-}
-
-.hero-nav-integrated .bottom-nav a:active,
-.hero-nav-integrated .bottom-nav button:active,
-.hero-nav-integrated .tabbar a:active,
-.hero-nav-integrated .tabbar button:active,
-.hero-nav-integrated .app-nav a:active,
-.hero-nav-integrated .app-nav button:active{
-  transform: scale(.96);
-}
-
-@media (min-width: 520px){
-  .hero-nav-integrated .bottom-nav,
-  .hero-nav-integrated .tabbar,
-  .hero-nav-integrated .app-nav,
-  .hero-nav-integrated nav[aria-label="Bottom navigation"],
-  .hero-nav-integrated nav.bottom-navigation{
-    left: 50%;
-    right: auto;
-    width: min(430px, calc(100% - 28px));
-    transform: translateX(-50%);
-  }
-}
-
-/* === Roadora bottom nav image hardfix v2 === */
-.hero-nav-integrated .bottom-nav a,
-.hero-nav-integrated .bottom-nav button,
-.hero-nav-integrated .tabbar a,
-.hero-nav-integrated .tabbar button,
-.hero-nav-integrated .app-nav a,
-.hero-nav-integrated .app-nav button,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button{
-  position: relative;
-  padding-top: 34px !important;
-  min-height: 62px !important;
-  overflow: visible;
-}
-
-.hero-nav-integrated .bottom-nav a::before,
-.hero-nav-integrated .bottom-nav button::before,
-.hero-nav-integrated .tabbar a::before,
-.hero-nav-integrated .tabbar button::before,
-.hero-nav-integrated .app-nav a::before,
-.hero-nav-integrated .app-nav button::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button::before{
-  content: "";
-  position: absolute;
-  top: 5px;
-  left: 50%;
-  width: 30px;
-  height: 30px;
-  transform: translateX(-50%);
-  border-radius: 12px;
-  background-size: cover;
-  background-position: center;
-  opacity: .88;
-  box-shadow:
-    0 5px 12px rgba(34,22,13,.18),
-    inset 0 0 0 1px rgba(255,255,255,.34);
-}
-
-.hero-nav-integrated .bottom-nav a:nth-child(1)::before,
-.hero-nav-integrated .bottom-nav button:nth-child(1)::before,
-.hero-nav-integrated .tabbar a:nth-child(1)::before,
-.hero-nav-integrated .tabbar button:nth-child(1)::before,
-.hero-nav-integrated .app-nav a:nth-child(1)::before,
-.hero-nav-integrated .app-nav button:nth-child(1)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(1)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(1)::before{
-  background-image: url("assets/images/nav/overview.png");
-}
-
-.hero-nav-integrated .bottom-nav a:nth-child(2)::before,
-.hero-nav-integrated .bottom-nav button:nth-child(2)::before,
-.hero-nav-integrated .tabbar a:nth-child(2)::before,
-.hero-nav-integrated .tabbar button:nth-child(2)::before,
-.hero-nav-integrated .app-nav a:nth-child(2)::before,
-.hero-nav-integrated .app-nav button:nth-child(2)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(2)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(2)::before{
-  background-image: url("assets/images/nav/map.png");
-}
-
-.hero-nav-integrated .bottom-nav a:nth-child(3)::before,
-.hero-nav-integrated .bottom-nav button:nth-child(3)::before,
-.hero-nav-integrated .tabbar a:nth-child(3)::before,
-.hero-nav-integrated .tabbar button:nth-child(3)::before,
-.hero-nav-integrated .app-nav a:nth-child(3)::before,
-.hero-nav-integrated .app-nav button:nth-child(3)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(3)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(3)::before{
-  background-image: url("assets/images/nav/roadtrip.png");
-}
-
-.hero-nav-integrated .bottom-nav a:nth-child(4)::before,
-.hero-nav-integrated .bottom-nav button:nth-child(4)::before,
-.hero-nav-integrated .tabbar a:nth-child(4)::before,
-.hero-nav-integrated .tabbar button:nth-child(4)::before,
-.hero-nav-integrated .app-nav a:nth-child(4)::before,
-.hero-nav-integrated .app-nav button:nth-child(4)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] a:nth-child(4)::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] button:nth-child(4)::before{
-  background-image: url("assets/images/nav/profile.png");
-}
-
-.hero-nav-integrated .bottom-nav .active::before,
-.hero-nav-integrated .bottom-nav [aria-current="page"]::before,
-.hero-nav-integrated .tabbar .active::before,
-.hero-nav-integrated .tabbar [aria-current="page"]::before,
-.hero-nav-integrated .app-nav .active::before,
-.hero-nav-integrated .app-nav [aria-current="page"]::before,
-.hero-nav-integrated nav[aria-label="Bottom navigation"] [aria-current="page"]::before{
-  opacity: 1;
-  transform: translateX(-50%) translateY(-1px) scale(1.06);
-  box-shadow:
-    0 7px 16px rgba(155,92,24,.28),
-    inset 0 0 0 1px rgba(255,255,255,.52);
-}
-
-@media(max-width:390px){
-  .hero-nav-integrated .bottom-nav a::before,
-  .hero-nav-integrated .bottom-nav button::before,
-  .hero-nav-integrated .tabbar a::before,
-  .hero-nav-integrated .tabbar button::before,
-  .hero-nav-integrated .app-nav a::before,
-  .hero-nav-integrated .app-nav button::before,
-  .hero-nav-integrated nav[aria-label="Bottom navigation"] a::before,
-  .hero-nav-integrated nav[aria-label="Bottom navigation"] button::before{
-    width: 28px;
-    height: 28px;
-    border-radius: 11px;
-  }
-}
-
-/* === Roadora bottom nav photos only v3 === */
 
 /* Hide old SVG/icon symbols in bottom navigation so only mini photos + labels remain */
 .hero-nav-integrated .bottom-nav svg,
@@ -826,3 +359,63 @@ font-weight:500;
   background:rgba(255,255,255,.28);
 }
 
+
+
+/* ROADORA LANGUAGE MENU */
+.language-toggle{
+  position:absolute;
+  top:22px;
+  right:22px;
+  width:52px;
+  height:52px;
+  border:none;
+  border-radius:18px;
+  background:rgba(28,24,20,.22);
+  backdrop-filter:blur(14px);
+  color:#f0dcc8;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.08em;
+  z-index:300;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
+}
+
+.language-menu{
+  position:absolute;
+  top:84px;
+  right:22px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  border-radius:22px;
+  background:rgba(26,22,18,.78);
+  backdrop-filter:blur(20px);
+  z-index:400;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-8px);
+  transition:.25s ease;
+}
+
+.language-menu.open{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+.language-option{
+  border:none;
+  min-width:56px;
+  height:42px;
+  border-radius:14px;
+  background:rgba(255,255,255,.08);
+  color:#ead7c2;
+  font-size:13px;
+  font-weight:600;
+}
+
+.language-option.active{
+  background:#d7c0a3;
+  color:#2f241b;
+}
