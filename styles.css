@@ -2240,162 +2240,102 @@ body{
 }
 
 
-/* ROADORA HERO + CONTENT RECOMPOSE v32
-   Nieuwe compositie:
-   - routepagina gebruikt één doorlopende achtergrond
-   - hero en beige vlak zijn geen losse lagen meer
-   - content zweeft over dezelfde achtergrond
-   - geen harde lijn/fade-band tussen foto en beige
+/* ROADORA SCROLL-SAFE HERO BLEND v28
+   Terug naar stabiele v27 structuur.
+   Scroll blijft intact.
+   Alleen de harde overgang wordt subtiel zachter gemaakt.
 */
 
+/* Geen full-page overlays, geen isolation, geen fixed compositie */
 .routeplan-premium{
-  position:relative !important;
-  isolation:isolate;
-  min-height:100dvh;
-  overflow:hidden;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
   background:#f1e7db !important;
 }
 
-/* Eén full-page achtergrondbeeld als compositie-basis */
-.routeplan-premium::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background-image:url("assets/hero-routeplan.png");
-  background-size:cover;
-  background-position:center top;
-  filter:saturate(.94) contrast(.96) brightness(1.02);
+/* Hero blijft scherp en normaal in document-flow */
+.routeplan-hero{
+  position:relative !important;
+  overflow:hidden !important;
 }
 
-/* Beige grading over de hele pagina, niet alleen op de overgang */
-.routeplan-premium::after{
+/* Alleen een gecontroleerde warme fade onderin de hero */
+.routeplan-hero::after{
   content:"";
   position:absolute;
-  inset:0;
-  z-index:1;
+  left:0;
+  right:0;
+  bottom:0;
+  height:110px;
+  z-index:2;
   pointer-events:none;
   background:
     linear-gradient(
       180deg,
-      rgba(10,8,6,.06) 0%,
-      rgba(10,8,6,.10) 28%,
-      rgba(186,160,130,.22) 42%,
-      rgba(241,231,219,.72) 56%,
-      rgba(241,231,219,.96) 72%,
-      #efe2d2 100%
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,.10) 35%,
+      rgba(241,231,219,.34) 68%,
+      #f1e7db 100%
     );
 }
 
-/* De originele hero wordt alleen nog een tekstlaag */
-.routeplan-hero{
-  position:relative !important;
-  z-index:3 !important;
-  height:39vh !important;
-  min-height:300px !important;
-  max-height:370px !important;
-  overflow:visible !important;
-  background:transparent !important;
-}
-
-.routeplan-hero img,
-.routeplan-shade{
-  display:none !important;
-}
-
+/* Hero tekst blijft boven de fade */
 .routeplan-title{
   z-index:4 !important;
-  bottom:52px !important;
 }
 
-/* Content ligt nu over dezelfde compositie heen */
+/* Beige laag komt subtiel omhoog, maar blijft normale scroll-content */
 .routeplan-panel{
   position:relative !important;
-  z-index:4 !important;
-  margin-top:-54px !important;
-  padding-top:68px !important;
-  background:transparent !important;
-  border-radius:0 !important;
+  z-index:3 !important;
+  margin-top:-30px !important;
+  padding-top:44px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.96) 0%,
+      #f1e7db 26%,
+      #efe2d2 100%
+    ) !important;
+  border-top-left-radius:36px !important;
+  border-top-right-radius:36px !important;
   box-shadow:none !important;
+  overflow:visible !important;
 }
 
-/* Zachte beige wash achter de content, zonder horizontale startlijn */
+/* Kleine warmte achter eerste blok, niet over de hele pagina */
 .routeplan-panel::before{
   content:"";
   position:absolute;
   left:0;
   right:0;
-  top:-120px;
-  bottom:-180px;
+  top:-18px;
+  height:220px;
   z-index:-1;
   pointer-events:none;
   background:
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(255,242,222,.34) 0%,
-      rgba(241,231,219,.74) 38%,
-      rgba(239,226,210,.96) 72%,
-      #efe2d2 100%
+      rgba(255,239,218,.18) 0%,
+      rgba(255,239,218,.08) 46%,
+      transparent 76%
     );
 }
 
-/* Inputkaart en voertuigblok blijven scherp en premium */
-.luxury-route-card{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.76),
-      rgba(255,255,255,.62)
-    ) !important;
-  border:1px solid rgba(255,255,255,.34) !important;
-  box-shadow:
-    0 14px 32px rgba(53,35,17,.055),
-    inset 0 1px 0 rgba(255,255,255,.32) !important;
-}
-
+/* Content blijft scherp */
+.luxury-route-card,
 .luxury-vehicle-switch{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.70),
-      rgba(255,255,255,.56)
-    ) !important;
-  border:1px solid rgba(255,255,255,.30) !important;
-  box-shadow:
-    0 10px 24px rgba(53,35,17,.045),
-    inset 0 1px 0 rgba(255,255,255,.26) !important;
+  backdrop-filter:none !important;
 }
 
-.luxury-main-cta{
-  box-shadow:
-    0 14px 30px rgba(126,73,23,.16),
-    inset 0 1px 0 rgba(255,255,255,.14) !important;
-}
-
-/* Bottom nav blijft boven de compositie */
-.bottom-nav{
-  z-index:30 !important;
-}
-
-/* andere schermen niet beïnvloeden */
-.screen:not(.routeplan-premium)::before,
-.screen:not(.routeplan-premium)::after{
-  pointer-events:none;
-}
-
+/* Small phones */
 @media (max-width:390px){
-  .routeplan-hero{
-    min-height:285px !important;
-    height:38vh !important;
-  }
-
-  .routeplan-title{
-    bottom:42px !important;
+  .routeplan-hero::after{
+    height:96px;
   }
 
   .routeplan-panel{
-    margin-top:-48px !important;
-    padding-top:62px !important;
+    margin-top:-26px !important;
+    padding-top:40px !important;
   }
 }
