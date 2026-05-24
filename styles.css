@@ -681,3 +681,32 @@ font-weight:500;
 .hero-cta::after{
   display:none !important;
 }
+
+
+/* ROADORA TOP LOGO */
+.roadora-top-logo{
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:100;
+  width:170px;
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
+}
+
+.roadora-top-logo img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  opacity:.96;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,.18));
+}
+
+@media (max-width:768px){
+  .roadora-top-logo{
+    width:145px;
+    top:16px;
+  }
+}
