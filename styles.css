@@ -3093,3 +3093,82 @@ body[data-active-screen="diary"] .hero-menu-btn{
     height:40px !important;
   }
 }
+
+/* ===== Roadora v39 — hamburger volledig in hero, geen glass blur ===== */
+body.hero-nav-integrated .hero-menu-btn,
+body[data-active-screen="map"] .hero-menu-btn,
+body[data-active-screen="hotels"] .hero-menu-btn,
+body[data-active-screen="routes"] .hero-menu-btn,
+body[data-active-screen="diary"] .hero-menu-btn{
+  position:fixed !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:24px !important;
+  width:34px !important;
+  height:34px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  filter:none !important;
+  opacity:1 !important;
+  z-index:1600 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:5px !important;
+  pointer-events:auto !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn::before,
+body.hero-nav-integrated .hero-menu-btn::after{
+  content:none !important;
+  display:none !important;
+  background:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn span{
+  display:block !important;
+  width:22px !important;
+  height:2px !important;
+  border-radius:999px !important;
+  background:rgba(255,252,246,.98) !important;
+  box-shadow:
+    0 1px 2px rgba(38,25,15,.55),
+    0 4px 14px rgba(38,25,15,.32) !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn span:nth-child(2){
+  width:22px !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn:active{
+  transform:scale(.94) !important;
+}
+
+body[data-active-screen="map"] .map-top{
+  padding-left:50px !important;
+}
+
+body[data-active-screen="map"] .map-search{
+  margin-left:0 !important;
+}
+
+@media (max-width:380px){
+  body.hero-nav-integrated .hero-menu-btn,
+  body[data-active-screen="map"] .hero-menu-btn,
+  body[data-active-screen="hotels"] .hero-menu-btn,
+  body[data-active-screen="routes"] .hero-menu-btn,
+  body[data-active-screen="diary"] .hero-menu-btn{
+    left:22px !important;
+    top:calc(21px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
