@@ -2567,3 +2567,156 @@ body{
     padding-top:174px !important;
   }
 }
+
+/* ROADORA SEAMLESS BLEND v32
+   Fix: geen zichtbare hero/content-knip meer.
+   De beige overgang wordt al volledig binnen de overlappende hero-zone opgebouwd,
+   zodat de onderrand van de foto nooit als harde horizontale lijn zichtbaar wordt.
+*/
+.routeplan-premium{
+  background:#f1e7db !important;
+  overflow-y:auto !important;
+  padding-bottom:190px !important;
+  overscroll-behavior:contain;
+}
+
+.routeplan-hero{
+  height:42vh !important;
+  min-height:338px !important;
+  max-height:402px !important;
+  margin-bottom:-222px !important;
+  overflow:hidden !important;
+  background:#f1e7db !important;
+}
+
+.routeplan-hero img{
+  transform:scale(1.012) !important;
+}
+
+.routeplan-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12,9,7,.035) 0%,
+      rgba(12,9,7,.06) 50%,
+      rgba(12,9,7,.14) 82%,
+      rgba(12,9,7,.20) 100%
+    ) !important;
+}
+
+.routeplan-hero::after{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:236px !important;
+  z-index:2 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,0) 42%,
+      rgba(241,231,219,.10) 60%,
+      rgba(241,231,219,.30) 74%,
+      rgba(241,231,219,.58) 86%,
+      rgba(241,231,219,.82) 94%,
+      #f1e7db 100%
+    ) !important;
+}
+
+.routeplan-title{
+  bottom:112px !important;
+  z-index:3 !important;
+}
+
+.routeplan-panel{
+  margin-top:0 !important;
+  padding-top:248px !important;
+  padding-bottom:230px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0px,
+      rgba(241,231,219,.06) 58px,
+      rgba(241,231,219,.22) 112px,
+      rgba(241,231,219,.52) 164px,
+      rgba(241,231,219,.84) 206px,
+      #f1e7db 232px,
+      #efe2d2 100%
+    ) !important;
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+}
+
+.routeplan-panel::before{
+  top:76px !important;
+  height:190px !important;
+  opacity:.55 !important;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(255,246,233,.22) 0%,
+      rgba(244,232,216,.16) 48%,
+      rgba(241,231,219,0) 82%
+    ) !important;
+  filter:blur(28px) !important;
+}
+
+/* ROADORA NATIVE BOTTOM SAFE LAYER v1
+   Voorkomt dat scroll-content zichtbaar onder de floating bottom nav doorloopt. */
+.app::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:154px;
+  z-index:18;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(239,226,210,0) 0%,
+      rgba(239,226,210,.72) 36%,
+      rgba(239,226,210,.96) 70%,
+      #cdbdad 100%
+    );
+}
+
+.bottom-nav{
+  z-index:22 !important;
+  bottom:calc(18px + env(safe-area-inset-bottom)) !important;
+}
+
+.routeplan-main-cta,
+.luxury-main-cta{
+  margin-bottom:36px !important;
+}
+
+@media (max-width:390px){
+  .routeplan-hero{
+    height:41vh !important;
+    min-height:326px !important;
+    margin-bottom:-208px !important;
+  }
+
+  .routeplan-hero::after{
+    height:220px !important;
+  }
+
+  .routeplan-title{
+    bottom:102px !important;
+  }
+
+  .routeplan-panel{
+    padding-top:232px !important;
+    padding-bottom:220px !important;
+  }
+
+  .app::after{
+    height:148px;
+  }
+}
