@@ -96,21 +96,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
-
-// ROADORA ROUTE FLOW OPEN
-document.addEventListener('DOMContentLoaded', () => {
-  const routeCta = document.querySelector('.hero-cta');
-  const planScreen = document.querySelector('[data-screen="plan"]');
-
-  if(routeCta && planScreen){
-    routeCta.addEventListener('click', () => {
-      document.querySelectorAll('.screen').forEach((screen) => {
-        screen.style.display = 'none';
-      });
-
-      planScreen.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-});
