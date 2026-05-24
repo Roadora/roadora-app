@@ -2045,3 +2045,115 @@ body{
     grid-template-columns:1fr 1fr;
   }
 }
+
+
+/* ROADORA CLEAN LUXURY FLOW v26 */
+.routeplan-hero{
+  height:38vh !important;
+  min-height:300px !important;
+  max-height:360px !important;
+}
+
+.routeplan-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12,9,7,.04) 0%,
+      rgba(12,9,7,.16) 55%,
+      rgba(12,9,7,.46) 100%
+    ) !important;
+}
+
+.routeplan-title{
+  bottom:30px !important;
+}
+
+.routeplan-title small{
+  margin-bottom:10px !important;
+  color:#efd6b8 !important;
+  font-size:10px !important;
+  letter-spacing:.26em !important;
+}
+
+.routeplan-title h1{
+  max-width:320px !important;
+  font-size:44px !important;
+  line-height:.94 !important;
+}
+
+.routeplan-title p{
+  display:none !important;
+}
+
+/* calmer beige layer */
+.routeplan-luxury{
+  gap:22px !important;
+  padding-top:22px !important;
+}
+
+/* route card feels more integrated */
+.luxury-route-card{
+  border-radius:34px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,253,250,.78),
+      rgba(255,252,248,.52)
+    ) !important;
+
+  box-shadow:
+    0 10px 28px rgba(53,35,17,.05),
+    inset 0 1px 0 rgba(255,255,255,.52) !important;
+}
+
+.luxury-route-row{
+  min-height:98px !important;
+}
+
+.luxury-route-copy strong{
+  font-size:26px !important;
+  font-weight:700 !important;
+}
+
+/* softer vehicle section */
+.luxury-vehicle-section{
+  padding-top:2px !important;
+}
+
+.luxury-vehicle-switch{
+  background:rgba(255,252,248,.42) !important;
+  box-shadow:
+    0 8px 22px rgba(53,35,17,.04),
+    inset 0 1px 0 rgba(255,255,255,.42) !important;
+}
+
+.luxury-vehicle-switch button{
+  min-height:50px !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+}
+
+.luxury-vehicle-switch button.active{
+  background:#2a1f18 !important;
+}
+
+/* calmer CTA */
+.luxury-main-cta{
+  min-height:66px !important;
+  border-radius:28px !important;
+  background:
+    linear-gradient(135deg,#946030,#7a4a1e) !important;
+
+  box-shadow:
+    0 12px 26px rgba(126,73,23,.14) !important;
+}
+
+@media (max-width:390px){
+  .routeplan-title h1{
+    font-size:38px !important;
+  }
+
+  .luxury-route-copy strong{
+    font-size:22px !important;
+  }
+}
