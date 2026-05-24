@@ -715,3 +715,18 @@ font-weight:500;
 
 
 
+
+
+/* ROADORA TOP BUTTONS REMOVED */
+.menu-toggle,
+.language-toggle,
+.side-menu,
+.language-menu,
+.top-action,
+.top-btn,
+.profile-button,
+.account-button,
+.floating-action{
+  display:none !important;
+  pointer-events:none !important;
+}
