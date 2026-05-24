@@ -1312,3 +1312,243 @@ body{
     padding:12px 16px !important;
   }
 }
+
+
+/* ROADORA ROUTEPLAN PREMIUM POLISH v22 */
+.routeplan-premium{
+  background:#f1e7db !important;
+  min-height:100dvh;
+  padding-bottom:132px;
+  overflow-y:auto;
+}
+
+.routeplan-hero{
+  position:relative;
+  height:43vh;
+  min-height:340px;
+  max-height:430px;
+  overflow:hidden;
+}
+
+.routeplan-hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scale(1.01);
+}
+
+.routeplan-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(12,9,7,.06) 0%, rgba(12,9,7,.22) 48%, rgba(12,9,7,.58) 100%),
+    radial-gradient(circle at 20% 18%, rgba(255,223,177,.24), transparent 35%);
+}
+
+.routeplan-title{
+  position:absolute;
+  left:30px;
+  right:28px;
+  bottom:36px;
+  z-index:2;
+  color:#fff7ed;
+}
+
+.routeplan-title small{
+  display:block;
+  margin-bottom:12px;
+  color:#f2d5b1;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.28em;
+}
+
+.routeplan-title h1{
+  margin:0;
+  max-width:360px;
+  font-family:"Playfair Display", serif;
+  font-size:50px;
+  line-height:.94;
+  letter-spacing:-.045em;
+}
+
+.routeplan-title p{
+  margin:14px 0 0;
+  max-width:330px;
+  color:rgba(255,247,237,.92);
+  font-size:15px;
+  line-height:1.42;
+}
+
+.routeplan-panel{
+  position:relative;
+  z-index:4;
+  margin-top:-22px;
+  padding:26px 22px 150px;
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%);
+  border-top-left-radius:34px;
+  border-top-right-radius:34px;
+  box-shadow:0 -20px 46px rgba(58,39,22,.12);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.routeplan-progress{
+  display:flex;
+  gap:7px;
+  margin:0 0 6px 3px;
+}
+
+.routeplan-progress span{
+  width:26px;
+  height:4px;
+  border-radius:99px;
+  background:rgba(97,69,42,.18);
+}
+
+.routeplan-progress span.is-active{
+  width:44px;
+  background:#a96520;
+}
+
+.routeplan-row{
+  width:100%;
+  min-height:94px;
+  border:1px solid rgba(96,68,42,.08);
+  border-radius:28px;
+  background:rgba(255,255,255,.50);
+  box-shadow:0 14px 34px rgba(70,48,28,.07);
+  padding:16px 18px;
+  display:grid;
+  grid-template-columns:54px 1fr 20px;
+  align-items:center;
+  gap:15px;
+  text-align:left;
+  font-family:inherit;
+  color:#241b15;
+}
+
+.routeplan-icon{
+  width:50px;
+  height:50px;
+  border-radius:18px;
+  background:#dcc5a8;
+  color:#9a6226;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
+}
+
+.routeplan-text small{
+  display:block;
+  margin-bottom:4px;
+  color:#a77d4e;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.16em;
+}
+
+.routeplan-text strong{
+  display:block;
+  color:#241b15;
+  font-size:21px;
+  line-height:1.08;
+}
+
+.routeplan-text em{
+  display:block;
+  margin-top:4px;
+  color:rgba(47,36,27,.58);
+  font-style:normal;
+  font-size:14px;
+  line-height:1.3;
+}
+
+.routeplan-row b{
+  color:#9a744c;
+  font-size:28px;
+  line-height:1;
+}
+
+.routeplan-options{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:4px 0 6px;
+  scrollbar-width:none;
+}
+
+.routeplan-options::-webkit-scrollbar{
+  display:none;
+}
+
+.routeplan-options button{
+  flex:0 0 auto;
+  border:0;
+  border-radius:999px;
+  padding:12px 16px;
+  background:rgba(255,255,255,.42);
+  color:#5a4430;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 10px 24px rgba(70,48,28,.05);
+}
+
+.routeplan-options button.selected{
+  background:#a96520;
+  color:#fff7ed;
+}
+
+.routeplan-main-cta{
+  width:100%;
+  min-height:66px;
+  border:0;
+  border-radius:26px;
+  margin-top:4px;
+  background:#a96520;
+  color:#fff7ed;
+  font-size:18px;
+  font-weight:900;
+  box-shadow:0 18px 42px rgba(125,73,17,.23);
+}
+
+@media (max-width:380px){
+  .routeplan-hero{
+    min-height:315px;
+  }
+
+  .routeplan-title{
+    left:24px;
+    right:24px;
+    bottom:32px;
+  }
+
+  .routeplan-title h1{
+    font-size:42px;
+  }
+
+  .routeplan-panel{
+    padding-left:18px;
+    padding-right:18px;
+  }
+
+  .routeplan-row{
+    min-height:88px;
+    grid-template-columns:48px 1fr 18px;
+    padding:15px 16px;
+    gap:13px;
+  }
+
+  .routeplan-icon{
+    width:46px;
+    height:46px;
+  }
+
+  .routeplan-text strong{
+    font-size:19px;
+  }
+}

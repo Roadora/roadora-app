@@ -130,21 +130,67 @@
     </div>
   </section>
 
-  <section class="screen screen-plan" data-screen="plan">
-    <header class="screen-head photo-head functional">
-      <img src="assets/hero-routeplan.png" alt="Route plannen" />
-      <div class="shade soft"></div>
-      <div class="inner-top"><span>Nieuwe roadtrip</span><button class="circle-btn light">×</button></div>
-      <div class="head-copy"><small>ROUTEPLAN</small><h1>Waar gaat de reis naartoe?</h1><p>Plan je avontuur in een paar rustige stappen.</p></div>
-    </header>
-    <div class="content input-list">
-      <button><b>⌖</b><span><strong>Vertrekpunt</strong><small>Kies je vertrekpunt</small></span><i>›</i></button>
-      <button><b>⚑</b><span><strong>Bestemming</strong><small>Kies je bestemming</small></span><i>›</i></button>
-      <button><b>▣</b><span><strong>Voertuig</strong><small>Kies je voertuig</small></span><i>›</i></button>
-      <button><b>◌</b><span><strong>Reisvoorkeuren</strong><small>Snelste route</small></span><i>›</i></button>
-      <button class="primary wide" data-action="demo-trip">Route genereren</button>
+  <section class="screen screen-plan routeplan-premium" data-screen="plan">
+    <div class="routeplan-hero">
+      <img src="assets/hero-routeplan.png" alt="Route plannen">
+      <div class="routeplan-shade"></div>
+
+      <div class="routeplan-title">
+        <small>ROUTEPLAN</small>
+        <h1>Waar begint je reis?</h1>
+        <p>Plan je route rustig, helder en helemaal in Roadora stijl.</p>
+      </div>
+    </div>
+
+    <div class="routeplan-panel">
+      <div class="routeplan-progress">
+        <span class="is-active"></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <button class="routeplan-row" data-route-field="from">
+        <span class="routeplan-icon">⌖</span>
+        <span class="routeplan-text">
+          <small>VERTREKPUNT</small>
+          <strong>Waar vertrek je?</strong>
+          <em>Kies je startlocatie</em>
+        </span>
+        <b>›</b>
+      </button>
+
+      <button class="routeplan-row" data-route-field="to">
+        <span class="routeplan-icon">⚑</span>
+        <span class="routeplan-text">
+          <small>BESTEMMING</small>
+          <strong>Waar wil je heen?</strong>
+          <em>Kies je eindbestemming</em>
+        </span>
+        <b>›</b>
+      </button>
+
+      <button class="routeplan-row" data-route-field="vehicle">
+        <span class="routeplan-icon">▣</span>
+        <span class="routeplan-text">
+          <small>VOERTUIG</small>
+          <strong>Auto</strong>
+          <em>Later ook EV, camper en motor</em>
+        </span>
+        <b>›</b>
+      </button>
+
+      <div class="routeplan-options">
+        <button class="selected">Snelste route</button>
+        <button>Rustige route</button>
+        <button>Mooiste route</button>
+      </div>
+
+      <button class="routeplan-main-cta" data-screen-target="map">
+        Plan mijn route
+      </button>
     </div>
   </section>
+
 
   <section class="screen screen-hotels" data-screen="hotels">
     <header class="plain-top"><h1>Hotels</h1><button class="circle-btn light">•••</button></header>

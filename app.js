@@ -96,3 +96,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+
+// ROADORA ROUTEPLAN NAVIGATION SAFE
+document.addEventListener('DOMContentLoaded', () => {
+  const screens = document.querySelectorAll('.screen');
+  const navButtons = document.querySelectorAll('[data-screen-target]');
+
+  function showScreen(target){
+    const screen = document.querySelector(`[data-screen="${target}"]`);
+    if(!screen) return;
+
+    screens.forEach((item) => item.classList.remove('is-active'));
+    screen.classList.add('is-active');
+
+    document.querySelectorAll('.bottom-nav button').forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-screen-target') === target);
+    });
+
+    const menuOverlay = document.getElementById('heroMenuOverlay');
+    if(menuOverlay) menuOverlay.classList.remove('open');
+
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  navButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const target = button.getAttribute('data-screen-target');
+      if(!target) return;
+      event.preventDefault();
+      showScreen(target);
+    });
+  });
+});
