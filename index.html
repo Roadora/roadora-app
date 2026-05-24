@@ -106,11 +106,11 @@
       <header class="map-ui map-top"><div class="map-search">Zoek een plek of adres</div><button class="circle-btn light">▧</button></header>
       <div class="route-line"><i></i><i></i><i></i><i></i></div>
       <div class="map-controls"><button>+</button><button>−</button></div>
-      <section class="map-sheet">
+      <section class="map-sheet" id="mapRouteSheet">
         <small>Roadora kaart</small>
-        <h2>Nog geen route gepland</h2>
-        <p>Plan je eerste route en ontdek onderweg hotels, stops en uitjes.</p>
-        <button class="primary" data-screen-target="plan">Route plannen</button>
+        <h2 id="mapRouteTitle">Nog geen route gepland</h2>
+        <p id="mapRouteText">Plan je eerste route en ontdek onderweg hotels, stops en uitjes.</p>
+        <button class="primary" data-screen-target="plan" id="mapRouteAction">Route plannen</button>
       </section>
     </div>
   </section>
@@ -149,25 +149,25 @@
 
       <div class="luxury-route-card">
 
-        <button class="luxury-route-row">
+        <label class="luxury-route-row is-input" for="routeStartInput">
           <div class="luxury-marker start"></div>
 
           <div class="luxury-route-copy">
             <small>VERTREKPUNT</small>
-            <strong>Waar vertrek je?</strong>
+            <input id="routeStartInput" class="route-input" type="text" inputmode="text" autocomplete="street-address" placeholder="Waar vertrek je?" />
           </div>
-        </button>
+        </label>
 
         <div class="luxury-divider"></div>
 
-        <button class="luxury-route-row">
+        <label class="luxury-route-row is-input" for="routeEndInput">
           <div class="luxury-marker end"></div>
 
           <div class="luxury-route-copy">
             <small>BESTEMMING</small>
-            <strong>Waar gaat de reis naartoe?</strong>
+            <input id="routeEndInput" class="route-input" type="text" inputmode="text" autocomplete="address-level2" placeholder="Waar gaat de reis naartoe?" />
           </div>
-        </button>
+        </label>
 
       </div>
 
@@ -175,15 +175,15 @@
         <small>VOERTUIG</small>
 
         <div class="luxury-vehicle-switch">
-          <button class="active">Auto</button>
-          <button>EV</button>
-          <button>Camper</button>
-          <button>Motor</button>
+          <button class="active" type="button" data-vehicle="auto">Auto</button>
+          <button type="button" data-vehicle="ev">EV</button>
+          <button type="button" data-vehicle="camper">Camper</button>
+          <button type="button" data-vehicle="motor">Motor</button>
         </div>
       </div>
 
-      <button class="routeplan-main-cta luxury-main-cta">
-        Plan route
+      <button class="routeplan-main-cta luxury-main-cta" id="planRouteBtn" type="button" disabled>
+        Vul vertrek en bestemming in
       </button>
 
     </div>

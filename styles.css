@@ -3173,15 +3173,117 @@ body[data-active-screen="map"] .map-search{
   }
 }
 
-/* ===== Roadora v40 — routeblokken iets hoger =====
-   Kleine verticale polish: routekaart, voertuigselector en CTA komen iets hoger,
-   zonder de hero, blend, hamburger of bottom navigation opnieuw te bouwen. */
-.routeplan-panel{
-  padding-top:224px !important;
+/* === Roadora mini nav photos restore final v40.3 === */
+body.hero-nav-integrated .bottom-nav button,
+body.hero-nav-integrated .bottom-nav a{
+  position: relative !important;
+  padding-top: 35px !important;
+  min-height: 62px !important;
+  overflow: visible !important;
+}
+body.hero-nav-integrated .bottom-nav button::before,
+body.hero-nav-integrated .bottom-nav a::before{
+  content: "" !important;
+  position: absolute !important;
+  top: 5px !important;
+  left: 50% !important;
+  width: 31px !important;
+  height: 31px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 12px !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  opacity: .92 !important;
+  display: block !important;
+  pointer-events: none !important;
+  box-shadow: 0 6px 14px rgba(34,22,13,.20), inset 0 0 0 1px rgba(255,255,255,.38) !important;
+}
+body.hero-nav-integrated .bottom-nav button:nth-child(1)::before,
+body.hero-nav-integrated .bottom-nav a:nth-child(1)::before{ background-image: url("assets/images/nav/overview.png") !important; }
+body.hero-nav-integrated .bottom-nav button:nth-child(2)::before,
+body.hero-nav-integrated .bottom-nav a:nth-child(2)::before{ background-image: url("assets/images/nav/map.png") !important; }
+body.hero-nav-integrated .bottom-nav button:nth-child(3)::before,
+body.hero-nav-integrated .bottom-nav a:nth-child(3)::before{ background-image: url("assets/images/nav/roadtrip.png") !important; }
+body.hero-nav-integrated .bottom-nav button:nth-child(4)::before,
+body.hero-nav-integrated .bottom-nav a:nth-child(4)::before{ background-image: url("assets/images/nav/profile.png") !important; }
+body.hero-nav-integrated .bottom-nav button.active::before,
+body.hero-nav-integrated .bottom-nav a.active::before{
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(-1px) scale(1.06) !important;
+}
+
+
+/* ROADORA ROUTEPLAN FASE 1 COMPLETE v42
+   Technische activatie: inputs, voertuig-state, CTA-state, map sync en native input-gedrag.
+*/
+.luxury-route-row.is-input{
+  cursor:text !important;
+}
+
+.route-input{
+  width:100%;
+  border:0;
+  outline:0;
+  padding:0 0 7px;
+  margin:0;
+  background:transparent;
+  border-bottom:1px solid rgba(121,84,52,.15);
+  color:#2f261f;
+  font:inherit;
+  font-size:25px;
+  line-height:1.06;
+  font-weight:850;
+  letter-spacing:-.04em;
+  caret-color:#a96520;
+}
+
+.route-input::placeholder{
+  color:#3a3029;
+  opacity:.96;
+}
+
+.luxury-route-row:focus-within{
+  transform:translateY(-1px);
+}
+
+.luxury-route-row:focus-within .luxury-marker{
+  box-shadow:0 0 0 7px rgba(169,101,32,.10), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.luxury-vehicle-switch button{
+  transition:background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.luxury-vehicle-switch button:active,
+.routeplan-main-cta:active{
+  transform:scale(.985);
+}
+
+.routeplan-main-cta:disabled{
+  background:rgba(138,105,72,.28) !important;
+  color:rgba(47,38,31,.46) !important;
+  box-shadow:none !important;
+  cursor:not-allowed !important;
+}
+
+.routeplan-main-cta.is-ready{
+  background:linear-gradient(135deg,#a96520 0%,#8b541d 100%) !important;
+  color:#fff7ed !important;
+  box-shadow:0 18px 42px rgba(125,73,17,.23) !important;
+}
+
+.routeplan-main-cta.is-loading{
+  opacity:.82;
+  pointer-events:none;
+}
+
+.map-sheet h2{
+  word-break:break-word;
 }
 
 @media (max-width:390px){
-  .routeplan-panel{
-    padding-top:212px !important;
+  .route-input{
+    font-size:22px;
   }
 }
