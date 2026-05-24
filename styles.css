@@ -2240,11 +2240,13 @@ body{
 }
 
 
-/* ROADORA CONTROLLED SOFT CONTINUOUS BLEND v28 */
+/* ROADORA REMOVE HARD HERO LINE v28
+   Alleen de harde overgang tussen foto en beige laag verzachten.
+   Geen extra haze over content, geen layout-wijzigingen.
+*/
 .routeplan-hero{
   position:relative !important;
-  overflow:visible !important;
-  z-index:1;
+  overflow:hidden !important;
 }
 
 .routeplan-hero::after{
@@ -2252,138 +2254,29 @@ body{
   position:absolute;
   left:0;
   right:0;
-  bottom:-54px;
-  height:210px;
-  z-index:2;
+  bottom:-1px;
+  height:96px;
+  z-index:3;
   pointer-events:none;
   background:
     linear-gradient(
       180deg,
       rgba(241,231,219,0) 0%,
-      rgba(241,231,219,.10) 22%,
-      rgba(241,231,219,.32) 44%,
-      rgba(241,231,219,.62) 68%,
-      rgba(241,231,219,.88) 88%,
+      rgba(241,231,219,.18) 34%,
+      rgba(241,231,219,.58) 72%,
       #f1e7db 100%
     );
 }
 
-.routeplan-hero::before{
-  content:"";
-  position:absolute;
-  left:-8%;
-  right:-8%;
-  bottom:-80px;
-  height:190px;
-  z-index:1;
-  pointer-events:none;
-  background:
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(255,238,214,.38) 0%,
-      rgba(255,238,214,.20) 42%,
-      transparent 78%
-    );
-  filter:blur(24px);
-}
-
 .routeplan-panel{
-  position:relative !important;
-  z-index:4 !important;
-  margin-top:-72px !important;
-  padding-top:82px !important;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(241,231,219,.58) 0%,
-      rgba(241,231,219,.90) 16%,
-      #f1e7db 34%,
-      #efe2d2 100%
-    ) !important;
-  border-top-left-radius:40px !important;
-  border-top-right-radius:40px !important;
+  margin-top:-34px !important;
+  padding-top:46px !important;
+  background:#f1e7db !important;
+  border-top-left-radius:38px !important;
+  border-top-right-radius:38px !important;
   box-shadow:none !important;
-  overflow:visible !important;
 }
 
-.routeplan-panel::before{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  top:-38px;
-  height:520px;
-  z-index:-1;
-  pointer-events:none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,244,226,.22) 0%,
-      rgba(255,244,226,.16) 28%,
-      rgba(239,226,210,.20) 58%,
-      rgba(239,226,210,0) 100%
-    );
-  filter:blur(18px);
-}
-
-.luxury-route-card{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.68),
-      rgba(255,255,255,.50)
-    ) !important;
-  border:1px solid rgba(255,255,255,.32) !important;
-  box-shadow:
-    0 12px 28px rgba(53,35,17,.045),
-    inset 0 1px 0 rgba(255,255,255,.32) !important;
-}
-
-.luxury-vehicle-switch{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.60),
-      rgba(255,255,255,.46)
-    ) !important;
-  border:1px solid rgba(255,255,255,.30) !important;
-  box-shadow:
-    0 10px 24px rgba(53,35,17,.04),
-    inset 0 1px 0 rgba(255,255,255,.30) !important;
-}
-
-.luxury-main-cta{
-  box-shadow:
-    0 12px 28px rgba(126,73,23,.15),
-    inset 0 1px 0 rgba(255,255,255,.14) !important;
-}
-
-.bottom-nav{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,252,247,.80),
-      rgba(246,236,224,.68)
-    ) !important;
-  backdrop-filter:blur(22px) saturate(1.06) !important;
-  border:1px solid rgba(255,255,255,.26) !important;
-  box-shadow:
-    0 10px 30px rgba(53,35,17,.055),
-    inset 0 1px 0 rgba(255,255,255,.24) !important;
-}
-
-@media (max-width:390px){
-  .routeplan-hero::after{
-    height:190px;
-    bottom:-48px;
-  }
-
-  .routeplan-panel{
-    margin-top:-66px !important;
-    padding-top:76px !important;
-  }
-
-  .routeplan-panel::before{
-    height:480px;
-  }
+.routeplan-title{
+  z-index:4 !important;
 }
