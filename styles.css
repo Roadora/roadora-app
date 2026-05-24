@@ -3172,3 +3172,16 @@ body[data-active-screen="map"] .map-search{
     top:calc(21px + env(safe-area-inset-top, 0px)) !important;
   }
 }
+
+/* ===== Roadora v40 — routeblokken iets hoger =====
+   Kleine verticale polish: routekaart, voertuigselector en CTA komen iets hoger,
+   zonder de hero, blend, hamburger of bottom navigation opnieuw te bouwen. */
+.routeplan-panel{
+  padding-top:224px !important;
+}
+
+@media (max-width:390px){
+  .routeplan-panel{
+    padding-top:212px !important;
+  }
+}
