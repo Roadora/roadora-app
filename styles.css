@@ -138,7 +138,7 @@
 
   color:rgba(20,20,20,0.88);
 
-  max-width:260px;
+  max-width:210px;
 }
 
 
@@ -664,7 +664,7 @@ font-weight:500;
   color:#2d241d !important;
   border:none !important;
   border-radius:24px !important;
-  min-height:64px;
+  min-height:48px;
   display:flex;
   align-items:center;
   justify-content:space-between;
