@@ -1746,3 +1746,116 @@ body{
     margin-top:-4px;
   }
 }
+
+
+/* ROADORA SIMPLE ROUTE FLOW v24 */
+.routeplan-simple{
+  gap:20px !important;
+}
+
+.routeplan-intro.clean{
+  padding:2px 4px 0;
+}
+
+.routeplan-intro.clean small{
+  display:block;
+  margin-bottom:10px;
+  color:#a77d4e;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.24em;
+}
+
+.routeplan-intro.clean h2{
+  margin:0;
+  color:#241b15;
+  font-size:40px;
+  line-height:.96;
+  font-family:"Playfair Display", serif;
+  letter-spacing:-.04em;
+}
+
+.clean-flow{
+  padding:14px;
+  border-radius:34px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.38));
+}
+
+.clean-row{
+  min-height:86px;
+  grid-template-columns:30px 1fr;
+}
+
+.clean-row .flow-copy strong{
+  font-size:28px;
+}
+
+.vehicle-select-card{
+  padding:8px 4px 0;
+}
+
+.vehicle-select-card small{
+  display:block;
+  margin-bottom:14px;
+  color:#a77d4e;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.20em;
+}
+
+.vehicle-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.vehicle-btn{
+  min-height:88px;
+  border:none;
+  border-radius:26px;
+  background:rgba(255,255,255,.48);
+  box-shadow:0 14px 34px rgba(70,48,28,.06);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:#5d4734;
+}
+
+.vehicle-btn span{
+  font-size:28px;
+}
+
+.vehicle-btn b{
+  font-size:16px;
+  font-weight:800;
+}
+
+.vehicle-btn.active{
+  background:#241b15;
+  color:#fff7ed;
+}
+
+.clean-cta{
+  min-height:72px !important;
+  margin-top:4px;
+  border-radius:30px !important;
+  font-size:19px !important;
+  letter-spacing:.01em;
+}
+
+@media (max-width:380px){
+  .routeplan-intro.clean h2{
+    font-size:34px;
+  }
+
+  .clean-row .flow-copy strong{
+    font-size:24px;
+  }
+
+  .vehicle-btn{
+    min-height:82px;
+  }
+}
