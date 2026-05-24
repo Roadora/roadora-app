@@ -651,3 +651,33 @@ font-weight:500;
     font-size:15px;
   }
 }
+
+
+/* ROADORA NEW ROADTRIP CTA POSITION FIX */
+.hero-cta{
+  position:absolute !important;
+  left:24px;
+  right:24px;
+  bottom:118px !important;
+  z-index:40;
+  background:#d7c0a3 !important;
+  color:#2d241d !important;
+  border:none !important;
+  border-radius:24px !important;
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  box-shadow:0 18px 40px rgba(0,0,0,.18);
+  backdrop-filter:blur(10px);
+}
+
+.hero-cta span,
+.hero-cta b{
+  color:#2d241d !important;
+}
+
+.hero-cta::after{
+  display:none !important;
+}
