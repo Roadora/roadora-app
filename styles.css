@@ -2157,3 +2157,84 @@ body{
     font-size:22px !important;
   }
 }
+
+
+/* ROADORA ROUTEFLOW REFINED v27 */
+.routeplan-title{
+  bottom:52px !important;
+}
+
+.routeplan-title h1{
+  font-size:40px !important;
+  max-width:280px !important;
+}
+
+.luxury-route-row{
+  min-height:88px !important;
+  padding-top:8px !important;
+  padding-bottom:8px !important;
+}
+
+.luxury-route-copy small{
+  margin-bottom:4px !important;
+}
+
+.luxury-route-copy strong{
+  font-size:19px !important;
+  font-weight:650 !important;
+  line-height:1.15 !important;
+  color:#2d221a !important;
+}
+
+/* Input feeling */
+.luxury-route-row{
+  cursor:text;
+  transition:all .18s ease;
+}
+
+.luxury-route-row:hover{
+  background:rgba(255,255,255,.24);
+}
+
+.luxury-route-row:active{
+  transform:scale(.992);
+}
+
+.luxury-route-copy strong::after{
+  content:"";
+  display:block;
+  width:120px;
+  height:1px;
+  margin-top:10px;
+  background:rgba(150,118,83,.18);
+}
+
+/* softer placeholder feel */
+.luxury-route-copy strong{
+  opacity:.88;
+}
+
+/* vehicle spacing */
+.luxury-vehicle-section{
+  margin-top:2px !important;
+}
+
+/* CTA spacing */
+.luxury-main-cta{
+  margin-top:6px !important;
+}
+
+/* mobile polish */
+@media (max-width:390px){
+  .routeplan-title{
+    bottom:42px !important;
+  }
+
+  .routeplan-title h1{
+    font-size:34px !important;
+  }
+
+  .luxury-route-copy strong{
+    font-size:17px !important;
+  }
+}
