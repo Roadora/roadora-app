@@ -2487,3 +2487,154 @@ body{
 .luxury-route-card{
   margin-top:4px;
 }
+
+
+/* ROADORA LONG HERO-TO-NAV BLEND v31
+   Overvloei start net onder de weg en loopt door tot onder de bottom navigation.
+   Geen extra afbeeldingen, alleen app-shell CSS.
+*/
+
+/* Routepagina krijgt één doorlopende beige atmospheric basis */
+.routeplan-premium,
+.routeplan-panel{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.08) 0%,
+      rgba(241,231,219,.38) 10%,
+      rgba(241,231,219,.72) 21%,
+      #f1e7db 39%,
+      #efe2d2 72%,
+      #e6d2bc 100%
+    ) !important;
+}
+
+/* Maak de hero-overgang veel langer en lager */
+.routeplan-hero::after{
+  bottom:-90px !important;
+  height:360px !important;
+  z-index:3 !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,.06) 15%,
+      rgba(241,231,219,.20) 31%,
+      rgba(241,231,219,.46) 49%,
+      rgba(241,231,219,.74) 66%,
+      rgba(241,231,219,.93) 84%,
+      #f1e7db 100%
+    ) !important;
+  filter:blur(14px) !important;
+  opacity:1 !important;
+}
+
+/* Warme haze begint rond de weg en zakt door achter de kaarten */
+.routeplan-hero::before{
+  bottom:-128px !important;
+  height:310px !important;
+  z-index:2 !important;
+  background:
+    radial-gradient(
+      ellipse at 50% 12%,
+      rgba(255,242,224,.50) 0%,
+      rgba(255,242,224,.32) 34%,
+      rgba(255,242,224,.14) 62%,
+      transparent 84%
+    ) !important;
+  filter:blur(38px) !important;
+}
+
+/* Beige laag schuift verder omhoog, zonder harde rand */
+.routeplan-panel{
+  margin-top:-132px !important;
+  padding-top:138px !important;
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+  position:relative;
+  z-index:4;
+}
+
+/* Extra zachte wash achter de content tot onder de nav */
+.routeplan-panel::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:-160px;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,244,228,.26) 0%,
+      rgba(241,231,219,.86) 22%,
+      rgba(239,226,210,.98) 62%,
+      #e6d2bc 100%
+    );
+}
+
+/* Inputkaart minder hard zodat hij in de haze valt */
+.luxury-route-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.62),
+      rgba(255,255,255,.42)
+    ) !important;
+  border:1px solid rgba(255,255,255,.28) !important;
+  box-shadow:
+    0 10px 26px rgba(53,35,17,.035),
+    inset 0 1px 0 rgba(255,255,255,.26) !important;
+}
+
+/* Voertuigselector ook zachter */
+.luxury-vehicle-switch{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.56),
+      rgba(255,255,255,.38)
+    ) !important;
+  border:1px solid rgba(255,255,255,.26) !important;
+  box-shadow:
+    0 8px 22px rgba(53,35,17,.035),
+    inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+
+/* CTA wordt onderdeel van de beige flow, niet los erop geplakt */
+.luxury-main-cta{
+  box-shadow:
+    0 10px 24px rgba(126,73,23,.12),
+    inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+
+/* Bottom nav valt binnen dezelfde zachte onderlaag */
+.bottom-nav{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,252,247,.78),
+      rgba(246,236,224,.64)
+    ) !important;
+  backdrop-filter:blur(24px) saturate(1.06) !important;
+  border:1px solid rgba(255,255,255,.26) !important;
+  box-shadow:
+    0 8px 28px rgba(53,35,17,.055),
+    inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+
+/* Mobiel: overgang iets compacter maar nog steeds lang */
+@media (max-width:390px){
+  .routeplan-hero::after{
+    height:320px !important;
+    bottom:-80px !important;
+  }
+
+  .routeplan-panel{
+    margin-top:-118px !important;
+    padding-top:126px !important;
+  }
+}
