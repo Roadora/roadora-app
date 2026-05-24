@@ -2469,3 +2469,101 @@ body{
     bottom:36px !important;
   }
 }
+
+/* ROADORA SEAMLESS BLEND v31
+   Laatste polish: de overgang ligt volledig over de foto heen.
+   Daardoor ontstaat er geen zichtbare rechte knip tussen hero en beige content.
+*/
+.routeplan-premium{
+  background:#f1e7db !important;
+}
+
+.routeplan-hero{
+  height:40vh !important;
+  min-height:326px !important;
+  max-height:386px !important;
+  margin-bottom:-128px !important;
+  overflow:hidden !important;
+}
+
+.routeplan-hero img{
+  transform:scale(1.012) !important;
+}
+
+.routeplan-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12,9,7,.04) 0%,
+      rgba(12,9,7,.08) 48%,
+      rgba(12,9,7,.20) 78%,
+      rgba(12,9,7,.28) 100%
+    ) !important;
+}
+
+.routeplan-hero::after{
+  height:188px !important;
+  bottom:0 !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,0) 30%,
+      rgba(241,231,219,.16) 52%,
+      rgba(241,231,219,.46) 72%,
+      rgba(241,231,219,.78) 88%,
+      #f1e7db 100%
+    ) !important;
+}
+
+.routeplan-title{
+  bottom:94px !important;
+}
+
+.routeplan-panel{
+  margin-top:0 !important;
+  padding-top:190px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0px,
+      rgba(241,231,219,.10) 54px,
+      rgba(241,231,219,.32) 100px,
+      rgba(241,231,219,.68) 148px,
+      #f1e7db 196px,
+      #efe2d2 100%
+    ) !important;
+}
+
+.routeplan-panel::before{
+  top:30px !important;
+  height:210px !important;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(255,246,233,.32) 0%,
+      rgba(244,232,216,.22) 50%,
+      rgba(241,231,219,0) 82%
+    ) !important;
+  filter:blur(22px) !important;
+}
+
+@media (max-width:390px){
+  .routeplan-hero{
+    height:39vh !important;
+    min-height:314px !important;
+    margin-bottom:-116px !important;
+  }
+
+  .routeplan-hero::after{
+    height:172px !important;
+  }
+
+  .routeplan-title{
+    bottom:84px !important;
+  }
+
+  .routeplan-panel{
+    padding-top:174px !important;
+  }
+}
