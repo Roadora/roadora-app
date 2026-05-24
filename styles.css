@@ -730,3 +730,11 @@ font-weight:500;
   display:none !important;
   pointer-events:none !important;
 }
+
+
+/* ROADORA TOPBAR HARD REMOVE */
+.topbar,
+.hero-topbar,
+.circle-btn{
+  display:none !important;
+}
