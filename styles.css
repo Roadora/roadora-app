@@ -1095,19 +1095,11 @@ font-weight:500;
 }
 
 
-/* ROADORA RIGHT TOP BUTTON */
-.hero-top-action-btn{
-  position:fixed;
-  top:28px;
-  right:24px;
-  width:52px;
-  height:52px;
-  border:none;
-  border-radius:18px;
-  background:rgba(234,220,201,.16);
-  backdrop-filter:blur(14px);
-  color:#f3e5d4;
-  font-size:18px;
-  z-index:1200;
-  box-shadow:0 10px 32px rgba(0,0,0,.14);
+
+
+/* ROADORA BACK BUTTONS REMOVED */
+.circle-btn.light,
+.back-btn,
+.back-button{
+  display:none !important;
 }
