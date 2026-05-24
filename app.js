@@ -23,6 +23,8 @@ function openScreen(name){
   screens.forEach(screen => screen.classList.toggle('is-active', screen === target));
   navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.screenTarget === name));
   RoadoraState.activeScreen = name;
+  document.body.dataset.activeScreen = name;
+  document.body.classList.toggle('has-photo-hero', ['overview','plan','roadtrip','profile'].includes(name));
   try { localStorage.setItem('roadora_active_screen', name); } catch(e) {}
 }
 
@@ -109,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     screens.forEach((item) => item.classList.remove('is-active'));
     screen.classList.add('is-active');
+    document.body.dataset.activeScreen = target;
+    document.body.classList.toggle('has-photo-hero', ['overview','plan','roadtrip','profile'].includes(target));
 
     document.querySelectorAll('.bottom-nav button').forEach((btn) => {
       btn.classList.toggle('active', btn.getAttribute('data-screen-target') === target);
