@@ -2720,3 +2720,72 @@ body{
     height:148px;
   }
 }
+
+/* ROADORA BOTTOM NAV SAFE FIX v33
+   Sluit de onderkant native af: geen content/CTA zichtbaar onder de floating nav. */
+.app{
+  isolation:isolate;
+}
+
+.app::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:190px !important;
+  z-index:24 !important;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(239,226,210,0) 0%,
+      rgba(239,226,210,.88) 22%,
+      rgba(239,226,210,.98) 48%,
+      #cdbdad 100%
+    ) !important;
+}
+
+.bottom-nav{
+  z-index:40 !important;
+  bottom:calc(22px + env(safe-area-inset-bottom)) !important;
+}
+
+.screen-plan{
+  overflow:hidden !important;
+}
+
+.routeplan-panel{
+  padding-bottom:300px !important;
+}
+
+.routeplan-main-cta,
+.luxury-main-cta{
+  margin-top:16px !important;
+  margin-bottom:132px !important;
+  position:relative;
+  z-index:1;
+}
+
+@media (max-width:390px){
+  .app::after{
+    height:184px !important;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(239,226,210,0) 0%,
+        rgba(239,226,210,.90) 20%,
+        rgba(239,226,210,.99) 46%,
+        #cdbdad 100%
+      ) !important;
+  }
+
+  .routeplan-panel{
+    padding-bottom:304px !important;
+  }
+
+  .routeplan-main-cta,
+  .luxury-main-cta{
+    margin-bottom:138px !important;
+  }
+}
