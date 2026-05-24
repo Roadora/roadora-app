@@ -2339,3 +2339,126 @@ body{
     padding-top:40px !important;
   }
 }
+
+/* ROADORA SEAMLESS HERO BLEND v29
+   Doel: geen harde lijn meer tussen hero en beige vlak.
+   De beige laag start transparant over de hero en bouwt pas lager op.
+   Scroll en huidige app-shell blijven intact.
+*/
+.routeplan-premium{
+  background:#f1e7db !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+
+.routeplan-hero{
+  position:relative !important;
+  overflow:hidden !important;
+  background:#f1e7db !important;
+}
+
+.routeplan-hero img{
+  display:block !important;
+}
+
+/* Lange mist/fade vanuit de hero zelf */
+.routeplan-hero::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:210px;
+  z-index:3;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255,246,235,.50) 0%, rgba(246,235,220,.28) 38%, rgba(241,231,219,0) 70%),
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,.10) 24%,
+      rgba(241,231,219,.42) 58%,
+      rgba(241,231,219,.78) 78%,
+      #f1e7db 100%
+    );
+}
+
+.routeplan-title{
+  z-index:5 !important;
+}
+
+/* Het paneel schuift de hero in, maar de bovenkant is transparant.
+   Daardoor verdwijnt de zichtbare snijrand volledig. */
+.routeplan-panel{
+  position:relative !important;
+  z-index:4 !important;
+  margin-top:-118px !important;
+  padding-top:150px !important;
+  padding-bottom:150px !important;
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0px,
+      rgba(241,231,219,.38) 44px,
+      rgba(241,231,219,.82) 96px,
+      #f1e7db 142px,
+      #efe2d2 100%
+    ) !important;
+}
+
+/* Extra zachte wolk achter de routekaart, zoals in het voorbeeld */
+.routeplan-panel::before{
+  content:"";
+  position:absolute;
+  left:-8%;
+  right:-8%;
+  top:0;
+  height:250px;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,249,241,.72) 0%, rgba(246,235,220,.54) 40%, rgba(241,231,219,.14) 72%, rgba(241,231,219,0) 100%);
+  filter:blur(2px);
+}
+
+.routeplan-panel > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Kaart en voertuigblok warmer, zodat ze in de beige mist liggen */
+.luxury-route-card{
+  background:
+    linear-gradient(180deg, rgba(255,253,249,.82), rgba(255,248,239,.58)) !important;
+  border:1px solid rgba(255,255,255,.48) !important;
+  box-shadow:
+    0 18px 44px rgba(72,45,24,.07),
+    inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+.luxury-vehicle-switch{
+  background:rgba(255,250,243,.50) !important;
+  border:1px solid rgba(255,255,255,.40) !important;
+  box-shadow:
+    0 14px 34px rgba(72,45,24,.06),
+    inset 0 1px 0 rgba(255,255,255,.54) !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+}
+
+@media (max-width:390px){
+  .routeplan-hero::after{
+    height:190px !important;
+  }
+
+  .routeplan-panel{
+    margin-top:-106px !important;
+    padding-top:136px !important;
+  }
+}
