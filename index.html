@@ -20,6 +20,49 @@
 
 
 
+
+<button class="hero-menu-btn" id="heroMenuBtn" aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<div class="hero-menu-overlay" id="heroMenuOverlay">
+  <div class="hero-menu-panel">
+    <div class="hero-menu-header">
+      <h2>Roadora</h2>
+      <button class="hero-menu-close" id="heroMenuClose">×</button>
+    </div>
+
+    <nav class="hero-menu-nav">
+      <button class="hero-menu-item active" data-screen-target="overview">
+        <small>HOME</small>
+        <strong>Overzicht</strong>
+      </button>
+
+      <button class="hero-menu-item" data-screen-target="plan">
+        <small>ROUTE</small>
+        <strong>Nieuwe roadtrip</strong>
+      </button>
+
+      <button class="hero-menu-item" data-screen-target="map">
+        <small>KAART</small>
+        <strong>Live kaart</strong>
+      </button>
+
+      <button class="hero-menu-item" data-screen-target="roadtrip">
+        <small>ROADTRIP</small>
+        <strong>Mijn roadtrip</strong>
+      </button>
+
+      <button class="hero-menu-item" data-screen-target="profile">
+        <small>PROFIEL</small>
+        <strong>Instellingen & voorkeuren</strong>
+      </button>
+    </nav>
+  </div>
+</div>
+
 <main class="app" id="app" data-trip="empty">
 
   <section class="screen screen-overview is-active" data-screen="overview">

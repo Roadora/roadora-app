@@ -53,3 +53,31 @@ renderTripState();
 openScreen('overview');
 window.RoadoraState = RoadoraState;
 window.RoadoraRouter = { open: openScreen };
+
+
+// ROADORA PREMIUM HERO MENU
+document.addEventListener('DOMContentLoaded', () => {
+  const menuBtn = document.getElementById('heroMenuBtn');
+  const menuOverlay = document.getElementById('heroMenuOverlay');
+  const menuClose = document.getElementById('heroMenuClose');
+
+  if(menuBtn && menuOverlay){
+    menuBtn.addEventListener('click', () => {
+      menuOverlay.classList.add('open');
+    });
+  }
+
+  if(menuClose && menuOverlay){
+    menuClose.addEventListener('click', () => {
+      menuOverlay.classList.remove('open');
+    });
+  }
+
+  if(menuOverlay){
+    menuOverlay.addEventListener('click', (e) => {
+      if(e.target === menuOverlay){
+        menuOverlay.classList.remove('open');
+      }
+    });
+  }
+});

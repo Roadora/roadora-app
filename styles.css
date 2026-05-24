@@ -967,3 +967,129 @@ font-weight:500;
     font-size:21px;
   }
 }
+
+
+/* ROADORA PREMIUM HERO MENU */
+.hero-menu-btn{
+  position:fixed;
+  top:28px;
+  left:24px;
+  width:52px;
+  height:52px;
+  border:none;
+  border-radius:18px;
+  background:rgba(234,220,201,.16);
+  backdrop-filter:blur(14px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  z-index:1200;
+  box-shadow:0 10px 32px rgba(0,0,0,.14);
+}
+
+.hero-menu-btn span{
+  width:18px;
+  height:2px;
+  border-radius:20px;
+  background:#f3e5d4;
+  opacity:.92;
+}
+
+.hero-menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(16,12,9,.42);
+  backdrop-filter:blur(18px);
+  z-index:1400;
+  opacity:0;
+  pointer-events:none;
+  transition:.28s ease;
+}
+
+.hero-menu-overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.hero-menu-panel{
+  position:absolute;
+  top:0;
+  left:0;
+  width:84%;
+  max-width:360px;
+  height:100%;
+  padding:34px 24px;
+  background:linear-gradient(180deg,#eadcc9 0%, #d8c1a5 100%);
+  border-top-right-radius:34px;
+  border-bottom-right-radius:34px;
+  transform:translateX(-100%);
+  transition:.34s ease;
+  box-shadow:32px 0 60px rgba(0,0,0,.24);
+}
+
+.hero-menu-overlay.open .hero-menu-panel{
+  transform:translateX(0);
+}
+
+.hero-menu-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:34px;
+}
+
+.hero-menu-header h2{
+  margin:0;
+  font-size:30px;
+  font-family:'Playfair Display', serif;
+  color:#2f241b;
+  letter-spacing:.04em;
+}
+
+.hero-menu-close{
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:14px;
+  background:rgba(255,255,255,.24);
+  color:#2f241b;
+  font-size:28px;
+}
+
+.hero-menu-nav{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.hero-menu-item{
+  border:none;
+  text-align:left;
+  padding:18px 18px;
+  border-radius:22px;
+  background:rgba(255,255,255,.24);
+  color:#2f241b;
+  backdrop-filter:blur(10px);
+}
+
+.hero-menu-item.active{
+  background:rgba(255,255,255,.42);
+}
+
+.hero-menu-item small{
+  display:block;
+  color:#a77d4e;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.16em;
+  margin-bottom:6px;
+}
+
+.hero-menu-item strong{
+  display:block;
+  font-size:21px;
+  line-height:1.2;
+  font-weight:800;
+}
