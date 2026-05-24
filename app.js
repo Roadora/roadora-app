@@ -81,3 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+// ROADORA MENU AUTO CLOSE ON MENU ITEM CLICK
+document.addEventListener('DOMContentLoaded', () => {
+  const menuOverlay = document.getElementById('heroMenuOverlay');
+  const menuItems = document.querySelectorAll('.hero-menu-item, .hero-menu-nav button, .hero-menu-nav a');
+
+  menuItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      if (menuOverlay) {
+        menuOverlay.classList.remove('open');
+      }
+    });
+  });
+});
