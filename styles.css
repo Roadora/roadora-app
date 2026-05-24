@@ -2885,3 +2885,70 @@ body{
     height:128px !important;
   }
 }
+
+/* ===== Roadora v36 — premium hamburger CTA polish ===== */
+.hero-menu-btn{
+  position:fixed !important;
+  top:calc(18px + env(safe-area-inset-top)) !important;
+  left:clamp(16px, 5vw, 24px) !important;
+  width:48px !important;
+  height:58px !important;
+  border-radius:999px !important;
+  background:
+    linear-gradient(180deg, rgba(255,250,244,.34), rgba(232,214,195,.18)) !important;
+  border:1px solid rgba(255,250,244,.36) !important;
+  box-shadow:
+    0 14px 34px rgba(37,23,13,.16),
+    inset 0 1px 0 rgba(255,255,255,.40) !important;
+  backdrop-filter:blur(18px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.08) !important;
+  gap:4px !important;
+  z-index:1200 !important;
+}
+
+.hero-menu-btn::before{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0));
+  pointer-events:none;
+}
+
+.hero-menu-btn span{
+  width:17px !important;
+  height:1.7px !important;
+  border-radius:999px !important;
+  background:rgba(255,250,244,.96) !important;
+  box-shadow:0 1px 8px rgba(38,24,15,.24) !important;
+  opacity:1 !important;
+  transition:transform .22s var(--ease), opacity .18s var(--ease), width .22s var(--ease) !important;
+}
+
+.hero-menu-btn span:nth-child(2){
+  width:13px !important;
+}
+
+.hero-menu-btn:active{
+  transform:scale(.96) !important;
+}
+
+.hero-menu-overlay.open ~ .app .hero-menu-btn,
+.hero-menu-btn.is-open{
+  background:rgba(255,250,244,.50) !important;
+}
+
+@media (max-width:380px){
+  .hero-menu-btn{
+    width:46px !important;
+    height:56px !important;
+    top:calc(16px + env(safe-area-inset-top)) !important;
+    left:16px !important;
+  }
+}
+
+@media (min-width:621px){
+  .hero-menu-btn{
+    position:absolute !important;
+  }
+}
