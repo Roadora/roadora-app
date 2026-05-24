@@ -3440,3 +3440,201 @@ body.hero-nav-integrated .bottom-nav a.active::before{
     padding-bottom:5px !important;
   }
 }
+
+
+/* ROADORA KAART FASE 2 START v47
+   Eerste technische kaart-polish: actieve route-state, premium kaartlaag,
+   veilige sheet-actions en consistente tab persistence zonder routing-engine te breken. */
+.screen-map{
+  background:#d9ccba !important;
+}
+
+.map-canvas{
+  isolation:isolate !important;
+  overflow:hidden !important;
+}
+
+.map-bg{
+  opacity:.76 !important;
+  filter:saturate(.78) brightness(1.05) contrast(.96) !important;
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255,250,242,.82) 0%, rgba(255,250,242,.25) 34%, rgba(255,250,242,0) 62%),
+    linear-gradient(180deg, rgba(243,232,218,.72) 0%, rgba(230,216,198,.34) 42%, rgba(193,174,151,.52) 100%),
+    url('assets/hero-routes.webp') center/cover !important;
+}
+
+.map-canvas::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(244,234,220,.16) 0%, rgba(244,234,220,0) 38%, rgba(244,234,220,.48) 100%);
+}
+
+.map-top,
+.map-route-status,
+.route-line,
+.map-controls,
+.map-sheet{
+  z-index:3 !important;
+}
+
+.map-search{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  background:rgba(255,250,244,.72) !important;
+  border:1px solid rgba(255,255,255,.50) !important;
+  box-shadow:0 14px 34px rgba(55,34,18,.12) !important;
+}
+
+.map-route-status{
+  position:absolute;
+  left:20px;
+  right:20px;
+  top:calc(env(safe-area-inset-top, 0px) + 82px);
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding:13px 15px;
+  border-radius:24px;
+  background:rgba(255,250,244,.62);
+  border:1px solid rgba(255,255,255,.48);
+  box-shadow:0 18px 42px rgba(55,34,18,.12);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.map-route-status small{
+  color:#8e551e;
+  font-size:9px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.map-route-status strong{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#231912;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:-.04em;
+}
+
+.map-route-status span{
+  color:#796858;
+  font-size:12px;
+  font-weight:700;
+}
+
+.route-line{
+  top:230px !important;
+  left:112px !important;
+  right:95px !important;
+  height:280px !important;
+  border-left-width:6px !important;
+  border-left-color:rgba(137,78,24,.84) !important;
+  box-shadow:0 18px 42px rgba(85,49,16,.12) !important;
+  opacity:.76;
+}
+
+.route-line i{
+  width:19px !important;
+  height:19px !important;
+  background:#9d5a1b !important;
+  box-shadow:0 0 0 6px rgba(255,250,244,.72), 0 8px 20px rgba(92,52,18,.22) !important;
+}
+
+.map-controls{
+  right:18px !important;
+  top:256px !important;
+  border-radius:24px !important;
+  border:1px solid rgba(255,255,255,.48) !important;
+  box-shadow:0 18px 40px rgba(55,34,18,.14) !important;
+}
+
+.map-controls button{
+  background:rgba(255,250,244,.78) !important;
+  color:#3b2a1d !important;
+}
+
+.map-sheet{
+  bottom:calc(100px + env(safe-area-inset-bottom, 0px)) !important;
+  border-radius:30px !important;
+  background:rgba(255,250,244,.86) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  padding:20px !important;
+  box-shadow:0 22px 56px rgba(55,34,18,.18) !important;
+}
+
+.map-sheet h2{
+  font-size:24px !important;
+  line-height:1.02 !important;
+  letter-spacing:-.04em !important;
+  max-height:58px;
+  overflow:hidden;
+}
+
+.map-sheet p{
+  font-size:14px !important;
+  line-height:1.42 !important;
+}
+
+.map-sheet-actions{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:center;
+}
+
+.ghost-map-action{
+  height:48px;
+  border-radius:999px;
+  padding:0 16px;
+  color:#714419;
+  background:rgba(153,87,25,.08);
+  font-size:13px;
+  font-weight:900;
+}
+
+.map-canvas.has-active-route .map-route-status{
+  background:rgba(255,250,244,.76);
+}
+
+.map-canvas.has-active-route .route-line{
+  opacity:1;
+}
+
+@media (max-width:390px){
+  .map-route-status{
+    left:18px;
+    right:18px;
+    top:calc(env(safe-area-inset-top, 0px) + 80px);
+    padding:12px 14px;
+  }
+
+  .map-sheet{
+    left:16px !important;
+    right:16px !important;
+    padding:18px !important;
+  }
+
+  .map-sheet h2{
+    font-size:22px !important;
+  }
+
+  .map-sheet-actions{
+    grid-template-columns:1fr;
+  }
+
+  .ghost-map-action{
+    display:none;
+  }
+}

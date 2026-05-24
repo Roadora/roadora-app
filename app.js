@@ -44,6 +44,11 @@ const vehicleButtons = [...document.querySelectorAll('[data-vehicle]')];
 const mapRouteTitle = document.getElementById('mapRouteTitle');
 const mapRouteText = document.getElementById('mapRouteText');
 const mapRouteAction = document.getElementById('mapRouteAction');
+const mapCanvas = document.getElementById('mapCanvas');
+const mapSearchLabel = document.getElementById('mapSearchLabel');
+const mapSheetKicker = document.getElementById('mapSheetKicker');
+const mapRouteChipMain = document.getElementById('mapRouteChipMain');
+const mapRouteChipSub = document.getElementById('mapRouteChipSub');
 
 function saveState(){
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(RoadoraState)); } catch(e) {}
@@ -90,14 +95,28 @@ function renderRoutePlan(){
 
 function renderMapState(){
   if(!mapRouteTitle || !mapRouteText || !mapRouteAction) return;
-  if(RoadoraState.route.planned){
-    mapRouteTitle.textContent = `${RoadoraState.route.start} → ${RoadoraState.route.end}`;
-    mapRouteText.textContent = `${getVehicleLabel(RoadoraState.route.vehicle)} · route klaar om verder uit te bouwen met echte kaartdata.`;
+  const planned = !!RoadoraState.route.planned;
+  mapCanvas?.classList.toggle('has-active-route', planned);
+
+  if(planned){
+    const start = RoadoraState.route.start.trim();
+    const end = RoadoraState.route.end.trim();
+    const vehicle = getVehicleLabel(RoadoraState.route.vehicle);
+    mapSheetKicker && (mapSheetKicker.textContent = 'Actieve route');
+    mapRouteTitle.textContent = `${start} → ${end}`;
+    mapRouteText.textContent = `${vehicle} · route blijft actief bij tab wisselen. Klaar voor kaart-polish, stops en live route-data.`;
     mapRouteAction.textContent = 'Route aanpassen';
+    mapSearchLabel && (mapSearchLabel.textContent = `${start} naar ${end}`);
+    mapRouteChipMain && (mapRouteChipMain.textContent = `${start} → ${end}`);
+    mapRouteChipSub && (mapRouteChipSub.textContent = `${vehicle} · route actief`);
   }else{
+    mapSheetKicker && (mapSheetKicker.textContent = 'Roadora kaart');
     mapRouteTitle.textContent = 'Nog geen route gepland';
     mapRouteText.textContent = 'Plan je eerste route en ontdek onderweg hotels, stops en uitjes.';
     mapRouteAction.textContent = 'Route plannen';
+    mapSearchLabel && (mapSearchLabel.textContent = 'Zoek een plek of adres');
+    mapRouteChipMain && (mapRouteChipMain.textContent = 'Nog geen route');
+    mapRouteChipSub && (mapRouteChipSub.textContent = 'Plan een route om de kaart te activeren');
   }
 }
 

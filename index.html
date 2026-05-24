@@ -89,16 +89,35 @@
   </section>
 
   <section class="screen screen-map" data-screen="map">
-    <div class="map-canvas">
+    <div class="map-canvas" id="mapCanvas">
       <div class="map-bg"></div>
-      <header class="map-ui map-top"><div class="map-search">Zoek een plek of adres</div><button class="circle-btn light">▧</button></header>
-      <div class="route-line"><i></i><i></i><i></i><i></i></div>
-      <div class="map-controls"><button>+</button><button>−</button></div>
+
+      <header class="map-ui map-top">
+        <div class="map-search" id="mapSearchLabel">Zoek een plek of adres</div>
+        <button class="circle-btn light" type="button" aria-label="Kaartlagen">▧</button>
+      </header>
+
+      <div class="map-route-status" id="mapRouteStatus">
+        <small>LIVE ROUTE</small>
+        <strong id="mapRouteChipMain">Nog geen route</strong>
+        <span id="mapRouteChipSub">Plan een route om de kaart te activeren</span>
+      </div>
+
+      <div class="route-line" id="visualRouteLine"><i></i><i></i><i></i><i></i></div>
+
+      <div class="map-controls" aria-label="Kaart controls">
+        <button type="button" aria-label="Inzoomen">+</button>
+        <button type="button" aria-label="Uitzoomen">−</button>
+      </div>
+
       <section class="map-sheet" id="mapRouteSheet">
-        <small>Roadora kaart</small>
+        <small id="mapSheetKicker">Roadora kaart</small>
         <h2 id="mapRouteTitle">Nog geen route gepland</h2>
         <p id="mapRouteText">Plan je eerste route en ontdek onderweg hotels, stops en uitjes.</p>
-        <button class="primary" data-screen-target="plan" id="mapRouteAction">Route plannen</button>
+        <div class="map-sheet-actions">
+          <button class="primary" data-screen-target="plan" id="mapRouteAction">Route plannen</button>
+          <button class="ghost-map-action" data-screen-target="roadtrip" id="mapRoadtripAction" type="button">Mijn roadtrip</button>
+        </div>
       </section>
     </div>
   </section>
