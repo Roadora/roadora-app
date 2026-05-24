@@ -2427,3 +2427,146 @@ body{
     height:135px;
   }
 }
+
+
+/* ROADORA NO-BAND HERO BLEND v31
+   Fix: geen zichtbare horizontale overgangsband.
+   De foto loopt visueel door achter het beige vlak; content zweeft erboven.
+*/
+.routeplan-premium{
+  position:relative !important;
+  isolation:isolate;
+  background:#f1e7db !important;
+  overflow:hidden;
+}
+
+/* Zachte echo van dezelfde hero onder de echte hero, achter het beige vlak */
+.routeplan-premium::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:210px;
+  height:560px;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.08) 0%,
+      rgba(241,231,219,.28) 28%,
+      rgba(241,231,219,.64) 58%,
+      #f1e7db 100%
+    ),
+    url("assets/hero-routeplan.png");
+  background-size:cover;
+  background-position:center top;
+  opacity:.42;
+  filter:saturate(.82) contrast(.86) brightness(1.08);
+  -webkit-mask-image:linear-gradient(180deg, transparent 0%, black 12%, black 62%, transparent 100%);
+  mask-image:linear-gradient(180deg, transparent 0%, black 12%, black 62%, transparent 100%);
+}
+
+/* De echte hero krijgt geen losse witte fade-band meer */
+.routeplan-hero{
+  position:relative !important;
+  z-index:2 !important;
+  overflow:hidden !important;
+}
+
+.routeplan-hero::after,
+.routeplan-hero::before{
+  display:none !important;
+}
+
+/* Alleen subtiele grading in de hero zelf */
+.routeplan-shade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12,9,7,.04) 0%,
+      rgba(12,9,7,.10) 48%,
+      rgba(88,62,36,.16) 78%,
+      rgba(190,164,134,.20) 100%
+    ) !important;
+}
+
+/* Het beige vlak begint achter/onder de hero zonder eigen rand */
+.routeplan-panel{
+  position:relative !important;
+  z-index:3 !important;
+  margin-top:-54px !important;
+  padding-top:74px !important;
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.54) 0%,
+      rgba(241,231,219,.82) 18%,
+      #f1e7db 42%,
+      #efe2d2 100%
+    ) !important;
+}
+
+/* Zachte warme laag achter alle routeplan-content, geen scherpe overgang */
+.routeplan-panel::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-80px;
+  height:640px;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.08) 0%,
+      rgba(255,242,224,.24) 24%,
+      rgba(241,231,219,.56) 54%,
+      rgba(239,226,210,.92) 100%
+    );
+}
+
+/* Content blijft scherp en rustig */
+.luxury-route-card{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.78),
+      rgba(255,255,255,.66)
+    ) !important;
+  border:1px solid rgba(255,255,255,.28) !important;
+  box-shadow:
+    0 12px 26px rgba(53,35,17,.045),
+    inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+.luxury-vehicle-switch{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.72),
+      rgba(255,255,255,.58)
+    ) !important;
+  border:1px solid rgba(255,255,255,.26) !important;
+  box-shadow:
+    0 10px 22px rgba(53,35,17,.04),
+    inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+
+@media (max-width:390px){
+  .routeplan-premium::before{
+    top:200px;
+    height:540px;
+    opacity:.38;
+  }
+
+  .routeplan-panel{
+    margin-top:-48px !important;
+    padding-top:68px !important;
+  }
+}
