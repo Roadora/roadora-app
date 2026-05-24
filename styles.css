@@ -565,3 +565,89 @@ font-weight:500;
 .hero-nav-integrated .app-nav [aria-current="page"]::after{
   bottom:4px !important;
 }
+
+
+
+/* === Roadora New Roadtrip Polish v1 === */
+
+.roadtrip-cta-wrap{
+  position:fixed;
+  left:20px;
+  right:20px;
+  bottom:108px;
+  z-index:60;
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
+}
+
+.roadtrip-cta-wrap button,
+.roadtrip-cta-wrap a{
+  pointer-events:auto;
+  width:100%;
+  max-width:390px;
+  min-height:66px;
+  border:none;
+  border-radius:24px;
+  padding:18px 22px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(244,229,208,.96),
+      rgba(232,210,184,.92)
+    );
+  color:#2d2118;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:-0.2px;
+  box-shadow:
+    0 18px 40px rgba(29,18,10,.18),
+    inset 0 1px 0 rgba(255,255,255,.34);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    opacity .2s ease;
+}
+
+.roadtrip-cta-wrap button:active,
+.roadtrip-cta-wrap a:active{
+  transform:scale(.98);
+}
+
+.roadtrip-cta-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-18px -8px;
+  border-radius:34px;
+  background:
+    radial-gradient(circle at center,
+      rgba(255,244,226,.14),
+      transparent 70%);
+  z-index:-1;
+}
+
+@media(min-width:520px){
+  .roadtrip-cta-wrap{
+    left:50%;
+    right:auto;
+    width:min(430px, calc(100% - 40px));
+    transform:translateX(-50%);
+  }
+}
+
+@media(max-width:390px){
+  .roadtrip-cta-wrap{
+    left:16px;
+    right:16px;
+    bottom:104px;
+  }
+
+  .roadtrip-cta-wrap button,
+  .roadtrip-cta-wrap a{
+    min-height:62px;
+    border-radius:22px;
+    font-size:15px;
+  }
+}
