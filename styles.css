@@ -2952,3 +2952,59 @@ body{
     position:absolute !important;
   }
 }
+
+/* ===== Roadora v37 — hamburger verwerkt in herofoto ===== */
+body.hero-nav-integrated .hero-menu-btn{
+  position:fixed !important;
+  top:calc(20px + env(safe-area-inset-top, 0px)) !important;
+  left:20px !important;
+  width:44px !important;
+  height:44px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  background:
+    radial-gradient(circle at 42% 25%, rgba(255,255,255,.18), rgba(255,255,255,.04) 42%, rgba(41,28,18,.10) 100%) !important;
+  box-shadow:
+    0 12px 30px rgba(30,18,10,.16),
+    inset 0 1px 0 rgba(255,255,255,.14) !important;
+  backdrop-filter:blur(10px) saturate(1.04) !important;
+  -webkit-backdrop-filter:blur(10px) saturate(1.04) !important;
+  gap:4px !important;
+  opacity:.94 !important;
+  z-index:1200 !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:-10px !important;
+  border-radius:999px !important;
+  background:radial-gradient(circle, rgba(0,0,0,.10), rgba(0,0,0,0) 68%) !important;
+  pointer-events:none !important;
+  z-index:-1 !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn span{
+  width:17px !important;
+  height:1.65px !important;
+  border-radius:999px !important;
+  background:rgba(255,250,242,.94) !important;
+  box-shadow:0 1px 7px rgba(28,18,10,.38) !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn span:nth-child(2){
+  width:13px !important;
+}
+
+body.hero-nav-integrated .hero-menu-btn:active{
+  transform:scale(.96) !important;
+}
+
+@media (max-width:380px){
+  body.hero-nav-integrated .hero-menu-btn{
+    top:calc(18px + env(safe-area-inset-top, 0px)) !important;
+    left:16px !important;
+    width:42px !important;
+    height:42px !important;
+  }
+}
