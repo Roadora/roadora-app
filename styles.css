@@ -2425,3 +2425,65 @@ body{
     0 10px 32px rgba(53,35,17,.055),
     inset 0 1px 0 rgba(255,255,255,.26) !important;
 }
+
+
+/* ROADORA SOFT BLEND v30 */
+
+/* verwijder zichtbare rand tussen hero en beige */
+.routeplan-panel{
+  margin-top:-92px !important;
+  padding-top:92px !important;
+  border-top-left-radius:46px !important;
+  border-top-right-radius:46px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,.10) 0%,
+      rgba(241,231,219,.46) 10%,
+      rgba(241,231,219,.82) 22%,
+      #f1e7db 38%,
+      #efe2d2 100%
+    ) !important;
+}
+
+/* grotere dissolve zone zodat de lijn verdwijnt */
+.routeplan-hero::after{
+  bottom:-18px !important;
+  height:240px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0%,
+      rgba(241,231,219,.08) 16%,
+      rgba(241,231,219,.24) 34%,
+      rgba(241,231,219,.52) 56%,
+      rgba(241,231,219,.84) 78%,
+      rgba(241,231,219,.98) 92%,
+      #f1e7db 100%
+    ) !important;
+
+  filter:blur(18px) !important;
+}
+
+/* extra glow om overgang te verstoppen */
+.routeplan-hero::before{
+  bottom:-54px !important;
+  height:190px !important;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,244,226,.56) 0%,
+      rgba(255,244,226,.30) 38%,
+      transparent 76%
+    ) !important;
+
+  filter:blur(34px) !important;
+}
+
+/* kaart iets meer floating */
+.luxury-route-card{
+  margin-top:4px;
+}
