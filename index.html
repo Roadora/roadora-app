@@ -142,53 +142,55 @@
       </div>
     </div>
 
-    <div class="routeplan-panel">
-      <div class="routeplan-progress">
-        <span class="is-active"></span>
-        <span></span>
-        <span></span>
+    
+    <div class="routeplan-panel routeplan-editorial">
+      <div class="routeplan-intro">
+        <small>STAP 1 VAN 3</small>
+        <h2>Stel je roadtrip samen</h2>
+        <p>Vertel Roadora waar je heen wilt. De kaart en slimme stops komen daarna.</p>
       </div>
 
-      <button class="routeplan-row" data-route-field="from">
-        <span class="routeplan-icon">⌖</span>
-        <span class="routeplan-text">
-          <small>VERTREKPUNT</small>
-          <strong>Waar vertrek je?</strong>
-          <em>Kies je startlocatie</em>
-        </span>
-        <b>›</b>
-      </button>
+      <div class="route-flow-card">
+        <button class="route-flow-row" data-route-field="from">
+          <span class="flow-dot start"></span>
+          <span class="flow-copy">
+            <small>VANAF</small>
+            <strong>Waar vertrek je?</strong>
+          </span>
+          <em>Kies start</em>
+        </button>
 
-      <button class="routeplan-row" data-route-field="to">
-        <span class="routeplan-icon">⚑</span>
-        <span class="routeplan-text">
-          <small>BESTEMMING</small>
-          <strong>Waar wil je heen?</strong>
-          <em>Kies je eindbestemming</em>
-        </span>
-        <b>›</b>
-      </button>
+        <div class="flow-line"></div>
 
-      <button class="routeplan-row" data-route-field="vehicle">
-        <span class="routeplan-icon">▣</span>
-        <span class="routeplan-text">
-          <small>VOERTUIG</small>
-          <strong>Auto</strong>
-          <em>Later ook EV, camper en motor</em>
-        </span>
-        <b>›</b>
-      </button>
+        <button class="route-flow-row" data-route-field="to">
+          <span class="flow-dot end"></span>
+          <span class="flow-copy">
+            <small>NAAR</small>
+            <strong>Waar wil je heen?</strong>
+          </span>
+          <em>Kies bestemming</em>
+        </button>
+      </div>
 
-      <div class="routeplan-options">
-        <button class="selected">Snelste route</button>
-        <button>Rustige route</button>
-        <button>Mooiste route</button>
+      <div class="route-preferences-card">
+        <div class="preference-header">
+          <span>Reisstijl</span>
+          <b>Auto · snelste route</b>
+        </div>
+
+        <div class="routeplan-options">
+          <button class="selected">Snel</button>
+          <button>Mooi</button>
+          <button>Rustig</button>
+          <button>Flexibel</button>
+        </div>
       </div>
 
       <button class="routeplan-main-cta" data-screen-target="map">
         Plan mijn route
       </button>
     </div>
+
   </section>
 
 
