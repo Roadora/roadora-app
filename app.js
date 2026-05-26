@@ -877,3 +877,115 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   });
 })();
 
+
+
+/* ===== Roadora v40 Clean Map Dock Controller ===== */
+(function(){
+  var dock = document.getElementById("rdMapDockV40");
+  if (!dock) return;
+
+  var sheet = dock.querySelector(".rd-map-dock-sheet-v40");
+  var tabs = Array.prototype.slice.call(dock.querySelectorAll(".rd-map-dock-tab-v40"));
+  var panels = Array.prototype.slice.call(dock.querySelectorAll(".rd-map-dock-panel-v40"));
+  var grab = dock.querySelector(".rd-map-dock-grab-v40");
+
+  function isVisible(el){
+    if (!el) return false;
+    var style = window.getComputedStyle(el);
+    var rect = el.getBoundingClientRect();
+    return style.display !== "none" && style.visibility !== "hidden" && rect.width > 10 && rect.height > 10;
+  }
+
+  function mapIsActive(){
+    var mapScreen = document.getElementById("mapScreen") || document.querySelector('[data-screen="map"]') || document.querySelector(".map-screen");
+    var leaf = document.getElementById("routeLeafletMap") || document.querySelector(".leaflet-container");
+
+    if (document.body.classList.contains("screen-map") ||
+        document.body.classList.contains("is-map") ||
+        document.body.getAttribute("data-screen") === "map" ||
+        document.body.getAttribute("data-active-screen") === "map") {
+      return true;
+    }
+
+    if (mapScreen && isVisible(mapScreen)) return true;
+    if (leaf && isVisible(leaf) && !document.body.classList.contains("screen-home") && document.body.getAttribute("data-screen") !== "home") return true;
+
+    return false;
+  }
+
+  function syncMapScope(){
+    var active = mapIsActive();
+    dock.classList.toggle("is-visible", active);
+    if (!active) closeDock();
+  }
+
+  function setPanel(name){
+    name = name || "stops";
+    dock.setAttribute("data-panel", name);
+    tabs.forEach(function(tab){
+      tab.classList.toggle("is-active", tab.getAttribute("data-panel") === name);
+    });
+    panels.forEach(function(panel){
+      panel.classList.toggle("is-active", panel.getAttribute("data-panel") === name);
+    });
+  }
+
+  function openDock(name){
+    setPanel(name || dock.getAttribute("data-panel") || "stops");
+    dock.setAttribute("data-state", "open");
+    dock.setAttribute("data-height", "half");
+    if (sheet) sheet.setAttribute("aria-hidden", "false");
+  }
+
+  function closeDock(){
+    dock.setAttribute("data-state", "closed");
+    dock.setAttribute("data-height", "half");
+    if (sheet) sheet.setAttribute("aria-hidden", "true");
+  }
+
+  function cycleHeight(){
+    var current = dock.getAttribute("data-height") || "half";
+    var next = current === "half" ? "expanded" : current === "expanded" ? "collapsed" : "half";
+    dock.setAttribute("data-state", "open");
+    dock.setAttribute("data-height", next);
+    if (sheet) sheet.setAttribute("aria-hidden", "false");
+  }
+
+  tabs.forEach(function(tab){
+    tab.addEventListener("click", function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      openDock(tab.getAttribute("data-panel") || "stops");
+    });
+  });
+
+  if (grab) {
+    grab.addEventListener("click", function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      cycleHeight();
+    });
+  }
+
+  dock.addEventListener("click", function(ev){
+    var category = ev.target.closest("[data-category]");
+    if (!category) return;
+    dock.setAttribute("data-category", category.getAttribute("data-category"));
+  });
+
+  document.addEventListener("click", function(){
+    setTimeout(syncMapScope, 80);
+    setTimeout(syncMapScope, 320);
+  }, true);
+  window.addEventListener("hashchange", function(){ setTimeout(syncMapScope, 80); });
+  window.addEventListener("resize", syncMapScope);
+
+  var mo = new MutationObserver(syncMapScope);
+  mo.observe(document.body, { attributes:true, attributeFilter:["class","data-screen","data-active-screen","data-page"] });
+
+  setPanel("stops");
+  closeDock();
+  syncMapScope();
+  setTimeout(syncMapScope, 500);
+  setTimeout(syncMapScope, 1500);
+})();

@@ -115,22 +115,9 @@
 
         <div class="controls controlsV722">
           <button class="centerRouteBtn" id="fitRoute" type="button" aria-label="Centreer route">⌖</button>
-          <div class="rd-map-sheet-v28" id="mapDrawer" aria-hidden="true">
-      <button class="rd-sheet-grab-v28" type="button" aria-label="Wijzig sheet hoogte"></button>
+          
+<!-- Roadora v40: legacy dock element removed -->
 
-      <div class="rd-sheet-scroll-v393">
-        <section class="rd-sheet-header-v393">
-          <div class="rd-sheet-title-v28" id="stopTitle">Stops langs je route</div>
-          <h2 class="rd-sheet-heading-v28" id="stopHeading">Slimme stops</h2>
-          <div class="rd-sheet-meta-v28" id="stopMeta">Langs je huidige route · zonder omweg-gevoel</div>
-          <p class="rd-sheet-desc-v28" id="stopDesc">Kies snel wat je nodig hebt. Roadora toont straks alleen relevante plekken langs je huidige route.</p>
-        </section>
-
-        <div class="rd-sheet-chips-v39" aria-label="Snelle filters"></div>
-        <div class="rd-sheet-cards-v39" aria-label="Sheet opties"></div>
-        <div class="rd-sheet-actions-v392" aria-label="Sheet acties"></div>
-      </div>
-    </div>
         </div>
 
         
@@ -317,12 +304,9 @@
 
   </section>
 
-  <nav class="bottom-nav" aria-label="Roadora navigatie">
-    <button class="active" data-screen-target="overview"><span>⌂</span><b>Overzicht</b></button>
-    <button data-screen-target="map"><span>⌖</span><b>Kaart</b></button>
-    <button data-screen-target="roadtrip"><span>▣</span><b>Mijn Roadtrip</b></button>
-    <button data-screen-target="profile"><span>♙</span><b>Profiel</b></button>
-  </nav>
+  
+<!-- Roadora v40: legacy dock element removed -->
+
 
   <div class="toast" id="toast">Roadtrip gepland</div>
 </main>
@@ -331,12 +315,62 @@
 
 
   <!-- Roadora Map Bottom Navigation v28 - clean only -->
-  <nav class="rd-map-nav-v28" aria-label="Roadora kaart navigatie">
-    <button class="rd-nav-btn-v28 is-active" type="button" data-map-panel="roadtrip">Roadtrip</button>
-    <button class="rd-nav-btn-v28" type="button" data-map-panel="stops">Stops</button>
-    <button class="rd-nav-btn-v28" type="button" data-map-panel="now">Nu<br>nodig</button>
-    <button class="rd-nav-btn-v28" type="button" data-map-panel="more">Meer</button>
-  </nav>
+  
+<!-- Roadora v40: legacy dock element removed -->
+
+
+
+  <!-- Roadora v40 Clean Map Dock - Maps/ORS locked -->
+  <section id="rdMapDockV40" class="rd-map-dock-v40" data-state="closed" data-panel="stops" aria-label="Roadora kaartnavigatie">
+    <div class="rd-map-dock-sheet-v40" aria-hidden="true">
+      <button class="rd-map-dock-grab-v40" type="button" aria-label="Open of vergroot dock"></button>
+
+      <div class="rd-map-dock-panel-v40 is-active" data-panel="stops">
+        <div class="rd-map-dock-grid-v40">
+          <button type="button" class="rd-map-dock-card-v40" data-category="hotels"><span>☾</span><strong>Hotels</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40" data-category="fuel"><span>⛽</span><strong>Tankstations</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40" data-category="charge"><span>⚡</span><strong>Laadpalen</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40" data-category="food"><span>🍴</span><strong>Eten</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40" data-category="discover"><span>◎</span><strong>Uitjes</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40" data-category="wc"><span>WC</span><strong>WC</strong><em>›</em></button>
+        </div>
+      </div>
+
+      <div class="rd-map-dock-panel-v40" data-panel="roadtrip">
+        <div class="rd-map-dock-grid-v40">
+          <button type="button" class="rd-map-dock-card-v40"><span>⌁</span><strong>Route</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>◎</span><strong>Planning</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>♡</span><strong>Opslaan</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>↗</span><strong>Delen</strong><em>›</em></button>
+        </div>
+      </div>
+
+      <div class="rd-map-dock-panel-v40" data-panel="now">
+        <div class="rd-map-dock-grid-v40">
+          <button type="button" class="rd-map-dock-card-v40"><span>⌖</span><strong>Dichtbij</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>☕</span><strong>Koffie</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>⛽</span><strong>Tanken</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>WC</span><strong>WC</strong><em>›</em></button>
+        </div>
+      </div>
+
+      <div class="rd-map-dock-panel-v40" data-panel="more">
+        <div class="rd-map-dock-grid-v40">
+          <button type="button" class="rd-map-dock-card-v40"><span>♡</span><strong>Opslaan</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>↗</span><strong>Delen</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>◎</span><strong>Profiel</strong><em>›</em></button>
+          <button type="button" class="rd-map-dock-card-v40"><span>••</span><strong>Instellingen</strong><em>›</em></button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="rd-map-dock-nav-v40" aria-label="Roadora kaart tabs">
+      <button type="button" class="rd-map-dock-tab-v40" data-panel="roadtrip"><span>⌁</span><strong>Roadtrip</strong></button>
+      <button type="button" class="rd-map-dock-tab-v40 is-active" data-panel="stops"><span>⌖</span><strong>Stops</strong></button>
+      <button type="button" class="rd-map-dock-tab-v40" data-panel="now"><span>⚡</span><strong>Nu nodig</strong></button>
+      <button type="button" class="rd-map-dock-tab-v40" data-panel="more"><span>•••</span><strong>Meer</strong></button>
+    </nav>
+  </section>
 
 </body>
 </html>

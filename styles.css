@@ -6624,106 +6624,253 @@ body[data-sheet-state="half"] .rd-map-sheet-v28{
 
 
 
-/* ===== Roadora v39.6.3.1 Correct Sheet Above Nav Fix ===== */
-/* Vanaf werkende v39.6.3 Flatter Categories.
-   Alleen positionering van sheet + bottom nav.
-   Geen kaart/ORS/Maps/router wijziging.
-*/
+/* =========================================================
+   Roadora v40 Clean Dock Rebuild — Maps Locked
+   Oude sheet/nav lagen uit DOM verwijderd.
+   Oude CSS-selectors geneutraliseerd.
+   Nieuwe map-dock is één component.
+   ========================================================= */
 
-:root{
-  --rd-nav-h: 58px;
-  --rd-nav-x: 14px;
-  --rd-nav-bottom: 0px;
+html,
+body{
+  overflow:hidden !important;
 }
 
-/* Bottom nav blijft onderin en is de zichtbare onderkant */
+/* Legacy dock/sheet/nav/haze systems must not render */
+#mapDrawer,
+#mapRouteSheet,
+.rd-map-sheet-v28,
+.rd-sheet-grid-v28,
+.rd-sheet-thumb-v28,
+.rd-sheet-copy-v28,
+.rd-sheet-overline-v28,
+.rd-map-nav-v28,
 .rd-map-bottom-nav-v28,
 .map-bottom-nav,
 .bottom-nav,
-.rd-bottom-nav{
-  position:fixed !important;
-  left:var(--rd-nav-x) !important;
-  right:var(--rd-nav-x) !important;
-  bottom:var(--rd-nav-bottom) !important;
-  height:calc(var(--rd-nav-h) + env(safe-area-inset-bottom)) !important;
-  padding-bottom:env(safe-area-inset-bottom) !important;
-  z-index:10030 !important;
-
-  background:#f6efe5 !important;
-  border-radius:22px 22px 0 0 !important;
-  border:1px solid rgba(36,25,18,.055) !important;
-  border-bottom:0 !important;
-  box-shadow:0 -8px 28px rgba(36,25,18,.10) !important;
-  overflow:hidden !important;
+.rd-bottom-nav,
+.map-nav-pixel-v2,
+.map-bottom-nav-v5,
+.safe-layer,
+.map-safe-layer,
+.rd-safe-layer,
+.bottom-safe-layer,
+.map-bottom-haze,
+.rd-map-haze,
+.haze-layer{
+  display:none !important;
 }
 
-/* Sheet stopt fysiek op de bovenkant van de bottom nav */
-#mapDrawer.rd-map-sheet-v28,
-.rd-map-sheet-v28{
-  position:fixed !important;
-  left:var(--rd-nav-x) !important;
-  right:var(--rd-nav-x) !important;
-  bottom:calc(var(--rd-nav-h) + env(safe-area-inset-bottom) - 1px) !important;
-  width:auto !important;
-  z-index:10020 !important;
+/* New dock hidden by default, visible only on map */
+#rdMapDockV40{
+  display:none !important;
+}
 
-  padding:0 !important;
-  margin:0 !important;
+#rdMapDockV40.is-visible{
+  display:flex !important;
+}
+
+/* One clean dock */
+.rd-map-dock-v40{
+  position:fixed !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(8px + env(safe-area-inset-bottom)) !important;
+  z-index:11000 !important;
+
+  flex-direction:column !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  pointer-events:auto !important;
+}
+
+/* The sheet is the upper part and opens upward from the nav */
+.rd-map-dock-sheet-v40{
+  max-height:0 !important;
+  opacity:0 !important;
+  overflow:hidden !important;
   background:#efe5d7 !important;
-  border-radius:28px 28px 0 0 !important;
-  overflow:hidden !important;
-
-  transform:translateY(calc(100% + var(--rd-nav-h))) !important;
-  transition:
-    transform .30s cubic-bezier(.22,1,.36,1),
-    height .30s cubic-bezier(.22,1,.36,1) !important;
+  border-radius:26px 26px 0 0 !important;
+  box-shadow:0 -16px 38px rgba(36,25,18,.12) !important;
+  transform:translateY(8px) !important;
+  pointer-events:none !important;
+  transition:max-height .30s cubic-bezier(.22,1,.36,1), opacity .18s ease, transform .30s cubic-bezier(.22,1,.36,1) !important;
 }
 
-body[data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-map-drawer="open"] .rd-map-sheet-v28{
+.rd-map-dock-v40[data-state="open"] .rd-map-dock-sheet-v40{
+  max-height:202px !important;
+  opacity:1 !important;
   transform:translateY(0) !important;
+  pointer-events:auto !important;
 }
 
-/* Geen beige sheet-vlak meer achter/onder de nav */
-#mapDrawer.rd-map-sheet-v28::before,
-#mapDrawer.rd-map-sheet-v28::after,
-.rd-map-sheet-v28::before,
-.rd-map-sheet-v28::after{
+.rd-map-dock-v40[data-height="collapsed"] .rd-map-dock-sheet-v40{
+  max-height:76px !important;
+}
+
+.rd-map-dock-v40[data-height="expanded"] .rd-map-dock-sheet-v40{
+  max-height:62vh !important;
+  overflow:auto !important;
+}
+
+.rd-map-dock-grab-v40{
+  appearance:none !important;
+  border:0 !important;
+  display:block !important;
+  width:42px !important;
+  height:5px !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.18) !important;
+  margin:10px auto 8px !important;
+  padding:0 !important;
+}
+
+.rd-map-dock-panel-v40{
+  display:none !important;
+  padding:0 14px 14px !important;
+}
+
+.rd-map-dock-panel-v40.is-active{
+  display:block !important;
+}
+
+.rd-map-dock-grid-v40{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+}
+
+.rd-map-dock-card-v40{
+  appearance:none !important;
+  height:44px !important;
+  min-height:44px !important;
+  border:0 !important;
+  border-radius:15px !important;
+  padding:0 12px !important;
+  background:rgba(255,255,255,.78) !important;
+  box-shadow:0 4px 12px rgba(36,25,18,.035) !important;
+  color:#241912 !important;
+  display:grid !important;
+  grid-template-columns:24px minmax(0,1fr) 12px !important;
+  align-items:center !important;
+  gap:9px !important;
+}
+
+.rd-map-dock-card-v40 span{
+  width:24px !important;
+  height:24px !important;
+  border-radius:9px !important;
+  background:rgba(36,25,18,.055) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  color:rgba(36,25,18,.72) !important;
+}
+
+.rd-map-dock-card-v40 strong{
+  text-align:left !important;
+  font-size:12.5px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.02em !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.rd-map-dock-card-v40 em{
+  font-style:normal !important;
+  color:rgba(36,25,18,.36) !important;
+  font-size:16px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+}
+
+/* Nav is the fixed lower part of the same component */
+.rd-map-dock-nav-v40{
+  height:58px !important;
+  min-height:58px !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  align-items:stretch !important;
+  background:#f6efe5 !important;
+  border:1px solid rgba(36,25,18,.055) !important;
+  border-radius:24px !important;
+  overflow:hidden !important;
+  box-shadow:0 14px 34px rgba(36,25,18,.12) !important;
+}
+
+.rd-map-dock-v40[data-state="open"] .rd-map-dock-nav-v40{
+  border-radius:0 0 24px 24px !important;
+  border-top:1px solid rgba(36,25,18,.05) !important;
+}
+
+.rd-map-dock-tab-v40{
+  appearance:none !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#241912 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  cursor:pointer !important;
+}
+
+.rd-map-dock-tab-v40 span{
+  font-size:13px !important;
+  line-height:1 !important;
+  opacity:.72 !important;
+}
+
+.rd-map-dock-tab-v40 strong{
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+}
+
+.rd-map-dock-tab-v40.is-active{
+  background:rgba(203,181,153,.22) !important;
+  border-radius:18px !important;
+  margin:6px !important;
+}
+
+.rd-map-dock-tab-v40.is-active span,
+.rd-map-dock-tab-v40.is-active strong{
+  opacity:1 !important;
+}
+
+/* No under-nav block from this dock */
+#rdMapDockV40::before,
+#rdMapDockV40::after,
+.rd-map-dock-nav-v40::after{
   display:none !important;
   content:none !important;
 }
 
-/* Content hoeft geen ruimte voor nav meer te reserveren */
-#mapDrawer .rd-sheet-scroll-v393{
-  padding-bottom:12px !important;
-}
-
-/* Hoogte passend voor de 2x3 categorieën boven de nav */
-body[data-sheet-state="half"] #mapDrawer.rd-map-sheet-v28,
-body[data-sheet-state="half"] .rd-map-sheet-v28{
-  height:188px !important;
-}
-
-body[data-sheet-state="collapsed"] #mapDrawer.rd-map-sheet-v28,
-body[data-sheet-state="collapsed"] .rd-map-sheet-v28{
-  height:82px !important;
-}
-
-body[data-sheet-state="expanded"] #mapDrawer.rd-map-sheet-v28,
-body[data-sheet-state="expanded"] .rd-map-sheet-v28{
-  height:62vh !important;
-}
-
-/* Geen app-shell beige onderlaag zichtbaar maken */
-html,
-body{
-  background:transparent !important;
-}
-
 @media (max-width:420px){
-  body[data-sheet-state="half"] #mapDrawer.rd-map-sheet-v28,
-  body[data-sheet-state="half"] .rd-map-sheet-v28{
-    height:182px !important;
+  .rd-map-dock-v40{
+    left:14px !important;
+    right:14px !important;
+  }
+
+  .rd-map-dock-v40[data-state="open"] .rd-map-dock-sheet-v40{
+    max-height:196px !important;
+  }
+
+  .rd-map-dock-card-v40{
+    height:43px !important;
+    min-height:43px !important;
+    padding:0 11px !important;
+  }
+
+  .rd-map-dock-card-v40 strong{
+    font-size:12px !important;
   }
 }
 
