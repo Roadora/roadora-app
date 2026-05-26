@@ -6654,3 +6654,43 @@ body[data-sheet-state="half"] .rd-map-sheet-v28{
   color:#241912 !important;
 }
 
+
+
+/* ===== Roadora v39.6.5 Category Preview Pins ===== */
+
+.rdCategoryPin{
+  width:34px !important;
+  height:34px !important;
+  border-radius:999px !important;
+  background:#fffaf2 !important;
+  border:2px solid rgba(36,25,18,.18) !important;
+  box-shadow:0 10px 24px rgba(36,25,18,.18) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.rdCategoryPin span{
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(36,25,18,.08);
+  color:#241912;
+  font-size:13px;
+  font-weight:900;
+  line-height:1;
+}
+
+.rdCategoryPin-hotels span{ background:rgba(117,91,68,.12); }
+.rdCategoryPin-fuel span{ background:rgba(184,121,50,.16); }
+.rdCategoryPin-charge span{ background:rgba(92,137,94,.16); }
+.rdCategoryPin-food span{ background:rgba(178,96,70,.14); }
+.rdCategoryPin-discover span{ background:rgba(74,112,143,.14); }
+.rdCategoryPin-wc span{
+  background:rgba(72,126,128,.14);
+  font-size:9px;
+}
+

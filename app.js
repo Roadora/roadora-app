@@ -271,7 +271,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     'san sebastian': [-1.9812,43.3183],
     sansebastian: [-1.9812,43.3183]
   };
-  let map, routeLayer, markerLayer, labelLayer, initialized=false, loading=false, routeCoordinates=[];
+  let map, routeLayer, markerLayer, labelLayer, categoryLayer, initialized=false, loading=false, routeCoordinates=[];
 
   function norm(v){ return String(v||'').toLowerCase().trim().replace(/[,].*$/,'').replace(/[-_]/g,' ').replace(/\s+/g,' '); }
   function coordFor(label, fallback){
@@ -341,6 +341,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     routeLayer=L.layerGroup().addTo(map);
     markerLayer=L.layerGroup().addTo(map);
     labelLayer=L.layerGroup().addTo(map);
+    categoryLayer=L.layerGroup().addTo(map);
 
     $('#zoomIn')?.addEventListener('click',()=>map.zoomIn());
     $('#zoomOut')?.addEventListener('click',()=>map.zoomOut());
@@ -408,6 +409,117 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     fitRoute();
     showMapToast('Tussenstop toegevoegd aan je roadtrip');
   }
+
+  /* Roadora v39.6.5 — category preview pins on a separate layer */
+  const CATEGORY_PIN_META = {
+    hotels: {
+      icon: '☾',
+      label: 'Hotels',
+      toast: 'Hotels langs je route',
+      items: ['Hotel aan de route', 'Rustige overnachting', 'Hotel bij afrit']
+    },
+    fuel: {
+      icon: '⛽',
+      label: 'Tankstations',
+      toast: 'Tankstations langs je route',
+      items: ['Tankstation route', 'Brandstof & koffie', 'Volgende tankstop']
+    },
+    charge: {
+      icon: '⚡',
+      label: 'Laadpalen',
+      toast: 'Laadpalen langs je route',
+      items: ['Snellader route', 'Laadstop bij afrit', 'EV stop']
+    },
+    food: {
+      icon: '🍴',
+      label: 'Eten',
+      toast: 'Eten langs je route',
+      items: ['Lunchstop', 'Restaurant route', 'Koffie & pauze']
+    },
+    discover: {
+      icon: '◎',
+      label: 'Uitjes',
+      toast: 'Uitjes langs je route',
+      items: ['Mooi uitzicht', 'Korte stop', 'Bezienswaardigheid']
+    },
+    wc: {
+      icon: 'WC',
+      label: 'WC',
+      toast: 'WC-stops langs je route',
+      items: ['WC dichtbij route', 'Pauzeplek', 'Ruststop']
+    }
+  };
+
+  function categoryPinIcon(category){
+    const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
+    return L.divIcon({
+      className: `rdCategoryPin rdCategoryPin-${category}`,
+      html: `<span>${meta.icon}</span>`,
+      iconSize: [34,34],
+      iconAnchor: [17,17],
+      popupAnchor: [0,-16]
+    });
+  }
+
+  function routePointAt(percent){
+    if(!routeCoordinates.length) return null;
+    const idx = Math.max(0, Math.min(routeCoordinates.length - 1, Math.floor(routeCoordinates.length * percent)));
+    return routeCoordinates[idx];
+  }
+
+  function offsetCoord(coord, index){
+    // coord = [lon, lat]. Small visual offset so preview pins do not sit exactly on top of the route.
+    const direction = index % 2 === 0 ? 1 : -1;
+    const scale = 0.055 + (index * 0.012);
+    return [coord[0] + (scale * direction), coord[1] + (scale * 0.45)];
+  }
+
+  function renderCategoryPins(category){
+    if(!map || !window.L) return;
+    if(!categoryLayer) categoryLayer = L.layerGroup().addTo(map);
+    categoryLayer.clearLayers();
+
+    if(!routeCoordinates.length){
+      showMapToast('Plan eerst een route');
+      return;
+    }
+
+    const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
+    const positions = [0.28, 0.50, 0.72];
+    const created = [];
+
+    positions.forEach((p, i)=>{
+      const base = routePointAt(p);
+      if(!base) return;
+
+      const coord = offsetCoord(base, i);
+      const name = meta.items[i] || meta.label;
+      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category), riseOnHover:true });
+      marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
+      marker.addTo(categoryLayer);
+      created.push(marker);
+    });
+
+    if(created.length){
+      const group = L.featureGroup(created);
+      try{
+        map.fitBounds(group.getBounds().pad(1.8), { animate:true, duration:.35, maxZoom:8 });
+      }catch(_){}
+    }
+
+    setText('#mapStatusNext', meta.label + ' geselecteerd');
+    showMapToast(meta.toast);
+  }
+
+  window.addEventListener('roadora:stop-category-change', function(ev){
+    const category = ev.detail && ev.detail.category;
+    if(!category) return;
+    renderCategoryPins(category);
+  });
+
+  if (window.RoadoraApp) {
+    window.RoadoraApp.renderCategoryPins = renderCategoryPins;
+  }
   function addEndpoints(startCoord, endCoord){
     const r=activeRoute();
     L.marker(latLng(startCoord), { icon:endpointIcon() }).addTo(markerLayer);
@@ -417,13 +529,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
   function drawFallback(startCoord, endCoord){
     routeCoordinates=[startCoord,endCoord];
-    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers();
+    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers();
     L.polyline([latLng(startCoord), latLng(endCoord)], { color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
     fitRoute();
   }
   function drawGeoJson(data,startCoord,endCoord){
-    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers();
+    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers();
     const coords=data?.features?.[0]?.geometry?.coordinates || [];
     routeCoordinates = coords.length ? coords : [startCoord,endCoord];
     L.geoJSON(data, { style:{ color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' } }).addTo(routeLayer);
