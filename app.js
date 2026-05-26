@@ -877,3 +877,74 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   });
 })();
 
+
+
+/* ===== Roadora v39.6.4 Category Click State ===== */
+(function(){
+  var CATEGORY_ALIASES = {
+    hotels: "hotels",
+    hotel: "hotels",
+    tanken: "fuel",
+    tankstations: "fuel",
+    fuel: "fuel",
+    laadpalen: "charge",
+    laden: "charge",
+    charge: "charge",
+    eten: "food",
+    food: "food",
+    uitjes: "discover",
+    discover: "discover",
+    wc: "wc"
+  };
+
+  function normalizeCategory(text){
+    var key = String(text || "").toLowerCase().trim();
+    key = key.replace(/\s+/g, "");
+    return CATEGORY_ALIASES[key] || key || "stops";
+  }
+
+  function getLabelFromCard(card){
+    if (!card) return "";
+    var strong = card.querySelector("strong");
+    if (strong && strong.textContent) return strong.textContent;
+    var text = card.textContent || "";
+    return text.replace(/[›>]/g, "").trim();
+  }
+
+  function setActiveCategory(category){
+    category = normalizeCategory(category);
+    document.body.setAttribute("data-active-stop-category", category);
+
+    var cards = document.querySelectorAll("#mapDrawer .rd-sheet-card-v39, .rd-sheet-card-v39");
+    cards.forEach(function(card){
+      var label = getLabelFromCard(card);
+      var cardCategory = normalizeCategory(label);
+      card.classList.toggle("is-active-category-v3964", cardCategory === category);
+    });
+
+    // Future hook: map pin rendering can listen for this event without coupling to the drawer.
+    window.dispatchEvent(new CustomEvent("roadora:stop-category-change", {
+      detail: { category: category }
+    }));
+
+    if (window.RoadoraApp) {
+      window.RoadoraApp.activeStopCategory = category;
+    }
+  }
+
+  document.addEventListener("click", function(ev){
+    var card = ev.target.closest("#mapDrawer .rd-sheet-card-v39, .rd-sheet-card-v39");
+    if (!card) return;
+
+    var label = getLabelFromCard(card);
+    if (!label) return;
+
+    var category = normalizeCategory(label);
+    var valid = ["hotels","fuel","charge","food","discover","wc"].indexOf(category) > -1;
+    if (!valid) return;
+
+    setActiveCategory(category);
+  }, true);
+
+  window.RoadoraSetStopCategory = setActiveCategory;
+})();
