@@ -989,3 +989,46 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   setTimeout(syncMapScope, 500);
   setTimeout(syncMapScope, 1500);
 })();
+
+
+/* ===== Roadora v40.1 Clean Core Runtime Guard ===== */
+(function(){
+  var dock = document.getElementById("rdMapDockV40");
+  if (!dock) return;
+
+  // Guard against legacy body states reopening removed sheet systems.
+  var legacyIds = ["mapDrawer", "mapRouteSheet"];
+  legacyIds.forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.setAttribute("hidden", "hidden");
+  });
+
+  // Keep only the v40 dock in the map UI layer.
+  function cleanupLegacyDockNodes(){
+    var selectors = [
+      "#mapDrawer",
+      "#mapRouteSheet",
+      ".rd-map-sheet-v28",
+      ".rd-map-nav-v28",
+      ".rd-map-bottom-nav-v28",
+      ".map-bottom-nav",
+      ".bottom-nav",
+      ".rd-bottom-nav",
+      ".map-bottom-haze",
+      ".rd-map-haze",
+      ".haze-layer"
+    ];
+
+    selectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(node){
+        if (!node.closest("#rdMapDockV40")) {
+          node.style.display = "none";
+          node.setAttribute("aria-hidden", "true");
+        }
+      });
+    });
+  }
+
+  cleanupLegacyDockNodes();
+  setTimeout(cleanupLegacyDockNodes, 800);
+})();
