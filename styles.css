@@ -7737,3 +7737,36 @@ body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-re
     max-height:166px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.6.33 — Android Safe-Area Double Nav Fix
+   ---------------------------------------------------------
+   Fixes the remaining legacy Home/Overview bottom-nav layer
+   that became visible underneath the isolated map nav on real
+   Android Chrome safe-area heights.
+
+   Important:
+   - Only hides the global app bottom-nav while the map screen is active.
+   - Keeps Home/Overview bottom-nav untouched on all non-map screens.
+   - Keeps the isolated map nav (.rd-map-nav-v28) as the only active map nav.
+   - Leaflet / Maps / ORS / pins-core untouched.
+========================================================= */
+
+body[data-active-screen="map"] main.phone > nav.bottom-nav,
+body[data-active-screen="map"] .phone > nav.bottom-nav,
+body[data-active-screen="map"] nav.bottom-nav[aria-label="Roadora navigatie"]{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  transform:none !important;
+  z-index:-1 !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28{
+  display:grid !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  z-index:99999 !important;
+}
