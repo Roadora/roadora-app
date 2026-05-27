@@ -8276,3 +8276,57 @@ body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer{
 body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-scroll-v39636{
   touch-action:pan-x !important;
 }
+
+/* =========================================================
+   Roadora v39.6.41 — Hotel Cards Lift / Handle Overlay Fix
+   ---------------------------------------------------------
+   Alleen map + hotels-state. Het swipe-streepje blijft zichtbaar
+   en swipebaar, maar claimt geen verticale ruimte meer in de sheet.
+   Daardoor schuiven de hotelcards iets omhoog en blijft de km-regel
+   beter in beeld zonder de sheet hoger te maken.
+========================================================= */
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer.rd-map-sheet-v28{
+  position:fixed !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28{
+  position:absolute !important;
+  top:0 !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:92px !important;
+  height:30px !important;
+  min-height:30px !important;
+  margin:0 !important;
+  z-index:30 !important;
+  pointer-events:auto !important;
+  touch-action:none !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28::before{
+  top:8px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-scroll-v393{
+  height:100% !important;
+  padding-top:0 !important;
+  margin-top:0 !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-cards-v39{
+  top:0 !important;
+  bottom:0 !important;
+  padding-top:0 !important;
+  margin-top:0 !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{
+  padding:24px 10px 7px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{
+  padding-top:0 !important;
+  padding-bottom:2px !important;
+}
