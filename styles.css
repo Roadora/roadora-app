@@ -7869,3 +7869,231 @@ body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
 body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-cards-v39{
   background:transparent !important;
 }
+
+/* =========================================================
+   Roadora v39.6.36 — Hotels Horizontal Sheet State
+   ---------------------------------------------------------
+   Safe test: clicking Stops > Hotels replaces only the inner
+   stops content with a horizontal hotel strip. The drawer keeps
+   the exact same fixed height and the isolated map nav stays intact.
+   Home/Overzicht and Leaflet/ORS are untouched.
+========================================================= */
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="hotels"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  background:transparent !important;
+  box-sizing:border-box !important;
+}
+
+.rd-hotels-strip-shell-v39636{
+  display:flex !important;
+  flex-direction:column !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  padding:8px 10px 9px !important;
+  box-sizing:border-box !important;
+  color:#241912 !important;
+  background:transparent !important;
+}
+
+.rd-hotels-strip-head-v39636{
+  flex:0 0 32px !important;
+  height:32px !important;
+  display:grid !important;
+  grid-template-columns:34px minmax(0,1fr) 56px !important;
+  align-items:center !important;
+  gap:8px !important;
+  margin:0 0 6px !important;
+  padding:0 !important;
+}
+
+.rd-hotels-back-v39636,
+.rd-hotels-filter-v39636{
+  height:30px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.58) !important;
+  color:#4f3d30 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), 0 4px 10px rgba(36,25,18,.04) !important;
+  font-weight:900 !important;
+  font-size:12px !important;
+  padding:0 !important;
+}
+
+.rd-hotels-back-v39636{font-size:22px !important;line-height:1 !important;}
+.rd-hotels-filter-v39636{font-size:10px !important;}
+
+.rd-hotels-title-v39636{
+  min-width:0 !important;
+  height:30px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  overflow:hidden !important;
+}
+
+.rd-hotels-title-v39636 span{
+  flex:0 0 24px !important;
+  width:24px !important;
+  height:24px !important;
+  border-radius:8px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(36,25,18,.07) !important;
+  font-size:11px !important;
+}
+
+.rd-hotels-title-v39636 strong{
+  display:block !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  font-size:13px !important;
+  font-weight:950 !important;
+  letter-spacing:-.025em !important;
+  line-height:1 !important;
+}
+
+.rd-hotels-scroll-v39636{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  gap:9px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scroll-snap-type:x proximity !important;
+  padding:0 2px 3px !important;
+  margin:0 !important;
+  scrollbar-width:none !important;
+}
+.rd-hotels-scroll-v39636::-webkit-scrollbar{display:none !important;}
+
+.rd-hotel-card-v39636{
+  position:relative !important;
+  flex:0 0 116px !important;
+  width:116px !important;
+  height:108px !important;
+  scroll-snap-align:start !important;
+  border:1px solid rgba(36,25,18,.06) !important;
+  border-radius:16px !important;
+  background:rgba(255,255,255,.76) !important;
+  box-shadow:0 6px 16px rgba(36,25,18,.055) !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  color:#241912 !important;
+  text-align:left !important;
+  box-sizing:border-box !important;
+}
+
+.rd-hotel-card-v39636.is-active{
+  border-color:rgba(138,91,45,.26) !important;
+  box-shadow:0 8px 20px rgba(138,91,45,.12), inset 0 0 0 1px rgba(255,255,255,.45) !important;
+}
+
+.rd-hotel-photo-v39636{
+  display:block !important;
+  width:100% !important;
+  height:48px !important;
+  background-size:cover !important;
+  background-position:center !important;
+  border-radius:15px 15px 10px 10px !important;
+}
+
+.rd-hotel-photo-v39636::after{
+  content:"" !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  background:linear-gradient(180deg, rgba(255,255,255,0) 46%, rgba(36,25,18,.16) 100%) !important;
+}
+
+.rd-hotel-rank-v39636{
+  position:absolute !important;
+  top:6px !important;
+  left:6px !important;
+  width:21px !important;
+  height:21px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.92) !important;
+  color:#241912 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:10px !important;
+  font-weight:950 !important;
+  box-shadow:0 3px 9px rgba(36,25,18,.10) !important;
+  z-index:2 !important;
+}
+
+.rd-hotel-name-v39636,
+.rd-hotel-rating-v39636,
+.rd-hotel-meta-v39636{
+  display:block !important;
+  padding-left:8px !important;
+  padding-right:8px !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.rd-hotel-name-v39636{
+  margin-top:6px !important;
+  font-size:10.5px !important;
+  font-weight:950 !important;
+  line-height:1.05 !important;
+  letter-spacing:-.02em !important;
+}
+
+.rd-hotel-rating-v39636{
+  margin-top:4px !important;
+  font-size:9px !important;
+  font-weight:850 !important;
+  color:#8a5b2d !important;
+  line-height:1 !important;
+}
+
+.rd-hotel-meta-v39636{
+  margin-top:5px !important;
+  font-size:8.5px !important;
+  font-weight:750 !important;
+  color:rgba(36,25,18,.58) !important;
+  line-height:1 !important;
+}
+
+@media (max-width:370px){
+  .rd-hotels-strip-shell-v39636{padding-left:8px !important;padding-right:8px !important;}
+  .rd-hotel-card-v39636{flex-basis:108px !important;width:108px !important;}
+  .rd-hotels-strip-head-v39636{grid-template-columns:32px minmax(0,1fr) 50px !important;gap:6px !important;}
+}
