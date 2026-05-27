@@ -7770,3 +7770,61 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   pointer-events:auto !important;
   z-index:99999 !important;
 }
+
+/* =========================================================
+   Roadora v39.6.34 — Responsive Map Nav Width Fix
+   ---------------------------------------------------------
+   Fixes Android Chrome width mismatch/right-side gap.
+   Only affects isolated map nav + map drawer.
+   Home/Overzicht bottom nav remains untouched.
+   Leaflet / Maps / ORS / pins-core untouched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-shell-max:430px;
+  --rd-map-edge: max(14px, calc((100dvw - var(--rd-map-shell-max)) / 2 + 14px));
+  --rd-map-nav-bottom-responsive: calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28{
+  position:fixed !important;
+  left:var(--rd-map-edge) !important;
+  right:var(--rd-map-edge) !important;
+  width:auto !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  transform:none !important;
+  translate:none !important;
+  bottom:var(--rd-map-nav-bottom-responsive) !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+  left:var(--rd-map-edge) !important;
+  right:var(--rd-map-edge) !important;
+  width:auto !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+}
+
+@media (max-width:430px){
+  body[data-active-screen="map"]{
+    --rd-map-edge:14px;
+  }
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"]{
+    --rd-map-edge:10px;
+  }
+
+  body[data-active-screen="map"] .rd-map-nav-v28{
+    padding-left:6px !important;
+    padding-right:6px !important;
+    gap:2px !important;
+  }
+}
