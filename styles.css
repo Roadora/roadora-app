@@ -7828,3 +7828,44 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
     gap:2px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.6.35 — Exact Sheet/Nav Surface Match
+   ---------------------------------------------------------
+   Fixes the visible color mismatch between the isolated map
+   drawer and the isolated map bottom nav on real Android.
+   Only map-specific selectors are touched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-unified-surface:#f7ecde;
+  --rd-map-unified-surface-soft:#fbf4eb;
+  --rd-map-unified-border:rgba(255,255,255,.58);
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-nav-v28{
+  background:linear-gradient(180deg, var(--rd-map-unified-surface-soft) 0%, var(--rd-map-unified-surface) 100%) !important;
+  background-color:var(--rd-map-unified-surface) !important;
+  border-color:var(--rd-map-unified-border) !important;
+  backdrop-filter:blur(18px) saturate(1.02) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.02) !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::before,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28::before,
+body[data-active-screen="map"] .rd-map-nav-v28::before,
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::after,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28::after,
+body[data-active-screen="map"] .rd-map-nav-v28::after{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-cards-v39{
+  background:transparent !important;
+}
