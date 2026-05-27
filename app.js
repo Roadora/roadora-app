@@ -1261,8 +1261,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.setAttribute('data-stop-subpanel','hotels');
     container.innerHTML =
-      '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637">' +
-        '<button type="button" class="rd-hotels-back-v39636 rd-hotels-back-float-v39637" aria-label="Terug naar categorieën">‹</button>' +
+      '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638">' +
         '<div class="rd-hotels-scroll-v39636" aria-label="Hotels langs je route">' +
           HOTEL_STRIP_CARDS_V39636.map((hotel, index)=>
             '<button type="button" class="rd-hotel-card-v39636" data-hotel-index="'+index+'">' +
@@ -1328,13 +1327,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
   document.addEventListener("click", function(e){
-    const back = e.target.closest && e.target.closest(".rd-hotels-back-v39636");
-    if(back){
-      e.preventDefault();
-      e.stopPropagation();
-      renderStops();
-      return;
-    }
     const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636");
     if(!hotel) return;
     e.preventDefault();
@@ -1346,6 +1338,40 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       window.RoadoraApp.renderCategoryPins('hotels');
     }
   }, true);
+
+
+  /* v39.6.38 — swipe the sheet handle downward to return from hotel cards to categories.
+     This listens only on the active map drawer and only starts from the top handle zone,
+     so horizontal hotel-card scrolling stays untouched. */
+  (function bindHotelsSwipeBack(){
+    let startX = 0, startY = 0, tracking = false;
+    const HANDLE_ZONE = 34;
+    const SWIPE_DOWN = 38;
+
+    document.addEventListener('pointerdown', function(e){
+      if(document.body.getAttribute('data-stop-subpanel') !== 'hotels') return;
+      const drawer = document.getElementById('mapDrawer');
+      if(!drawer || !drawer.contains(e.target)) return;
+      const rect = drawer.getBoundingClientRect();
+      if((e.clientY - rect.top) > HANDLE_ZONE) return;
+      tracking = true;
+      startX = e.clientX;
+      startY = e.clientY;
+    }, { passive:true });
+
+    document.addEventListener('pointermove', function(e){
+      if(!tracking) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if(dy > SWIPE_DOWN && Math.abs(dy) > Math.abs(dx) * 1.15){
+        tracking = false;
+        renderStops();
+      }
+    }, { passive:true });
+
+    document.addEventListener('pointerup', function(){ tracking = false; }, { passive:true });
+    document.addEventListener('pointercancel', function(){ tracking = false; }, { passive:true });
+  })();
 
   window.RoadoraRenderStopsSheet = renderStops;
   window.RoadoraRenderHotelStrip = renderHotelStrip;

@@ -8169,3 +8169,68 @@ body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hot
   body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{padding-left:40px !important;gap:8px !important;}
   body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-card-v39636{flex-basis:118px !important;width:118px !important;}
 }
+
+
+/* =========================================================
+   Roadora v39.6.38 — Hotels Swipe Back, Full Sheet Cards
+   ---------------------------------------------------------
+   No back button. The existing sheet handle becomes the native
+   gesture: swipe down on the top handle zone to return to categories.
+   Cards fill the same fixed sheet height; map/nav/ORS untouched.
+========================================================= */
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-back-v39636,
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-back-float-v39637{
+  display:none !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{
+  padding:8px 10px 9px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{
+  height:100% !important;
+  padding:0 4px 3px 4px !important;
+  gap:11px !important;
+  align-items:stretch !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-card-v39636{
+  flex:0 0 142px !important;
+  width:142px !important;
+  height:100% !important;
+  min-height:126px !important;
+  max-height:132px !important;
+  border-radius:18px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-photo-v39636{
+  height:70px !important;
+  border-radius:17px 17px 12px 12px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-name-v39636{
+  margin-top:7px !important;
+  font-size:11.5px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-rating-v39636{
+  margin-top:5px !important;
+  font-size:9.7px !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-meta-v39636{
+  margin-top:6px !important;
+  font-size:9px !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{
+    padding-left:3px !important;
+    padding-right:3px !important;
+    gap:9px !important;
+  }
+  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-card-v39636{
+    flex-basis:132px !important;
+    width:132px !important;
+  }
+}
