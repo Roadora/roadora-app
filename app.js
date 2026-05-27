@@ -1261,12 +1261,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.setAttribute('data-stop-subpanel','hotels');
     container.innerHTML =
-      '<div class="rd-hotels-strip-shell-v39636">' +
-        '<div class="rd-hotels-strip-head-v39636">' +
-          '<button type="button" class="rd-hotels-back-v39636" aria-label="Terug naar categorieën">‹</button>' +
-          '<div class="rd-hotels-title-v39636"><span>☾</span><strong>Hotels langs je route</strong></div>' +
-          '<button type="button" class="rd-hotels-filter-v39636">Filter</button>' +
-        '</div>' +
+      '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637">' +
+        '<button type="button" class="rd-hotels-back-v39636 rd-hotels-back-float-v39637" aria-label="Terug naar categorieën">‹</button>' +
         '<div class="rd-hotels-scroll-v39636" aria-label="Hotels langs je route">' +
           HOTEL_STRIP_CARDS_V39636.map((hotel, index)=>
             '<button type="button" class="rd-hotel-card-v39636" data-hotel-index="'+index+'">' +

@@ -8097,3 +8097,75 @@ body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpane
   .rd-hotel-card-v39636{flex-basis:108px !important;width:108px !important;}
   .rd-hotels-strip-head-v39636{grid-template-columns:32px minmax(0,1fr) 50px !important;gap:6px !important;}
 }
+
+/* v39.6.37 — Hotels full-card sheet: no title/filter row, cards fill the fixed sheet */
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{
+  position:relative !important;
+  height:100% !important;
+  padding:8px 10px 9px !important;
+  overflow:hidden !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{
+  height:100% !important;
+  flex:1 1 auto !important;
+  align-items:stretch !important;
+  gap:10px !important;
+  padding:0 4px 3px 42px !important;
+  margin:0 !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-back-float-v39637{
+  position:absolute !important;
+  left:10px !important;
+  top:8px !important;
+  z-index:6 !important;
+  width:32px !important;
+  height:100% !important;
+  max-height:128px !important;
+  border-radius:18px !important;
+  background:rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(12px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(12px) saturate(1.08) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.66), 0 8px 18px rgba(36,25,18,.07) !important;
+  color:#4f3d30 !important;
+  font-size:25px !important;
+  font-weight:950 !important;
+  line-height:1 !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-card-v39636{
+  flex:0 0 126px !important;
+  width:126px !important;
+  height:100% !important;
+  min-height:126px !important;
+  max-height:132px !important;
+  border-radius:17px !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-photo-v39636{
+  height:62px !important;
+  border-radius:16px 16px 11px 11px !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-name-v39636{
+  margin-top:7px !important;
+  font-size:11px !important;
+  line-height:1.08 !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-rating-v39636{
+  margin-top:5px !important;
+  font-size:9.4px !important;
+}
+
+body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-meta-v39636{
+  margin-top:6px !important;
+  font-size:8.7px !important;
+}
+
+@media (max-width:370px){
+  body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{padding-left:8px !important;padding-right:8px !important;}
+  body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotels-scroll-v39636{padding-left:40px !important;gap:8px !important;}
+  body[data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-fullcards-v39637 .rd-hotel-card-v39636{flex-basis:118px !important;width:118px !important;}
+}
