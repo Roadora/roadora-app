@@ -1238,11 +1238,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   const HOTEL_STRIP_CARDS_V39636 = [
-    { name:'Van der Valk Venlo', meta:'105 km vanaf start', rating:'4.3', price:'€€', img:'assets/hero-hotels.webp' },
-    { name:'Hotel Koblenz', meta:'245 km vanaf start', rating:'4.2', price:'€€', img:'assets/hero-overview.webp' },
-    { name:'Hotel am Main', meta:'390 km vanaf start', rating:'4.4', price:'€€€', img:'assets/hero-routeplan.webp' },
-    { name:'Landhotel Bayern', meta:'520 km vanaf start', rating:'4.5', price:'€€', img:'assets/hero-roadtrip.webp' },
-    { name:'City Hotel München', meta:'680 km vanaf start', rating:'4.1', price:'€€', img:'assets/hero-hotels.webp' }
+    { name:'Van der Valk Venlo', meta:'105 km', rating:'4.3', price:'€€', img:'assets/hero-hotels.webp' },
+    { name:'Hotel Koblenz', meta:'245 km', rating:'4.2', price:'€€', img:'assets/hero-overview.webp' },
+    { name:'Hotel am Main', meta:'390 km', rating:'4.4', price:'€€€', img:'assets/hero-routeplan.webp' },
+    { name:'Landhotel Bayern', meta:'520 km', rating:'4.5', price:'€€', img:'assets/hero-roadtrip.webp' },
+    { name:'City Hotel München', meta:'680 km', rating:'4.1', price:'€€', img:'assets/hero-hotels.webp' }
   ];
 
   function renderStops(){
