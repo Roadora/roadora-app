@@ -6694,3 +6694,1046 @@ body[data-sheet-state="half"] .rd-map-sheet-v28{
   font-size:9px;
 }
 
+
+
+/* ===== Roadora v39.6.6 Locked Bottom Nav ===== */
+/* Veilige fix vanaf stabiele v39.6.5:
+   - bottom nav blijft altijd zichtbaar en onaangetast
+   - sheet mag erboven openen, maar nav wordt niet meer verschoven/geclipt
+   - geen router/dock rebuild
+   - geen Maps/ORS/Leaflet wijzigingen
+*/
+
+body[data-active-screen="map"] .rd-map-nav-v28,
+body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"] .map-bottom-nav,
+body[data-active-screen="map"] .bottom-nav,
+body[data-active-screen="map"] .rd-bottom-nav{
+  position:fixed !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(8px + env(safe-area-inset-bottom)) !important;
+  height:58px !important;
+  z-index:99999 !important;
+
+  display:grid !important;
+  grid-template-columns:repeat(4, 1fr) !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+
+  background:#f6efe5 !important;
+  border-radius:22px !important;
+  border:1px solid rgba(36,25,18,.06) !important;
+  box-shadow:0 12px 32px rgba(36,25,18,.12) !important;
+  overflow:hidden !important;
+
+  transform:none !important;
+  translate:none !important;
+  clip-path:none !important;
+}
+
+/* Zorg dat alle nav-items altijd zichtbaar blijven */
+body[data-active-screen="map"] .rd-map-nav-v28 > *,
+body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
+body[data-active-screen="map"] .map-bottom-nav > *,
+body[data-active-screen="map"] .bottom-nav > *,
+body[data-active-screen="map"] .rd-bottom-nav > *{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  min-width:0 !important;
+}
+
+/* Sheet mag niet meer over de nav heen tekenen */
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-sheet-v28{
+  z-index:99990 !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(66px + env(safe-area-inset-bottom)) !important;
+  width:auto !important;
+  max-width:none !important;
+}
+
+/* Als oude regels nav of sheet proberen te clippen, neutraliseer dat */
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-nav-v28{
+  contain:none !important;
+}
+
+/* Sheet-content reserveert geen ruimte in/onder de nav */
+body[data-active-screen="map"] #mapDrawer .rd-sheet-scroll-v393{
+  padding-bottom:12px !important;
+}
+
+/* Geen pseudo-laag achter de locked nav */
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::before,
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::after,
+body[data-active-screen="map"] .rd-map-sheet-v28::before,
+body[data-active-screen="map"] .rd-map-sheet-v28::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Kleine schermen */
+@media (max-width:420px){
+  body[data-active-screen="map"] .rd-map-nav-v28,
+  body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+  body[data-active-screen="map"] .map-bottom-nav,
+  body[data-active-screen="map"] .bottom-nav,
+  body[data-active-screen="map"] .rd-bottom-nav{
+    left:14px !important;
+    right:14px !important;
+    height:58px !important;
+  }
+}
+
+
+
+/* ===== Roadora v39.6.8 Instant Sheet Panel Above Locked Nav ===== */
+/* Architectuurwijziging zonder Maps/ORS:
+   - bottom nav blijft locked
+   - sheet is een direct zichtbaar panel boven nav
+   - geen translate/slide vanuit schermonderkant
+*/
+
+body[data-active-screen="map"]{
+  --rd-v3968-x: 14px;
+  --rd-v3968-nav-h: 58px;
+  --rd-v3968-nav-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+
+/* Locked bottom nav blijft altijd zichtbaar en bovenaan in stack */
+body[data-active-screen="map"] .rd-map-nav-v28,
+body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"] .map-bottom-nav,
+body[data-active-screen="map"] .bottom-nav,
+body[data-active-screen="map"] .rd-bottom-nav{
+  position:fixed !important;
+  left:var(--rd-v3968-x) !important;
+  right:var(--rd-v3968-x) !important;
+  bottom:var(--rd-v3968-nav-bottom) !important;
+  height:var(--rd-v3968-nav-h) !important;
+  z-index:99999 !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+  translate:none !important;
+  clip-path:none !important;
+  background:#f6efe5 !important;
+  border-radius:22px !important;
+  border:1px solid rgba(36,25,18,.06) !important;
+  box-shadow:0 12px 32px rgba(36,25,18,.12) !important;
+  overflow:hidden !important;
+}
+
+/* Real sheet/panel: fixed direct boven nav */
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-sheet-v28{
+  position:fixed !important;
+  left:var(--rd-v3968-x) !important;
+  right:var(--rd-v3968-x) !important;
+  bottom:calc(var(--rd-v3968-nav-bottom) + var(--rd-v3968-nav-h) - 1px) !important;
+  width:auto !important;
+  z-index:99990 !important;
+
+  background:#efe5d7 !important;
+  border-radius:26px 26px 0 0 !important;
+  box-shadow:0 -12px 30px rgba(36,25,18,.10) !important;
+  overflow:hidden !important;
+  padding:0 !important;
+  margin:0 !important;
+
+  /* Cruciaal: geen slide meer */
+  transform:none !important;
+  translate:none !important;
+  transition:opacity .12s ease !important;
+
+  display:none !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* Open = direct verschijnen, aangesloten boven nav */
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-sheet-v28,
+body[data-active-screen="map"].rd-instant-panel-open-v3968 #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"].rd-instant-panel-open-v3968 .rd-map-sheet-v28{
+  display:flex !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  transform:none !important;
+  translate:none !important;
+}
+
+/* Height states, maar zonder translate */
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-sheet-v28{
+  height:272px !important;
+  max-height:272px !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="collapsed"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="collapsed"] .rd-map-sheet-v28{
+  height:112px !important;
+  max-height:112px !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="expanded"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="expanded"] .rd-map-sheet-v28{
+  height:62vh !important;
+  max-height:62vh !important;
+}
+
+/* Visueel één blok: nav top-radius weg wanneer panel open is */
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28,
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"][data-map-drawer="open"] .map-bottom-nav,
+body[data-active-screen="map"][data-map-drawer="open"] .bottom-nav,
+body[data-active-screen="map"][data-map-drawer="open"] .rd-bottom-nav{
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+}
+
+/* Geen pseudo-lagen/gaps */
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::before,
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::after,
+body[data-active-screen="map"] .rd-map-sheet-v28::before,
+body[data-active-screen="map"] .rd-map-sheet-v28::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Sheet content stopt netjes bovenin het panel */
+body[data-active-screen="map"] #mapDrawer .rd-sheet-scroll-v393{
+  padding-bottom:12px !important;
+  overflow:auto !important;
+}
+
+/* Roadtrip hoort geen map panel te tonen */
+body[data-active-screen="map"][data-instant-map-panel="roadtrip"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="roadtrip"] .rd-map-sheet-v28{
+  display:none !important;
+}
+
+/* Alle nav items blijven zichtbaar */
+body[data-active-screen="map"] .rd-map-nav-v28 > *,
+body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
+body[data-active-screen="map"] .map-bottom-nav > *,
+body[data-active-screen="map"] .bottom-nav > *,
+body[data-active-screen="map"] .rd-bottom-nav > *{
+  visibility:visible !important;
+  opacity:1 !important;
+  display:flex !important;
+}
+
+@media (max-width:420px){
+  body[data-active-screen="map"]{
+    --rd-v3968-x: 14px;
+    --rd-v3968-nav-h: 58px;
+  }
+
+  body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
+  body[data-active-screen="map"][data-map-drawer="open"] .rd-map-sheet-v28{
+    height:264px !important;
+    max-height:264px !important;
+  }
+}
+
+
+
+
+/* ===== Roadora v39.6.16 Clean Renderer Reset ===== */
+/* Tijdelijke injecties/render-fixes verwijderd.
+   Vanaf hier weer werken met één echte sheet-renderer.
+*/
+
+
+/* ===== Roadora v39.6.19 Integrated Stops Render Styles ===== */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-header-v393,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-heading-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-title-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-desc-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-meta-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-chips-v39,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-actions-v392,
+body[data-instant-map-panel="stops"] #mapDrawer p,
+body[data-instant-map-panel="stops"] #mapDrawer small,
+body[data-instant-map-panel="stops"] #mapDrawer h1,
+body[data-instant-map-panel="stops"] #mapDrawer h2,
+body[data-instant-map-panel="stops"] #mapDrawer h3{display:none!important;}
+
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;
+  padding:14px!important;margin:0!important;align-content:start!important;
+}
+
+.rd-render-stop-card-v39619{
+  min-height:54px!important;height:54px!important;border-radius:18px!important;padding:0 14px!important;
+  display:grid!important;grid-template-columns:30px minmax(0,1fr) 12px!important;
+  align-items:center!important;gap:10px!important;background:rgba(255,255,255,.88)!important;
+  border:1px solid rgba(36,25,18,.06)!important;box-shadow:0 6px 18px rgba(36,25,18,.05)!important;color:#241912!important;
+}
+.rd-render-stop-card-v39619.is-active{background:#fffaf2!important;border-color:rgba(36,25,18,.16)!important;box-shadow:0 8px 22px rgba(36,25,18,.08)!important;}
+.rd-render-stop-icon-v39619{width:30px!important;height:30px!important;border-radius:11px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(36,25,18,.06)!important;color:#241912!important;font-size:13px!important;font-weight:900!important;}
+.rd-render-stop-card-v39619 strong{font-size:13px!important;font-weight:900!important;line-height:1!important;text-align:left!important;}
+.rd-render-stop-card-v39619 em{font-style:normal!important;color:rgba(36,25,18,.35)!important;font-size:16px!important;font-weight:800!important;}
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{height:214px!important;max-height:214px!important;}
+
+/* ===== Roadora v39.6.21 Fix Double Grid Width ===== */
+/* Oorzaak:
+   .rd-sheet-scroll-v393 was ook grid, waardoor .rd-sheet-cards-v39
+   maar in de linker helft van de sheet terechtkwam.
+   Fix: parent is normale content wrapper, alleen cards-container is grid.
+*/
+
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  display:block !important;
+  width:100% !important;
+  padding:12px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+}
+
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:8px !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+}
+
+body[data-instant-map-panel="stops"] #mapDrawer .rd-render-stop-card-v39619{
+  width:100% !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Houd de lagere sheet uit v39.6.20 */
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{
+  height:170px !important;
+  max-height:170px !important;
+}
+
+
+
+/* ===== Roadora v39.6.22 Clean Authoritative Stops Sheet ===== */
+/* Enige actieve Stops-grid styling. Oudere conflicterende sheet/card overrides zijn verwijderd. */
+
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-header-v393,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-heading-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-title-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-desc-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-meta-v28,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-chips-v39,
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-actions-v392,
+body[data-instant-map-panel="stops"] #mapDrawer p,
+body[data-instant-map-panel="stops"] #mapDrawer small,
+body[data-instant-map-panel="stops"] #mapDrawer h1,
+body[data-instant-map-panel="stops"] #mapDrawer h2,
+body[data-instant-map-panel="stops"] #mapDrawer h3{
+  display:none !important;
+}
+
+/* Parent is normale wrapper, géén grid */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  display:block !important;
+  width:100% !important;
+  padding:12px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+
+/* Alleen de card container is grid */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:8px !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  align-content:start !important;
+}
+
+.rd-render-stop-card-v39619{
+  width:100% !important;
+  min-width:0 !important;
+  min-height:42px !important;
+  height:42px !important;
+  border-radius:15px !important;
+  padding:0 11px !important;
+
+  display:grid !important;
+  grid-template-columns:24px minmax(0,1fr) 10px !important;
+  align-items:center !important;
+  gap:8px !important;
+
+  background:rgba(255,255,255,.88) !important;
+  border:1px solid rgba(36,25,18,.06) !important;
+  box-shadow:0 4px 12px rgba(36,25,18,.04) !important;
+  color:#241912 !important;
+  box-sizing:border-box !important;
+}
+
+.rd-render-stop-card-v39619.is-active{
+  background:#fffaf2 !important;
+  border-color:rgba(36,25,18,.16) !important;
+  box-shadow:0 8px 22px rgba(36,25,18,.08) !important;
+}
+
+.rd-render-stop-icon-v39619{
+  width:24px !important;
+  height:24px !important;
+  border-radius:8px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(36,25,18,.06) !important;
+  color:#241912 !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+}
+
+.rd-render-stop-card-v39619 strong{
+  font-size:12px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  text-align:left !important;
+  letter-spacing:-.01em !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.rd-render-stop-card-v39619 em{
+  font-style:normal !important;
+  color:rgba(36,25,18,.35) !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+}
+
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{
+  height:170px !important;
+  max-height:170px !important;
+}
+
+
+
+/* ===== Roadora v39.6.23 Lower Stops Layout ===== */
+/* Hele sheet lager + categorieën dichter boven bottom nav */
+
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{
+  height:148px !important;
+  max-height:148px !important;
+}
+
+/* Meer ruimte bovenin zodat cards lager komen */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  padding-top:28px !important;
+  padding-left:12px !important;
+  padding-right:12px !important;
+  padding-bottom:6px !important;
+}
+
+/* Cards iets compacter en lager richting nav */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  gap:7px !important;
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+  align-content:end !important;
+}
+
+.rd-render-stop-card-v39619{
+  min-height:40px !important;
+  height:40px !important;
+  border-radius:14px !important;
+}
+
+.rd-render-stop-icon-v39619{
+  width:22px !important;
+  height:22px !important;
+  border-radius:7px !important;
+  font-size:10px !important;
+}
+
+.rd-render-stop-card-v39619 strong{
+  font-size:11px !important;
+}
+
+
+
+/* ===== Roadora v39.6.24 Smaller Stops Sheet ===== */
+/* Sheet eerst kleiner maken zodat de categorieën vanzelf lager komen */
+
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{
+  height:124px !important;
+  max-height:124px !important;
+  min-height:124px !important;
+}
+
+/* Minder verticale ruimte */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  padding-top:10px !important;
+  padding-bottom:4px !important;
+}
+
+/* Compacter grid */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  gap:6px !important;
+}
+
+/* Cards nog iets platter */
+.rd-render-stop-card-v39619{
+  min-height:36px !important;
+  height:36px !important;
+  border-radius:13px !important;
+  padding:0 10px !important;
+}
+
+.rd-render-stop-icon-v39619{
+  width:20px !important;
+  height:20px !important;
+  border-radius:6px !important;
+  font-size:9px !important;
+}
+
+.rd-render-stop-card-v39619 strong{
+  font-size:10px !important;
+}
+
+.rd-render-stop-card-v39619 em{
+  font-size:12px !important;
+}
+
+
+
+/* ===== Roadora v39.6.25 Bottom Anchor Fix ===== */
+/* Echte oorzaak:
+   De cards-container stond nog gewoon bovenin de sheet-flow.
+   Nu wordt de cards-container absoluut aan de onderkant van de sheet verankerd.
+*/
+
+body[data-instant-map-panel="stops"][data-map-drawer="open"] #mapDrawer{
+  height:154px !important;
+  max-height:154px !important;
+  min-height:154px !important;
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+/* Scroll-wrapper niet meer verantwoordelijk voor layout */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+}
+
+/* Cards echt onderaan verankeren */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:8px !important;
+
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:6px !important;
+
+  width:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Compacte premium cards */
+.rd-render-stop-card-v39619{
+  min-height:38px !important;
+  height:38px !important;
+  border-radius:13px !important;
+  padding:0 10px !important;
+
+  display:grid !important;
+  grid-template-columns:20px minmax(0,1fr) 10px !important;
+  align-items:center !important;
+  gap:7px !important;
+}
+
+.rd-render-stop-icon-v39619{
+  width:20px !important;
+  height:20px !important;
+  border-radius:6px !important;
+  font-size:9px !important;
+}
+
+.rd-render-stop-card-v39619 strong{
+  font-size:10px !important;
+  line-height:1 !important;
+}
+
+.rd-render-stop-card-v39619 em{
+  font-size:12px !important;
+}
+
+
+
+/* ===== Roadora v39.6.26 Restore Fixed Sheet Position ===== */
+/* Oorzaak v39.6.25:
+   #mapDrawer kreeg position:relative en verloor daardoor zijn fixed kaartpositie.
+   Fix:
+   #mapDrawer blijft fixed boven de bottom nav.
+   Alleen de interne content-wrapper mag relative zijn.
+*/
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-sheet-v28{
+  position:fixed !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(66px + env(safe-area-inset-bottom)) !important;
+  width:auto !important;
+  z-index:99990 !important;
+
+  height:154px !important;
+  max-height:154px !important;
+  min-height:154px !important;
+
+  background:#efe5d7 !important;
+  border-radius:26px 26px 0 0 !important;
+  overflow:hidden !important;
+  margin:0 !important;
+  padding:0 !important;
+
+  transform:none !important;
+  translate:none !important;
+}
+
+/* Binnenkant is nu de position-context voor onderaan verankerde cards */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Cards blijven onderin, maar nu binnen de juiste fixed sheet */
+body[data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:8px !important;
+
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:6px !important;
+
+  width:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  box-sizing:border-box !important;
+}
+
+
+
+/* ===== Roadora v39.6.27 Compact Sheet Safe ===== */
+
+body[data-sheet-state="half"] #mapDrawer.rd-map-sheet-v28,
+body[data-sheet-state="half"] .rd-map-sheet-v28{
+  height:236px !important;
+  min-height:236px !important;
+  max-height:236px !important;
+  padding-top:10px !important;
+  padding-bottom:8px !important;
+  overflow:hidden !important;
+}
+
+#mapDrawer .rd-sheet-scroll-v393{
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+
+#mapDrawer .rd-sheet-cards-v39{
+  margin-top:2px !important;
+  margin-bottom:0 !important;
+  align-content:start !important;
+}
+
+#mapDrawer .rd-sheet-actions-v392,
+#mapDrawer .rd-sheet-grid-v28{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+/* oude lege sheet spacing neutraliseren */
+#mapDrawer .rd-sheet-copy-v28,
+#mapDrawer .rd-sheet-desc-v28,
+#mapDrawer .rd-sheet-heading-v28,
+#mapDrawer .rd-sheet-chips-v39{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+@media (max-width:420px){
+  body[data-sheet-state="half"] #mapDrawer.rd-map-sheet-v28,
+  body[data-sheet-state="half"] .rd-map-sheet-v28{
+    height:224px !important;
+    min-height:224px !important;
+    max-height:224px !important;
+  }
+}
+
+/* ===== Roadora v39.6.28 Definitive Stops Sheet Height Fix =====
+   Echte oorzaak opgelost: v39.6.27 zette opnieuw een generieke half-state
+   van 224/236px over de stops sheet heen. Deze regel is nu alleen voor
+   stops definitief leidend: fixed positie blijft, hoogte volgt de categorieën.
+   Maps/ORS/Leaflet blijven onaangeraakt.
+*/
+
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="stops"] #mapDrawer.rd-map-sheet-v28{
+  position:fixed !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(66px + env(safe-area-inset-bottom)) !important;
+  width:auto !important;
+  z-index:99990 !important;
+
+  height:154px !important;
+  min-height:154px !important;
+  max-height:154px !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+
+  background:#efe5d7 !important;
+  border-radius:26px 26px 0 0 !important;
+  box-shadow:0 -12px 30px rgba(36,25,18,.10) !important;
+  transform:none !important;
+  translate:none !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+/* Stops-sheet gebruikt alleen grab + categorie-grid. Oude header/copy/chips/actions claimen geen ruimte meer. */
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-header-v393,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-title-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-heading-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-meta-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-desc-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-chips-v39,
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-actions-v392{
+  display:none !important;
+  height:0 !important;
+  min-height:0 !important;
+  max-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-grab-v28{
+  flex:0 0 auto !important;
+  width:44px !important;
+  height:5px !important;
+  margin:12px auto 8px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.17) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  flex:1 1 auto !important;
+  display:block !important;
+  width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:8px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:6px !important;
+  width:auto !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-render-stop-card-v39619{
+  width:100% !important;
+  min-width:0 !important;
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  border-radius:13px !important;
+  padding:0 10px !important;
+  display:grid !important;
+  grid-template-columns:20px minmax(0,1fr) 10px !important;
+  align-items:center !important;
+  gap:7px !important;
+  box-sizing:border-box !important;
+}
+
+@media (max-width:420px){
+  body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="stops"] #mapDrawer.rd-map-sheet-v28{
+    height:154px !important;
+    min-height:154px !important;
+    max-height:154px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.6.30 — Map Bottom Nav Premium Isolation Fix
+   ---------------------------------------------------------
+   Oorzaak v39.6.29:
+   - globale .bottom-nav styling raakte ook Overzicht/Home.
+   Fix:
+   - Home/Overzicht .bottom-nav blijft ongemoeid.
+   - Alleen de kaartnav .rd-map-nav-v28 krijgt premium styling.
+   - Sheet/Map/ORS/Leaflet-logica blijft onaangeraakt.
+========================================================= */
+
+body[data-active-screen="map"] .rd-map-nav-v28{
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(8px + env(safe-area-inset-bottom)) !important;
+  height:64px !important;
+  padding:6px 9px !important;
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+  gap:4px !important;
+  border-radius:0 0 26px 26px !important;
+  background:
+    linear-gradient(180deg, rgba(252,246,238,.98) 0%, rgba(246,235,221,.96) 100%) !important;
+  border:1px solid rgba(255,255,255,.56) !important;
+  border-top:1px solid rgba(86,60,35,.045) !important;
+  box-shadow:
+    0 -1px 0 rgba(255,255,255,.48) inset,
+    0 12px 30px rgba(36,25,18,.10) !important;
+  backdrop-filter:blur(20px) saturate(1.06) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.06) !important;
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28{
+  position:relative !important;
+  min-width:0 !important;
+  min-height:50px !important;
+  height:50px !important;
+  padding:5px 4px 4px !important;
+  border:0 !important;
+  border-radius:21px !important;
+  background:transparent !important;
+  color:#57483d !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  line-height:1.05 !important;
+  letter-spacing:-.02em !important;
+  opacity:.88 !important;
+  box-shadow:none !important;
+  transform:none !important;
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease, opacity .18s ease !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28::before{
+  display:block !important;
+  margin-bottom:1px !important;
+  font-size:15px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  color:#3d2d22 !important;
+  opacity:.92 !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="roadtrip"]::before{ content:"⌁" !important; }
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="stops"]::before{ content:"⌖" !important; }
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="now"]::before{ content:"⚡" !important; }
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="more"]::before{ content:"•••" !important; letter-spacing:1px !important; }
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.is-active,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.active,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[aria-current="page"]{
+  opacity:1 !important;
+  color:#8a5b2d !important;
+  background:
+    radial-gradient(circle at 50% 5%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.38) 42%, rgba(255,255,255,0) 72%),
+    linear-gradient(180deg, #f8ead8 0%, #f1dcc5 100%) !important;
+  box-shadow:
+    0 9px 20px rgba(145,92,36,.16),
+    inset 0 1px 0 rgba(255,255,255,.84),
+    inset 0 -1px 0 rgba(94,58,26,.05) !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.is-active::after,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.active::after,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[aria-current="page"]::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:4px !important;
+  border-radius:17px !important;
+  border:1px solid rgba(255,255,255,.48) !important;
+  pointer-events:none !important;
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.is-active::before,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28.active::before,
+body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[aria-current="page"]::before{
+  color:#7c4d20 !important;
+  opacity:1 !important;
+}
+
+/* Visueel één systeem: alleen map sheet aan de map nav koppelen, nooit de globale Home nav. */
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"] #mapRouteSheet.rd-map-sheet-v28{
+  border-bottom-left-radius:0 !important;
+  border-bottom-right-radius:0 !important;
+  box-shadow:0 -10px 28px rgba(36,25,18,.09) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28{
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+}
+
+@media (max-width:420px){
+  body[data-active-screen="map"] .rd-map-nav-v28{
+    left:14px !important;
+    right:14px !important;
+    height:64px !important;
+    padding:6px 8px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.6.31 — Map Sheet Color Match Isolated
+   ---------------------------------------------------------
+   Doel:
+   - Alleen de kaart-sheet dezelfde warme premium kleur geven
+     als de geisoleerde kaart-bottomnav.
+   - Home/Overzicht bottom nav blijft volledig ongemoeid.
+   - Geen wijzigingen aan Leaflet / Maps / ORS / pins-core.
+========================================================= */
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28,
+body[data-active-screen="map"] .rd-map-sheet-v28{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.72) 0%, rgba(255,255,255,.30) 36%, rgba(255,255,255,0) 68%),
+    linear-gradient(180deg, rgba(252,246,238,.98) 0%, rgba(246,235,221,.96) 100%) !important;
+  border:1px solid rgba(255,255,255,.54) !important;
+  border-bottom:0 !important;
+  box-shadow:0 -10px 28px rgba(36,25,18,.09) !important;
+  backdrop-filter:blur(20px) saturate(1.06) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.06) !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-scroll-v393{
+  background:transparent !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-cards-v39,
+body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-cards-v39{
+  background:transparent !important;
+}
+
+/* =========================================================
+   Roadora v39.6.32 — Sheet/Nav Color + Category Clip Fix
+   ---------------------------------------------------------
+   Fixes only the isolated map drawer system.
+   - Same warm surface token for map sheet and map bottom nav.
+   - Stops categories no longer clip at the top.
+   - Home/Overzicht bottom nav remains untouched.
+   - Leaflet / Maps / ORS / pins-core untouched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-surface-top:#fcf6ee;
+  --rd-map-surface-bottom:#f6ebdd;
+  --rd-map-surface-border:rgba(255,255,255,.56);
+}
+
+body[data-active-screen="map"] .rd-map-nav-v28{
+  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
+  border-color:var(--rd-map-surface-border) !important;
+  border-top:1px solid rgba(86,60,35,.045) !important;
+}
+
+body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
+  border:1px solid var(--rd-map-surface-border) !important;
+  border-bottom:0 !important;
+}
+
+/* Stops panel: make the content math fit. Previous 154px height + absolute grid caused the first row to clip. */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="stops"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-grab-v28{
+  margin:9px auto 7px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-scroll-v393{
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  top:auto !important;
+  bottom:10px !important;
+  gap:7px !important;
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-render-stop-card-v39619{
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+}
+
+@media (max-width:420px){
+  body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="stops"] #mapDrawer.rd-map-sheet-v28{
+    height:166px !important;
+    min-height:166px !important;
+    max-height:166px !important;
+  }
+}
