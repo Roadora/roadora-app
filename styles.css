@@ -8234,3 +8234,45 @@ body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel
     width:132px !important;
   }
 }
+
+
+/* ===== Roadora v39.6.39 Hotels Swipe Handle Reliability ===== */
+/* Alleen kaart/hotel-state: vergroot de touch-zone van het bestaande streepje,
+   zonder de sheethoogte of hotelcards te veranderen. */
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28{
+  position:relative !important;
+  display:block !important;
+  width:78px !important;
+  height:30px !important;
+  min-height:30px !important;
+  margin:0 auto -2px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  border-radius:999px !important;
+  cursor:grab !important;
+  touch-action:none !important;
+  -webkit-user-select:none !important;
+  user-select:none !important;
+  z-index:3 !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28::before{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  top:10px !important;
+  width:44px !important;
+  height:5px !important;
+  transform:translateX(-50%) !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.18) !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer{
+  touch-action:pan-x !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-scroll-v39636{
+  touch-action:pan-x !important;
+}

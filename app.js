@@ -1340,37 +1340,78 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
 
-  /* v39.6.38 — swipe the sheet handle downward to return from hotel cards to categories.
-     This listens only on the active map drawer and only starts from the top handle zone,
-     so horizontal hotel-card scrolling stays untouched. */
-  (function bindHotelsSwipeBack(){
-    let startX = 0, startY = 0, tracking = false;
-    const HANDLE_ZONE = 34;
-    const SWIPE_DOWN = 38;
+  /* v39.6.39 — robust Android swipe-back on the visible sheet handle.
+     Fix: v39.6.38 listened to the drawer top-zone, but Android/browser scrolling and the
+     tiny 5px handle could cancel pointermove before the threshold. This version binds to
+     the real grab handle, enlarges the logical hit-zone, adds touch fallback, and prevents
+     only vertical handle drags. Hotel horizontal scrolling remains untouched. */
+  (function bindHotelsSwipeBackV39639(){
+    if(window.__roadoraHotelsSwipeBackV39639) return;
+    window.__roadoraHotelsSwipeBackV39639 = true;
 
-    document.addEventListener('pointerdown', function(e){
-      if(document.body.getAttribute('data-stop-subpanel') !== 'hotels') return;
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    const SWIPE_DOWN = 30;
+    const MAX_SIDE_DRIFT = 58;
+
+    function isHotelsState(){
+      return document.body.getAttribute('data-stop-subpanel') === 'hotels';
+    }
+
+    function getPoint(e){
+      const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+      return { x:t.clientX || 0, y:t.clientY || 0 };
+    }
+
+    function isHandleStart(target, y){
       const drawer = document.getElementById('mapDrawer');
-      if(!drawer || !drawer.contains(e.target)) return;
-      const rect = drawer.getBoundingClientRect();
-      if((e.clientY - rect.top) > HANDLE_ZONE) return;
-      tracking = true;
-      startX = e.clientX;
-      startY = e.clientY;
-    }, { passive:true });
+      if(!drawer || !drawer.contains(target)) return false;
+      const grab = target.closest && target.closest('.rd-sheet-grab-v28');
+      if(grab) return true;
 
-    document.addEventListener('pointermove', function(e){
+      /* Fallback: accept the top touch band of the drawer, because the visible bar can be
+         composited above a very small button on Android Chrome. */
+      const rect = drawer.getBoundingClientRect();
+      return (y - rect.top) >= 0 && (y - rect.top) <= 42;
+    }
+
+    function start(e){
+      if(!isHotelsState()) return;
+      const p = getPoint(e);
+      if(!isHandleStart(e.target, p.y)) return;
+      tracking = true;
+      startX = p.x;
+      startY = p.y;
+    }
+
+    function move(e){
       if(!tracking) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      if(dy > SWIPE_DOWN && Math.abs(dy) > Math.abs(dx) * 1.15){
+      const p = getPoint(e);
+      const dx = p.x - startX;
+      const dy = p.y - startY;
+
+      if(dy > 8 && Math.abs(dy) > Math.abs(dx)){
+        if(e.cancelable) e.preventDefault();
+      }
+
+      if(dy > SWIPE_DOWN && Math.abs(dx) < MAX_SIDE_DRIFT && Math.abs(dy) > Math.abs(dx) * 1.08){
         tracking = false;
         renderStops();
       }
-    }, { passive:true });
+    }
 
-    document.addEventListener('pointerup', function(){ tracking = false; }, { passive:true });
-    document.addEventListener('pointercancel', function(){ tracking = false; }, { passive:true });
+    function end(){ tracking = false; }
+
+    document.addEventListener('pointerdown', start, { passive:true });
+    document.addEventListener('pointermove', move, { passive:false });
+    document.addEventListener('pointerup', end, { passive:true });
+    document.addEventListener('pointercancel', end, { passive:true });
+
+    document.addEventListener('touchstart', start, { passive:true });
+    document.addEventListener('touchmove', move, { passive:false });
+    document.addEventListener('touchend', end, { passive:true });
+    document.addEventListener('touchcancel', end, { passive:true });
   })();
 
   window.RoadoraRenderStopsSheet = renderStops;
