@@ -9848,3 +9848,34 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
 body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-alt-v39670{
   height:42px !important;
 }
+
+/* =========================================================
+   Roadora v39.6.75 — Nu nodig assist meta/text cleanup
+   ---------------------------------------------------------
+   - verwijdert de kleine categorie/titelregel boven de beste optie
+   - tijd en km blijven naast elkaar op één regel
+   - geldt voor alle Nu nodig assist-categorieën, inclusief Hulp-subcategorieën
+   - Stops-flow / kaart / Maps / ORS onaangeraakt
+========================================================= */
+body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-best-v39670{
+  grid-template-columns:38px minmax(0,1fr) max-content !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-best-copy-v39670 em{
+  display:none !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-best-copy-v39670{
+  justify-content:center !important;
+  gap:3px !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-best-time-v39670{
+  white-space:nowrap !important;
+  min-width:max-content !important;
+  line-height:1 !important;
+  align-self:start !important;
+  padding-top:1px !important;
+  font-size:10px !important;
+  letter-spacing:-.02em !important;
+}

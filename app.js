@@ -1467,7 +1467,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       '<div class="rd-now-assist-v39670 rd-now-assist-clean-v39671">' +
         '<div class="rd-now-best-v39670">' +
           '<span class="rd-now-best-icon-v39670">'+data.icon+'</span>' +
-          '<span class="rd-now-best-copy-v39670"><em>'+data.title+'</em><strong>'+active.name+'</strong><small>'+(active.sub || data.sub)+'</small></span>' +
+          '<span class="rd-now-best-copy-v39670"><strong>'+active.name+'</strong><small>'+(active.sub || data.sub)+'</small></span>' +
           '<span class="rd-now-best-time-v39670">'+active.meta+'</span>' +
           '<button type="button" class="rd-now-nav-v39670">'+data.action+'</button>' +
         '</div>' +
