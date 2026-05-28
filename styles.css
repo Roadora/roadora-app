@@ -10163,3 +10163,93 @@ body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v396
 .leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinIcon{
   font-size:15px !important;
 }
+
+/* ===== Roadora v39.6.97 Pin visibility + real selected link =====
+   Fixes transparent pins from the earlier inner-highlight experiment and makes
+   selected markers visibly solid without fighting Leaflet's positioning. */
+.leaflet-marker-icon.rdCategoryPin{
+  width:42px !important;
+  height:42px !important;
+  margin-left:-21px !important;
+  margin-top:-21px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  opacity:1 !important;
+  overflow:visible !important;
+  pointer-events:auto !important;
+}
+.leaflet-marker-icon.rdCategoryPin .rdCategoryPinHalo{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:34px !important;
+  height:34px !important;
+  transform:translate(-50%, -50%) !important;
+  border-radius:999px !important;
+  background:#fffaf2 !important;
+  border:2px solid rgba(44,33,24,.22) !important;
+  box-shadow:0 10px 24px rgba(36,25,18,.18) !important;
+  opacity:1 !important;
+  filter:none !important;
+  z-index:1 !important;
+}
+.leaflet-marker-icon.rdCategoryPin .rdCategoryPinInner{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:26px !important;
+  height:26px !important;
+  transform:translate(-50%, -50%) !important;
+  border-radius:999px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(44,33,24,.10) !important;
+  color:#2b1f17 !important;
+  opacity:1 !important;
+  z-index:2 !important;
+}
+.leaflet-marker-icon.rdCategoryPin .rdCategoryPinIcon{
+  font-style:normal !important;
+  font-size:13px !important;
+  line-height:1 !important;
+  opacity:1 !important;
+}
+.leaflet-marker-icon.rdCategoryPin.is-muted-stop-v39694 .rdCategoryPinHalo,
+.leaflet-marker-icon.rdCategoryPin.is-muted-stop-v39693 .rdCategoryPinHalo{
+  opacity:.72 !important;
+  background:rgba(255,250,242,.88) !important;
+}
+.leaflet-marker-icon.rdCategoryPin.is-muted-stop-v39694 .rdCategoryPinInner,
+.leaflet-marker-icon.rdCategoryPin.is-muted-stop-v39693 .rdCategoryPinInner{
+  opacity:.82 !important;
+}
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39694 .rdCategoryPinHalo,
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693 .rdCategoryPinHalo,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39682 .rdCategoryPinHalo,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinHalo{
+  width:48px !important;
+  height:48px !important;
+  background:#2b1f17 !important;
+  border:3px solid #fffaf2 !important;
+  box-shadow:0 0 0 7px rgba(255,250,242,.62), 0 0 0 13px rgba(44,33,24,.13), 0 20px 42px rgba(36,25,18,.32) !important;
+  opacity:1 !important;
+}
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39694 .rdCategoryPinInner,
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693 .rdCategoryPinInner,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinInner,
+.leaflet-marker-icon.rdCategoryPin .rdCategoryPinInner.is-selected-inner-v39694{
+  width:34px !important;
+  height:34px !important;
+  background:#fff8ed !important;
+  color:#2b1f17 !important;
+  opacity:1 !important;
+}
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39694 .rdCategoryPinIcon,
+.leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693 .rdCategoryPinIcon,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39682 .rdCategoryPinIcon,
+.leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinIcon{
+  font-size:15px !important;
+}

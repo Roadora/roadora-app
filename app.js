@@ -888,11 +888,23 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 1200 : 0 });
       marker.on('click', function(ev){
         try{ ev && ev.originalEvent && L.DomEvent.stop(ev.originalEvent); }catch(_){ }
+
+        /* v39.6.97 — pin is now the same source action as a card tap.
+           Earlier the marker only dispatched an event after re-rendering itself.
+           On Android that could leave the sheet in strip state while the map had
+           already changed. Use one explicit UI bridge first, then keep the event
+           as a fallback for older handlers. */
         setActiveStopMarkerStateV39693(category, i);
         renderCategoryPins(category, i);
         try{
-          window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } }));
-        }catch(_){ }
+          if(window.RoadoraUISelectStopV39697){
+            window.RoadoraUISelectStopV39697(category, i, { source:'pin' });
+          }else{
+            window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } }));
+          }
+        }catch(_){
+          try{ window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } })); }catch(__){ }
+        }
         focusSelectedCategoryStopOnMap(category, i);
       });
       marker.addTo(categoryLayer);
@@ -2558,13 +2570,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     window.setTimeout(function(){ window.RoadoraApp && window.RoadoraApp.focusSelectedHotelOnMap && window.RoadoraApp.focusSelectedHotelOnMap(index); }, 120);
   }, true);
 
-  /* v39.6.96 — pin tap drives the same card + preview state without starting
-     another camera animation. The map closure dispatches this event; this UI
-     closure owns preview rendering and card active classes. */
-  window.addEventListener('roadora:map-pin-select-v39696', function(ev){
-    const d = ev.detail || {};
-    const category = d.category || 'hotels';
-    const index = Math.max(0, Number(d.index) || 0);
+  /* v39.6.97 — central stop selection bridge.
+     Cards, pins and future API results all route through the same function,
+     so preview, active card and selected marker can never drift apart. */
+  window.RoadoraUISelectStopV39697 = function(category, index, options){
+    const c = category || 'hotels';
+    const i = Math.max(0, Number(index) || 0);
     const map = {
       fuel:['.rd-fuel-card-v39646','data-fuel-index',renderFuelPreview],
       charge:['.rd-charge-card-v39647','data-charge-index',renderChargePreview],
@@ -2573,12 +2584,21 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       wc:['.rd-wc-card-v39653','data-wc-index',renderWcPreview],
       hotels:['.rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649):not(.rd-wc-card-v39653)','data-hotel-index',renderHotelPreview]
     };
-    const cfg = map[category] || map.hotels;
+    const cfg = map[c] || map.hotels;
     const all = Array.from(document.querySelectorAll(cfg[0]));
-    const active = all.find(function(el){ return (parseInt(el.getAttribute(cfg[1]) || '0', 10) || 0) === index; }) || all[index] || null;
+    const active = all.find(function(el){ return (parseInt(el.getAttribute(cfg[1]) || '0', 10) || 0) === i; }) || all[i] || null;
     all.forEach(function(el){ el.classList.toggle('is-active', el === active); });
     if(active) syncActiveCardIntoViewV39690(cfg[0].split(':')[0], active);
-    try{ cfg[2](index); }catch(_){ }
+    try{ cfg[2](i); }catch(_){ }
+    if(options && options.source === 'pin') return;
+    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function') window.RoadoraApp.renderCategoryPins(c, i);
+    if(window.RoadoraApp && typeof window.RoadoraApp.focusSelectedCategoryStopOnMap === 'function') window.RoadoraApp.focusSelectedCategoryStopOnMap(c, i);
+  };
+
+  /* v39.6.96/v39.6.97 — fallback event bridge from map marker closure. */
+  window.addEventListener('roadora:map-pin-select-v39696', function(ev){
+    const d = ev.detail || {};
+    window.RoadoraUISelectStopV39697(d.category || 'hotels', Math.max(0, Number(d.index) || 0), { source:'pin-event' });
   }, false);
 
 
