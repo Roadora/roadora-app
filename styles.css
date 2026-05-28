@@ -9566,3 +9566,29 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-shee
   margin:18px 12px 0 !important;
   gap:7px !important;
 }
+
+/* =========================================================
+   Roadora v39.6.67 — Nu nodig Handle Center Align
+   ---------------------------------------------------------
+   - Handle exact gecentreerd tussen sheet-top en bovenkant categorieën.
+   - Alleen Nu nodig map-panel; Stops-flow, Home/Overzicht, Maps/ORS blijven onaangeraakt.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+  --rd-now-category-top-v39667:20px;
+  --rd-now-handle-height-v39667:5px;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  top:0 !important;
+  height:var(--rd-now-category-top-v39667) !important;
+  min-height:var(--rd-now-category-top-v39667) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28::before{
+  top:calc((var(--rd-now-category-top-v39667) - var(--rd-now-handle-height-v39667)) / 2) !important;
+  height:var(--rd-now-handle-height-v39667) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  margin:var(--rd-now-category-top-v39667) 12px 0 !important;
+}
