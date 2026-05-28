@@ -745,6 +745,37 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }catch(_){ }
   }
 
+  /* v39.6.92 — deterministic selected-pin camera anchor.
+     Root cause of the "focus does not go to the pin" bug: fitBounds kept the
+     route segment correct, but on mobile the large Roadora preview/sheet changes
+     the usable map viewport. The selected stop could therefore still end up
+     underneath the popover or too low in the map, making it look as if the map
+     did not focus. This helper calculates the exact map center required to put
+     the selected pin in the visible slot above the preview. */
+  function centerSelectedPinInVisibleSlotV39692(selected, preferredZoom){
+    if(!map || !window.L || !selected || !map.project || !map.unproject || !map.getSize) return;
+    try{
+      map.invalidateSize && map.invalidateSize(false);
+      const size = map.getSize();
+      if(!size || !size.x || !size.y) return;
+
+      const viewportH = window.innerHeight || size.y || 760;
+      const overlayTop = getActiveMapOverlayTopV39684();
+      const visibleTop = Math.max(104, Math.round(viewportH * 0.15));
+      const visibleBottom = Math.max(visibleTop + 90, overlayTop - 78);
+      const desiredY = Math.max(visibleTop + 34, Math.min(visibleBottom, Math.round(overlayTop - 132)));
+      const desiredX = Math.round(size.x * 0.50);
+
+      const currentZoom = (map.getZoom && map.getZoom()) || 6;
+      const zoom = Math.max(6.25, Math.min(8, Number(preferredZoom) || Math.max(currentZoom, 7)));
+      const selectedPoint = map.project(selected, zoom);
+      const targetPoint = L.point(desiredX, desiredY);
+      const centerPoint = selectedPoint.subtract(targetPoint).add(size.divideBy(2));
+      const center = map.unproject(centerPoint, zoom);
+      map.setView(center, zoom, { animate:true, duration:.36 });
+    }catch(_){ }
+  }
+
   function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
@@ -793,11 +824,17 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         }catch(_){ }
       }, 130);
 
+      // Final camera anchor: after pins and popover are painted, place the
+      // selected pin in the real visible map slot above the sheet. This is
+      // intentionally after fitBounds, so the route context is calculated first
+      // and the pin then becomes physically visible to the user.
+      window.setTimeout(function(){ centerSelectedPinInVisibleSlotV39692(selected, 7); }, 260);
       window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 430);
+      window.setTimeout(function(){ centerSelectedPinInVisibleSlotV39692(selected, 7); }, 620);
       window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 760);
     }catch(_){
       try{
-        map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 });
+        centerSelectedPinInVisibleSlotV39692(selected, 7);
         window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 160);
       }catch(__){ }
     }
