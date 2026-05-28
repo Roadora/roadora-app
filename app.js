@@ -1318,6 +1318,50 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'Stop München Süd', meta:'690 km vanaf start', rating:'Schoon', type:'WC', img:'assets/hero-diary.webp', chips:['Laatste stop','Parkeren','Koffie'] }
   ];
 
+  const NOW_NEEDED_CARDS_V39656 = [
+    { icon:'⛽', title:'Tanken', meta:'Dichtbij via GPS', category:'fuel', hint:'Open tankstations rondom jou' },
+    { icon:'⚡', title:'Laden', meta:'Dichtbij via GPS', category:'charge', hint:'Snelle laadpunten in je buurt' },
+    { icon:'WC', title:'WC', meta:'Snelste stop', category:'wc', hint:'Praktische sanitaire stop' },
+    { icon:'☕', title:'Eten', meta:'Koffie of snelle hap', category:'food', hint:'Pauzeplek dichtbij' },
+    { icon:'☾', title:'Slapen', meta:'Hotel nu dichtbij', category:'sleep', hint:'Overnachten vanaf je locatie' },
+    { icon:'SOS', title:'Hulp', meta:'Pech / garage', category:'help', hint:'Hulpdiensten en praktische support' }
+  ];
+
+  function updateNowGpsStatusV39656(){
+    const status = document.querySelector('#mapDrawer .rd-now-gps-status-v39656');
+    if(!status) return;
+    if(!navigator.geolocation){
+      status.textContent = 'GPS niet beschikbaar';
+      return;
+    }
+    status.textContent = 'GPS zoeken…';
+    navigator.geolocation.getCurrentPosition(function(pos){
+      const acc = pos && pos.coords && pos.coords.accuracy ? Math.round(pos.coords.accuracy) : null;
+      status.textContent = acc ? 'GPS actief · ± '+acc+' m' : 'GPS actief';
+      document.body.setAttribute('data-now-gps','ready');
+    }, function(){
+      status.textContent = 'GPS toestemming nodig';
+      document.body.setAttribute('data-now-gps','blocked');
+    }, { enableHighAccuracy:false, timeout:3500, maximumAge:120000 });
+  }
+
+  function renderNowNeeded(){
+    const container = findStopsContainer();
+    if(!container) return;
+    document.body.removeAttribute('data-stop-subpanel');
+    document.body.setAttribute('data-now-needed','open');
+    closeHotelPreview();
+    container.innerHTML =
+      '<span class="rd-now-gps-status-v39656" aria-live="polite">GPS voorbereiden…</span>' +
+      NOW_NEEDED_CARDS_V39656.map(function(card){
+        return '<button type="button" class="rd-render-stop-card-v39619" data-now-category="'+card.category+'">' +
+          '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+          '<strong>'+card.title+'</strong><em>›</em>' +
+        '</button>';
+      }).join('');
+    setTimeout(updateNowGpsStatusV39656, 80);
+  }
+
   function renderStops(){
     const container = findStopsContainer();
     if(!container) return;
@@ -1693,14 +1737,24 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.classList.add("rd-instant-panel-open-v3968");
     setNavActive(panel);
     if(panel === "stops"){
+      document.body.removeAttribute('data-now-needed');
       renderStops();
       setTimeout(renderStops, 50);
+    } else if(panel === "now"){
+      renderNowNeeded();
+      setTimeout(renderNowNeeded, 50);
+    } else {
+      document.body.removeAttribute('data-now-needed');
+      document.body.removeAttribute('data-stop-subpanel');
+      closeHotelPreview();
     }
   }
 
   function closePanel(){
     document.body.removeAttribute("data-map-drawer");
     document.body.removeAttribute("data-instant-map-panel");
+    document.body.removeAttribute('data-now-needed');
+    document.body.removeAttribute('data-now-gps');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
   }
@@ -1744,6 +1798,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }else{
       document.body.removeAttribute('data-stop-subpanel');
       closeHotelPreview();
+    }
+  }, true);
+
+  document.addEventListener("click", function(e){
+    const nowCard = e.target.closest && e.target.closest('[data-now-category]');
+    if(!nowCard) return;
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelectorAll('[data-now-category]').forEach(function(item){
+      item.classList.toggle('is-active', item === nowCard);
+    });
+    const category = nowCard.getAttribute('data-now-category') || '';
+    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function' && category !== 'sleep' && category !== 'help'){
+      window.RoadoraApp.renderCategoryPins(category);
     }
   }, true);
 
@@ -1873,8 +1941,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       return isOpen && panel === 'stops' && !subpanel;
     }
 
+    function isNowNeededState(){
+      const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
+      const panel = document.body.getAttribute('data-instant-map-panel');
+      return isOpen && panel === 'now' && document.body.getAttribute('data-now-needed') === 'open';
+    }
+
     function canSwipeHandleDown(){
-      return isCardState() || isStopsCategoryState();
+      return isCardState() || isStopsCategoryState() || isNowNeededState();
     }
 
     function getPoint(e){
@@ -1917,7 +1991,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         tracking = false;
         if(isCardState()) {
           renderStops();
-        } else if(isStopsCategoryState()) {
+        } else if(isStopsCategoryState() || isNowNeededState()) {
           closeHotelPreview();
           closePanel();
         }
@@ -1942,5 +2016,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRenderFuelStrip = renderFuelStrip;
   window.RoadoraRenderChargeStrip = renderChargeStrip;
   window.RoadoraRenderWcStrip = renderWcStrip;
+  window.RoadoraRenderNowNeeded = renderNowNeeded;
   window.RoadoraCloseInstantPanel = closePanel;
 })();

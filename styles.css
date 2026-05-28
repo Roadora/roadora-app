@@ -9297,3 +9297,303 @@ body[data-active-screen="map"] #mapDrawer .rd-wc-preview-popover-v39653 .rd-hote
     width:118px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.6.62 — Nu nodig Uses Stops Cards Exactly
+   ---------------------------------------------------------
+   Echte cleanup:
+   - oude rd-now-needed-card/grid/shell overrides verwijderd
+   - Nu nodig rendert nu exact dezelfde card-structuur als Stops
+   - alleen data-now-category verschilt voor GPS/nearby logic
+   - Stops-flow, sheet, kaart, nav en Maps/ORS blijven ongemoeid
+========================================================= */
+
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-header-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-heading-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-title-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-desc-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-meta-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-copy-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-chips-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-actions-v392{
+  display:none !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  margin:9px auto 7px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  flex:1 1 auto !important;
+  display:block !important;
+  width:100% !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:5px !important;
+  top:auto !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:7px !important;
+  width:auto !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:visible !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-now-gps-status-v39656{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  overflow:hidden !important;
+  clip:rect(0 0 0 0) !important;
+  clip-path:inset(50%) !important;
+  white-space:nowrap !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
+  width:100% !important;
+  min-width:0 !important;
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  border-radius:13px !important;
+  padding:0 10px !important;
+  display:grid !important;
+  grid-template-columns:20px minmax(0,1fr) 10px !important;
+  align-items:center !important;
+  gap:7px !important;
+  box-sizing:border-box !important;
+}
+
+
+/* =========================================================
+   Roadora v39.6.63 — Nu nodig Card Offset Fix
+   ---------------------------------------------------------
+   - Nu nodig cards iets lager geplaatst zodat bovenranden volledig zichtbaar zijn
+   - Alleen map-specifieke Nu nodig sheet selectors
+   - Stops-flow, kaart, nav en Maps/ORS ongemoeid
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  bottom:5px !important;
+}
+
+/* =========================================================
+   Roadora v39.6.64 — Nu nodig Inner Clip Removal
+   ---------------------------------------------------------
+   Echte fix:
+   - Nu nodig gebruikt geen absolute/clip wrapper meer voor de categoriekaarten.
+   - De cards staan nu in dezelfde natuurlijke sheet-flow als Stops.
+   - De bovenste rij wordt niet meer afgesneden door de inner scroll/container.
+   - Stops-flow, fullscreen kaart, map-nav en Maps/ORS blijven ongemoeid.
+========================================================= */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  display:block !important;
+  width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:visible !important;
+  clip-path:none !important;
+  contain:none !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  position:static !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:7px !important;
+  width:auto !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:5px 12px 0 !important;
+  overflow:visible !important;
+  clip-path:none !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  border-radius:13px !important;
+  overflow:hidden !important;
+}
+
+/* =========================================================
+   Roadora v39.6.65 — Nu nodig Sheet Height Match Stops
+   ---------------------------------------------------------
+   Safe CSS-only fix:
+   - Nu nodig gebruikt dezelfde sheet-hoogte als de gelockte Stops-flow.
+   - Categorieën staan iets hoger zodat de onderste rij volledig zichtbaar blijft.
+   - Alleen data-instant-map-panel="now" wordt geraakt.
+   - Stops-flow, fullscreen kaart, Leaflet, ORS en Maps-export blijven onaangeroerd.
+========================================================= */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+  height:154px !important;
+  min-height:154px !important;
+  max-height:154px !important;
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  flex:0 0 auto !important;
+  width:44px !important;
+  height:5px !important;
+  margin:12px auto 6px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  flex:1 1 auto !important;
+  display:block !important;
+  width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:visible !important;
+  clip-path:none !important;
+  contain:none !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  position:static !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:7px !important;
+  width:auto !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 12px 8px !important;
+  transform:translateY(-4px) !important;
+  overflow:visible !important;
+  clip-path:none !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  border-radius:13px !important;
+  overflow:hidden !important;
+}
+
+/* =========================================================
+   Roadora v39.6.66 — Nu nodig Handle Higher
+   ---------------------------------------------------------
+   Safe CSS-only fix:
+   - Alleen het sluit-streepje/grab handle van de Nu nodig sheet staat iets hoger.
+   - Sheet-hoogte, cards, Stops-flow, fullscreen kaart, Leaflet/ORS en Maps-export blijven onaangeroerd.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  margin:7px auto 11px !important;
+}
+
+/* =========================================================
+   Roadora v39.6.67 — Nu nodig Sheet Height Restore to Stops
+   ---------------------------------------------------------
+   Correctie op v39.6.66:
+   - Nu nodig gebruikt opnieuw exact dezelfde drawerhoogte als Stops (166px).
+   - Alleen het grab-handle staat subtiel hoger binnen diezelfde hoogte.
+   - Geen wijzigingen aan Stops-flow, fullscreen kaart, Leaflet, ORS of Maps-export.
+========================================================= */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  margin:6px auto 10px !important;
+}
+
+@media (max-width:420px){
+  body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
+    height:166px !important;
+    min-height:166px !important;
+    max-height:166px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.6.69 — Nu nodig Handle Match Stops Final
+   ---------------------------------------------------------
+   Safe CSS-only fix:
+   - Nu nodig grab handle gebruikt exact dezelfde final spacing als Stops.
+   - Sheet-hoogte blijft 166px zoals fallback v39.6.67.
+   - Stops-flow, fullscreen kaart, Leaflet/ORS en Maps-export blijven onaangeroerd.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
+  margin:9px auto 7px !important;
+}
+
+/* =========================================================
+   Roadora v39.6.70 — Nu nodig Handle Visual Align With Stops
+   ---------------------------------------------------------
+   Safe CSS-only fix:
+   - Sheet height and category button positions remain unchanged.
+   - Only the Nu nodig grab handle gets a tiny visual nudge to match Stops.
+   - Stops-flow, fullscreen kaart, Leaflet/ORS and Maps-export untouched.
+========================================================= */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28 > .rd-sheet-grab-v28{
+  flex:0 0 auto !important;
+  width:44px !important;
+  height:5px !important;
+  margin:9px auto 7px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.17) !important;
+  position:relative !important;
+  top:3px !important;
+  transform:none !important;
+}
