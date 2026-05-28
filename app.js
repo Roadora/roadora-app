@@ -2308,6 +2308,28 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     drawer.appendChild(pop);
   }
 
+  function restoreRouteOverviewFocusV39690(){
+    if(!map || !window.L || !routeCoordinates.length) return;
+    try{
+      const bounds = L.latLngBounds(routeCoordinates.map(latLng));
+      map.fitBounds(bounds.pad(0.12), {
+        animate:true,
+        duration:.42,
+        maxZoom:7,
+        paddingTopLeft:[34,130],
+        paddingBottomRight:[34,320]
+      });
+    }catch(_){ }
+  }
+
+  function syncActiveCardIntoViewV39690(selector, active){
+    try{
+      const card = document.querySelector(selector + '.is-active') || active;
+      if(!card || !card.scrollIntoView) return;
+      card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+    }catch(_){ }
+  }
+
   function closeHotelPreview(){
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
@@ -2317,6 +2339,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-wc-preview');
     const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
     if(old) old.remove();
+    window.setTimeout(restoreRouteOverviewFocusV39690, 80);
   }
 
   function renderHotelPreview(index){
@@ -2508,6 +2531,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-fuel-card-v39646").forEach(function(item){
         item.classList.toggle("is-active", item === fuel);
       });
+      syncActiveCardIntoViewV39690('.rd-fuel-card-v39646', fuel);
       renderFuelPreview(fuelIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('fuel', fuelIndex);
@@ -2524,6 +2548,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-charge-card-v39647").forEach(function(item){
         item.classList.toggle("is-active", item === charge);
       });
+      syncActiveCardIntoViewV39690('.rd-charge-card-v39647', charge);
       renderChargePreview(chargeIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('charge', chargeIndex);
@@ -2540,6 +2565,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-food-card-v39648").forEach(function(item){
         item.classList.toggle("is-active", item === food);
       });
+      syncActiveCardIntoViewV39690('.rd-food-card-v39648', food);
       renderFoodPreview(foodIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('food', foodIndex);
@@ -2556,6 +2582,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-discover-card-v39649").forEach(function(item){
         item.classList.toggle("is-active", item === discover);
       });
+      syncActiveCardIntoViewV39690('.rd-discover-card-v39649', discover);
       renderDiscoverPreview(discoverIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('discover', discoverIndex);
@@ -2572,6 +2599,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-wc-card-v39653").forEach(function(item){
         item.classList.toggle("is-active", item === wc);
       });
+      syncActiveCardIntoViewV39690('.rd-wc-card-v39653', wc);
       renderWcPreview(wcIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('wc', wcIndex);
@@ -2588,6 +2616,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.querySelectorAll(".rd-hotel-card-v39636").forEach(function(item){
       item.classList.toggle("is-active", item === hotel);
     });
+    syncActiveCardIntoViewV39690('.rd-hotel-card-v39636', hotel);
     renderHotelPreview(index);
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
       window.RoadoraApp.renderCategoryPins('hotels', index);
