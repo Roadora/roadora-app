@@ -1323,11 +1323,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
     closeHotelPreview();
-    container.innerHTML = STOP_CARDS.map(card =>
-      '<button type="button" class="rd-render-stop-card-v39619" data-category="'+card.category+'">' +
-      '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
-      '<strong>'+card.title+'</strong><em>›</em></button>'
-    ).join("");
+    container.innerHTML =
+      '<div class="rd-stop-category-strip-shell-v39654">' +
+        '<div class="rd-stop-category-scroll-v39654" aria-label="Stopcategorieën">' +
+          STOP_CARDS.map(card =>
+            '<button type="button" class="rd-render-stop-card-v39619 rd-stop-category-card-v39654" data-category="'+card.category+'">' +
+              '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+              '<strong>'+card.title+'</strong><em>›</em></button>'
+          ).join("") +
+        '</div>' +
+      '</div>';
   }
 
   function renderHotelStrip(){
