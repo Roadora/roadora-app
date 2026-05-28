@@ -868,6 +868,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   if (window.RoadoraApp) {
     window.RoadoraApp.renderCategoryPins = renderCategoryPins;
+    window.RoadoraApp.focusSelectedCategoryStopOnMap = focusSelectedCategoryStopOnMap;
+    window.RoadoraApp.focusSelectedHotelOnMap = focusSelectedHotelOnMap;
+    window.RoadoraApp.restoreRouteOverviewFocus = function(){
+      try{ fitRoute(); }catch(_){ }
+    };
   }
   function addEndpoints(startCoord, endCoord){
     const r=activeRoute();
@@ -2150,7 +2155,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const wc = WC_STRIP_CARDS_V39653[index] || WC_STRIP_CARDS_V39653[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-wc-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2183,7 +2188,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!drawer) return;
     const discoverCards = getDiscoverCardsV39681();
     const discover = discoverCards[index] || discoverCards[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-discover-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2215,7 +2220,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const charge = CHARGE_STRIP_CARDS_V39647[index] || CHARGE_STRIP_CARDS_V39647[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-charge-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2248,7 +2253,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!drawer) return;
     const foodCards = getFoodCardsV39678();
     const food = foodCards[index] || foodCards[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-food-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2280,7 +2285,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const fuel = FUEL_STRIP_CARDS_V39646[index] || FUEL_STRIP_CARDS_V39646[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-fuel-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2330,7 +2335,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }catch(_){ }
   }
 
-  function closeHotelPreview(){
+  function closeHotelPreview(restoreFocus){
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
@@ -2339,14 +2344,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-wc-preview');
     const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
     if(old) old.remove();
-    window.setTimeout(restoreRouteOverviewFocusV39690, 80);
+    if(restoreFocus !== false) window.setTimeout(restoreRouteOverviewFocusV39690, 80);
   }
 
   function renderHotelPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const hotel = HOTEL_STRIP_CARDS_V39636[index] || HOTEL_STRIP_CARDS_V39636[0];
-    closeHotelPreview();
+    closeHotelPreview(false);
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644';
@@ -2536,7 +2541,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('fuel', fuelIndex);
       }
-      focusSelectedCategoryStopOnMap('fuel', fuelIndex);
+      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('fuel', fuelIndex);
       return;
     }
 
@@ -2553,7 +2558,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('charge', chargeIndex);
       }
-      focusSelectedCategoryStopOnMap('charge', chargeIndex);
+      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('charge', chargeIndex);
       return;
     }
 
@@ -2570,7 +2575,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('food', foodIndex);
       }
-      focusSelectedCategoryStopOnMap('food', foodIndex);
+      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('food', foodIndex);
       return;
     }
 
@@ -2587,7 +2592,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('discover', discoverIndex);
       }
-      focusSelectedCategoryStopOnMap('discover', discoverIndex);
+      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('discover', discoverIndex);
       return;
     }
 
@@ -2604,7 +2609,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('wc', wcIndex);
       }
-      focusSelectedCategoryStopOnMap('wc', wcIndex);
+      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('wc', wcIndex);
       return;
     }
 
@@ -2621,7 +2626,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
       window.RoadoraApp.renderCategoryPins('hotels', index);
     }
-    window.setTimeout(function(){ focusSelectedHotelOnMap(index); }, 120);
+    window.setTimeout(function(){ window.RoadoraApp && window.RoadoraApp.focusSelectedHotelOnMap && window.RoadoraApp.focusSelectedHotelOnMap(index); }, 120);
   }, true);
 
 
