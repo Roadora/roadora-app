@@ -1327,6 +1327,34 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { icon:'SOS', title:'Hulp', meta:'Pech / garage', category:'help', hint:'Hulpdiensten en praktische support' }
   ];
 
+
+  const NOW_ASSIST_DATA_V39670 = {
+    fuel: {
+      title:'Tanken dichtbij', label:'Tanken', icon:'⛽', best:'Shell Hazeldonk', meta:'4 min · 2,1 km', sub:'Open 24/7 · snel bereikbaar', chips:['Open','Shop'], action:'Navigeer',
+      alternatives:[{name:'BP Galder', meta:'6 min'},{name:'TotalEnergies', meta:'7 min'},{name:'Esso Rijsbergen', meta:'9 min'}]
+    },
+    charge: {
+      title:'Laden dichtbij', label:'Laden', icon:'⚡', best:'Fastned Breda', meta:'5 min · 3,0 km', sub:'Snellader · 150 kW', chips:['150 kW','Vrij'], action:'Navigeer',
+      alternatives:[{name:'Allego', meta:'8 min'},{name:'Ionity', meta:'12 min'},{name:'Shell Recharge', meta:'14 min'}]
+    },
+    wc: {
+      title:'WC in de buurt', label:'WC', icon:'WC', best:'Rastplaats Hazeldonk', meta:'4 min · 2,1 km', sub:'Schoon · parkeren dichtbij', chips:['Schoon','Open'], action:'Navigeer',
+      alternatives:[{name:'Shell Hazeldonk', meta:'5 min'},{name:'BP Galder', meta:'7 min'},{name:'Servicepunt Breda', meta:'9 min'}]
+    },
+    food: {
+      title:'Eten dichtbij', label:'Eten', icon:'☕', best:'La Place Breda', meta:'6 min · 3,4 km', sub:'Koffie · snelle hap', chips:['Koffie','Lunch'], action:'Navigeer',
+      alternatives:[{name:'McDonald’s', meta:'7 min'},{name:'Bakker Bart', meta:'9 min'},{name:'Starbucks', meta:'11 min'}]
+    },
+    sleep: {
+      title:'Slapen dichtbij', label:'Slapen', icon:'☾', best:'Van der Valk Breda', meta:'9 min · 6,2 km', sub:'Parkeren · late check-in', chips:['Parkeren','Wifi'], action:'Bekijk',
+      alternatives:[{name:'Bastion Hotel', meta:'11 min'},{name:'Hotel Nassau', meta:'15 min'},{name:'Campanile', meta:'18 min'}]
+    },
+    help: {
+      title:'Hulp dichtbij', label:'Hulp', icon:'SOS', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pechhulp · banden · olie', chips:['Garage','Open'], action:'Bel / Navigeer',
+      alternatives:[{name:'ANWB punt', meta:'10 min'},{name:'Apotheek', meta:'12 min'},{name:'Ziekenhuis', meta:'16 min'}]
+    }
+  };
+
   function updateNowGpsStatusV39656(){
     const status = document.querySelector('#mapDrawer .rd-now-gps-status-v39656');
     if(!status) return;
@@ -1349,6 +1377,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const container = findStopsContainer();
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
+    document.body.removeAttribute('data-now-assist');
     document.body.setAttribute('data-now-needed','open');
     closeHotelPreview();
     container.innerHTML =
@@ -1360,6 +1389,40 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '</button>';
       }).join('');
     setTimeout(updateNowGpsStatusV39656, 80);
+  }
+
+  function renderNowAssist(category, selectedIndex){
+    const container = findStopsContainer();
+    if(!container) return;
+    const data = NOW_ASSIST_DATA_V39670[category] || NOW_ASSIST_DATA_V39670.wc;
+    const allOptions = [{
+      name:data.best,
+      meta:data.meta,
+      sub:data.sub,
+      originalBest:true
+    }].concat(data.alternatives || []);
+    const activeIndex = Math.max(0, Math.min(Number(selectedIndex || 0), allOptions.length - 1));
+    const active = allOptions[activeIndex] || allOptions[0];
+    document.body.removeAttribute('data-stop-subpanel');
+    document.body.setAttribute('data-now-needed','open');
+    document.body.setAttribute('data-now-assist', category);
+    document.body.setAttribute('data-now-selected-index', String(activeIndex));
+    closeHotelPreview();
+    const alternatives = allOptions.map(function(item, index){
+      if(index === activeIndex) return '';
+      return '<button type="button" class="rd-now-alt-v39670" data-now-alt-index="'+index+'"><strong>'+item.name+'</strong><span>'+item.meta+'</span><em>›</em></button>';
+    }).join('');
+    container.innerHTML =
+      '<div class="rd-now-assist-v39670 rd-now-assist-clean-v39671">' +
+        '<div class="rd-now-best-v39670">' +
+          '<span class="rd-now-best-icon-v39670">'+data.icon+'</span>' +
+          '<span class="rd-now-best-copy-v39670"><em>'+data.title+'</em><strong>'+active.name+'</strong><small>'+(active.sub || data.sub)+'</small></span>' +
+          '<span class="rd-now-best-time-v39670">'+active.meta+'</span>' +
+          '<button type="button" class="rd-now-nav-v39670">'+data.action+'</button>' +
+        '</div>' +
+        '<div class="rd-now-alts-v39670" aria-label="Alternatieven">'+alternatives+'</div>' +
+      '</div>';
+    updateNowGpsStatusV39656();
   }
 
   function renderStops(){
@@ -1738,6 +1801,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     setNavActive(panel);
     if(panel === "stops"){
       document.body.removeAttribute('data-now-needed');
+      document.body.removeAttribute('data-now-assist');
       renderStops();
       setTimeout(renderStops, 50);
     } else if(panel === "now"){
@@ -1745,6 +1809,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       setTimeout(renderNowNeeded, 50);
     } else {
       document.body.removeAttribute('data-now-needed');
+      document.body.removeAttribute('data-now-assist');
       document.body.removeAttribute('data-stop-subpanel');
       closeHotelPreview();
     }
@@ -1754,6 +1819,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute("data-map-drawer");
     document.body.removeAttribute("data-instant-map-panel");
     document.body.removeAttribute('data-now-needed');
+    document.body.removeAttribute('data-now-assist');
     document.body.removeAttribute('data-now-gps');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
@@ -1802,6 +1868,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
   document.addEventListener("click", function(e){
+    const nowAlt = e.target.closest && e.target.closest('[data-now-alt-index]');
+    if(nowAlt){
+      e.preventDefault();
+      e.stopPropagation();
+      const category = document.body.getAttribute('data-now-assist') || 'wc';
+      const index = parseInt(nowAlt.getAttribute('data-now-alt-index') || '0', 10);
+      renderNowAssist(category, isNaN(index) ? 0 : index);
+      return;
+    }
+
     const nowCard = e.target.closest && e.target.closest('[data-now-category]');
     if(!nowCard) return;
     e.preventDefault();
@@ -1813,6 +1889,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function' && category !== 'sleep' && category !== 'help'){
       window.RoadoraApp.renderCategoryPins(category);
     }
+    renderNowAssist(category, 0);
   }, true);
 
   document.addEventListener("click", function(e){
@@ -1941,14 +2018,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       return isOpen && panel === 'stops' && !subpanel;
     }
 
+    function isNowAssistState(){
+      const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
+      const panel = document.body.getAttribute('data-instant-map-panel');
+      return isOpen && panel === 'now' && !!document.body.getAttribute('data-now-assist');
+    }
+
     function isNowNeededState(){
       const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
       const panel = document.body.getAttribute('data-instant-map-panel');
-      return isOpen && panel === 'now' && document.body.getAttribute('data-now-needed') === 'open';
+      return isOpen && panel === 'now' && document.body.getAttribute('data-now-needed') === 'open' && !document.body.getAttribute('data-now-assist');
     }
 
     function canSwipeHandleDown(){
-      return isCardState() || isStopsCategoryState() || isNowNeededState();
+      return isCardState() || isStopsCategoryState() || isNowAssistState() || isNowNeededState();
     }
 
     function getPoint(e){
@@ -1991,6 +2074,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         tracking = false;
         if(isCardState()) {
           renderStops();
+        } else if(isNowAssistState()) {
+          renderNowNeeded();
         } else if(isStopsCategoryState() || isNowNeededState()) {
           closeHotelPreview();
           closePanel();
@@ -2017,5 +2102,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRenderChargeStrip = renderChargeStrip;
   window.RoadoraRenderWcStrip = renderWcStrip;
   window.RoadoraRenderNowNeeded = renderNowNeeded;
+  window.RoadoraRenderNowAssist = renderNowAssist;
   window.RoadoraCloseInstantPanel = closePanel;
 })();
