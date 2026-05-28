@@ -452,6 +452,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   let activeCategoryPinV39682 = null;
   let activeCategoryPinIndexV39682 = -1;
+  let focusStopTokenV39696 = 0;
 
   /* v39.6.93 — single selected stop state for card, popover and marker.
      The card/preview could be active while the Leaflet marker still looked neutral.
@@ -829,61 +830,29 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const coord = getStopCoordV39686(safeCategory, safeIndex);
     if(!coord) return;
 
-    const percent = getStopPercentV39686(safeCategory, safeIndex);
+    /* v39.6.96 — no-shake selected stop focus.
+       The previous focus chain ran fitBounds + a second fitBounds + setView +
+       panBy timers. On marker tap Leaflet also tried to auto-pan its popup, so
+       Android Chrome visibly shook the map back and forth. A selected stop now
+       uses one camera owner only: cancel current animations, wait one paint for
+       the preview/sheet measurement, then anchor the pin once in the visible
+       slot above the sheet. */
     const selected = latLng(coord);
-    const boundPoints = getRouteSegmentBoundsPointsV39685(percent, selected);
+    const token = ++focusStopTokenV39696;
 
     try{
+      map.stop && map.stop();
+      map.closePopup && map.closePopup();
       map.invalidateSize && map.invalidateSize(false);
+    }catch(_){ }
 
-      const viewportH = window.innerHeight || 760;
-      const viewportW = window.innerWidth || 390;
-      const overlayTop = getActiveMapOverlayTopV39684();
-      const coveredBottom = Math.max(0, viewportH - overlayTop);
-      const bottomPadding = Math.max(360, Math.min(Math.round(viewportH * 0.72), Math.round(coveredBottom + 170)));
-      const topPadding = Math.max(118, Math.min(174, Math.round(viewportH * 0.17)));
-      const sidePadding = Math.max(30, Math.min(52, Math.round(viewportW * 0.10)));
-
-      const bounds = L.latLngBounds(boundPoints);
-      map.fitBounds(bounds.pad(0.10), {
-        animate:true,
-        duration:.45,
-        maxZoom:8,
-        paddingTopLeft:[sidePadding, topPadding],
-        paddingBottomRight:[sidePadding, bottomPadding]
-      });
-
-      // Second pass after the popover has finished rendering/measuring. Then do
-      // a pixel correction so the selected pin is physically above the popover.
-      window.setTimeout(function(){
-        try{
-          const overlayTopNow = getActiveMapOverlayTopV39684();
-          const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
-          const bottomNow = Math.max(380, Math.min(Math.round((window.innerHeight || viewportH) * 0.74), Math.round(coveredNow + 190)));
-          map.fitBounds(bounds.pad(0.10), {
-            animate:true,
-            duration:.28,
-            maxZoom:8,
-            paddingTopLeft:[sidePadding, topPadding],
-            paddingBottomRight:[sidePadding, bottomNow]
-          });
-        }catch(_){ }
-      }, 130);
-
-      // Final camera anchor: after pins and popover are painted, place the
-      // selected pin in the real visible map slot above the sheet. This is
-      // intentionally after fitBounds, so the route context is calculated first
-      // and the pin then becomes physically visible to the user.
-      window.setTimeout(function(){ centerSelectedPinInVisibleSlotV39692(selected, 7); }, 260);
-      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 430);
-      window.setTimeout(function(){ centerSelectedPinInVisibleSlotV39692(selected, 7); }, 620);
-      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 760);
-    }catch(_){
+    window.setTimeout(function(){
+      if(token !== focusStopTokenV39696) return;
       try{
+        map.stop && map.stop();
         centerSelectedPinInVisibleSlotV39692(selected, 7);
-        window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 160);
-      }catch(__){ }
-    }
+      }catch(_){ }
+    }, 90);
   }
 
   function focusSelectedHotelOnMap(index){
@@ -917,10 +886,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const name = (stop && stop.name) || (meta.items && meta.items[i]) || meta.label;
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
       const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 1200 : 0 });
-      marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
-      marker.on('click', function(){
+      marker.on('click', function(ev){
+        try{ ev && ev.originalEvent && L.DomEvent.stop(ev.originalEvent); }catch(_){ }
         setActiveStopMarkerStateV39693(category, i);
         renderCategoryPins(category, i);
+        try{
+          window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } }));
+        }catch(_){ }
         focusSelectedCategoryStopOnMap(category, i);
       });
       marker.addTo(categoryLayer);
@@ -2585,6 +2557,29 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
     window.setTimeout(function(){ window.RoadoraApp && window.RoadoraApp.focusSelectedHotelOnMap && window.RoadoraApp.focusSelectedHotelOnMap(index); }, 120);
   }, true);
+
+  /* v39.6.96 — pin tap drives the same card + preview state without starting
+     another camera animation. The map closure dispatches this event; this UI
+     closure owns preview rendering and card active classes. */
+  window.addEventListener('roadora:map-pin-select-v39696', function(ev){
+    const d = ev.detail || {};
+    const category = d.category || 'hotels';
+    const index = Math.max(0, Number(d.index) || 0);
+    const map = {
+      fuel:['.rd-fuel-card-v39646','data-fuel-index',renderFuelPreview],
+      charge:['.rd-charge-card-v39647','data-charge-index',renderChargePreview],
+      food:['.rd-food-card-v39648','data-food-index',renderFoodPreview],
+      discover:['.rd-discover-card-v39649','data-discover-index',renderDiscoverPreview],
+      wc:['.rd-wc-card-v39653','data-wc-index',renderWcPreview],
+      hotels:['.rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649):not(.rd-wc-card-v39653)','data-hotel-index',renderHotelPreview]
+    };
+    const cfg = map[category] || map.hotels;
+    const all = Array.from(document.querySelectorAll(cfg[0]));
+    const active = all.find(function(el){ return (parseInt(el.getAttribute(cfg[1]) || '0', 10) || 0) === index; }) || all[index] || null;
+    all.forEach(function(el){ el.classList.toggle('is-active', el === active); });
+    if(active) syncActiveCardIntoViewV39690(cfg[0].split(':')[0], active);
+    try{ cfg[2](index); }catch(_){ }
+  }, false);
 
 
   /* v39.6.55 — robust Android swipe-down on the visible sheet handle.
