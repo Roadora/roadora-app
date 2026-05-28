@@ -1276,6 +1276,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'City Hotel München', meta:'680 km vanaf start', rating:'4.1', price:'€€', img:'assets/hero-hotels.webp' }
   ];
 
+
+  const FUEL_STRIP_CARDS_V39646 = [
+    { name:'Shell Venlo', meta:'98 km vanaf start', rating:'Open', price:'€1.89', img:'assets/hero-routeplan.webp', chips:['Koffie','Toilet','Shop'] },
+    { name:'Aral Koblenz', meta:'238 km vanaf start', rating:'24/7', price:'€1.86', img:'assets/hero-overview.webp', chips:['24/7','Snelweg','Snacks'] },
+    { name:'TotalEnergies Main', meta:'382 km vanaf start', rating:'Open', price:'€1.91', img:'assets/hero-roadtrip.webp', chips:['Rustplek','Koffie','Toilet'] },
+    { name:'OMV Nürnberg', meta:'515 km vanaf start', rating:'Open', price:'€1.88', img:'assets/hero-hotels.webp', chips:['Shop','Parking','Eten'] },
+    { name:'Esso München', meta:'665 km vanaf start', rating:'Open', price:'€1.93', img:'assets/hero-diary.webp', chips:['Laatste stop','Koffie','Toilet'] }
+  ];
+
   function renderStops(){
     const container = findStopsContainer();
     if(!container) return;
@@ -1310,8 +1319,65 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     closeHotelPreview();
   }
 
+
+  function renderFuelStrip(){
+    const container = findStopsContainer();
+    if(!container) return;
+    document.body.setAttribute('data-stop-subpanel','fuel');
+    document.body.removeAttribute('data-hotel-preview');
+    document.body.removeAttribute('data-fuel-preview');
+    container.innerHTML =
+      '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-fuel-strip-shell-v39646">' +
+        '<div class="rd-hotels-scroll-v39636 rd-fuel-scroll-v39646" aria-label="Tankstations langs je route">' +
+          FUEL_STRIP_CARDS_V39646.map((fuel, index)=>
+            '<button type="button" class="rd-hotel-card-v39636 rd-fuel-card-v39646" data-fuel-index="'+index+'">' +
+              '<span class="rd-hotel-rank-v39636 rd-fuel-rank-v39646">'+(index+1)+'</span>' +
+              '<span class="rd-hotel-photo-v39636 rd-fuel-photo-v39646" style="background-image:url('+fuel.img+')"></span>' +
+              '<span class="rd-hotel-name-v39636 rd-fuel-name-v39646">'+fuel.name+'</span>' +
+              '<span class="rd-hotel-rating-v39636 rd-fuel-rating-v39646">⛽ '+fuel.price+' · '+fuel.rating+'</span>' +
+              '<span class="rd-hotel-meta-v39636 rd-fuel-meta-v39646">'+fuel.meta+'</span>' +
+            '</button>'
+          ).join('') +
+        '</div>' +
+      '</div>';
+    closeHotelPreview();
+  }
+
+  function renderFuelPreview(index){
+    const drawer = document.querySelector('#mapDrawer');
+    if(!drawer) return;
+    const fuel = FUEL_STRIP_CARDS_V39646[index] || FUEL_STRIP_CARDS_V39646[0];
+    closeHotelPreview();
+    document.body.setAttribute('data-fuel-preview','open');
+    document.body.setAttribute('data-hotel-preview','open');
+    const pop = document.createElement('div');
+    pop.className = 'rd-hotel-preview-popover-v39644 rd-fuel-preview-popover-v39646';
+    pop.setAttribute('role','dialog');
+    pop.setAttribute('aria-label','Tankstation preview');
+    pop.innerHTML =
+      '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
+      '<div class="rd-hotel-preview-photo-v39644 rd-fuel-preview-photo-v39646" style="background-image:url('+fuel.img+')">' +
+        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+FUEL_STRIP_CARDS_V39646.length+'</span>' +
+      '</div>' +
+      '<div class="rd-hotel-preview-body-v39644 rd-fuel-preview-body-v39646">' +
+        '<div class="rd-hotel-preview-kicker-v39644">'+fuel.meta.replace(' vanaf start','')+' vanaf start</div>' +
+        '<strong class="rd-hotel-preview-title-v39644">'+fuel.name+'</strong>' +
+        '<div class="rd-hotel-preview-meta-v39644">⛽ '+fuel.price+' · '+fuel.rating+'</div>' +
+        '<div class="rd-hotel-preview-chips-v39644">' +
+          fuel.chips.map(chip => '<span>'+chip+'</span>').join('') +
+        '</div>' +
+        '<p class="rd-hotel-preview-copy-v39644">Handige tankstop langs je route met snelle voorzieningen voor onderweg.</p>' +
+        '<div class="rd-hotel-preview-actions-v39644">' +
+          '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
+          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+        '</div>' +
+      '</div>';
+    drawer.appendChild(pop);
+  }
+
   function closeHotelPreview(){
     document.body.removeAttribute('data-hotel-preview');
+    document.body.removeAttribute('data-fuel-preview');
     const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
     if(old) old.remove();
   }
@@ -1392,8 +1458,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     window.dispatchEvent(new CustomEvent("roadora:stop-category-change", { detail:{ category:category } }));
     if(category === 'hotels'){
       renderHotelStrip();
+    }else if(category === 'fuel'){
+      renderFuelStrip();
     }else{
       document.body.removeAttribute('data-stop-subpanel');
+      closeHotelPreview();
     }
   }, true);
 
@@ -1406,7 +1475,22 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       return;
     }
 
-    const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636");
+    const fuel = e.target.closest && e.target.closest(".rd-fuel-card-v39646");
+    if(fuel){
+      e.preventDefault();
+      e.stopPropagation();
+      const fuelIndex = parseInt(fuel.getAttribute('data-fuel-index') || '0', 10) || 0;
+      document.querySelectorAll(".rd-fuel-card-v39646").forEach(function(item){
+        item.classList.toggle("is-active", item === fuel);
+      });
+      renderFuelPreview(fuelIndex);
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('fuel');
+      }
+      return;
+    }
+
+    const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636:not(.rd-fuel-card-v39646)");
     if(!hotel) return;
     e.preventDefault();
     e.stopPropagation();
@@ -1438,7 +1522,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const MAX_SIDE_DRIFT = 58;
 
     function isHotelsState(){
-      return document.body.getAttribute('data-stop-subpanel') === 'hotels';
+      const subpanel = document.body.getAttribute('data-stop-subpanel');
+      return subpanel === 'hotels' || subpanel === 'fuel';
     }
 
     function getPoint(e){
@@ -1498,5 +1583,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   window.RoadoraRenderStopsSheet = renderStops;
   window.RoadoraRenderHotelStrip = renderHotelStrip;
+  window.RoadoraRenderFuelStrip = renderFuelStrip;
   window.RoadoraCloseInstantPanel = closePanel;
 })();
