@@ -10050,3 +10050,42 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
   background:#fff8ed !important;
   color:#2c2118 !important;
 }
+
+
+/* ===== Roadora v39.6.93 Selected Pin Visual State ===== */
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin{
+  transform-origin:center center !important;
+  transition:transform .20s cubic-bezier(.2,.8,.2,1), opacity .20s ease, filter .20s ease !important;
+}
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-muted-stop-v39693{
+  opacity:.62 !important;
+  filter:saturate(.80) contrast(.96) !important;
+}
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39682,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39683{
+  width:48px !important;
+  height:48px !important;
+  margin-left:-24px !important;
+  margin-top:-24px !important;
+  opacity:1 !important;
+  filter:drop-shadow(0 16px 22px rgba(36,25,18,.28)) !important;
+  background:#2b1f17 !important;
+  border:3px solid rgba(255,250,242,.98) !important;
+  box-shadow:0 0 0 7px rgba(255,250,242,.55), 0 0 0 12px rgba(44,33,24,.12), 0 20px 44px rgba(36,25,18,.30) !important;
+  z-index:10000 !important;
+}
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693 .rdCategoryPinInner,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinInner{
+  width:34px !important;
+  height:34px !important;
+  background:#fff8ed !important;
+  color:#2b1f17 !important;
+}
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-selected-stop-v39693 .rdCategoryPinIcon,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39682 .rdCategoryPinIcon,
+body[data-active-screen="map"] .leaflet-marker-icon.rdCategoryPin.is-active-v39683 .rdCategoryPinIcon{
+  font-size:15px !important;
+  transform:translateY(-1px) scale(1.02) !important;
+}

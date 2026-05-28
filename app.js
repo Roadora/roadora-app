@@ -453,6 +453,40 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   let activeCategoryPinV39682 = null;
   let activeCategoryPinIndexV39682 = -1;
 
+  /* v39.6.93 — single selected stop state for card, popover and marker.
+     The card/preview could be active while the Leaflet marker still looked neutral.
+     Keep one explicit selected state and stamp it onto the marker DOM after Leaflet
+     creates the icon element, so CSS can always highlight the exact selected pin. */
+  function setActiveStopMarkerStateV39693(category, index){
+    activeCategoryPinV39682 = category || null;
+    activeCategoryPinIndexV39682 = (typeof index === 'number' && index >= 0) ? index : -1;
+    try{
+      document.body.setAttribute('data-active-map-stop-category', activeCategoryPinV39682 || '');
+      document.body.setAttribute('data-active-map-stop-index', String(activeCategoryPinIndexV39682));
+    }catch(_){ }
+  }
+
+  function syncMarkerDomStateV39693(marker, category, index, isActive){
+    if(!marker) return;
+    const apply = function(){
+      try{
+        const el = marker.getElement && marker.getElement();
+        if(!el) return;
+        el.setAttribute('data-stop-category', category || '');
+        el.setAttribute('data-stop-index', String(index));
+        el.classList.toggle('is-selected-stop-v39693', !!isActive);
+        el.classList.toggle('is-muted-stop-v39693', !!activeCategoryPinV39682 && !isActive);
+        if(isActive){
+          el.style.zIndex = '10000';
+          marker.setZIndexOffset && marker.setZIndexOffset(1200);
+        }
+      }catch(_){ }
+    };
+    apply();
+    window.setTimeout(apply, 0);
+    window.setTimeout(apply, 80);
+  }
+
   function categoryPinIcon(category, index, isActive){
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
     return L.divIcon({
@@ -855,11 +889,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
 
     if(category && category !== activeCategoryPinV39682){
-      activeCategoryPinV39682 = category;
-      activeCategoryPinIndexV39682 = -1;
+      setActiveStopMarkerStateV39693(category, -1);
     }
     if(typeof activeIndex === 'number' && activeIndex >= 0){
-      activeCategoryPinIndexV39682 = activeIndex;
+      setActiveStopMarkerStateV39693(category, activeIndex);
     }
 
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
@@ -871,9 +904,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(!coord) return;
       const name = (stop && stop.name) || (meta.items && meta.items[i]) || meta.label;
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
-      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
+      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 1200 : 0 });
       marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
+      marker.on('click', function(){
+        setActiveStopMarkerStateV39693(category, i);
+        renderCategoryPins(category, i);
+        focusSelectedCategoryStopOnMap(category, i);
+      });
       marker.addTo(categoryLayer);
+      syncMarkerDomStateV39693(marker, category, i, isActivePin);
       created.push(marker);
     });
 
