@@ -1260,6 +1260,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const container = findStopsContainer();
     if(!container) return;
     document.body.setAttribute('data-stop-subpanel','hotels');
+    document.body.removeAttribute('data-selected-hotel');
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638">' +
         '<div class="rd-hotels-scroll-v39636" aria-label="Hotels langs je route">' +
@@ -1273,7 +1274,37 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
             '</button>'
           ).join('') +
         '</div>' +
+        '<div class="rd-hotel-preview-v39642" aria-hidden="true"></div>' +
       '</div>';
+  }
+
+  function renderHotelPreview(index){
+    const hotel = HOTEL_STRIP_CARDS_V39636[index];
+    const preview = document.querySelector('.rd-hotel-preview-v39642');
+    if(!hotel || !preview) return;
+    document.body.setAttribute('data-selected-hotel','open');
+    preview.setAttribute('aria-hidden','false');
+    preview.innerHTML =
+      '<button type="button" class="rd-hotel-preview-close-v39642" data-hotel-preview-close="true" aria-label="Sluit hotel preview">×</button>' +
+      '<div class="rd-hotel-preview-photo-v39642" style="background-image:url('+hotel.img+')"></div>' +
+      '<div class="rd-hotel-preview-body-v39642">' +
+        '<strong>'+hotel.name+'</strong>' +
+        '<span>★ '+hotel.rating+' · '+hotel.price+' · '+hotel.meta.replace(' vanaf start','')+'</span>' +
+        '<em>Rustige stop langs je route met snelle toegang tot navigatie en opslaan.</em>' +
+      '</div>' +
+      '<div class="rd-hotel-preview-actions-v39642">' +
+        '<button type="button" class="rd-hotel-preview-nav-v39642" data-hotel-action="navigate">Navigeer</button>' +
+        '<button type="button" class="rd-hotel-preview-save-v39642" data-hotel-action="save">Opslaan</button>' +
+      '</div>';
+  }
+
+  function closeHotelPreview(){
+    const preview = document.querySelector('.rd-hotel-preview-v39642');
+    document.body.removeAttribute('data-selected-hotel');
+    if(preview){
+      preview.setAttribute('aria-hidden','true');
+      preview.innerHTML = '';
+    }
   }
 
   function openPanel(panel){
@@ -1327,6 +1358,39 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
   document.addEventListener("click", function(e){
+    const closeBtn = e.target.closest && e.target.closest('[data-hotel-preview-close]');
+    if(closeBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      closeHotelPreview();
+      return;
+    }
+
+    const actionBtn = e.target.closest && e.target.closest('[data-hotel-action]');
+    if(actionBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      const active = document.querySelector('.rd-hotel-card-v39636.is-active');
+      const index = active ? Number(active.getAttribute('data-hotel-index') || 0) : 0;
+      const hotelData = HOTEL_STRIP_CARDS_V39636[index] || HOTEL_STRIP_CARDS_V39636[0];
+      if(actionBtn.getAttribute('data-hotel-action') === 'navigate'){
+        if(window.RoadoraMapsExport && typeof window.RoadoraMapsExport.open === 'function') window.RoadoraMapsExport.open('nav');
+        else window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(hotelData.name), '_blank', 'noopener');
+      }else{
+        try{
+          const key = 'roadora_saved_stops_v1';
+          const saved = JSON.parse(localStorage.getItem(key) || '{}');
+          saved.hotels = Array.isArray(saved.hotels) ? saved.hotels : [];
+          if(!saved.hotels.some(function(item){ return item && item.name === hotelData.name; })){
+            saved.hotels.push({ ...hotelData, type:'hotel', savedAt:new Date().toISOString() });
+            localStorage.setItem(key, JSON.stringify(saved));
+          }
+        }catch(_){ }
+        showToast('Hotel opgeslagen');
+      }
+      return;
+    }
+
     const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636");
     if(!hotel) return;
     e.preventDefault();
@@ -1334,6 +1398,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.querySelectorAll(".rd-hotel-card-v39636").forEach(function(item){
       item.classList.toggle("is-active", item === hotel);
     });
+    renderHotelPreview(Number(hotel.getAttribute('data-hotel-index') || 0));
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
       window.RoadoraApp.renderCategoryPins('hotels');
     }
