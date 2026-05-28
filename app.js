@@ -470,33 +470,102 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return routeCoordinates[idx];
   }
 
-  function offsetCoord(coord, index){
-    // coord = [lon, lat]. Small visual offset so preview pins do not sit exactly on top of the route.
-    const direction = index % 2 === 0 ? 1 : -1;
-    const scale = 0.055 + (index * 0.012);
-    return [coord[0] + (scale * direction), coord[1] + (scale * 0.45)];
+  /* v39.6.86 — one stop source of truth for pins, cards, popovers and map focus.
+     Old fixed route percentages + visual offset hacks are removed. A stop now gets
+     its coordinate from its own data/meta first, then from its real km position on
+     the current route as a safe fallback. */
+  let routeDistanceCacheV39686 = null;
+
+  function distanceKmV39686(a, b){
+    if(!a || !b) return 0;
+    const lon1 = Number(a[0]), lat1 = Number(a[1]), lon2 = Number(b[0]), lat2 = Number(b[1]);
+    if(!isFinite(lon1) || !isFinite(lat1) || !isFinite(lon2) || !isFinite(lat2)) return 0;
+    const R = 6371;
+    const dLat = (lat2-lat1) * Math.PI / 180;
+    const dLon = (lon2-lon1) * Math.PI / 180;
+    const rLat1 = lat1 * Math.PI / 180;
+    const rLat2 = lat2 * Math.PI / 180;
+    const x = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rLat1) * Math.cos(rLat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
   }
 
-
-
-  /* v39.6.45 — focus selected hotel above the sheet/popover without touching route core */
-  function getCategoryPreviewPositions(category){
-    // v39.6.82: five stable route slots so pins can map 1-op-1 to the horizontal cards.
-    return [0.20, 0.34, 0.50, 0.66, 0.80];
+  function getRouteDistanceKmV39686(){
+    if(!routeCoordinates.length) return 0;
+    if(routeDistanceCacheV39686 && routeDistanceCacheV39686.count === routeCoordinates.length) return routeDistanceCacheV39686.km;
+    let km = 0;
+    for(let i=1; i<routeCoordinates.length; i++) km += distanceKmV39686(routeCoordinates[i-1], routeCoordinates[i]);
+    routeDistanceCacheV39686 = { count: routeCoordinates.length, km: km };
+    return km;
   }
 
-  function getCategoryPreviewCoord(category, index){
-    const positions = getCategoryPreviewPositions(category);
-    const safeIndex = Math.max(0, Math.min(positions.length - 1, Number(index) || 0));
-    const base = routePointAt(positions[safeIndex]);
-    if(!base) return null;
-    return offsetCoord(base, safeIndex);
+  function pointAlongRouteByKmV39686(targetKm){
+    if(!routeCoordinates.length) return null;
+    const total = getRouteDistanceKmV39686();
+    const safeTarget = Math.max(0, Math.min(Number(targetKm) || 0, Math.max(total, 0)));
+    if(!total || routeCoordinates.length < 2) return routeCoordinates[0];
+    let travelled = 0;
+    for(let i=1; i<routeCoordinates.length; i++){
+      const prev = routeCoordinates[i-1];
+      const next = routeCoordinates[i];
+      const segment = distanceKmV39686(prev, next);
+      if(travelled + segment >= safeTarget){
+        const ratio = segment ? (safeTarget - travelled) / segment : 0;
+        return [
+          prev[0] + ((next[0] - prev[0]) * ratio),
+          prev[1] + ((next[1] - prev[1]) * ratio)
+        ];
+      }
+      travelled += segment;
+    }
+    return routeCoordinates[routeCoordinates.length - 1];
   }
 
-  function getCategoryPreviewPercent(category, index){
-    const positions = getCategoryPreviewPositions(category || 'hotels');
-    const safeIndex = Math.max(0, Math.min(positions.length - 1, Number(index) || 0));
-    return positions[safeIndex] || 0.5;
+  function parseKmFromMetaV39686(meta){
+    const text = String(meta || '').replace(',', '.');
+    const match = text.match(/(\d+(?:\.\d+)?)\s*km/i);
+    return match ? Number(match[1]) : null;
+  }
+
+  function getActiveCategoryCardsV39686(category){
+    const c = category || document.body.getAttribute('data-active-stop-category') || 'hotels';
+    if(c === 'hotels') return HOTEL_STRIP_CARDS_V39636 || [];
+    if(c === 'fuel') return FUEL_STRIP_CARDS_V39646 || [];
+    if(c === 'charge') return CHARGE_STRIP_CARDS_V39647 || [];
+    if(c === 'food') return getFoodCardsV39678 ? getFoodCardsV39678() : (FOOD_STRIP_CARDS_V39648 || []);
+    if(c === 'discover') return getDiscoverCardsV39681 ? getDiscoverCardsV39681() : (DISCOVER_STRIP_CARDS_V39649 || []);
+    if(c === 'wc') return WC_STRIP_CARDS_V39653 || [];
+    return HOTEL_STRIP_CARDS_V39636 || [];
+  }
+
+  function getStopCoordV39686(category, index){
+    const cards = getActiveCategoryCardsV39686(category);
+    const safeIndex = Math.max(0, Math.min(cards.length - 1, Number(index) || 0));
+    const stop = cards[safeIndex] || cards[0] || null;
+    if(!stop) return null;
+
+    // Production/API data can later provide explicit coordinates as [lon,lat], {lon,lat} or {lng,lat}.
+    if(Array.isArray(stop.coord) && stop.coord.length >= 2) return [Number(stop.coord[0]), Number(stop.coord[1])];
+    if(Array.isArray(stop.coordinates) && stop.coordinates.length >= 2) return [Number(stop.coordinates[0]), Number(stop.coordinates[1])];
+    if(stop.lon !== undefined && stop.lat !== undefined) return [Number(stop.lon), Number(stop.lat)];
+    if(stop.lng !== undefined && stop.lat !== undefined) return [Number(stop.lng), Number(stop.lat)];
+
+    const metaKm = parseKmFromMetaV39686(stop.meta);
+    if(metaKm !== null) return pointAlongRouteByKmV39686(metaKm);
+
+    // Last-resort fallback is evenly spread by the amount of cards, not fixed legacy slots.
+    const percent = (safeIndex + 1) / ((cards.length || 1) + 1);
+    return routePointAt(percent);
+  }
+
+  function getStopPercentV39686(category, index){
+    const coord = getStopCoordV39686(category, index);
+    if(!coord || !routeCoordinates.length) return 0.5;
+    const total = getRouteDistanceKmV39686();
+    const cards = getActiveCategoryCardsV39686(category);
+    const stop = cards[Math.max(0, Math.min(cards.length - 1, Number(index) || 0))] || null;
+    const metaKm = stop ? parseKmFromMetaV39686(stop.meta) : null;
+    if(metaKm !== null && total) return Math.max(0.02, Math.min(0.98, metaKm / total));
+    return 0.5;
   }
 
   function getActiveMapOverlayTopV39684(){
@@ -530,20 +599,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const destination = routeCoordinates[routeCoordinates.length - 1];
     if(start) points.push(latLng(start));
 
-    // Keep only the meaningful route segment from start/current-context to the selected stop.
-    // This prevents the full Rotterdam → Innsbruck route from dominating the fit.
+    // Keep the meaningful route context from start/current-context to the selected stop.
     const routeIndex = Math.max(0, Math.min(routeCoordinates.length - 1, Math.floor(routeCoordinates.length * Math.max(0.04, Math.min(0.96, percent)))));
-    const marginIndex = Math.max(routeIndex, Math.min(routeCoordinates.length - 1, routeIndex + Math.floor(routeCoordinates.length * 0.045)));
+    const marginIndex = Math.max(routeIndex, Math.min(routeCoordinates.length - 1, routeIndex + Math.floor(routeCoordinates.length * 0.035)));
     const step = Math.max(1, Math.floor(Math.max(1, marginIndex) / 16));
     for(let i = 0; i <= marginIndex; i += step){
       if(routeCoordinates[i]) points.push(latLng(routeCoordinates[i]));
     }
 
-    // Add the route point and the visually offset stop point.
     if(routeCoordinates[routeIndex]) points.push(latLng(routeCoordinates[routeIndex]));
     points.push(selected);
-
-    // Late stops need destination context too.
     if(percent > 0.72 && destination) points.push(latLng(destination));
     return points;
   }
@@ -552,10 +617,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
     const safeIndex = Math.max(0, Number(index) || 0);
-    const coord = getCategoryPreviewCoord(safeCategory, safeIndex);
+    const coord = getStopCoordV39686(safeCategory, safeIndex);
     if(!coord) return;
 
-    const percent = getCategoryPreviewPercent(safeCategory, safeIndex);
+    const percent = getStopPercentV39686(safeCategory, safeIndex);
     const selected = latLng(coord);
     const boundPoints = getRouteSegmentBoundsPointsV39685(percent, selected);
 
@@ -566,11 +631,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const viewportW = window.innerWidth || 390;
       const overlayTop = getActiveMapOverlayTopV39684();
       const coveredBottom = Math.max(0, viewportH - overlayTop);
-
-      // The popover/sheet covers the bottom of the map, so reserve that space.
-      // Clamp keeps Leaflet from receiving impossible padding on smaller Android viewports.
-      const bottomPadding = Math.max(330, Math.min(Math.round(viewportH * 0.62), Math.round(coveredBottom + 96)));
-      const topPadding = Math.max(112, Math.min(160, Math.round(viewportH * 0.16)));
+      const bottomPadding = Math.max(330, Math.min(Math.round(viewportH * 0.66), Math.round(coveredBottom + 124)));
+      const topPadding = Math.max(112, Math.min(168, Math.round(viewportH * 0.16)));
       const sidePadding = Math.max(28, Math.min(46, Math.round(viewportW * 0.09)));
 
       const bounds = L.latLngBounds(boundPoints);
@@ -582,13 +644,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         paddingBottomRight:[sidePadding, bottomPadding]
       });
 
-      // Second pass after the popover has finished rendering/measuring. This is needed
-      // on mobile Chrome where the first layout pass can report a stale sheet top.
       window.setTimeout(function(){
         try{
           const overlayTopNow = getActiveMapOverlayTopV39684();
           const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
-          const bottomNow = Math.max(330, Math.min(Math.round((window.innerHeight || viewportH) * 0.64), Math.round(coveredNow + 112)));
+          const bottomNow = Math.max(330, Math.min(Math.round((window.innerHeight || viewportH) * 0.68), Math.round(coveredNow + 138)));
           map.fitBounds(bounds.pad(0.08), {
             animate:true,
             duration:.32,
@@ -626,15 +686,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
 
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
-    const positions = getCategoryPreviewPositions(category);
+    const cards = getActiveCategoryCardsV39686(category);
     const created = [];
 
-    positions.forEach((p, i)=>{
-      const base = routePointAt(p);
-      if(!base) return;
-
-      const coord = offsetCoord(base, i);
-      const name = meta.items[i] || meta.label;
+    cards.forEach((stop, i)=>{
+      const coord = getStopCoordV39686(category, i);
+      if(!coord) return;
+      const name = (stop && stop.name) || (meta.items && meta.items[i]) || meta.label;
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
       const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
       marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
@@ -642,20 +700,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       created.push(marker);
     });
 
-    // v39.6.85 — do not auto-fit all category pins when a card is selected.
-    // The selected-card handler performs a context-aware fit with route + stop + sheet padding.
-    // Auto-fitting all pins here fought against that focus and kept the map too zoomed out/low.
+    // Only category selection may show the overview of available stops. Card selection
+    // is handled exclusively by focusSelectedCategoryStopOnMap(), so no two map-focus
+    // systems can fight each other anymore.
     if(created.length && !(typeof activeIndex === 'number' && activeIndex >= 0)){
       const group = L.featureGroup(created);
       try{
-        map.fitBounds(group.getBounds().pad(1.35), {
+        map.fitBounds(group.getBounds().pad(0.75), {
           animate:true,
           duration:.30,
           maxZoom:7,
           paddingTopLeft:[34,126],
           paddingBottomRight:[34,300]
         });
-      }catch(_){}
+      }catch(_){ }
     }
 
     setText('#mapStatusNext', meta.label + ' geselecteerd');
@@ -680,6 +738,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
   function drawFallback(startCoord, endCoord){
     routeCoordinates=[startCoord,endCoord];
+    routeDistanceCacheV39686 = null;
     routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers();
     L.polyline([latLng(startCoord), latLng(endCoord)], { color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
@@ -689,6 +748,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers();
     const coords=data?.features?.[0]?.geometry?.coordinates || [];
     routeCoordinates = coords.length ? coords : [startCoord,endCoord];
+    routeDistanceCacheV39686 = null;
     L.geoJSON(data, { style:{ color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' } }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
     updateLabels(data?.features?.[0]?.properties?.summary || {});
