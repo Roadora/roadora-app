@@ -470,7 +470,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return routeCoordinates[idx];
   }
 
-  /* v39.6.86 — one stop source of truth for pins, cards, popovers and map focus.
+  /* v39.6.87 — one stop source of truth for pins, cards, popovers and map focus.
      Old fixed route percentages + visual offset hacks are removed. A stop now gets
      its coordinate from its own data/meta first, then from its real km position on
      the current route as a safe fallback. */
@@ -526,7 +526,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return match ? Number(match[1]) : null;
   }
 
-  function getActiveCategoryCardsV39686(category){
+  function getRawCategoryCardsV39687(category){
     const c = category || document.body.getAttribute('data-active-stop-category') || 'hotels';
     if(c === 'hotels') return HOTEL_STRIP_CARDS_V39636 || [];
     if(c === 'fuel') return FUEL_STRIP_CARDS_V39646 || [];
@@ -537,34 +537,98 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return HOTEL_STRIP_CARDS_V39636 || [];
   }
 
+  function isValidLonLatV39687(coord){
+    if(!Array.isArray(coord) || coord.length < 2) return false;
+    const lon = Number(coord[0]);
+    const lat = Number(coord[1]);
+    return isFinite(lon) && isFinite(lat) && Math.abs(lon) <= 180 && Math.abs(lat) <= 90;
+  }
+
+  function explicitCoordFromStopV39687(stop){
+    if(!stop) return null;
+    const candidates = [];
+    if(Array.isArray(stop.coord)) candidates.push(stop.coord);
+    if(Array.isArray(stop.coords)) candidates.push(stop.coords);
+    if(Array.isArray(stop.coordinates)) candidates.push(stop.coordinates);
+    if(stop.location && Array.isArray(stop.location.coordinates)) candidates.push(stop.location.coordinates);
+    if(stop.geometry && Array.isArray(stop.geometry.coordinates)) candidates.push(stop.geometry.coordinates);
+    if(stop.position && stop.position.lng !== undefined && stop.position.lat !== undefined) candidates.push([stop.position.lng, stop.position.lat]);
+    if(stop.location && stop.location.lng !== undefined && stop.location.lat !== undefined) candidates.push([stop.location.lng, stop.location.lat]);
+    if(stop.lon !== undefined && stop.lat !== undefined) candidates.push([stop.lon, stop.lat]);
+    if(stop.lng !== undefined && stop.lat !== undefined) candidates.push([stop.lng, stop.lat]);
+
+    for(const candidate of candidates){
+      const coord = [Number(candidate[0]), Number(candidate[1])];
+      if(isValidLonLatV39687(coord)) return coord;
+    }
+    return null;
+  }
+
+  function fallbackCoordForStopV39687(stop, index, total){
+    const metaKm = parseKmFromMetaV39686(stop && stop.meta);
+    if(metaKm !== null){
+      const byKm = pointAlongRouteByKmV39686(metaKm);
+      if(isValidLonLatV39687(byKm)) return { coord: byKm, km: metaKm, source: 'route-km' };
+    }
+
+    // Future-proof demo fallback: derived from the current route and the number of cards.
+    // This keeps pins/cards/popovers synced until real API lat/lng is provided.
+    const pct = (Math.max(0, Number(index) || 0) + 1) / ((Math.max(1, Number(total) || 1)) + 1);
+    const byPercent = routePointAt(pct);
+    if(isValidLonLatV39687(byPercent)){
+      const routeKm = getRouteDistanceKmV39686();
+      return { coord: byPercent, km: routeKm ? routeKm * pct : null, source: 'route-derived' };
+    }
+
+    return { coord: null, km: metaKm, source: 'missing' };
+  }
+
+  function normalizeRoadoraStopV39687(rawStop, category, index, total){
+    const raw = rawStop || {};
+    const explicit = explicitCoordFromStopV39687(raw);
+    const fallback = explicit
+      ? { coord: explicit, km: parseKmFromMetaV39686(raw.meta), source: 'api-coord' }
+      : fallbackCoordForStopV39687(raw, index, total);
+
+    const coord = fallback.coord;
+    const km = fallback.km !== null && fallback.km !== undefined ? Number(fallback.km) : parseKmFromMetaV39686(raw.meta);
+
+    return Object.assign({}, raw, {
+      id: raw.id || raw.placeId || raw.place_id || raw.name || `${category || 'stop'}-${index}`,
+      category: category || raw.category || raw.type || 'stop',
+      title: raw.title || raw.name || raw.label || 'Stop',
+      name: raw.name || raw.title || raw.label || 'Stop',
+      lon: coord ? Number(coord[0]) : undefined,
+      lng: coord ? Number(coord[0]) : undefined,
+      lat: coord ? Number(coord[1]) : undefined,
+      coord: coord,
+      coordinates: coord,
+      distanceKm: isFinite(km) ? km : undefined,
+      _coordSource: fallback.source
+    });
+  }
+
+  function getActiveCategoryCardsV39686(category){
+    const c = category || document.body.getAttribute('data-active-stop-category') || 'hotels';
+    const rawCards = getRawCategoryCardsV39687(c) || [];
+    return rawCards.map(function(stop, index){
+      return normalizeRoadoraStopV39687(stop, c, index, rawCards.length);
+    });
+  }
+
   function getStopCoordV39686(category, index){
     const cards = getActiveCategoryCardsV39686(category);
     const safeIndex = Math.max(0, Math.min(cards.length - 1, Number(index) || 0));
     const stop = cards[safeIndex] || cards[0] || null;
-    if(!stop) return null;
-
-    // Production/API data can later provide explicit coordinates as [lon,lat], {lon,lat} or {lng,lat}.
-    if(Array.isArray(stop.coord) && stop.coord.length >= 2) return [Number(stop.coord[0]), Number(stop.coord[1])];
-    if(Array.isArray(stop.coordinates) && stop.coordinates.length >= 2) return [Number(stop.coordinates[0]), Number(stop.coordinates[1])];
-    if(stop.lon !== undefined && stop.lat !== undefined) return [Number(stop.lon), Number(stop.lat)];
-    if(stop.lng !== undefined && stop.lat !== undefined) return [Number(stop.lng), Number(stop.lat)];
-
-    const metaKm = parseKmFromMetaV39686(stop.meta);
-    if(metaKm !== null) return pointAlongRouteByKmV39686(metaKm);
-
-    // Last-resort fallback is evenly spread by the amount of cards, not fixed legacy slots.
-    const percent = (safeIndex + 1) / ((cards.length || 1) + 1);
-    return routePointAt(percent);
+    if(!stop || !isValidLonLatV39687(stop.coord)) return null;
+    return stop.coord;
   }
 
   function getStopPercentV39686(category, index){
-    const coord = getStopCoordV39686(category, index);
-    if(!coord || !routeCoordinates.length) return 0.5;
-    const total = getRouteDistanceKmV39686();
     const cards = getActiveCategoryCardsV39686(category);
     const stop = cards[Math.max(0, Math.min(cards.length - 1, Number(index) || 0))] || null;
-    const metaKm = stop ? parseKmFromMetaV39686(stop.meta) : null;
-    if(metaKm !== null && total) return Math.max(0.02, Math.min(0.98, metaKm / total));
+    const total = getRouteDistanceKmV39686();
+    if(stop && isFinite(stop.distanceKm) && total) return Math.max(0.02, Math.min(0.98, stop.distanceKm / total));
     return 0.5;
   }
 
