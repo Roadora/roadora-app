@@ -10009,3 +10009,44 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
   outline-offset:-2px !important;
   box-shadow:0 12px 28px rgba(36,25,18,.16) !important;
 }
+
+
+/* ===== Roadora v39.6.83 Context-aware map focus, clean pins ===== */
+#mapScreen .rdCategoryPin .rdCategoryPinRank,
+.rdCategoryPin .rdCategoryPinRank{
+  display:none !important;
+}
+#mapScreen .rdCategoryPin,
+.rdCategoryPin{
+  width:34px !important;
+  height:34px !important;
+  background:rgba(255,250,242,.94) !important;
+  border:1.5px solid rgba(44,33,24,.18) !important;
+  box-shadow:0 10px 24px rgba(36,25,18,.14) !important;
+}
+#mapScreen .rdCategoryPin .rdCategoryPinInner,
+.rdCategoryPin .rdCategoryPinInner{
+  width:26px !important;
+  height:26px !important;
+  background:rgba(44,33,24,.08) !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682,
+.rdCategoryPin.is-active-v39682,
+#mapScreen .rdCategoryPin.is-active-v39683,
+.rdCategoryPin.is-active-v39683{
+  width:40px !important;
+  height:40px !important;
+  transform:translateY(-3px) scale(1.04) !important;
+  background:#2c2118 !important;
+  border-color:rgba(255,250,242,.92) !important;
+  box-shadow:0 18px 36px rgba(36,25,18,.28) !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
+.rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
+#mapScreen .rdCategoryPin.is-active-v39683 .rdCategoryPinInner,
+.rdCategoryPin.is-active-v39683 .rdCategoryPinInner{
+  width:30px !important;
+  height:30px !important;
+  background:#fff8ed !important;
+  color:#2c2118 !important;
+}

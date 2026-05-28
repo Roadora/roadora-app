@@ -455,12 +455,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function categoryPinIcon(category, index, isActive){
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
-    const rank = Number(index) + 1;
     return L.divIcon({
-      className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682' : ''}`,
-      html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em><b class="rdCategoryPinRank">${rank}</b></span>`,
-      iconSize: isActive ? [42,42] : [34,34],
-      iconAnchor: isActive ? [21,21] : [17,17],
+      className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682 is-active-v39683' : ''}`,
+      html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
+      iconSize: isActive ? [40,40] : [34,34],
+      iconAnchor: isActive ? [20,20] : [17,17],
       popupAnchor: [0,-18]
     });
   }
@@ -494,20 +493,49 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return offsetCoord(base, safeIndex);
   }
 
+  function getCategoryPreviewPercent(category, index){
+    const positions = getCategoryPreviewPositions(category || 'hotels');
+    const safeIndex = Math.max(0, Math.min(positions.length - 1, Number(index) || 0));
+    return positions[safeIndex] || 0.5;
+  }
+
   function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
-    const coord = getCategoryPreviewCoord(category || 'hotels', index);
+    const safeCategory = category || 'hotels';
+    const safeIndex = Math.max(0, Number(index) || 0);
+    const coord = getCategoryPreviewCoord(safeCategory, safeIndex);
     if(!coord) return;
-    const target = latLng(coord);
-    const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 6;
-    const targetZoom = Math.max(currentZoom || 0, 7);
+
+    const percent = getCategoryPreviewPercent(safeCategory, safeIndex);
+    const selected = latLng(coord);
+    const before = routePointAt(Math.max(0, percent - 0.22));
+    const after = routePointAt(Math.min(0.98, percent + 0.18));
+    const start = routeCoordinates[0];
+    const destination = routeCoordinates[routeCoordinates.length - 1];
+
+    const boundPoints = [selected];
+    if(before) boundPoints.push(latLng(before));
+    if(after) boundPoints.push(latLng(after));
+    // Keep enough route context in view: start represents current planned position for now;
+    // later this can be replaced by live GPS without changing the sheet flow.
+    if(start) boundPoints.push(latLng(start));
+    if(destination) boundPoints.push(latLng(destination));
+
     try{
-      map.setView(target, Math.min(targetZoom, 8), { animate:true, duration:.45 });
-      // Keep the selected stop visually above the fixed sheet/popover on mobile.
+      const bounds = L.latLngBounds(boundPoints);
+      map.fitBounds(bounds.pad(0.14), {
+        animate:true,
+        duration:.45,
+        maxZoom:7,
+        paddingTopLeft:[34,118],
+        paddingBottomRight:[34,430]
+      });
       window.setTimeout(function(){
-        try{ map.panBy([0, 88], { animate:true, duration:.25 }); }catch(_){ }
+        try{ map.panBy([0, 34], { animate:true, duration:.22 }); }catch(_){ }
       }, 260);
-    }catch(_){ }
+    }catch(_){
+      try{ map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 }); }catch(__){ }
+    }
   }
 
   function focusSelectedHotelOnMap(index){
@@ -544,7 +572,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const name = meta.items[i] || meta.label;
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
       const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
-      marker.bindPopup(`<strong>${i+1}. ${name}</strong><br><small>${meta.label} · langs route</small>`);
+      marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
       marker.addTo(categoryLayer);
       created.push(marker);
     });
