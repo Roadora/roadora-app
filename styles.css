@@ -8332,270 +8332,211 @@ body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel
 }
 
 /* =========================================================
-   Roadora v39.6.42 — Hotel Preview Overlay in Sheet
+   Roadora v39.6.44 — Large Hotel Preview Popover Over Sheet
    ---------------------------------------------------------
-   Alleen map + hotels-state. Tap op een hotelcard opent een
-   grotere preview OVER dezelfde cards binnen dezelfde vaste sheet.
-   Sheethoogte, map, ORS en Home/Overzicht blijven onaangeraakt.
+   Terug vanaf v39.6.41 basis: geen kleine inline preview meer.
+   Tap op hotel opent een grotere popover over de hotelsheet heen,
+   zonder sheet-height, bottom-nav, Home/Overzicht of Maps/ORS te raken.
 ========================================================= */
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotels-strip-shell-v39636{
-  position:relative !important;
+body[data-active-screen="map"][data-stop-subpanel="hotels"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28{
+  overflow:visible !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"][data-selected-hotel="open"] #mapDrawer .rd-hotels-scroll-v39636{
-  opacity:.26 !important;
-  filter:blur(1.5px) saturate(.96) !important;
-  transform:scale(.985) !important;
-  pointer-events:none !important;
-  transition:opacity .18s ease, filter .18s ease, transform .18s ease !important;
+body[data-active-screen="map"][data-stop-subpanel="hotels"][data-hotel-preview="open"] #mapDrawer .rd-hotels-scroll-v39636{
+  filter:saturate(.94) brightness(.94) !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-v39642{
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-popover-v39644{
   position:absolute !important;
-  left:10px !important;
-  right:10px !important;
-  top:20px !important;
-  bottom:7px !important;
-  z-index:22 !important;
-  display:none !important;
-  grid-template-columns:92px minmax(0,1fr) !important;
-  grid-template-rows:1fr 38px !important;
-  column-gap:10px !important;
-  row-gap:8px !important;
-  padding:8px !important;
-  border-radius:22px !important;
-  background:linear-gradient(180deg, rgba(244,235,222,.98), rgba(232,219,202,.98)) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.56), 0 18px 36px rgba(36,25,18,.18) !important;
-  border:1px solid rgba(96,72,51,.12) !important;
-  overflow:hidden !important;
-  color:#241912 !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"][data-selected-hotel="open"] #mapDrawer .rd-hotel-preview-v39642{
+  left:12px !important;
+  right:12px !important;
+  bottom:82px !important;
+  min-height:236px !important;
+  max-height:calc(100vh - 220px) !important;
+  z-index:42 !important;
   display:grid !important;
-  animation:rdHotelPreviewIn39642 .18s ease-out both !important;
+  grid-template-columns:138px minmax(0,1fr) !important;
+  gap:13px !important;
+  padding:12px !important;
+  border-radius:28px !important;
+  background:linear-gradient(145deg, rgba(249,244,234,.98), rgba(239,229,213,.98)) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 24px 60px rgba(57,40,25,.24), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  color:#231915 !important;
+  overflow:hidden !important;
+  backdrop-filter:blur(24px) saturate(1.14) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.14) !important;
+  animation:rdHotelPreviewIn39644 .18s ease-out both !important;
 }
 
-@keyframes rdHotelPreviewIn39642{
-  from{opacity:0; transform:translateY(8px) scale(.982);}
-  to{opacity:1; transform:translateY(0) scale(1);}
+@keyframes rdHotelPreviewIn39644{
+  from{ opacity:0; transform:translateY(16px) scale(.985); }
+  to{ opacity:1; transform:translateY(0) scale(1); }
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-photo-v39642{
-  grid-row:1 / 3 !important;
-  grid-column:1 !important;
-  min-width:0 !important;
-  border-radius:17px !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-close-v39644{
+  position:absolute !important;
+  top:10px !important;
+  right:10px !important;
+  width:36px !important;
+  height:36px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.76) !important;
+  box-shadow:0 8px 20px rgba(64,44,24,.12), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  color:#5d493c !important;
+  font-size:24px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  z-index:3 !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-photo-v39644{
+  position:relative !important;
+  min-height:212px !important;
+  border-radius:22px !important;
   background-size:cover !important;
   background-position:center !important;
-  box-shadow:inset 0 -34px 45px rgba(0,0,0,.16) !important;
+  box-shadow:inset 0 -54px 70px rgba(0,0,0,.23) !important;
+  overflow:hidden !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642{
-  grid-column:2 !important;
-  grid-row:1 !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-count-v39644{
+  position:absolute !important;
+  right:9px !important;
+  bottom:9px !important;
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(0,0,0,.48) !important;
+  color:#fff !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-body-v39644{
   min-width:0 !important;
-  padding:2px 28px 0 0 !important;
   display:flex !important;
   flex-direction:column !important;
-  justify-content:center !important;
+  justify-content:flex-start !important;
+  padding:3px 36px 2px 0 !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 strong{
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-kicker-v39644{
+  display:inline-flex !important;
+  align-self:flex-start !important;
+  margin-bottom:4px !important;
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.66) !important;
+  color:#846744 !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-title-v39644{
   display:block !important;
-  font-size:14px !important;
+  font-size:20px !important;
+  line-height:1.02 !important;
   font-weight:950 !important;
-  line-height:1.05 !important;
-  letter-spacing:-.03em !important;
-  white-space:nowrap !important;
+  letter-spacing:-.8px !important;
+  color:#211814 !important;
+  white-space:normal !important;
   overflow:hidden !important;
-  text-overflow:ellipsis !important;
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 span{
-  display:block !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-meta-v39644{
   margin-top:6px !important;
-  font-size:10.5px !important;
+  font-size:12px !important;
+  line-height:1 !important;
+  color:#765a3b !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-chips-v39644{
+  display:flex !important;
+  gap:6px !important;
+  flex-wrap:wrap !important;
+  margin-top:10px !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-chips-v39644 span{
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.68) !important;
+  border:1px solid rgba(93,66,37,.06) !important;
+  color:#735f50 !important;
+  font-size:10px !important;
   font-weight:850 !important;
-  color:#8a5b2d !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 em{
-  display:block !important;
-  margin-top:7px !important;
-  font-size:9.5px !important;
-  font-style:normal !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-copy-v39644{
+  margin:10px 0 11px !important;
+  font-size:12px !important;
+  line-height:1.25 !important;
+  color:#6b5a4e !important;
   font-weight:750 !important;
-  line-height:1.18 !important;
-  color:rgba(36,25,18,.58) !important;
-  max-height:23px !important;
   overflow:hidden !important;
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-actions-v39642{
-  grid-column:2 !important;
-  grid-row:2 !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-actions-v39644{
   display:grid !important;
   grid-template-columns:1fr 1fr !important;
-  gap:7px !important;
-  min-width:0 !important;
+  gap:10px !important;
+  margin-top:auto !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-actions-v39642 button{
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-actions-v39644 button{
+  height:48px !important;
   border:0 !important;
-  border-radius:15px !important;
-  min-height:36px !important;
-  font-size:11px !important;
+  border-radius:18px !important;
+  font-size:14px !important;
   font-weight:950 !important;
-  letter-spacing:-.01em !important;
-  cursor:pointer !important;
+  letter-spacing:-.2px !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-nav-v39642{
-  background:#2f251e !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-nav-v39644{
+  background:#3b2417 !important;
   color:#fff7ee !important;
-  box-shadow:0 8px 18px rgba(36,25,18,.16) !important;
+  box-shadow:0 12px 24px rgba(65,35,14,.20) !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-save-v39642{
-  background:rgba(255,255,255,.55) !important;
-  color:#3b2d24 !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.66) !important;
+body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-save-v39644{
+  background:rgba(255,255,255,.84) !important;
+  color:#3c2b20 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.76), 0 8px 18px rgba(59,38,22,.10) !important;
 }
 
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-close-v39642{
-  position:absolute !important;
-  top:7px !important;
-  right:7px !important;
-  z-index:3 !important;
-  width:26px !important;
-  height:26px !important;
-  border:0 !important;
-  border-radius:999px !important;
-  background:rgba(255,255,255,.58) !important;
-  color:#4a392e !important;
-  font-size:18px !important;
-  font-weight:850 !important;
-  line-height:1 !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.66) !important;
-}
-
-@media (max-width:370px){
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-v39642{
-    left:8px !important;
-    right:8px !important;
-    grid-template-columns:82px minmax(0,1fr) !important;
-    column-gap:8px !important;
+@media (max-width:390px){
+  body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-popover-v39644{
+    left:10px !important;
+    right:10px !important;
+    bottom:78px !important;
+    grid-template-columns:126px minmax(0,1fr) !important;
+    gap:11px !important;
+    padding:10px !important;
+    min-height:220px !important;
+    border-radius:25px !important;
   }
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 strong{font-size:13px !important;}
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-actions-v39642{gap:6px !important;}
-}
-
-/* =========================================================
-   Roadora v39.6.43 — Larger Hotel Preview Card
-   ---------------------------------------------------------
-   Maakt de hotel-preview rijker en groter binnen dezelfde
-   vaste hotelsheet. Geen sheet-height, nav, map of ORS wijziging.
-========================================================= */
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-v39642{
-  left:7px !important;
-  right:7px !important;
-  top:10px !important;
-  bottom:4px !important;
-  grid-template-columns:116px minmax(0,1fr) !important;
-  grid-template-rows:minmax(0,1fr) 39px !important;
-  column-gap:10px !important;
-  row-gap:8px !important;
-  padding:7px !important;
-  border-radius:24px !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-photo-v39642{
-  border-radius:19px !important;
-  min-height:0 !important;
-  box-shadow:inset 0 -42px 52px rgba(0,0,0,.20), 0 6px 16px rgba(45,33,25,.08) !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642{
-  justify-content:flex-start !important;
-  padding:7px 28px 0 0 !important;
-  overflow:hidden !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 strong{
-  font-size:15.5px !important;
-  line-height:1.02 !important;
-  max-width:100% !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 .rd-hotel-preview-meta-v39643,
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 span{
-  margin-top:5px !important;
-  font-size:11px !important;
-  line-height:1.15 !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-chips-v39643{
-  display:flex !important;
-  gap:5px !important;
-  margin-top:7px !important;
-  overflow:hidden !important;
-  white-space:nowrap !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-chips-v39643 i{
-  display:inline-flex !important;
-  align-items:center !important;
-  height:20px !important;
-  padding:0 7px !important;
-  border-radius:999px !important;
-  background:rgba(255,255,255,.50) !important;
-  color:rgba(58,43,32,.76) !important;
-  font-size:9.5px !important;
-  font-style:normal !important;
-  font-weight:850 !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.60) !important;
-  flex:0 0 auto !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 em{
-  margin-top:7px !important;
-  font-size:10.2px !important;
-  line-height:1.22 !important;
-  max-height:38px !important;
-  color:rgba(36,25,18,.62) !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-actions-v39642{
-  grid-column:2 !important;
-  align-self:end !important;
-  gap:8px !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-actions-v39642 button{
-  min-height:38px !important;
-  border-radius:16px !important;
-  font-size:11.5px !important;
-}
-
-body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-close-v39642{
-  top:8px !important;
-  right:8px !important;
-  width:27px !important;
-  height:27px !important;
-}
-
-@media (max-width:370px){
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-v39642{
-    left:6px !important;
-    right:6px !important;
-    grid-template-columns:104px minmax(0,1fr) !important;
-    column-gap:8px !important;
+  body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-photo-v39644{
+    min-height:200px !important;
+    border-radius:20px !important;
   }
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 strong{font-size:14px !important;}
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-chips-v39643 i{height:18px !important; padding:0 6px !important; font-size:9px !important;}
-  body[data-active-screen="map"][data-stop-subpanel="hotels"] #mapDrawer .rd-hotel-preview-body-v39642 em{font-size:9.5px !important; max-height:34px !important;}
+  body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-title-v39644{
+    font-size:18px !important;
+  }
+  body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-copy-v39644{
+    -webkit-line-clamp:2 !important;
+    font-size:11.5px !important;
+  }
+  body[data-active-screen="map"] #mapDrawer .rd-hotel-preview-actions-v39644 button{
+    height:44px !important;
+    border-radius:16px !important;
+    font-size:13px !important;
+  }
 }
