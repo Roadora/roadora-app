@@ -472,29 +472,41 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       try{
         const el = marker.getElement && marker.getElement();
         if(!el) return;
+        const selected = !!isActive;
+        const muted = !!activeCategoryPinV39682 && !selected;
         el.setAttribute('data-stop-category', category || '');
         el.setAttribute('data-stop-index', String(index));
-        el.classList.toggle('is-selected-stop-v39693', !!isActive);
-        el.classList.toggle('is-muted-stop-v39693', !!activeCategoryPinV39682 && !isActive);
-        if(isActive){
+        el.classList.toggle('is-selected-stop-v39693', selected);
+        el.classList.toggle('is-selected-stop-v39694', selected);
+        el.classList.toggle('is-muted-stop-v39693', muted);
+        el.classList.toggle('is-muted-stop-v39694', muted);
+        const inner = el.querySelector && el.querySelector('.rdCategoryPinInner');
+        if(inner) inner.classList.toggle('is-selected-inner-v39694', selected);
+        if(selected){
           el.style.zIndex = '10000';
-          marker.setZIndexOffset && marker.setZIndexOffset(1200);
+          marker.setZIndexOffset && marker.setZIndexOffset(1600);
+          marker.bringToFront && marker.bringToFront();
+        }else{
+          marker.setZIndexOffset && marker.setZIndexOffset(0);
         }
       }catch(_){ }
     };
     apply();
     window.setTimeout(apply, 0);
     window.setTimeout(apply, 80);
+    window.setTimeout(apply, 180);
   }
 
   function categoryPinIcon(category, index, isActive){
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
+    const activeClass = isActive ? ' is-active-v39682 is-active-v39683 is-selected-stop-v39694' : '';
+    const mutedClass = activeCategoryPinV39682 && !isActive ? ' is-muted-stop-v39694' : '';
     return L.divIcon({
-      className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682 is-active-v39683' : ''}`,
-      html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
-      iconSize: isActive ? [40,40] : [34,34],
-      iconAnchor: isActive ? [20,20] : [17,17],
-      popupAnchor: [0,-18]
+      className: `rdCategoryPin rdCategoryPin-${category}${activeClass}${mutedClass}`,
+      html: `<span class="rdCategoryPinHalo"></span><span class="rdCategoryPinInner${isActive ? ' is-selected-inner-v39694' : ''}" data-stop-category="${category}" data-stop-index="${index}"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
+      iconSize: [42,42],
+      iconAnchor: [21,21],
+      popupAnchor: [0,-22]
     });
   }
 
@@ -944,6 +956,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   if (window.RoadoraApp) {
     window.RoadoraApp.renderCategoryPins = renderCategoryPins;
+    window.RoadoraApp.setActiveStopMarkerState = setActiveStopMarkerStateV39693;
     window.RoadoraApp.focusSelectedCategoryStopOnMap = focusSelectedCategoryStopOnMap;
     window.RoadoraApp.focusSelectedHotelOnMap = focusSelectedHotelOnMap;
     window.RoadoraApp.restoreRouteOverviewFocus = function(){
