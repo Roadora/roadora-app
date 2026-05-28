@@ -1340,51 +1340,51 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   const NOW_ASSIST_DATA_V39670 = {
     fuel: {
       title:'Tanken dichtbij', label:'Tanken', icon:'⛽', best:'Shell Hazeldonk', meta:'4 min · 2,1 km', sub:'Open 24/7 · snel bereikbaar', chips:['Open','Shop'], action:'Navigeer',
-      alternatives:[{name:'BP Galder', meta:'6 min'},{name:'TotalEnergies', meta:'7 min'},{name:'Esso Rijsbergen', meta:'9 min'}]
+      alternatives:[{name:'BP Galder', meta:'6 min · 3,4 km'},{name:'TotalEnergies', meta:'7 min · 4,2 km'},{name:'Esso Rijsbergen', meta:'9 min · 5,6 km'}]
     },
     charge: {
       title:'Laden dichtbij', label:'Laden', icon:'⚡', best:'Fastned Breda', meta:'5 min · 3,0 km', sub:'Snellader · 150 kW', chips:['150 kW','Vrij'], action:'Navigeer',
-      alternatives:[{name:'Allego', meta:'8 min'},{name:'Ionity', meta:'12 min'},{name:'Shell Recharge', meta:'14 min'}]
+      alternatives:[{name:'Allego', meta:'8 min · 4,8 km'},{name:'Ionity', meta:'12 min · 8,1 km'},{name:'Shell Recharge', meta:'14 min · 9,6 km'}]
     },
     wc: {
       title:'WC in de buurt', label:'WC', icon:'WC', best:'Rastplaats Hazeldonk', meta:'4 min · 2,1 km', sub:'Schoon · parkeren dichtbij', chips:['Schoon','Open'], action:'Navigeer',
-      alternatives:[{name:'Shell Hazeldonk', meta:'5 min'},{name:'BP Galder', meta:'7 min'},{name:'Servicepunt Breda', meta:'9 min'}]
+      alternatives:[{name:'Shell Hazeldonk', meta:'5 min · 2,8 km'},{name:'BP Galder', meta:'7 min · 4,1 km'},{name:'Servicepunt Breda', meta:'9 min · 5,9 km'}]
     },
     food: {
       title:'Eten dichtbij', label:'Eten', icon:'☕', best:'La Place Breda', meta:'6 min · 3,4 km', sub:'Koffie · snelle hap', chips:['Koffie','Lunch'], action:'Navigeer',
-      alternatives:[{name:'McDonald’s', meta:'7 min'},{name:'Bakker Bart', meta:'9 min'},{name:'Starbucks', meta:'11 min'}]
+      alternatives:[{name:'McDonald’s', meta:'7 min · 4,0 km'},{name:'Bakker Bart', meta:'9 min · 5,2 km'},{name:'Starbucks', meta:'11 min · 6,8 km'}]
     },
     sleep: {
       title:'Slapen dichtbij', label:'Slapen', icon:'☾', best:'Van der Valk Breda', meta:'9 min · 6,2 km', sub:'Parkeren · late check-in', chips:['Parkeren','Wifi'], action:'Bekijk',
-      alternatives:[{name:'Bastion Hotel', meta:'11 min'},{name:'Hotel Nassau', meta:'15 min'},{name:'Campanile', meta:'18 min'}]
+      alternatives:[{name:'Bastion Hotel', meta:'11 min · 7,4 km'},{name:'Hotel Nassau', meta:'15 min · 10,1 km'},{name:'Campanile', meta:'18 min · 12,6 km'}]
     },
     help: {
       title:'Hulp dichtbij', label:'Hulp', icon:'SOS', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pechhulp · banden · olie', chips:['Garage','Open'], action:'Bel / Navigeer',
-      alternatives:[{name:'ANWB punt', meta:'10 min'},{name:'Apotheek', meta:'12 min'},{name:'Ziekenhuis', meta:'16 min'}]
+      alternatives:[{name:'ANWB punt', meta:'10 min · 6,8 km'},{name:'Apotheek', meta:'12 min · 8,0 km'},{name:'Ziekenhuis', meta:'16 min · 11,3 km'}]
     },
     help_pharmacy: {
       title:'Apotheek dichtbij', label:'Apotheek', icon:'💊', best:'Apotheek Breda Zuid', meta:'7 min · 3,8 km', sub:'Medicijnen · advies · open', chips:['Apotheek','Open'], action:'Navigeer',
-      alternatives:[{name:'Service Apotheek', meta:'10 min'},{name:'BENU Apotheek', meta:'13 min'},{name:'Apotheek Centrum', meta:'15 min'}]
+      alternatives:[{name:'Service Apotheek', meta:'10 min · 6,1 km'},{name:'BENU Apotheek', meta:'13 min · 8,4 km'},{name:'Apotheek Centrum', meta:'15 min · 10,2 km'}]
     },
     help_hospital: {
       title:'Ziekenhuis dichtbij', label:'Ziekenhuis', icon:'🏥', best:'Amphia Ziekenhuis', meta:'11 min · 6,5 km', sub:'Spoed · parkeren · route', chips:['Spoed','Zorg'], action:'Navigeer',
-      alternatives:[{name:'Huisartsenpost', meta:'14 min'},{name:'Spoedpost Breda', meta:'16 min'},{name:'Medisch Centrum', meta:'18 min'}]
+      alternatives:[{name:'Huisartsenpost', meta:'14 min · 8,8 km'},{name:'Spoedpost Breda', meta:'16 min · 10,6 km'},{name:'Medisch Centrum', meta:'18 min · 12,4 km'}]
     },
     help_garage: {
       title:'Garage dichtbij', label:'Garage', icon:'🔧', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pech · olie · diagnose', chips:['Garage','Open'], action:'Bel / Navigeer',
-      alternatives:[{name:'KwikFit Breda', meta:'9 min'},{name:'Bosch Car Service', meta:'12 min'},{name:'Euromaster', meta:'14 min'}]
+      alternatives:[{name:'KwikFit Breda', meta:'9 min · 5,6 km'},{name:'Bosch Car Service', meta:'12 min · 7,9 km'},{name:'Euromaster', meta:'14 min · 9,1 km'}]
     },
     help_roadside: {
       title:'Pechhulp dichtbij', label:'Pechhulp', icon:'🚑', best:'ANWB Servicepunt', meta:'10 min · 7,0 km', sub:'Pechhulp · noodservice', chips:['Pechhulp','24/7'], action:'Bel / Navigeer',
-      alternatives:[{name:'Route Mobiel', meta:'12 min'},{name:'Bergingsdienst', meta:'15 min'},{name:'Garage noodhulp', meta:'18 min'}]
+      alternatives:[{name:'Route Mobiel', meta:'12 min · 8,2 km'},{name:'Bergingsdienst', meta:'15 min · 10,4 km'},{name:'Garage noodhulp', meta:'18 min · 12,7 km'}]
     },
     help_tires: {
       title:'Bandenservice dichtbij', label:'Banden', icon:'🛞', best:'Euromaster Breda', meta:'9 min · 5,8 km', sub:'Bandenspanning · reparatie', chips:['Banden','Service'], action:'Navigeer',
-      alternatives:[{name:'KwikFit', meta:'11 min'},{name:'Profile Tyrecenter', meta:'13 min'},{name:'Banden Express', meta:'16 min'}]
+      alternatives:[{name:'KwikFit', meta:'11 min · 7,1 km'},{name:'Profile Tyrecenter', meta:'13 min · 8,7 km'},{name:'Banden Express', meta:'16 min · 10,9 km'}]
     },
     help_police: {
       title:'Politie dichtbij', label:'Politie', icon:'👮', best:'Politiebureau Breda', meta:'13 min · 8,2 km', sub:'Veiligheid · melding', chips:['Politie','Veilig'], action:'Navigeer',
-      alternatives:[{name:'Servicepunt Politie', meta:'17 min'},{name:'Gemeente loket', meta:'19 min'},{name:'Noodnummer 112', meta:'Direct'}]
+      alternatives:[{name:'Servicepunt Politie', meta:'17 min · 10,8 km'},{name:'Gemeente loket', meta:'19 min · 12,0 km'},{name:'Noodnummer 112', meta:'Direct'}]
     }
   };
 
