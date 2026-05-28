@@ -500,42 +500,51 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   function getActiveMapOverlayTopV39684(){
-    const candidates = [
-      document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644'),
-      document.querySelector('#mapDrawer'),
-      document.querySelector('.rd-map-nav-v28')
-    ].filter(Boolean);
-
+    // Measure the first visible Roadora surface that covers the bottom of the map.
+    const selectors = [
+      '#mapDrawer .rd-hotel-preview-popover-v39644',
+      '#mapDrawer',
+      '.rd-map-nav-v28'
+    ];
     let top = window.innerHeight || 760;
-    candidates.forEach(function(el){
+    selectors.forEach(function(sel){
+      const el = document.querySelector(sel);
+      if(!el) return;
       try{
         const rect = el.getBoundingClientRect();
-        if(rect && rect.top > 0) top = Math.min(top, rect.top);
+        const visible = rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < (window.innerHeight || 760);
+        if(visible && rect.top > 0) top = Math.min(top, rect.top);
       }catch(_){ }
     });
     return top;
   }
 
-  function getRouteSegmentBoundsPointsV39684(percent, selected){
+  function getRouteSegmentBoundsPointsV39685(percent, selected){
     const points = [];
+    if(!routeCoordinates.length){
+      points.push(selected);
+      return points;
+    }
+
     const start = routeCoordinates[0];
     const destination = routeCoordinates[routeCoordinates.length - 1];
-
     if(start) points.push(latLng(start));
 
-    // Keep the route context between start/current-position and selected stop.
-    // This avoids fitting the complete Rotterdam→Innsbruck route when the user
-    // selects an early stop, which made the chosen stop disappear behind the popover.
-    const maxIndex = Math.max(0, Math.min(routeCoordinates.length - 1, Math.floor(routeCoordinates.length * Math.min(0.98, percent + 0.08))));
-    const step = Math.max(1, Math.floor(maxIndex / 18));
-    for(let i = 0; i <= maxIndex; i += step){
+    // Keep only the meaningful route segment from start/current-context to the selected stop.
+    // This prevents the full Rotterdam → Innsbruck route from dominating the fit.
+    const routeIndex = Math.max(0, Math.min(routeCoordinates.length - 1, Math.floor(routeCoordinates.length * Math.max(0.04, Math.min(0.96, percent)))));
+    const marginIndex = Math.max(routeIndex, Math.min(routeCoordinates.length - 1, routeIndex + Math.floor(routeCoordinates.length * 0.045)));
+    const step = Math.max(1, Math.floor(Math.max(1, marginIndex) / 16));
+    for(let i = 0; i <= marginIndex; i += step){
       if(routeCoordinates[i]) points.push(latLng(routeCoordinates[i]));
     }
 
+    // Add the route point and the visually offset stop point.
+    if(routeCoordinates[routeIndex]) points.push(latLng(routeCoordinates[routeIndex]));
     points.push(selected);
 
-    // If the chosen stop is late in the journey, also keep destination in context.
-    if(percent > 0.68 && destination) points.push(latLng(destination));
+    // Late stops need destination context too.
+    if(percent > 0.72 && destination) points.push(latLng(destination));
     return points;
   }
 
@@ -548,39 +557,47 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     const percent = getCategoryPreviewPercent(safeCategory, safeIndex);
     const selected = latLng(coord);
-    const boundPoints = getRouteSegmentBoundsPointsV39684(percent, selected);
+    const boundPoints = getRouteSegmentBoundsPointsV39685(percent, selected);
 
     try{
       map.invalidateSize && map.invalidateSize(false);
-      const overlayTop = getActiveMapOverlayTopV39684();
-      const viewportH = window.innerHeight || 760;
-      const bottomPadding = Math.max(360, Math.min(560, Math.round(viewportH - overlayTop + 72)));
-      const bounds = L.latLngBounds(boundPoints);
 
-      map.fitBounds(bounds.pad(0.10), {
+      const viewportH = window.innerHeight || 760;
+      const viewportW = window.innerWidth || 390;
+      const overlayTop = getActiveMapOverlayTopV39684();
+      const coveredBottom = Math.max(0, viewportH - overlayTop);
+
+      // The popover/sheet covers the bottom of the map, so reserve that space.
+      // Clamp keeps Leaflet from receiving impossible padding on smaller Android viewports.
+      const bottomPadding = Math.max(330, Math.min(Math.round(viewportH * 0.62), Math.round(coveredBottom + 96)));
+      const topPadding = Math.max(112, Math.min(160, Math.round(viewportH * 0.16)));
+      const sidePadding = Math.max(28, Math.min(46, Math.round(viewportW * 0.09)));
+
+      const bounds = L.latLngBounds(boundPoints);
+      map.fitBounds(bounds.pad(0.08), {
         animate:true,
-        duration:.45,
+        duration:.48,
         maxZoom:8,
-        paddingTopLeft:[34,126],
-        paddingBottomRight:[34,bottomPadding]
+        paddingTopLeft:[sidePadding, topPadding],
+        paddingBottomRight:[sidePadding, bottomPadding]
       });
 
-      // After fitBounds, explicitly keep the selected stop inside the visible
-      // area above the sheet/popover. This is the actual map-engine part of the
-      // fix; it prevents the old centered focus from hiding the stop underneath
-      // the Roadora popover.
+      // Second pass after the popover has finished rendering/measuring. This is needed
+      // on mobile Chrome where the first layout pass can report a stale sheet top.
       window.setTimeout(function(){
         try{
           const overlayTopNow = getActiveMapOverlayTopV39684();
-          const visibleBottom = Math.max(170, overlayTopNow - 18);
-          map.panInside(selected, {
+          const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
+          const bottomNow = Math.max(330, Math.min(Math.round((window.innerHeight || viewportH) * 0.64), Math.round(coveredNow + 112)));
+          map.fitBounds(bounds.pad(0.08), {
             animate:true,
-            duration:.28,
-            paddingTopLeft:[42,128],
-            paddingBottomRight:[42, Math.max(260, Math.round((window.innerHeight || 760) - visibleBottom + 72))]
+            duration:.32,
+            maxZoom:8,
+            paddingTopLeft:[sidePadding, topPadding],
+            paddingBottomRight:[sidePadding, bottomNow]
           });
         }catch(_){ }
-      }, 280);
+      }, 170);
     }catch(_){
       try{ map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 }); }catch(__){ }
     }
@@ -625,10 +642,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       created.push(marker);
     });
 
-    if(created.length){
+    // v39.6.85 — do not auto-fit all category pins when a card is selected.
+    // The selected-card handler performs a context-aware fit with route + stop + sheet padding.
+    // Auto-fitting all pins here fought against that focus and kept the map too zoomed out/low.
+    if(created.length && !(typeof activeIndex === 'number' && activeIndex >= 0)){
       const group = L.featureGroup(created);
       try{
-        map.fitBounds(group.getBounds().pad(1.8), { animate:true, duration:.35, maxZoom:8 });
+        map.fitBounds(group.getBounds().pad(1.35), {
+          animate:true,
+          duration:.30,
+          maxZoom:7,
+          paddingTopLeft:[34,126],
+          paddingBottomRight:[34,300]
+        });
       }catch(_){}
     }
 
