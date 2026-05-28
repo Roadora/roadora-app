@@ -474,6 +474,37 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return [coord[0] + (scale * direction), coord[1] + (scale * 0.45)];
   }
 
+
+
+  /* v39.6.45 — focus selected hotel above the sheet/popover without touching route core */
+  function getCategoryPreviewPositions(category){
+    return category === 'hotels' ? [0.20, 0.34, 0.50, 0.66, 0.80] : [0.28, 0.50, 0.72];
+  }
+
+  function getCategoryPreviewCoord(category, index){
+    const positions = getCategoryPreviewPositions(category);
+    const safeIndex = Math.max(0, Math.min(positions.length - 1, Number(index) || 0));
+    const base = routePointAt(positions[safeIndex]);
+    if(!base) return null;
+    return offsetCoord(base, safeIndex);
+  }
+
+  function focusSelectedHotelOnMap(index){
+    if(!map || !window.L || !routeCoordinates.length) return;
+    const coord = getCategoryPreviewCoord('hotels', index);
+    if(!coord) return;
+    const target = latLng(coord);
+    const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 6;
+    const targetZoom = Math.max(currentZoom || 0, 7);
+    try{
+      map.setView(target, Math.min(targetZoom, 8), { animate:true, duration:.45 });
+      // Keep the selected hotel visually above the fixed sheet/popover on mobile.
+      window.setTimeout(function(){
+        try{ map.panBy([0, 88], { animate:true, duration:.25 }); }catch(_){ }
+      }, 260);
+    }catch(_){ }
+  }
+
   function renderCategoryPins(category){
     if(!map || !window.L) return;
     if(!categoryLayer) categoryLayer = L.layerGroup().addTo(map);
@@ -485,7 +516,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
 
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
-    const positions = [0.28, 0.50, 0.72];
+    const positions = getCategoryPreviewPositions(category);
     const created = [];
 
     positions.forEach((p, i)=>{
@@ -1387,6 +1418,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
       window.RoadoraApp.renderCategoryPins('hotels');
     }
+    window.setTimeout(function(){ focusSelectedHotelOnMap(index); }, 120);
   }, true);
 
 
