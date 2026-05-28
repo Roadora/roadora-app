@@ -727,6 +727,24 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return points;
   }
 
+  function ensureSelectedStopAboveOverlayV39689(selected){
+    if(!map || !selected || !map.latLngToContainerPoint) return;
+    try{
+      const viewportH = window.innerHeight || 760;
+      const overlayTop = getActiveMapOverlayTopV39684();
+      // Keep the selected stop in the visible map area, just above the active
+      // hotel/fuel/etc. popover. This is the missing correction after fitBounds:
+      // Leaflet padding protects bounds, but the selected point can still sit
+      // behind the large Roadora popover on Android Chrome.
+      const desiredY = Math.max(136, Math.min(overlayTop - 92, Math.round(viewportH * 0.58)));
+      const point = map.latLngToContainerPoint(selected);
+      const overflow = point.y - desiredY;
+      if(overflow > 10){
+        map.panBy([0, overflow], { animate:true, duration:.28 });
+      }
+    }catch(_){ }
+  }
+
   function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
@@ -745,35 +763,43 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const viewportW = window.innerWidth || 390;
       const overlayTop = getActiveMapOverlayTopV39684();
       const coveredBottom = Math.max(0, viewportH - overlayTop);
-      const bottomPadding = Math.max(330, Math.min(Math.round(viewportH * 0.66), Math.round(coveredBottom + 124)));
-      const topPadding = Math.max(112, Math.min(168, Math.round(viewportH * 0.16)));
-      const sidePadding = Math.max(28, Math.min(46, Math.round(viewportW * 0.09)));
+      const bottomPadding = Math.max(360, Math.min(Math.round(viewportH * 0.72), Math.round(coveredBottom + 170)));
+      const topPadding = Math.max(118, Math.min(174, Math.round(viewportH * 0.17)));
+      const sidePadding = Math.max(30, Math.min(52, Math.round(viewportW * 0.10)));
 
       const bounds = L.latLngBounds(boundPoints);
-      map.fitBounds(bounds.pad(0.08), {
+      map.fitBounds(bounds.pad(0.10), {
         animate:true,
-        duration:.48,
+        duration:.45,
         maxZoom:8,
         paddingTopLeft:[sidePadding, topPadding],
         paddingBottomRight:[sidePadding, bottomPadding]
       });
 
+      // Second pass after the popover has finished rendering/measuring. Then do
+      // a pixel correction so the selected pin is physically above the popover.
       window.setTimeout(function(){
         try{
           const overlayTopNow = getActiveMapOverlayTopV39684();
           const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
-          const bottomNow = Math.max(330, Math.min(Math.round((window.innerHeight || viewportH) * 0.68), Math.round(coveredNow + 138)));
-          map.fitBounds(bounds.pad(0.08), {
+          const bottomNow = Math.max(380, Math.min(Math.round((window.innerHeight || viewportH) * 0.74), Math.round(coveredNow + 190)));
+          map.fitBounds(bounds.pad(0.10), {
             animate:true,
-            duration:.32,
+            duration:.28,
             maxZoom:8,
             paddingTopLeft:[sidePadding, topPadding],
             paddingBottomRight:[sidePadding, bottomNow]
           });
         }catch(_){ }
-      }, 170);
+      }, 130);
+
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 430);
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 760);
     }catch(_){
-      try{ map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 }); }catch(__){ }
+      try{
+        map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 });
+        window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 160);
+      }catch(__){ }
     }
   }
 
