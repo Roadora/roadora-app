@@ -450,14 +450,18 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
   };
 
-  function categoryPinIcon(category){
+  let activeCategoryPinV39682 = null;
+  let activeCategoryPinIndexV39682 = -1;
+
+  function categoryPinIcon(category, index, isActive){
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
+    const rank = Number(index) + 1;
     return L.divIcon({
-      className: `rdCategoryPin rdCategoryPin-${category}`,
-      html: `<span>${meta.icon}</span>`,
-      iconSize: [34,34],
-      iconAnchor: [17,17],
-      popupAnchor: [0,-16]
+      className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682' : ''}`,
+      html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em><b class="rdCategoryPinRank">${rank}</b></span>`,
+      iconSize: isActive ? [42,42] : [34,34],
+      iconAnchor: isActive ? [21,21] : [17,17],
+      popupAnchor: [0,-18]
     });
   }
 
@@ -478,7 +482,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   /* v39.6.45 — focus selected hotel above the sheet/popover without touching route core */
   function getCategoryPreviewPositions(category){
-    return category === 'hotels' ? [0.20, 0.34, 0.50, 0.66, 0.80] : [0.28, 0.50, 0.72];
+    // v39.6.82: five stable route slots so pins can map 1-op-1 to the horizontal cards.
+    return [0.20, 0.34, 0.50, 0.66, 0.80];
   }
 
   function getCategoryPreviewCoord(category, index){
@@ -489,23 +494,27 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return offsetCoord(base, safeIndex);
   }
 
-  function focusSelectedHotelOnMap(index){
+  function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
-    const coord = getCategoryPreviewCoord('hotels', index);
+    const coord = getCategoryPreviewCoord(category || 'hotels', index);
     if(!coord) return;
     const target = latLng(coord);
     const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 6;
     const targetZoom = Math.max(currentZoom || 0, 7);
     try{
       map.setView(target, Math.min(targetZoom, 8), { animate:true, duration:.45 });
-      // Keep the selected hotel visually above the fixed sheet/popover on mobile.
+      // Keep the selected stop visually above the fixed sheet/popover on mobile.
       window.setTimeout(function(){
         try{ map.panBy([0, 88], { animate:true, duration:.25 }); }catch(_){ }
       }, 260);
     }catch(_){ }
   }
 
-  function renderCategoryPins(category){
+  function focusSelectedHotelOnMap(index){
+    focusSelectedCategoryStopOnMap('hotels', index);
+  }
+
+  function renderCategoryPins(category, activeIndex){
     if(!map || !window.L) return;
     if(!categoryLayer) categoryLayer = L.layerGroup().addTo(map);
     categoryLayer.clearLayers();
@@ -513,6 +522,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!routeCoordinates.length){
       showMapToast('Plan eerst een route');
       return;
+    }
+
+    if(category && category !== activeCategoryPinV39682){
+      activeCategoryPinV39682 = category;
+      activeCategoryPinIndexV39682 = -1;
+    }
+    if(typeof activeIndex === 'number' && activeIndex >= 0){
+      activeCategoryPinIndexV39682 = activeIndex;
     }
 
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
@@ -525,8 +542,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
       const coord = offsetCoord(base, i);
       const name = meta.items[i] || meta.label;
-      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category), riseOnHover:true });
-      marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
+      const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
+      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
+      marker.bindPopup(`<strong>${i+1}. ${name}</strong><br><small>${meta.label} · langs route</small>`);
       marker.addTo(categoryLayer);
       created.push(marker);
     });
@@ -1368,6 +1386,65 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'Alpenblick Rosenheim', meta:'735 km vanaf start', rating:'4.8', type:'Scenic stop', img:'assets/hero-diary.webp', chips:['Bergen','Foto','Laatste pauze'] }
   ];
 
+  const DISCOVER_FILTERS_V39681 = [
+    { icon:'🌄', title:'Uitzicht', key:'viewpoint' },
+    { icon:'🏰', title:'Cultuur', key:'culture' },
+    { icon:'🌲', title:'Natuur', key:'nature' },
+    { icon:'🎡', title:'Activiteit', key:'activity' },
+    { icon:'📸', title:'Fotostop', key:'photo' },
+    { icon:'☕', title:'Lokaal', key:'local' }
+  ];
+
+  const DISCOVER_STRIP_BY_FILTER_V39681 = {
+    viewpoint: [
+      { name:'Uitzichtpunt Maasduinen', meta:'125 km vanaf start', rating:'4.6', type:'Uitzicht', img:'assets/hero-routeplan.webp', chips:['10 min omweg','Panorama','Fotostop'] },
+      { name:'Rheinblick Koblenz', meta:'265 km vanaf start', rating:'4.7', type:'Uitzicht', img:'assets/hero-overview.webp', chips:['Rivier','Koffie dichtbij','Kort bezoek'] },
+      { name:'Mainblick Würzburg', meta:'415 km vanaf start', rating:'4.5', type:'Uitzicht', img:'assets/hero-roadtrip.webp', chips:['Panorama','Parkeren','Zonsondergang'] },
+      { name:'Burcht Nürnberg View', meta:'555 km vanaf start', rating:'4.6', type:'Uitzicht', img:'assets/hero-hotels.webp', chips:['Stadzicht','Cultuur','Fotostop'] },
+      { name:'Alpenblick Rosenheim', meta:'735 km vanaf start', rating:'4.8', type:'Uitzicht', img:'assets/hero-diary.webp', chips:['Bergen','Laatste pauze','Foto'] }
+    ],
+    culture: [
+      { name:'Altstadt Koblenz', meta:'255 km vanaf start', rating:'4.5', type:'Cultuur', img:'assets/hero-overview.webp', chips:['Oude stad','Koffie','Kort bezoek'] },
+      { name:'Dom van Limburg', meta:'190 km vanaf start', rating:'4.6', type:'Cultuur', img:'assets/hero-routeplan.webp', chips:['Historisch','Fotostop','Rustig'] },
+      { name:'Residenz Würzburg', meta:'420 km vanaf start', rating:'4.7', type:'Cultuur', img:'assets/hero-roadtrip.webp', chips:['UNESCO','Parkeren','Museum'] },
+      { name:'Kasteel Nürnberg', meta:'555 km vanaf start', rating:'4.6', type:'Cultuur', img:'assets/hero-hotels.webp', chips:['Kasteel','Panorama','Centrum'] },
+      { name:'Altstadt München', meta:'690 km vanaf start', rating:'4.4', type:'Cultuur', img:'assets/hero-diary.webp', chips:['Stad','Lunchplek','Bezienswaardigheid'] }
+    ],
+    nature: [
+      { name:'Maasduinen wandelstop', meta:'125 km vanaf start', rating:'4.6', type:'Natuur', img:'assets/hero-routeplan.webp', chips:['Wandelen','Rust','Parkeren'] },
+      { name:'Rijnbocht Koblenz', meta:'265 km vanaf start', rating:'4.5', type:'Natuur', img:'assets/hero-overview.webp', chips:['Rivier','Uitzicht','Korte stop'] },
+      { name:'Spessart bosstop', meta:'390 km vanaf start', rating:'4.4', type:'Natuur', img:'assets/hero-roadtrip.webp', chips:['Bos','Picknick','Rustig'] },
+      { name:'Fränkische Schweiz', meta:'560 km vanaf start', rating:'4.7', type:'Natuur', img:'assets/hero-hotels.webp', chips:['Rotsen','Wandelen','Foto'] },
+      { name:'Alpenrand pauzeplek', meta:'730 km vanaf start', rating:'4.8', type:'Natuur', img:'assets/hero-diary.webp', chips:['Bergen','Laatste stop','Rust'] }
+    ],
+    activity: [
+      { name:'Adventure Maasduinen', meta:'130 km vanaf start', rating:'4.3', type:'Activiteit', img:'assets/hero-routeplan.webp', chips:['Buiten','Gezin','Korte omweg'] },
+      { name:'Kabelbaan Koblenz', meta:'268 km vanaf start', rating:'4.6', type:'Activiteit', img:'assets/hero-overview.webp', chips:['Uitzicht','Leuk met kids','Stad'] },
+      { name:'Zwembad Würzburg', meta:'418 km vanaf start', rating:'4.2', type:'Activiteit', img:'assets/hero-roadtrip.webp', chips:['Pauze','Familie','Binnen'] },
+      { name:'Playmobil FunPark', meta:'548 km vanaf start', rating:'4.5', type:'Activiteit', img:'assets/hero-hotels.webp', chips:['Kids','Langere stop','Parking'] },
+      { name:'Rodelbaan Alpenrand', meta:'725 km vanaf start', rating:'4.7', type:'Activiteit', img:'assets/hero-diary.webp', chips:['Bergen','Actief','Foto'] }
+    ],
+    photo: [
+      { name:'Fotopunt Maasduinen', meta:'125 km vanaf start', rating:'4.6', type:'Fotostop', img:'assets/hero-routeplan.webp', chips:['Golden hour','Natuur','Kort'] },
+      { name:'Rijnpromenade Koblenz', meta:'265 km vanaf start', rating:'4.5', type:'Fotostop', img:'assets/hero-overview.webp', chips:['Rivier','Stad','Uitzicht'] },
+      { name:'Würzburg brugzicht', meta:'418 km vanaf start', rating:'4.7', type:'Fotostop', img:'assets/hero-roadtrip.webp', chips:['Historisch','Panorama','Snel'] },
+      { name:'Nürnberg skyline', meta:'555 km vanaf start', rating:'4.6', type:'Fotostop', img:'assets/hero-hotels.webp', chips:['Kasteel','Stad','Zonsondergang'] },
+      { name:'Alpenblick Rosenheim', meta:'735 km vanaf start', rating:'4.8', type:'Fotostop', img:'assets/hero-diary.webp', chips:['Bergen','Laatste pauze','Wow'] }
+    ],
+    local: [
+      { name:'Lokale markt Venlo', meta:'110 km vanaf start', rating:'4.2', type:'Lokaal', img:'assets/hero-routeplan.webp', chips:['Markt','Koffie','Snel'] },
+      { name:'Bakkerij Koblenz', meta:'250 km vanaf start', rating:'4.4', type:'Lokaal', img:'assets/hero-overview.webp', chips:['Gebak','Koffie','Centrum'] },
+      { name:'Wijnstop Franken', meta:'430 km vanaf start', rating:'4.6', type:'Lokaal', img:'assets/hero-roadtrip.webp', chips:['Streek','Uitzicht','Rustig'] },
+      { name:'Nürnberg koffiehuis', meta:'555 km vanaf start', rating:'4.5', type:'Lokaal', img:'assets/hero-hotels.webp', chips:['Lokaal','Terras','Kort bezoek'] },
+      { name:'Bayerische Biergarten', meta:'690 km vanaf start', rating:'4.4', type:'Lokaal', img:'assets/hero-diary.webp', chips:['Regionaal','Eten','Gezellig'] }
+    ]
+  };
+
+  function getDiscoverCardsV39681(filterKey){
+    const key = filterKey || document.body.getAttribute('data-discover-filter') || 'viewpoint';
+    return DISCOVER_STRIP_BY_FILTER_V39681[key] || DISCOVER_STRIP_CARDS_V39649;
+  }
+
 
   const WC_STRIP_CARDS_V39653 = [
     { name:'Rastplatz Maasduinen', meta:'118 km vanaf start', rating:'Schoon', type:'WC', img:'assets/hero-routeplan.webp', chips:['Schoon','Parkeren','24/7'] },
@@ -1540,6 +1617,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
     document.body.removeAttribute('data-food-filter');
+    document.body.removeAttribute('data-discover-filter');
     closeHotelPreview();
     container.innerHTML = STOP_CARDS.map(card =>
       '<button type="button" class="rd-render-stop-card-v39619" data-category="'+card.category+'">' +
@@ -1671,19 +1749,43 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     closeHotelPreview();
   }
 
-  function renderDiscoverStrip(){
+  function renderDiscoverFilters(){
     const container = findStopsContainer();
     if(!container) return;
-    document.body.setAttribute('data-stop-subpanel','discover');
+    document.body.setAttribute('data-stop-subpanel','discover-filter');
+    document.body.removeAttribute('data-discover-filter');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
     document.body.removeAttribute('data-food-preview');
     document.body.removeAttribute('data-discover-preview');
+    document.body.removeAttribute('data-wc-preview');
+    closeHotelPreview();
+    container.innerHTML = DISCOVER_FILTERS_V39681.map(function(card){
+      return '<button type="button" class="rd-render-stop-card-v39619" data-discover-filter="'+card.key+'">' +
+        '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+        '<strong>'+card.title+'</strong><em>›</em>' +
+      '</button>';
+    }).join('');
+  }
+
+  function renderDiscoverStrip(filterKey){
+    const container = findStopsContainer();
+    if(!container) return;
+    const activeFilter = filterKey || document.body.getAttribute('data-discover-filter') || 'viewpoint';
+    const discoverCards = getDiscoverCardsV39681(activeFilter);
+    document.body.setAttribute('data-stop-subpanel','discover');
+    document.body.setAttribute('data-discover-filter', activeFilter);
+    document.body.removeAttribute('data-hotel-preview');
+    document.body.removeAttribute('data-fuel-preview');
+    document.body.removeAttribute('data-charge-preview');
+    document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
+    document.body.removeAttribute('data-wc-preview');
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-discover-strip-shell-v39649">' +
         '<div class="rd-hotels-scroll-v39636 rd-discover-scroll-v39649" aria-label="Uitjes langs je route">' +
-          DISCOVER_STRIP_CARDS_V39649.map((discover, index)=>
+          discoverCards.map((discover, index)=>
             '<button type="button" class="rd-hotel-card-v39636 rd-discover-card-v39649" data-discover-index="'+index+'">' +
               '<span class="rd-hotel-rank-v39636 rd-discover-rank-v39649">'+(index+1)+'</span>' +
               '<span class="rd-hotel-photo-v39636 rd-discover-photo-v39649" style="background-image:url('+discover.img+')"></span>' +
@@ -1760,7 +1862,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderDiscoverPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
-    const discover = DISCOVER_STRIP_CARDS_V39649[index] || DISCOVER_STRIP_CARDS_V39649[0];
+    const discoverCards = getDiscoverCardsV39681();
+    const discover = discoverCards[index] || discoverCards[0];
     closeHotelPreview();
     document.body.setAttribute('data-discover-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
@@ -1771,7 +1874,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
       '<div class="rd-hotel-preview-photo-v39644 rd-discover-preview-photo-v39649" style="background-image:url('+discover.img+')">' +
-        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+DISCOVER_STRIP_CARDS_V39649.length+'</span>' +
+        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+discoverCards.length+'</span>' +
       '</div>' +
       '<div class="rd-hotel-preview-body-v39644 rd-discover-preview-body-v39649">' +
         '<div class="rd-hotel-preview-kicker-v39644">'+discover.meta.replace(' vanaf start','')+' vanaf start</div>' +
@@ -1993,6 +2096,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       }
       return;
     }
+    const discoverFilter = card.getAttribute("data-discover-filter");
+    if(discoverFilter){
+      e.preventDefault();
+      e.stopPropagation();
+      document.querySelectorAll("[data-discover-filter]").forEach(function(item){
+        item.classList.toggle("is-active", item === card);
+      });
+      renderDiscoverStrip(discoverFilter);
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('discover');
+      }
+      return;
+    }
     const category = card.getAttribute("data-category");
     if(!category) return;
     document.body.setAttribute("data-active-stop-category", category);
@@ -2009,7 +2125,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }else if(category === 'food'){
       renderFoodFilters();
     }else if(category === 'discover'){
-      renderDiscoverStrip();
+      renderDiscoverFilters();
     }else if(category === 'wc'){
       renderWcStrip();
     }else{
@@ -2075,8 +2191,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       });
       renderFuelPreview(fuelIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-        window.RoadoraApp.renderCategoryPins('fuel');
+        window.RoadoraApp.renderCategoryPins('fuel', fuelIndex);
       }
+      focusSelectedCategoryStopOnMap('fuel', fuelIndex);
       return;
     }
 
@@ -2090,8 +2207,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       });
       renderChargePreview(chargeIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-        window.RoadoraApp.renderCategoryPins('charge');
+        window.RoadoraApp.renderCategoryPins('charge', chargeIndex);
       }
+      focusSelectedCategoryStopOnMap('charge', chargeIndex);
       return;
     }
 
@@ -2105,8 +2223,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       });
       renderFoodPreview(foodIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-        window.RoadoraApp.renderCategoryPins('food');
+        window.RoadoraApp.renderCategoryPins('food', foodIndex);
       }
+      focusSelectedCategoryStopOnMap('food', foodIndex);
       return;
     }
 
@@ -2120,8 +2239,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       });
       renderDiscoverPreview(discoverIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-        window.RoadoraApp.renderCategoryPins('discover');
+        window.RoadoraApp.renderCategoryPins('discover', discoverIndex);
       }
+      focusSelectedCategoryStopOnMap('discover', discoverIndex);
       return;
     }
 
@@ -2135,8 +2255,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       });
       renderWcPreview(wcIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-        window.RoadoraApp.renderCategoryPins('wc');
+        window.RoadoraApp.renderCategoryPins('wc', wcIndex);
       }
+      focusSelectedCategoryStopOnMap('wc', wcIndex);
       return;
     }
 
@@ -2150,7 +2271,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     });
     renderHotelPreview(index);
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
-      window.RoadoraApp.renderCategoryPins('hotels');
+      window.RoadoraApp.renderCategoryPins('hotels', index);
     }
     window.setTimeout(function(){ focusSelectedHotelOnMap(index); }, 120);
   }, true);
@@ -2172,7 +2293,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     function isCardState(){
       const subpanel = document.body.getAttribute('data-stop-subpanel');
-      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food-filter' || subpanel === 'food' || subpanel === 'discover' || subpanel === 'wc';
+      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food-filter' || subpanel === 'food' || subpanel === 'discover-filter' || subpanel === 'discover' || subpanel === 'wc';
     }
 
     function isStopsCategoryState(){
@@ -2243,7 +2364,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(dy > SWIPE_DOWN && Math.abs(dx) < MAX_SIDE_DRIFT && Math.abs(dy) > Math.abs(dx) * 1.08){
         tracking = false;
         if(isCardState()) {
-          renderStops();
+          const subpanel = document.body.getAttribute('data-stop-subpanel');
+          closeHotelPreview();
+          if(subpanel === 'food'){
+            renderFoodFilters();
+          } else if(subpanel === 'discover'){
+            renderDiscoverFilters();
+          } else {
+            renderStops();
+          }
         } else if(isNowAssistState()) {
           if((document.body.getAttribute('data-now-assist') || '').indexOf('help_') === 0){
             renderNowHelpFilters();

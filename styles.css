@@ -9927,3 +9927,85 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
 body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-alt-v39670{
   height:46px !important;
 }
+
+/* ===== Roadora v39.6.82 Map Pin Sync System ===== */
+#mapScreen .rdCategoryPin{
+  transition: transform .18s ease, filter .18s ease !important;
+}
+#mapScreen .rdCategoryPin .rdCategoryPinInner,
+.rdCategoryPin .rdCategoryPinInner{
+  position:relative !important;
+  width:26px !important;
+  height:26px !important;
+  border-radius:999px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(36,25,18,.08) !important;
+  color:#241912 !important;
+}
+#mapScreen .rdCategoryPin .rdCategoryPinIcon,
+.rdCategoryPin .rdCategoryPinIcon{
+  font-style:normal !important;
+  font-size:12px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  transform:translateY(-1px) !important;
+}
+#mapScreen .rdCategoryPin .rdCategoryPinRank,
+.rdCategoryPin .rdCategoryPinRank{
+  position:absolute !important;
+  right:-6px !important;
+  bottom:-6px !important;
+  min-width:16px !important;
+  height:16px !important;
+  padding:0 4px !important;
+  border-radius:999px !important;
+  background:#2c2118 !important;
+  color:#fff8ed !important;
+  border:1.5px solid #fffaf2 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:9px !important;
+  line-height:1 !important;
+  font-weight:950 !important;
+  box-shadow:0 5px 12px rgba(36,25,18,.18) !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682,
+.rdCategoryPin.is-active-v39682{
+  width:42px !important;
+  height:42px !important;
+  transform:translateY(-3px) scale(1.02) !important;
+  background:#2c2118 !important;
+  border-color:rgba(255,250,242,.92) !important;
+  box-shadow:0 18px 34px rgba(36,25,18,.28) !important;
+  z-index:999 !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
+.rdCategoryPin.is-active-v39682 .rdCategoryPinInner{
+  width:31px !important;
+  height:31px !important;
+  background:#fff8ed !important;
+  color:#2c2118 !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinIcon,
+.rdCategoryPin.is-active-v39682 .rdCategoryPinIcon{
+  font-size:13px !important;
+}
+#mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinRank,
+.rdCategoryPin.is-active-v39682 .rdCategoryPinRank{
+  background:#f2dfc8 !important;
+  color:#2c2118 !important;
+  border-color:#2c2118 !important;
+}
+#mapDrawer .rd-hotel-card-v39636.is-active,
+#mapDrawer .rd-fuel-card-v39646.is-active,
+#mapDrawer .rd-charge-card-v39647.is-active,
+#mapDrawer .rd-food-card-v39648.is-active,
+#mapDrawer .rd-discover-card-v39649.is-active,
+#mapDrawer .rd-wc-card-v39653.is-active{
+  outline:2px solid rgba(44,33,24,.28) !important;
+  outline-offset:-2px !important;
+  box-shadow:0 12px 28px rgba(36,25,18,.16) !important;
+}
