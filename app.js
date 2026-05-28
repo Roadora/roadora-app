@@ -1289,8 +1289,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       '<div class="rd-hotel-preview-photo-v39642" style="background-image:url('+hotel.img+')"></div>' +
       '<div class="rd-hotel-preview-body-v39642">' +
         '<strong>'+hotel.name+'</strong>' +
-        '<span>★ '+hotel.rating+' · '+hotel.price+' · '+hotel.meta.replace(' vanaf start','')+'</span>' +
-        '<em>Rustige stop langs je route met snelle toegang tot navigatie en opslaan.</em>' +
+        '<span class="rd-hotel-preview-meta-v39643">★ '+hotel.rating+' · '+hotel.price+' · '+hotel.meta.replace(' vanaf start','')+'</span>' +
+        '<div class="rd-hotel-preview-chips-v39643">' +
+          '<i>Parkeren</i><i>Ontbijt</i><i>Wifi</i>' +
+        '</div>' +
+        '<em>Comfortabele overnachtingsstop langs je route, handig gelegen voor een rustige pauze onderweg.</em>' +
       '</div>' +
       '<div class="rd-hotel-preview-actions-v39642">' +
         '<button type="button" class="rd-hotel-preview-nav-v39642" data-hotel-action="navigate">Navigeer</button>' +
