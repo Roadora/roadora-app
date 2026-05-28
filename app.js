@@ -1323,16 +1323,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
     closeHotelPreview();
-    container.innerHTML =
-      '<div class="rd-stop-category-strip-shell-v39654">' +
-        '<div class="rd-stop-category-scroll-v39654" aria-label="Stopcategorieën">' +
-          STOP_CARDS.map(card =>
-            '<button type="button" class="rd-render-stop-card-v39619 rd-stop-category-card-v39654" data-category="'+card.category+'">' +
-              '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
-              '<strong>'+card.title+'</strong><em>›</em></button>'
-          ).join("") +
-        '</div>' +
-      '</div>';
+    container.innerHTML = STOP_CARDS.map(card =>
+      '<button type="button" class="rd-render-stop-card-v39619" data-category="'+card.category+'">' +
+      '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+      '<strong>'+card.title+'</strong><em>›</em></button>'
+    ).join("");
   }
 
   function renderHotelStrip(){
@@ -1852,14 +1847,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
 
-  /* v39.6.39 — robust Android swipe-back on the visible sheet handle.
-     Fix: v39.6.38 listened to the drawer top-zone, but Android/browser scrolling and the
-     tiny 5px handle could cancel pointermove before the threshold. This version binds to
-     the real grab handle, enlarges the logical hit-zone, adds touch fallback, and prevents
-     only vertical handle drags. Hotel horizontal scrolling remains untouched. */
-  (function bindHotelsSwipeBackV39639(){
-    if(window.__roadoraHotelsSwipeBackV39639) return;
-    window.__roadoraHotelsSwipeBackV39639 = true;
+  /* v39.6.55 — robust Android swipe-down on the visible sheet handle.
+     Extends the existing card-state swipe-back: card states swipe down to categories,
+     and the categories state now swipes down to close the Stops sheet. Horizontal
+     card scrolling remains untouched. */
+  (function bindStopsHandleSwipeV39655(){
+    if(window.__roadoraStopsHandleSwipeV39655) return;
+    window.__roadoraStopsHandleSwipeV39655 = true;
 
     let startX = 0;
     let startY = 0;
@@ -1867,9 +1861,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const SWIPE_DOWN = 30;
     const MAX_SIDE_DRIFT = 58;
 
-    function isHotelsState(){
+    function isCardState(){
       const subpanel = document.body.getAttribute('data-stop-subpanel');
       return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food' || subpanel === 'discover' || subpanel === 'wc';
+    }
+
+    function isStopsCategoryState(){
+      const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
+      const panel = document.body.getAttribute('data-instant-map-panel');
+      const subpanel = document.body.getAttribute('data-stop-subpanel');
+      return isOpen && panel === 'stops' && !subpanel;
+    }
+
+    function canSwipeHandleDown(){
+      return isCardState() || isStopsCategoryState();
     }
 
     function getPoint(e){
@@ -1890,7 +1895,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
 
     function start(e){
-      if(!isHotelsState()) return;
+      if(!canSwipeHandleDown()) return;
       const p = getPoint(e);
       if(!isHandleStart(e.target, p.y)) return;
       tracking = true;
@@ -1910,7 +1915,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
       if(dy > SWIPE_DOWN && Math.abs(dx) < MAX_SIDE_DRIFT && Math.abs(dy) > Math.abs(dx) * 1.08){
         tracking = false;
-        renderStops();
+        if(isCardState()) {
+          renderStops();
+        } else if(isStopsCategoryState()) {
+          closeHotelPreview();
+          closePanel();
+        }
       }
     }
 
