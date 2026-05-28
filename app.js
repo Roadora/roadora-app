@@ -1327,6 +1327,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { icon:'SOS', title:'Hulp', meta:'Pech / garage', category:'help', hint:'Hulpdiensten en praktische support' }
   ];
 
+  const NOW_HELP_FILTERS_V39674 = [
+    { icon:'💊', title:'Apotheek', category:'help_pharmacy' },
+    { icon:'🏥', title:'Ziekenhuis', category:'help_hospital' },
+    { icon:'🔧', title:'Garage', category:'help_garage' },
+    { icon:'🚑', title:'Pechhulp', category:'help_roadside' },
+    { icon:'🛞', title:'Banden', category:'help_tires' },
+    { icon:'👮', title:'Politie', category:'help_police' }
+  ];
+
 
   const NOW_ASSIST_DATA_V39670 = {
     fuel: {
@@ -1352,6 +1361,30 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     help: {
       title:'Hulp dichtbij', label:'Hulp', icon:'SOS', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pechhulp · banden · olie', chips:['Garage','Open'], action:'Bel / Navigeer',
       alternatives:[{name:'ANWB punt', meta:'10 min'},{name:'Apotheek', meta:'12 min'},{name:'Ziekenhuis', meta:'16 min'}]
+    },
+    help_pharmacy: {
+      title:'Apotheek dichtbij', label:'Apotheek', icon:'💊', best:'Apotheek Breda Zuid', meta:'7 min · 3,8 km', sub:'Medicijnen · advies · open', chips:['Apotheek','Open'], action:'Navigeer',
+      alternatives:[{name:'Service Apotheek', meta:'10 min'},{name:'BENU Apotheek', meta:'13 min'},{name:'Apotheek Centrum', meta:'15 min'}]
+    },
+    help_hospital: {
+      title:'Ziekenhuis dichtbij', label:'Ziekenhuis', icon:'🏥', best:'Amphia Ziekenhuis', meta:'11 min · 6,5 km', sub:'Spoed · parkeren · route', chips:['Spoed','Zorg'], action:'Navigeer',
+      alternatives:[{name:'Huisartsenpost', meta:'14 min'},{name:'Spoedpost Breda', meta:'16 min'},{name:'Medisch Centrum', meta:'18 min'}]
+    },
+    help_garage: {
+      title:'Garage dichtbij', label:'Garage', icon:'🔧', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pech · olie · diagnose', chips:['Garage','Open'], action:'Bel / Navigeer',
+      alternatives:[{name:'KwikFit Breda', meta:'9 min'},{name:'Bosch Car Service', meta:'12 min'},{name:'Euromaster', meta:'14 min'}]
+    },
+    help_roadside: {
+      title:'Pechhulp dichtbij', label:'Pechhulp', icon:'🚑', best:'ANWB Servicepunt', meta:'10 min · 7,0 km', sub:'Pechhulp · noodservice', chips:['Pechhulp','24/7'], action:'Bel / Navigeer',
+      alternatives:[{name:'Route Mobiel', meta:'12 min'},{name:'Bergingsdienst', meta:'15 min'},{name:'Garage noodhulp', meta:'18 min'}]
+    },
+    help_tires: {
+      title:'Bandenservice dichtbij', label:'Banden', icon:'🛞', best:'Euromaster Breda', meta:'9 min · 5,8 km', sub:'Bandenspanning · reparatie', chips:['Banden','Service'], action:'Navigeer',
+      alternatives:[{name:'KwikFit', meta:'11 min'},{name:'Profile Tyrecenter', meta:'13 min'},{name:'Banden Express', meta:'16 min'}]
+    },
+    help_police: {
+      title:'Politie dichtbij', label:'Politie', icon:'👮', best:'Politiebureau Breda', meta:'13 min · 8,2 km', sub:'Veiligheid · melding', chips:['Politie','Veilig'], action:'Navigeer',
+      alternatives:[{name:'Servicepunt Politie', meta:'17 min'},{name:'Gemeente loket', meta:'19 min'},{name:'Noodnummer 112', meta:'Direct'}]
     }
   };
 
@@ -1378,6 +1411,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
     document.body.removeAttribute('data-now-assist');
+    document.body.removeAttribute('data-now-help-sub');
     document.body.setAttribute('data-now-needed','open');
     closeHotelPreview();
     container.innerHTML =
@@ -1389,6 +1423,22 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '</button>';
       }).join('');
     setTimeout(updateNowGpsStatusV39656, 80);
+  }
+
+  function renderNowHelpFilters(){
+    const container = findStopsContainer();
+    if(!container) return;
+    document.body.removeAttribute('data-stop-subpanel');
+    document.body.removeAttribute('data-now-assist');
+    document.body.setAttribute('data-now-needed','open');
+    document.body.setAttribute('data-now-help-sub','open');
+    closeHotelPreview();
+    container.innerHTML = NOW_HELP_FILTERS_V39674.map(function(card){
+      return '<button type="button" class="rd-render-stop-card-v39619" data-now-help-type="'+card.category+'">' +
+        '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+        '<strong>'+card.title+'</strong><em>›</em>' +
+      '</button>';
+    }).join('');
   }
 
   function renderNowAssist(category, selectedIndex){
@@ -1404,6 +1454,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const activeIndex = Math.max(0, Math.min(Number(selectedIndex || 0), allOptions.length - 1));
     const active = allOptions[activeIndex] || allOptions[0];
     document.body.removeAttribute('data-stop-subpanel');
+    document.body.removeAttribute('data-now-help-sub');
     document.body.setAttribute('data-now-needed','open');
     document.body.setAttribute('data-now-assist', category);
     document.body.setAttribute('data-now-selected-index', String(activeIndex));
@@ -1820,6 +1871,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute("data-instant-map-panel");
     document.body.removeAttribute('data-now-needed');
     document.body.removeAttribute('data-now-assist');
+    document.body.removeAttribute('data-now-help-sub');
     document.body.removeAttribute('data-now-gps');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
@@ -1868,6 +1920,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }, true);
 
   document.addEventListener("click", function(e){
+    const nowHelpType = e.target.closest && e.target.closest('[data-now-help-type]');
+    if(nowHelpType){
+      e.preventDefault();
+      e.stopPropagation();
+      const category = nowHelpType.getAttribute('data-now-help-type') || 'help_garage';
+      renderNowAssist(category, 0);
+      return;
+    }
+
     const nowAlt = e.target.closest && e.target.closest('[data-now-alt-index]');
     if(nowAlt){
       e.preventDefault();
@@ -1886,7 +1947,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       item.classList.toggle('is-active', item === nowCard);
     });
     const category = nowCard.getAttribute('data-now-category') || '';
-    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function' && category !== 'sleep' && category !== 'help'){
+    if(category === 'help'){
+      renderNowHelpFilters();
+      return;
+    }
+    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function' && category !== 'sleep'){
       window.RoadoraApp.renderCategoryPins(category);
     }
     renderNowAssist(category, 0);
@@ -2024,14 +2089,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       return isOpen && panel === 'now' && !!document.body.getAttribute('data-now-assist');
     }
 
+    function isNowHelpSubState(){
+      const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
+      const panel = document.body.getAttribute('data-instant-map-panel');
+      return isOpen && panel === 'now' && document.body.getAttribute('data-now-help-sub') === 'open';
+    }
+
     function isNowNeededState(){
       const isOpen = document.body.getAttribute('data-map-drawer') === 'open';
       const panel = document.body.getAttribute('data-instant-map-panel');
-      return isOpen && panel === 'now' && document.body.getAttribute('data-now-needed') === 'open' && !document.body.getAttribute('data-now-assist');
+      return isOpen && panel === 'now' && document.body.getAttribute('data-now-needed') === 'open' && !document.body.getAttribute('data-now-assist') && !document.body.getAttribute('data-now-help-sub');
     }
 
     function canSwipeHandleDown(){
-      return isCardState() || isStopsCategoryState() || isNowAssistState() || isNowNeededState();
+      return isCardState() || isStopsCategoryState() || isNowAssistState() || isNowHelpSubState() || isNowNeededState();
     }
 
     function getPoint(e){
@@ -2075,6 +2146,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         if(isCardState()) {
           renderStops();
         } else if(isNowAssistState()) {
+          if((document.body.getAttribute('data-now-assist') || '').indexOf('help_') === 0){
+            renderNowHelpFilters();
+          } else {
+            renderNowNeeded();
+          }
+        } else if(isNowHelpSubState()) {
           renderNowNeeded();
         } else if(isStopsCategoryState() || isNowNeededState()) {
           closeHotelPreview();
@@ -2103,5 +2180,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRenderWcStrip = renderWcStrip;
   window.RoadoraRenderNowNeeded = renderNowNeeded;
   window.RoadoraRenderNowAssist = renderNowAssist;
+  window.RoadoraRenderNowHelpFilters = renderNowHelpFilters;
   window.RoadoraCloseInstantPanel = closePanel;
 })();
