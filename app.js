@@ -470,7 +470,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return routeCoordinates[idx];
   }
 
-  /* v39.6.87 — one stop source of truth for pins, cards, popovers and map focus.
+  /* v39.6.88 — one stop source of truth for pins, cards, popovers and map focus.
      Old fixed route percentages + visual offset hacks are removed. A stop now gets
      its coordinate from its own data/meta first, then from its real km position on
      the current route as a safe fallback. */
@@ -528,13 +528,63 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function getRawCategoryCardsV39687(category){
     const c = category || document.body.getAttribute('data-active-stop-category') || 'hotels';
-    if(c === 'hotels') return HOTEL_STRIP_CARDS_V39636 || [];
-    if(c === 'fuel') return FUEL_STRIP_CARDS_V39646 || [];
-    if(c === 'charge') return CHARGE_STRIP_CARDS_V39647 || [];
-    if(c === 'food') return getFoodCardsV39678 ? getFoodCardsV39678() : (FOOD_STRIP_CARDS_V39648 || []);
-    if(c === 'discover') return getDiscoverCardsV39681 ? getDiscoverCardsV39681() : (DISCOVER_STRIP_CARDS_V39649 || []);
-    if(c === 'wc') return WC_STRIP_CARDS_V39653 || [];
-    return HOTEL_STRIP_CARDS_V39636 || [];
+
+    // v39.6.88 — the map engine runs in a separate closure from the sheet data.
+    // Read stops through the shared registry so pins/cards/popovers use the same source.
+    const registry = window.RoadoraStopDataV39688 || window.RoadoraStopData || null;
+    if(registry && typeof registry.getCards === 'function'){
+      try{
+        const cards = registry.getCards(c);
+        if(Array.isArray(cards)) return cards;
+      }catch(_){ }
+    }
+
+    // Last-resort fallback keeps demo pins visible if the registry has not booted yet.
+    const fallback = {
+      hotels:[
+        { name:'Van der Valk Venlo', meta:'105 km vanaf start' },
+        { name:'Hotel Koblenz', meta:'245 km vanaf start' },
+        { name:'Hotel am Main', meta:'390 km vanaf start' },
+        { name:'Landhotel Bayern', meta:'520 km vanaf start' },
+        { name:'City Hotel München', meta:'680 km vanaf start' }
+      ],
+      fuel:[
+        { name:'Shell Venlo', meta:'98 km vanaf start' },
+        { name:'Aral Koblenz', meta:'238 km vanaf start' },
+        { name:'TotalEnergies Main', meta:'382 km vanaf start' },
+        { name:'OMV Nürnberg', meta:'515 km vanaf start' },
+        { name:'Esso München', meta:'665 km vanaf start' }
+      ],
+      charge:[
+        { name:'Fastned Venlo', meta:'110 km vanaf start' },
+        { name:'Ionity Koblenz', meta:'255 km vanaf start' },
+        { name:'EnBW Würzburg', meta:'430 km vanaf start' },
+        { name:'Tesla Nürnberg', meta:'545 km vanaf start' },
+        { name:'Aral Pulse München', meta:'690 km vanaf start' }
+      ],
+      food:[
+        { name:'Bistro Maasduinen', meta:'115 km vanaf start' },
+        { name:'Rheinblick Café', meta:'260 km vanaf start' },
+        { name:'Gasthof Würzburg', meta:'420 km vanaf start' },
+        { name:'Autohof Nürnberg', meta:'555 km vanaf start' },
+        { name:'Alpen Café München', meta:'690 km vanaf start' }
+      ],
+      discover:[
+        { name:'Uitzichtpunt Maasduinen', meta:'125 km vanaf start' },
+        { name:'Rijnpromenade Koblenz', meta:'265 km vanaf start' },
+        { name:'Altstadt Würzburg', meta:'415 km vanaf start' },
+        { name:'Kasteel Nürnberg', meta:'555 km vanaf start' },
+        { name:'Alpenblick Rosenheim', meta:'735 km vanaf start' }
+      ],
+      wc:[
+        { name:'Rastplatz Maasduinen', meta:'118 km vanaf start' },
+        { name:'Service Koblenz', meta:'248 km vanaf start' },
+        { name:'Pauzeplaats Main', meta:'392 km vanaf start' },
+        { name:'Raststätte Nürnberg', meta:'548 km vanaf start' },
+        { name:'Stop München Süd', meta:'690 km vanaf start' }
+      ]
+    };
+    return fallback[c] || fallback.hotels;
   }
 
   function isValidLonLatV39687(coord){
@@ -1679,6 +1729,23 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'Raststätte Nürnberg', meta:'548 km vanaf start', rating:'Open', type:'WC', img:'assets/hero-hotels.webp', chips:['24/7','Toilet','Snacks'] },
     { name:'Stop München Süd', meta:'690 km vanaf start', rating:'Schoon', type:'WC', img:'assets/hero-diary.webp', chips:['Laatste stop','Parkeren','Koffie'] }
   ];
+
+  // v39.6.88 — shared stop registry for map pins, cards, popovers and future API data.
+  // The map engine is an earlier closure, so all sheet datasets must be exposed through
+  // one safe read-only bridge instead of direct cross-closure variable access.
+  window.RoadoraStopDataV39688 = {
+    getCards:function(category){
+      const c = category || document.body.getAttribute('data-active-stop-category') || 'hotels';
+      if(c === 'hotels') return HOTEL_STRIP_CARDS_V39636 || [];
+      if(c === 'fuel') return FUEL_STRIP_CARDS_V39646 || [];
+      if(c === 'charge') return CHARGE_STRIP_CARDS_V39647 || [];
+      if(c === 'food') return getFoodCardsV39678 ? getFoodCardsV39678() : (FOOD_STRIP_CARDS_V39648 || []);
+      if(c === 'discover') return getDiscoverCardsV39681 ? getDiscoverCardsV39681() : (DISCOVER_STRIP_CARDS_V39649 || []);
+      if(c === 'wc') return WC_STRIP_CARDS_V39653 || [];
+      return HOTEL_STRIP_CARDS_V39636 || [];
+    }
+  };
+  window.RoadoraStopData = window.RoadoraStopDataV39688;
 
   const NOW_NEEDED_CARDS_V39656 = [
     { icon:'⛽', title:'Tanken', meta:'Dichtbij via GPS', category:'fuel', hint:'Open tankstations rondom jou' },
