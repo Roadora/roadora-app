@@ -8841,3 +8841,153 @@ body[data-active-screen="map"] #mapDrawer .rd-charge-preview-popover-v39647 .rd-
     width:118px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.6.48 — Food Cards + Popover Sheet State
+   ---------------------------------------------------------
+   Safe extension of the isolated map Stops system.
+   Reuses the same fixed-height card/popover architecture as Hotels/Fuel/Charge.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  position:fixed !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  background:transparent !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-grab-v28{
+  position:absolute !important;
+  top:0 !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:92px !important;
+  height:30px !important;
+  min-height:30px !important;
+  margin:0 !important;
+  z-index:30 !important;
+  pointer-events:auto !important;
+  touch-action:none !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-grab-v28::before{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  top:8px !important;
+  width:44px !important;
+  height:5px !important;
+  transform:translateX(-50%) !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.18) !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-strip-shell-v39648.rd-hotels-strip-shell-v39636{
+  position:relative !important;
+  height:100% !important;
+  padding:24px 10px 7px !important;
+  overflow:hidden !important;
+  background:transparent !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-scroll-v39648.rd-hotels-scroll-v39636{
+  height:100% !important;
+  flex:1 1 auto !important;
+  display:flex !important;
+  align-items:stretch !important;
+  gap:10px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scroll-snap-type:x proximity !important;
+  padding:0 4px 2px !important;
+  margin:0 !important;
+  scrollbar-width:none !important;
+  touch-action:pan-x !important;
+}
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-scroll-v39648::-webkit-scrollbar{display:none !important;}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-card-v39648{
+  flex:0 0 126px !important;
+  width:126px !important;
+  height:100% !important;
+  min-height:126px !important;
+  max-height:132px !important;
+  border-radius:17px !important;
+  border:1px solid rgba(36,25,18,.06) !important;
+  background:rgba(255,255,255,.76) !important;
+  box-shadow:0 6px 16px rgba(36,25,18,.055) !important;
+  overflow:hidden !important;
+  scroll-snap-align:start !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-card-v39648.is-active{
+  border-color:rgba(170,96,44,.34) !important;
+  box-shadow:0 8px 20px rgba(170,96,44,.16), inset 0 0 0 1px rgba(255,255,255,.45) !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-photo-v39648{
+  height:62px !important;
+  border-radius:16px 16px 11px 11px !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-rating-v39648{
+  color:#9b5f34 !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer{
+  touch-action:pan-x !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"][data-food-preview="open"] #mapDrawer.rd-map-sheet-v28{
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food"][data-food-preview="open"] #mapDrawer .rd-food-scroll-v39648{
+  filter:saturate(.94) brightness(.94) !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-food-preview-popover-v39648 .rd-hotel-preview-meta-v39644{
+  color:#8f5b32 !important;
+}
+
+body[data-active-screen="map"] #mapDrawer .rd-food-preview-popover-v39648 .rd-hotel-preview-nav-v39644{
+  background:#4a2b18 !important;
+  color:#fff7ee !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-stop-subpanel="food"] #mapDrawer .rd-food-card-v39648{
+    flex-basis:118px !important;
+    width:118px !important;
+  }
+}
