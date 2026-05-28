@@ -1301,6 +1301,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'Alpen Café München', meta:'690 km vanaf start', rating:'4.7', type:'Ontbijt', img:'assets/hero-diary.webp', chips:['Ontbijt','Koffie','Laatste stop'] }
   ];
 
+  const DISCOVER_STRIP_CARDS_V39649 = [
+    { name:'Uitzichtpunt Maasduinen', meta:'125 km vanaf start', rating:'4.6', type:'Natuur', img:'assets/hero-routeplan.webp', chips:['10 min omweg','Uitzicht','Fotostop'] },
+    { name:'Rijnpromenade Koblenz', meta:'265 km vanaf start', rating:'4.5', type:'Wandeling', img:'assets/hero-overview.webp', chips:['Aan de rivier','Koffie dichtbij','Kort bezoek'] },
+    { name:'Altstadt Würzburg', meta:'415 km vanaf start', rating:'4.7', type:'Stad', img:'assets/hero-roadtrip.webp', chips:['Historisch','Lunchplek','Parkeren'] },
+    { name:'Kasteel Nürnberg', meta:'555 km vanaf start', rating:'4.6', type:'Bezienswaardigheid', img:'assets/hero-hotels.webp', chips:['Panorama','Cultuur','Ruststop'] },
+    { name:'Alpenblick Rosenheim', meta:'735 km vanaf start', rating:'4.8', type:'Scenic stop', img:'assets/hero-diary.webp', chips:['Bergen','Foto','Laatste pauze'] }
+  ];
+
   function renderStops(){
     const container = findStopsContainer();
     if(!container) return;
@@ -1319,6 +1327,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.setAttribute('data-stop-subpanel','hotels');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638">' +
         '<div class="rd-hotels-scroll-v39636" aria-label="Hotels langs je route">' +
@@ -1368,6 +1377,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
     document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-charge-strip-shell-v39647">' +
         '<div class="rd-hotels-scroll-v39636 rd-charge-scroll-v39647" aria-label="Laadpalen langs je route">' +
@@ -1393,6 +1403,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
     document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-food-strip-shell-v39648">' +
         '<div class="rd-hotels-scroll-v39636 rd-food-scroll-v39648" aria-label="Eten langs je route">' +
@@ -1408,6 +1419,64 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '</div>' +
       '</div>';
     closeHotelPreview();
+  }
+
+  function renderDiscoverStrip(){
+    const container = findStopsContainer();
+    if(!container) return;
+    document.body.setAttribute('data-stop-subpanel','discover');
+    document.body.removeAttribute('data-hotel-preview');
+    document.body.removeAttribute('data-fuel-preview');
+    document.body.removeAttribute('data-charge-preview');
+    document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
+    container.innerHTML =
+      '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-discover-strip-shell-v39649">' +
+        '<div class="rd-hotels-scroll-v39636 rd-discover-scroll-v39649" aria-label="Uitjes langs je route">' +
+          DISCOVER_STRIP_CARDS_V39649.map((discover, index)=>
+            '<button type="button" class="rd-hotel-card-v39636 rd-discover-card-v39649" data-discover-index="'+index+'">' +
+              '<span class="rd-hotel-rank-v39636 rd-discover-rank-v39649">'+(index+1)+'</span>' +
+              '<span class="rd-hotel-photo-v39636 rd-discover-photo-v39649" style="background-image:url('+discover.img+')"></span>' +
+              '<span class="rd-hotel-name-v39636 rd-discover-name-v39649">'+discover.name+'</span>' +
+              '<span class="rd-hotel-rating-v39636 rd-discover-rating-v39649">◎ '+discover.type+' · ★ '+discover.rating+'</span>' +
+              '<span class="rd-hotel-meta-v39636 rd-discover-meta-v39649">'+discover.meta+'</span>' +
+            '</button>'
+          ).join('') +
+        '</div>' +
+      '</div>';
+    closeHotelPreview();
+  }
+
+  function renderDiscoverPreview(index){
+    const drawer = document.querySelector('#mapDrawer');
+    if(!drawer) return;
+    const discover = DISCOVER_STRIP_CARDS_V39649[index] || DISCOVER_STRIP_CARDS_V39649[0];
+    closeHotelPreview();
+    document.body.setAttribute('data-discover-preview','open');
+    document.body.setAttribute('data-hotel-preview','open');
+    const pop = document.createElement('div');
+    pop.className = 'rd-hotel-preview-popover-v39644 rd-discover-preview-popover-v39649';
+    pop.setAttribute('role','dialog');
+    pop.setAttribute('aria-label','Uitje preview');
+    pop.innerHTML =
+      '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
+      '<div class="rd-hotel-preview-photo-v39644 rd-discover-preview-photo-v39649" style="background-image:url('+discover.img+')">' +
+        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+DISCOVER_STRIP_CARDS_V39649.length+'</span>' +
+      '</div>' +
+      '<div class="rd-hotel-preview-body-v39644 rd-discover-preview-body-v39649">' +
+        '<div class="rd-hotel-preview-kicker-v39644">'+discover.meta.replace(' vanaf start','')+' vanaf start</div>' +
+        '<strong class="rd-hotel-preview-title-v39644">'+discover.name+'</strong>' +
+        '<div class="rd-hotel-preview-meta-v39644">◎ '+discover.type+' · ★ '+discover.rating+'</div>' +
+        '<div class="rd-hotel-preview-chips-v39644">' +
+          discover.chips.map(chip => '<span>'+chip+'</span>').join('') +
+        '</div>' +
+        '<p class="rd-hotel-preview-copy-v39644">Mooie korte stop langs je route voor uitzicht, ontspanning of een kleine ontdekking onderweg.</p>' +
+        '<div class="rd-hotel-preview-actions-v39644">' +
+          '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
+          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+        '</div>' +
+      '</div>';
+    drawer.appendChild(pop);
   }
 
   function renderChargePreview(index){
@@ -1511,6 +1580,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
     document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
     const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
     if(old) old.remove();
   }
@@ -1597,6 +1667,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       renderChargeStrip();
     }else if(category === 'food'){
       renderFoodStrip();
+    }else if(category === 'discover'){
+      renderDiscoverStrip();
     }else{
       document.body.removeAttribute('data-stop-subpanel');
       closeHotelPreview();
@@ -1657,7 +1729,22 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       return;
     }
 
-    const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648)");
+    const discover = e.target.closest && e.target.closest(".rd-discover-card-v39649");
+    if(discover){
+      e.preventDefault();
+      e.stopPropagation();
+      const discoverIndex = parseInt(discover.getAttribute('data-discover-index') || '0', 10) || 0;
+      document.querySelectorAll(".rd-discover-card-v39649").forEach(function(item){
+        item.classList.toggle("is-active", item === discover);
+      });
+      renderDiscoverPreview(discoverIndex);
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('discover');
+      }
+      return;
+    }
+
+    const hotel = e.target.closest && e.target.closest(".rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649)");
     if(!hotel) return;
     e.preventDefault();
     e.stopPropagation();
@@ -1690,7 +1777,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     function isHotelsState(){
       const subpanel = document.body.getAttribute('data-stop-subpanel');
-      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food';
+      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food' || subpanel === 'discover';
     }
 
     function getPoint(e){
