@@ -1301,6 +1301,65 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     { name:'Alpen Café München', meta:'690 km vanaf start', rating:'4.7', type:'Ontbijt', img:'assets/hero-diary.webp', chips:['Ontbijt','Koffie','Laatste stop'] }
   ];
 
+  const FOOD_FILTERS_V39678 = [
+    { icon:'🍔', title:'Fastfood', key:'fastfood' },
+    { icon:'☕', title:'Koffie', key:'coffee' },
+    { icon:'🍽', title:'Restaurant', key:'restaurant' },
+    { icon:'🥐', title:'Bakery', key:'bakery' },
+    { icon:'🛒', title:'Supermarkt', key:'supermarket' },
+    { icon:'🚗', title:'Drive-thru', key:'drivethru' }
+  ];
+
+  const FOOD_STRIP_BY_FILTER_V39678 = {
+    fastfood: [
+      { name:'McDonalds Venlo', meta:'108 km vanaf start', rating:'4.0', type:'Fastfood', img:'assets/hero-routeplan.webp', chips:['Snel','Drive-thru','WC'] },
+      { name:'Burger King Koblenz', meta:'248 km vanaf start', rating:'4.1', type:'Fastfood', img:'assets/hero-overview.webp', chips:['Snelweg','Parking','Snacks'] },
+      { name:'KFC Würzburg', meta:'425 km vanaf start', rating:'4.0', type:'Fastfood', img:'assets/hero-roadtrip.webp', chips:['Warm','Snel','Familie'] },
+      { name:'Autohof Nürnberg', meta:'555 km vanaf start', rating:'4.1', type:'Snelle hap', img:'assets/hero-hotels.webp', chips:['24/7','Shop','Toilet'] },
+      { name:'Subway München', meta:'685 km vanaf start', rating:'4.2', type:'Fastfood', img:'assets/hero-diary.webp', chips:['Broodjes','Snel','Parking'] }
+    ],
+    coffee: [
+      { name:'Rheinblick Café', meta:'260 km vanaf start', rating:'4.4', type:'Koffie', img:'assets/hero-overview.webp', chips:['Uitzicht','Gebak','Parkeren'] },
+      { name:'Starbucks Autohof', meta:'390 km vanaf start', rating:'4.2', type:'Koffie', img:'assets/hero-routeplan.webp', chips:['Take-away','Wifi','WC'] },
+      { name:'Kaffee Mainblick', meta:'430 km vanaf start', rating:'4.5', type:'Café', img:'assets/hero-roadtrip.webp', chips:['Rustig','Terras','Gebak'] },
+      { name:'Coffee Fellows', meta:'545 km vanaf start', rating:'4.3', type:'Koffie', img:'assets/hero-hotels.webp', chips:['Snelweg','Ontbijt','Parking'] },
+      { name:'Alpen Café München', meta:'690 km vanaf start', rating:'4.7', type:'Ontbijt', img:'assets/hero-diary.webp', chips:['Ontbijt','Koffie','Laatste stop'] }
+    ],
+    restaurant: [
+      { name:'Bistro Maasduinen', meta:'115 km vanaf start', rating:'4.5', type:'Lunch', img:'assets/hero-routeplan.webp', chips:['Terras','Rustig','Parkeren'] },
+      { name:'Gasthof Würzburg', meta:'420 km vanaf start', rating:'4.6', type:'Diner', img:'assets/hero-roadtrip.webp', chips:['Warm eten','Toilet','Familie'] },
+      { name:'Ratskeller Koblenz', meta:'255 km vanaf start', rating:'4.4', type:'Restaurant', img:'assets/hero-overview.webp', chips:['Lokaal','Centrum','Diner'] },
+      { name:'Landgasthof Bayern', meta:'535 km vanaf start', rating:'4.5', type:'Restaurant', img:'assets/hero-hotels.webp', chips:['Duits','Rustig','Parking'] },
+      { name:'Trattoria Süd', meta:'675 km vanaf start', rating:'4.3', type:'Restaurant', img:'assets/hero-diary.webp', chips:['Italiaans','Familie','Diner'] }
+    ],
+    bakery: [
+      { name:'Bakker Maas', meta:'112 km vanaf start', rating:'4.3', type:'Bakery', img:'assets/hero-routeplan.webp', chips:['Broodjes','Koffie','Snel'] },
+      { name:'BackWerk Koblenz', meta:'252 km vanaf start', rating:'4.1', type:'Bakery', img:'assets/hero-overview.webp', chips:['Ontbijt','Take-away','Budget'] },
+      { name:'Bäckerei Main', meta:'410 km vanaf start', rating:'4.5', type:'Bakery', img:'assets/hero-roadtrip.webp', chips:['Gebak','Koffie','Lokaal'] },
+      { name:'Der Beck Nürnberg', meta:'550 km vanaf start', rating:'4.4', type:'Bakery', img:'assets/hero-hotels.webp', chips:['Broodjes','Snel','Parkeren'] },
+      { name:'München Bakery', meta:'690 km vanaf start', rating:'4.2', type:'Bakery', img:'assets/hero-diary.webp', chips:['Ontbijt','Koffie','Laatste stop'] }
+    ],
+    supermarket: [
+      { name:'REWE To Go Venlo', meta:'105 km vanaf start', rating:'Open', type:'Supermarkt', img:'assets/hero-routeplan.webp', chips:['Snacks','Drinken','Snel'] },
+      { name:'Edeka Koblenz', meta:'245 km vanaf start', rating:'Open', type:'Supermarkt', img:'assets/hero-overview.webp', chips:['Boodschappen','Parking','Lunch'] },
+      { name:'REWE Würzburg', meta:'418 km vanaf start', rating:'Open', type:'Supermarkt', img:'assets/hero-roadtrip.webp', chips:['Picknick','Drinken','Fruit'] },
+      { name:'Lidl Nürnberg', meta:'552 km vanaf start', rating:'Open', type:'Supermarkt', img:'assets/hero-hotels.webp', chips:['Budget','Snacks','Parking'] },
+      { name:'Edeka München', meta:'682 km vanaf start', rating:'Open', type:'Supermarkt', img:'assets/hero-diary.webp', chips:['Boodschappen','Laatste stop','Parking'] }
+    ],
+    drivethru: [
+      { name:'McDrive Venlo', meta:'110 km vanaf start', rating:'4.0', type:'Drive-thru', img:'assets/hero-routeplan.webp', chips:['Auto','Snel','24/7'] },
+      { name:'Burger King Drive', meta:'240 km vanaf start', rating:'4.1', type:'Drive-thru', img:'assets/hero-overview.webp', chips:['Snelweg','Auto','Snacks'] },
+      { name:'KFC Drive Würzburg', meta:'428 km vanaf start', rating:'4.0', type:'Drive-thru', img:'assets/hero-roadtrip.webp', chips:['Auto','Warm','Snel'] },
+      { name:'McDrive Nürnberg', meta:'548 km vanaf start', rating:'4.2', type:'Drive-thru', img:'assets/hero-hotels.webp', chips:['24/7','Toilet','Parking'] },
+      { name:'Coffee Drive München', meta:'688 km vanaf start', rating:'4.3', type:'Drive-thru', img:'assets/hero-diary.webp', chips:['Koffie','Ontbijt','Auto'] }
+    ]
+  };
+
+  function getFoodCardsV39678(filterKey){
+    const key = filterKey || document.body.getAttribute('data-food-filter') || 'restaurant';
+    return FOOD_STRIP_BY_FILTER_V39678[key] || FOOD_STRIP_CARDS_V39648;
+  }
+
   const DISCOVER_STRIP_CARDS_V39649 = [
     { name:'Uitzichtpunt Maasduinen', meta:'125 km vanaf start', rating:'4.6', type:'Natuur', img:'assets/hero-routeplan.webp', chips:['10 min omweg','Uitzicht','Fotostop'] },
     { name:'Rijnpromenade Koblenz', meta:'265 km vanaf start', rating:'4.5', type:'Wandeling', img:'assets/hero-overview.webp', chips:['Aan de rivier','Koffie dichtbij','Kort bezoek'] },
@@ -1480,6 +1539,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const container = findStopsContainer();
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
+    document.body.removeAttribute('data-food-filter');
     closeHotelPreview();
     container.innerHTML = STOP_CARDS.map(card =>
       '<button type="button" class="rd-render-stop-card-v39619" data-category="'+card.category+'">' +
@@ -1562,10 +1622,33 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     closeHotelPreview();
   }
 
-  function renderFoodStrip(){
+  function renderFoodFilters(){
     const container = findStopsContainer();
     if(!container) return;
+    document.body.setAttribute('data-stop-subpanel','food-filter');
+    document.body.removeAttribute('data-food-filter');
+    document.body.removeAttribute('data-hotel-preview');
+    document.body.removeAttribute('data-fuel-preview');
+    document.body.removeAttribute('data-charge-preview');
+    document.body.removeAttribute('data-food-preview');
+    document.body.removeAttribute('data-discover-preview');
+    document.body.removeAttribute('data-wc-preview');
+    closeHotelPreview();
+    container.innerHTML = FOOD_FILTERS_V39678.map(function(card){
+      return '<button type="button" class="rd-render-stop-card-v39619" data-food-filter="'+card.key+'">' +
+        '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+        '<strong>'+card.title+'</strong><em>›</em>' +
+      '</button>';
+    }).join('');
+  }
+
+  function renderFoodStrip(filterKey){
+    const container = findStopsContainer();
+    if(!container) return;
+    const activeFilter = filterKey || document.body.getAttribute('data-food-filter') || 'restaurant';
+    const foodCards = getFoodCardsV39678(activeFilter);
     document.body.setAttribute('data-stop-subpanel','food');
+    document.body.setAttribute('data-food-filter', activeFilter);
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
@@ -1574,7 +1657,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     container.innerHTML =
       '<div class="rd-hotels-strip-shell-v39636 rd-hotels-fullcards-v39637 rd-hotels-swipeback-v39638 rd-food-strip-shell-v39648">' +
         '<div class="rd-hotels-scroll-v39636 rd-food-scroll-v39648" aria-label="Eten langs je route">' +
-          FOOD_STRIP_CARDS_V39648.map((food, index)=>
+          foodCards.map((food, index)=>
             '<button type="button" class="rd-hotel-card-v39636 rd-food-card-v39648" data-food-index="'+index+'">' +
               '<span class="rd-hotel-rank-v39636 rd-food-rank-v39648">'+(index+1)+'</span>' +
               '<span class="rd-hotel-photo-v39636 rd-food-photo-v39648" style="background-image:url('+food.img+')"></span>' +
@@ -1741,7 +1824,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFoodPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
-    const food = FOOD_STRIP_CARDS_V39648[index] || FOOD_STRIP_CARDS_V39648[0];
+    const foodCards = getFoodCardsV39678();
+    const food = foodCards[index] || foodCards[0];
     closeHotelPreview();
     document.body.setAttribute('data-food-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
@@ -1752,7 +1836,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
       '<div class="rd-hotel-preview-photo-v39644 rd-food-preview-photo-v39648" style="background-image:url('+food.img+')">' +
-        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+FOOD_STRIP_CARDS_V39648.length+'</span>' +
+        '<span class="rd-hotel-preview-count-v39644">'+(index+1)+' / '+foodCards.length+'</span>' +
       '</div>' +
       '<div class="rd-hotel-preview-body-v39644 rd-food-preview-body-v39648">' +
         '<div class="rd-hotel-preview-kicker-v39644">'+food.meta.replace(' vanaf start','')+' vanaf start</div>' +
@@ -1873,6 +1957,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-now-assist');
     document.body.removeAttribute('data-now-help-sub');
     document.body.removeAttribute('data-now-gps');
+    document.body.removeAttribute('data-food-filter');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
   }
@@ -1895,7 +1980,21 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   document.addEventListener("click", function(e){
     const card = e.target.closest(".rd-render-stop-card-v39619");
     if(!card) return;
+    const foodFilter = card.getAttribute("data-food-filter");
+    if(foodFilter){
+      e.preventDefault();
+      e.stopPropagation();
+      document.querySelectorAll("[data-food-filter]").forEach(function(item){
+        item.classList.toggle("is-active", item === card);
+      });
+      renderFoodStrip(foodFilter);
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('food');
+      }
+      return;
+    }
     const category = card.getAttribute("data-category");
+    if(!category) return;
     document.body.setAttribute("data-active-stop-category", category);
     document.querySelectorAll(".rd-render-stop-card-v39619").forEach(function(item){
       item.classList.toggle("is-active", item === card);
@@ -1908,7 +2007,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }else if(category === 'charge'){
       renderChargeStrip();
     }else if(category === 'food'){
-      renderFoodStrip();
+      renderFoodFilters();
     }else if(category === 'discover'){
       renderDiscoverStrip();
     }else if(category === 'wc'){
@@ -2073,7 +2172,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     function isCardState(){
       const subpanel = document.body.getAttribute('data-stop-subpanel');
-      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food' || subpanel === 'discover' || subpanel === 'wc';
+      return subpanel === 'hotels' || subpanel === 'fuel' || subpanel === 'charge' || subpanel === 'food-filter' || subpanel === 'food' || subpanel === 'discover' || subpanel === 'wc';
     }
 
     function isStopsCategoryState(){
