@@ -499,6 +499,46 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return positions[safeIndex] || 0.5;
   }
 
+  function getActiveMapOverlayTopV39684(){
+    const candidates = [
+      document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644'),
+      document.querySelector('#mapDrawer'),
+      document.querySelector('.rd-map-nav-v28')
+    ].filter(Boolean);
+
+    let top = window.innerHeight || 760;
+    candidates.forEach(function(el){
+      try{
+        const rect = el.getBoundingClientRect();
+        if(rect && rect.top > 0) top = Math.min(top, rect.top);
+      }catch(_){ }
+    });
+    return top;
+  }
+
+  function getRouteSegmentBoundsPointsV39684(percent, selected){
+    const points = [];
+    const start = routeCoordinates[0];
+    const destination = routeCoordinates[routeCoordinates.length - 1];
+
+    if(start) points.push(latLng(start));
+
+    // Keep the route context between start/current-position and selected stop.
+    // This avoids fitting the complete Rotterdam→Innsbruck route when the user
+    // selects an early stop, which made the chosen stop disappear behind the popover.
+    const maxIndex = Math.max(0, Math.min(routeCoordinates.length - 1, Math.floor(routeCoordinates.length * Math.min(0.98, percent + 0.08))));
+    const step = Math.max(1, Math.floor(maxIndex / 18));
+    for(let i = 0; i <= maxIndex; i += step){
+      if(routeCoordinates[i]) points.push(latLng(routeCoordinates[i]));
+    }
+
+    points.push(selected);
+
+    // If the chosen stop is late in the journey, also keep destination in context.
+    if(percent > 0.68 && destination) points.push(latLng(destination));
+    return points;
+  }
+
   function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
@@ -508,31 +548,39 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     const percent = getCategoryPreviewPercent(safeCategory, safeIndex);
     const selected = latLng(coord);
-    const before = routePointAt(Math.max(0, percent - 0.22));
-    const after = routePointAt(Math.min(0.98, percent + 0.18));
-    const start = routeCoordinates[0];
-    const destination = routeCoordinates[routeCoordinates.length - 1];
-
-    const boundPoints = [selected];
-    if(before) boundPoints.push(latLng(before));
-    if(after) boundPoints.push(latLng(after));
-    // Keep enough route context in view: start represents current planned position for now;
-    // later this can be replaced by live GPS without changing the sheet flow.
-    if(start) boundPoints.push(latLng(start));
-    if(destination) boundPoints.push(latLng(destination));
+    const boundPoints = getRouteSegmentBoundsPointsV39684(percent, selected);
 
     try{
+      map.invalidateSize && map.invalidateSize(false);
+      const overlayTop = getActiveMapOverlayTopV39684();
+      const viewportH = window.innerHeight || 760;
+      const bottomPadding = Math.max(360, Math.min(560, Math.round(viewportH - overlayTop + 72)));
       const bounds = L.latLngBounds(boundPoints);
-      map.fitBounds(bounds.pad(0.14), {
+
+      map.fitBounds(bounds.pad(0.10), {
         animate:true,
         duration:.45,
-        maxZoom:7,
-        paddingTopLeft:[34,118],
-        paddingBottomRight:[34,430]
+        maxZoom:8,
+        paddingTopLeft:[34,126],
+        paddingBottomRight:[34,bottomPadding]
       });
+
+      // After fitBounds, explicitly keep the selected stop inside the visible
+      // area above the sheet/popover. This is the actual map-engine part of the
+      // fix; it prevents the old centered focus from hiding the stop underneath
+      // the Roadora popover.
       window.setTimeout(function(){
-        try{ map.panBy([0, 34], { animate:true, duration:.22 }); }catch(_){ }
-      }, 260);
+        try{
+          const overlayTopNow = getActiveMapOverlayTopV39684();
+          const visibleBottom = Math.max(170, overlayTopNow - 18);
+          map.panInside(selected, {
+            animate:true,
+            duration:.28,
+            paddingTopLeft:[42,128],
+            paddingBottomRight:[42, Math.max(260, Math.round((window.innerHeight || 760) - visibleBottom + 72))]
+          });
+        }catch(_){ }
+      }, 280);
     }catch(_){
       try{ map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 }); }catch(__){ }
     }
