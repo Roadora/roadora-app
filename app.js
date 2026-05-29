@@ -2192,11 +2192,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
 
-  // v39.7.14 — one shared preview mount for Stops + Nu Nodig.
-  // Nu Nodig must not use a separate #mapScreen popover variant anymore.
-  // Every category now appends the same rd-hotel-preview-popover component
-  // into #mapDrawer, so Stops and Nu Nodig share identical DOM + CSS.
+  // v39.7.15 — restore correct Nu Nodig floating preview mount.
+  // Stops keep their preview inside #mapDrawer. Nu Nodig uses the same
+  // renderer/classes/data, but mounts the preview directly on #mapScreen so
+  // the fixed card-strip cannot clip or swallow the popover.
   function getRoadoraPreviewMountV39707(drawer){
+    try{
+      if(document.body.getAttribute('data-instant-map-panel') === 'now'){
+        return document.getElementById('mapScreen') || drawer || document.body;
+      }
+    }catch(_){ }
     return drawer || document.getElementById('mapDrawer') || document.getElementById('mapScreen') || document.body;
   }
 
