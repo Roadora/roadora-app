@@ -1979,6 +1979,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderStops(){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-grid-v39719');
     document.body.removeAttribute('data-stop-subpanel');
     document.body.removeAttribute('data-food-filter');
     document.body.removeAttribute('data-discover-filter');
@@ -1993,6 +1995,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderHotelStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','hotels');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-food-preview');
@@ -2018,6 +2022,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFuelStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','fuel');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
@@ -2041,6 +2047,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderChargeStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','charge');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
@@ -2067,7 +2075,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFoodFilters(){
     const container = findStopsContainer();
     if(!container) return;
-    container.classList.add('rd-food-filter-grid-v39719');
+    // v39.7.20 — food filters use their own tiny inner grid.
+    // This bypasses old Stops/Nu Nodig card-list CSS that was forcing one-column rows.
+    container.classList.add('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','food-filter');
     document.body.removeAttribute('data-food-filter');
     document.body.removeAttribute('data-hotel-preview');
@@ -2077,18 +2088,21 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-discover-preview');
     document.body.removeAttribute('data-wc-preview');
     closeHotelPreview();
-    container.innerHTML = FOOD_FILTERS_V39678.map(function(card){
-      return '<button type="button" class="rd-render-stop-card-v39619" data-food-filter="'+card.key+'">' +
-        '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
-        '<strong>'+card.title+'</strong><em>›</em>' +
-      '</button>';
-    }).join('');
+    container.innerHTML = '<div class="rd-food-filter-grid-v39720" aria-label="Kies type eten">' +
+      FOOD_FILTERS_V39678.map(function(card){
+        return '<button type="button" class="rd-render-stop-card-v39619 rd-food-filter-option-v39720" data-food-filter="'+card.key+'">' +
+          '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
+          '<strong>'+card.title+'</strong><em>›</em>' +
+        '</button>';
+      }).join('') +
+    '</div>';
   }
 
   function renderFoodStrip(filterKey){
     const container = findStopsContainer();
     if(!container) return;
     container.classList.remove('rd-food-filter-grid-v39719');
+    container.classList.remove('rd-food-filter-host-v39720');
     const activeFilter = filterKey || document.body.getAttribute('data-food-filter') || 'restaurant';
     const foodCards = getFoodCardsV39678(activeFilter);
     document.body.setAttribute('data-stop-subpanel','food');
