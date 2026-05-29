@@ -2192,12 +2192,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
 
-  // v39.7.08 — Nu Nodig preview exact dezelfde mount als Stops.
-  // Belangrijk: de preview blijft in #mapDrawer, zodat dezelfde Stops-popover
-  // CSS, spacing, foto, knoppen en animatie 1-op-1 worden gebruikt.
-  // Alleen de mount is hersteld; pins, cards, map focus, ORS en Maps blijven intact.
+  // v39.7.09 — single shared Stops popover mount.
+  // Nu Nodig must not use a separate fixed mini-overlay. It now mounts the
+  // preview in #mapDrawer exactly like Stops, while CSS only opens overflow
+  // during an active preview. This keeps one popover architecture.
   function getRoadoraPreviewMountV39707(drawer){
-    return drawer || document.getElementById('mapScreen') || document.body;
+    return drawer || document.getElementById('mapDrawer') || document.getElementById('mapScreen') || document.body;
   }
 
   function renderWcPreview(index){

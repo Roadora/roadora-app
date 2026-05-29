@@ -9671,12 +9671,17 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-ho
 
 
 /* =========================================================
-   Roadora v39.7.08 — Nu Nodig popover EXACT als Stops
+   Roadora v39.7.09 — Nu Nodig uses exact Stops popover mount
    ---------------------------------------------------------
-   Nu Nodig gebruikt opnieuw dezelfde #mapDrawer mount en dezelfde
-   .rd-hotel-preview-popover-v39644 layout als Stops.
-   Geen ORS, Maps, pins, cards of focus-logica aangepast.
+   Fixes the real issue: the Nu Nodig preview was styled/mounted as a fixed
+   mini-overlay and got trapped visually in the sheet. From now on it is the
+   same #mapDrawer popover as Stops. Only overflow is opened while a preview
+   is active. ORS, Leaflet, Maps export, pins and card selection are untouched.
 ========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  display:none !important;
+}
+
 body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28,
 body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapDrawer.rd-map-sheet-v28,
 body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapDrawer.rd-map-sheet-v28,
@@ -9684,7 +9689,16 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="
 body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapDrawer.rd-map-sheet-v28,
 body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapDrawer.rd-map-sheet-v28{
   overflow:visible !important;
-  z-index:1200 !important;
+  z-index:1320 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="open"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapDrawer .rd-sheet-scroll-v393{
+  overflow:visible !important;
 }
 
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
@@ -9694,7 +9708,7 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hote
   bottom:82px !important;
   min-height:236px !important;
   max-height:calc(100vh - 220px) !important;
-  z-index:42 !important;
+  z-index:1420 !important;
   display:grid !important;
   grid-template-columns:138px minmax(0,1fr) !important;
   gap:13px !important;
@@ -9711,19 +9725,20 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hote
   animation:rdHotelPreviewIn39644 .18s ease-out both !important;
 }
 
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
-  display:none !important;
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-photo-v39644{
+  min-height:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-body-v39644{
+  min-width:0 !important;
 }
 
 @media (max-width:390px){
   body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-    left:10px !important;
-    right:10px !important;
+    left:12px !important;
+    right:12px !important;
     bottom:78px !important;
-    grid-template-columns:126px minmax(0,1fr) !important;
-    gap:11px !important;
-    padding:10px !important;
     min-height:220px !important;
-    border-radius:25px !important;
+    max-height:calc(100vh - 210px) !important;
   }
 }
