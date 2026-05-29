@@ -1,5 +1,9 @@
-// Roadora v6.9.1 — ORS route API timeout + endpoint fallback
-// Maps-export blijft ongemoeid: dit endpoint is alleen voor de Roadora-kaartlijn.
+// Roadora v39.7.x — Future proof ORS route API
+// Doel:
+// - echte ORS route blijven laden
+// - geen Vercel 504 meer door eindeloos wachten op ORS
+// - automatisch proberen: nieuwe HeiGIT/ORS host -> oude ORS host
+// - Maps-export ongemoeid laten: dit endpoint is alleen voor de Roadora-kaartlijn
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,10 +34,10 @@ export default async function handler(req, res) {
     if (route.ok) {
       return res.status(200).json(addRoadoraMeta(route.data, {
         mode:'full-waypoints',
-        endpoint: route.endpoint,
         requestedWaypoints: via.length,
         usedWaypoints: via.length,
-        skippedWaypoints: []
+        skippedWaypoints: [],
+        upstream: route.upstream || null
       }));
     }
 
@@ -41,10 +45,10 @@ export default async function handler(req, res) {
     if (route.ok) {
       return res.status(200).json(addRoadoraMeta(route.data, {
         mode:'full-waypoints-unlimited-snap',
-        endpoint: route.endpoint,
         requestedWaypoints: via.length,
         usedWaypoints: via.length,
-        skippedWaypoints: []
+        skippedWaypoints: [],
+        upstream: route.upstream || null
       }));
     }
 
@@ -57,35 +61,27 @@ export default async function handler(req, res) {
     if (direct.ok) {
       return res.status(200).json(addRoadoraMeta(direct.data, {
         mode:'direct-recovery',
-        endpoint: direct.endpoint,
         requestedWaypoints: via.length,
         usedWaypoints: 0,
-        skippedWaypoints: via.map(coordLabel)
+        skippedWaypoints: via.map(coordLabel),
+        upstream: direct.upstream || null
       }));
     }
 
-    return res.status(direct.status || route.status || 502).json({
+    const last = direct || route || {};
+    const safeStatus = normalizeClientStatus(last.status || 502);
+    return res.status(safeStatus).json({
       ok:false,
       error:'ORS route fout',
-      status: direct.status || route.status || 502,
-      detail: direct.detail || route.detail || null,
-      triedEndpoints: direct.triedEndpoints || route.triedEndpoints || ORS_ENDPOINTS.map(e => e.name)
+      status:last.status || 502,
+      upstream:last.upstream || null,
+      detail:last.detail || null,
+      attempts:last.attempts || null
     });
   } catch (err) {
     return res.status(500).json({ ok:false, error: err?.message || 'Route API fout' });
   }
 }
-
-const ORS_ENDPOINTS = [
-  {
-    name: 'heigit',
-    base: 'https://api.heigit.org/openrouteservice/v2/directions'
-  },
-  {
-    name: 'openrouteservice-legacy',
-    base: 'https://api.openrouteservice.org/v2/directions'
-  }
-];
 
 function sanitizeProfile(value) {
   const p = String(value || 'driving-car').replace(/[^a-z-]/g, '') || 'driving-car';
@@ -126,6 +122,19 @@ function radiusesFor(coordinates, mode) {
   return coordinates.map((_, i) => (i === 0 || i === coordinates.length - 1) ? 10000 : 50000);
 }
 
+function orsEndpoints(profile) {
+  return [
+    {
+      name:'heigit-openrouteservice',
+      url:`https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`
+    },
+    {
+      name:'legacy-openrouteservice',
+      url:`https://api.openrouteservice.org/v2/directions/${profile}/geojson`
+    }
+  ];
+}
+
 async function tryOrsRoute({ key, profile, coordinates, radiusesMode = 'wide' }) {
   const body = {
     coordinates,
@@ -137,66 +146,90 @@ async function tryOrsRoute({ key, profile, coordinates, radiusesMode = 'wide' })
     radiuses: radiusesFor(coordinates, radiusesMode)
   };
 
-  let last = null;
-  const triedEndpoints = [];
+  const attempts = [];
+  for (const endpoint of orsEndpoints(profile)) {
+    const result = await fetchOrsWithTimeout(endpoint, key, body, 8500);
+    attempts.push({
+      upstream:endpoint.name,
+      status:result.status || null,
+      ok:!!result.ok,
+      error:result.error || null
+    });
 
-  for (const endpoint of ORS_ENDPOINTS) {
-    triedEndpoints.push(endpoint.name);
-    const result = await postOrs({ endpoint, key, profile, body });
-    if (result.ok) return result;
-    last = result;
+    if (result.ok && hasGeometry(result.data)) {
+      return { ok:true, status:result.status, data:result.data, upstream:endpoint.name, attempts };
+    }
 
-    // Bij key/request-fouten heeft opnieuw proberen op legacy meestal geen zin.
-    if ([400, 401, 403, 404, 405, 406, 429].includes(Number(result.status))) break;
+    // Bij key/profiel/request-fouten heeft fallback naar andere host meestal geen zin.
+    // Toch geven we de fout duidelijk terug in plaats van Vercel te laten time-outen.
+    if ([400,401,403,404,406,429].includes(Number(result.status))) {
+      return {
+        ok:false,
+        status:result.status,
+        detail:result.data || { error:result.error },
+        upstream:endpoint.name,
+        attempts
+      };
+    }
   }
 
+  const last = attempts[attempts.length - 1] || {};
   return {
     ok:false,
-    status:last?.status || 502,
-    detail:last?.detail || null,
-    triedEndpoints
+    status:last.status || 502,
+    detail:{ message:last.error || 'Geen bruikbare ORS geometry teruggekregen' },
+    upstream:last.upstream || null,
+    attempts
   };
 }
 
-async function postOrs({ endpoint, key, profile, body }) {
-  const url = `${endpoint.base}/${profile}/geojson`;
+async function fetchOrsWithTimeout(endpoint, key, body, timeoutMs) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8500);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const orsRes = await fetch(url, {
+    const orsRes = await fetch(endpoint.url, {
       method: 'POST',
-      signal: controller.signal,
       headers: {
         Authorization: key,
         'Content-Type': 'application/json',
-        Accept: 'application/json, application/geo+json'
+        Accept: 'application/json, application/geo+json',
+        'User-Agent': 'Roadora/39.7 route-proxy'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
 
     const text = await orsRes.text();
     let data;
-    try { data = JSON.parse(text); } catch (_) { data = { raw: String(text || '').slice(0, 500) }; }
+    try { data = JSON.parse(text); }
+    catch (_) { data = { raw: String(text || '').slice(0, 1200) }; }
 
-    if (!orsRes.ok) {
-      return { ok:false, status:orsRes.status, endpoint:endpoint.name, detail:data };
-    }
-    if (!hasGeometry(data)) {
-      return { ok:false, status:502, endpoint:endpoint.name, detail:{ message:'ORS response zonder geometry', response:data } };
-    }
-    return { ok:true, status:orsRes.status, endpoint:endpoint.name, data };
+    return {
+      ok: orsRes.ok,
+      status: orsRes.status,
+      data,
+      error: orsRes.ok ? null : `HTTP ${orsRes.status}`
+    };
   } catch (err) {
     const aborted = err?.name === 'AbortError';
     return {
       ok:false,
       status: aborted ? 504 : 502,
-      endpoint:endpoint.name,
-      detail:{ message: aborted ? 'ORS timeout na 8.5s' : (err?.message || 'ORS fetch failed') }
+      data:{ message: aborted ? `ORS timeout na ${timeoutMs}ms` : (err?.message || 'ORS fetch failed') },
+      error: aborted ? 'timeout' : (err?.message || 'fetch failed')
     };
   } finally {
-    clearTimeout(timeout);
+    clearTimeout(timer);
   }
+}
+
+function normalizeClientStatus(status) {
+  const s = Number(status) || 502;
+  // Voorkom dat Vercel zelf als 504 blijft ogen; geef gecontroleerde JSON terug.
+  if (s === 504) return 502;
+  if (s < 400 || s > 599) return 502;
+  return s;
 }
 
 function hasGeometry(data) {
@@ -230,7 +263,7 @@ async function buildSegmentedRoute({ key, profile, start, end, via }) {
   let duration = 0;
   const used = [];
   const skipped = [];
-  let lastEndpoint = null;
+  const upstreams = [];
 
   for (let i = 1; i < routePoints.length; i++) {
     const target = routePoints[i];
@@ -245,7 +278,8 @@ async function buildSegmentedRoute({ key, profile, start, end, via }) {
       return { ok:false, status:segment.status, detail:segment.detail };
     }
 
-    lastEndpoint = segment.endpoint || lastEndpoint;
+    if (segment.upstream) upstreams.push(segment.upstream);
+
     const part = coordsOf(segment.data);
     if (part.length) {
       if (merged.length) merged.push(...part.slice(1));
@@ -262,10 +296,10 @@ async function buildSegmentedRoute({ key, profile, start, end, via }) {
 
   const meta = {
     mode:'segmented-waypoint-recovery',
-    endpoint:lastEndpoint,
     requestedWaypoints: via.length,
     usedWaypoints: used.length,
-    skippedWaypoints: skipped
+    skippedWaypoints: skipped,
+    upstream: Array.from(new Set(upstreams)).join(',') || null
   };
 
   const data = {
@@ -273,11 +307,11 @@ async function buildSegmentedRoute({ key, profile, start, end, via }) {
     bbox: bboxOf(merged),
     features:[{
       type:'Feature',
-      properties:{ summary:{ distance, duration }, roadora: meta },
+      properties:{ summary:{ distance, duration }, roadora:meta },
       geometry:{ type:'LineString', coordinates: merged }
     }],
     ok:true,
-    roadora: meta
+    roadora:meta
   };
 
   return { ok:true, data };
