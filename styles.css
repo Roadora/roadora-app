@@ -9668,3 +9668,182 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-ho
     min-height:236px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.08 — Nu Nodig shared premium preview styling
+   ---------------------------------------------------------
+   v39.7.07 mounted the Nu Nodig preview on #mapScreen to avoid clipping.
+   The inner premium preview styles were still scoped to #mapDrawer, so the
+   overlay rendered unstyled. This block applies the exact shared Stops
+   preview component styling to the #mapScreen-mounted Nu Nodig preview.
+   No selection, pin, card, camera or Stops logic changed.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-close-v39644{
+  position:absolute !important;
+  top:10px !important;
+  right:10px !important;
+  width:36px !important;
+  height:36px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.76) !important;
+  box-shadow:0 8px 20px rgba(64,44,24,.12), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  color:#5d493c !important;
+  font-size:24px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  z-index:3 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-photo-v39644{
+  position:relative !important;
+  min-height:212px !important;
+  border-radius:22px !important;
+  background-size:cover !important;
+  background-position:center !important;
+  box-shadow:inset 0 -54px 70px rgba(0,0,0,.23) !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-count-v39644{
+  position:absolute !important;
+  right:9px !important;
+  bottom:9px !important;
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(0,0,0,.48) !important;
+  color:#fff !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-body-v39644{
+  min-width:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  padding:3px 36px 2px 0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-kicker-v39644{
+  display:inline-flex !important;
+  align-self:flex-start !important;
+  margin-bottom:4px !important;
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.66) !important;
+  color:#846744 !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-title-v39644{
+  display:-webkit-box !important;
+  font-size:20px !important;
+  line-height:1.02 !important;
+  font-weight:950 !important;
+  letter-spacing:-.8px !important;
+  color:#211814 !important;
+  white-space:normal !important;
+  overflow:hidden !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-meta-v39644{
+  margin-top:6px !important;
+  font-size:12px !important;
+  line-height:1 !important;
+  color:#765a3b !important;
+  font-weight:900 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-chips-v39644{
+  display:flex !important;
+  gap:6px !important;
+  flex-wrap:wrap !important;
+  margin-top:10px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-chips-v39644 span{
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.68) !important;
+  border:1px solid rgba(93,66,37,.06) !important;
+  color:#735f50 !important;
+  font-size:10px !important;
+  font-weight:850 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-copy-v39644{
+  margin:10px 0 11px !important;
+  font-size:12px !important;
+  line-height:1.25 !important;
+  color:#6b5a4e !important;
+  font-weight:750 !important;
+  overflow:hidden !important;
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+  margin-top:auto !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644 button{
+  height:48px !important;
+  border:0 !important;
+  border-radius:18px !important;
+  font-size:14px !important;
+  font-weight:950 !important;
+  letter-spacing:-.2px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-nav-v39644{
+  background:#3b2417 !important;
+  color:#fff7ee !important;
+  box-shadow:0 12px 24px rgba(65,35,14,.20) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-charge-preview-popover-v39647 .rd-hotel-preview-nav-v39644{
+  background:#315b3c !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-save-v39644{
+  background:rgba(255,255,255,.84) !important;
+  color:#3c2b20 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.76), 0 8px 18px rgba(59,38,22,.10) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    left:22px !important;
+    right:22px !important;
+    bottom:178px !important;
+    grid-template-columns:126px minmax(0,1fr) !important;
+    gap:11px !important;
+    padding:10px !important;
+    min-height:214px !important;
+    border-radius:25px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-photo-v39644{
+    min-height:200px !important;
+    border-radius:20px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-title-v39644{
+    font-size:18px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-copy-v39644{
+    -webkit-line-clamp:2 !important;
+    font-size:11.5px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644 button{
+    height:44px !important;
+    border-radius:16px !important;
+    font-size:13px !important;
+  }
+}
