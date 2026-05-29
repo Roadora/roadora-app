@@ -10500,3 +10500,41 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview=
     bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.27 — Popover Flat Bottom
+   ---------------------------------------------------------
+   Doel:
+   - Stops en Nu Nodig popover krijgen een platte onderkant.
+   - Popover sluit rustiger aan op de kaart-bottomnav/sheet-surface.
+   - Alleen visuele border-radius; geen Maps, ORS, pins, cards of filters geraakt.
+========================================================= */
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-fuel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-charge-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-food-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-discover-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-wc-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  border-top-left-radius:28px !important;
+  border-top-right-radius:28px !important;
+  border-bottom-left-radius:0 !important;
+  border-bottom-right-radius:0 !important;
+  overflow:hidden !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-fuel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-charge-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-food-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-discover-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-wc-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    border-top-left-radius:24px !important;
+    border-top-right-radius:24px !important;
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+  }
+}
