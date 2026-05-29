@@ -9300,42 +9300,43 @@ body[data-active-screen="map"] #mapDrawer .rd-wc-preview-popover-v39653 .rd-hote
 
 
 /* =========================================================
-   Roadora v39.6.68 — Shared Sheet Component for Nu Nodig
+   Roadora v39.7.12 — App-shell sheet conflict cleanup
    ---------------------------------------------------------
-   Echte fix:
-   - oude Nu nodig offset/handle/clip overrides verwijderd.
-   - Nu nodig gebruikt exact dezelfde sheet-math als Stops.
-   - Alleen de inhoud/data blijft anders; layout is één-op-één gelijk.
-   - Stops-flow, Home/Overzicht, fullscreen kaart en Maps/ORS blijven onaangeraakt.
+   Doel:
+   - Eén Nu Nodig/Stops sheet-architectuur.
+   - Geen oude Nu Nodig sheet-height/popover overrides meer.
+   - Sheet blijft fixed: cards mogen nooit de sheet hoger maken.
+   - Nu Nodig result-cards gebruiken exact dezelfde 166px cardstate als Stops.
+   - Popover zweeft buiten de Nu Nodig sheet op #mapScreen en wordt niet geclipt.
+   - Geen ORS, Maps, Leaflet of route-engine wijzigingen.
 ========================================================= */
 
+/* A) Basis Nu Nodig categorie-state: compact grid, vaste sheet, geen groei. */
 body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
   position:fixed !important;
   left:14px !important;
   right:14px !important;
-  bottom:calc(66px + env(safe-area-inset-bottom)) !important;
+  bottom:calc(66px + env(safe-area-inset-bottom, 0px)) !important;
   width:auto !important;
-  z-index:99990 !important;
-
-  height:154px !important;
-  min-height:154px !important;
-  max-height:154px !important;
-
-  display:flex !important;
-  flex-direction:column !important;
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
   padding:0 !important;
   margin:0 !important;
   overflow:hidden !important;
-
-  background:#efe5d7 !important;
-  border-radius:26px 26px 0 0 !important;
-  box-shadow:0 -12px 30px rgba(36,25,18,.10) !important;
+  display:flex !important;
+  flex-direction:column !important;
   transform:none !important;
   translate:none !important;
   opacity:1 !important;
   pointer-events:auto !important;
+  z-index:99990 !important;
+  background:linear-gradient(180deg, var(--rd-map-surface-top, #f5ecdf) 0%, var(--rd-map-surface-bottom, #efe2d4) 100%) !important;
+  border-radius:26px 26px 0 0 !important;
+  box-shadow:0 -12px 30px rgba(36,25,18,.10) !important;
 }
 
+/* B) Nu Nodig categorie-startscherm houdt compacte 2-koloms knoppen. */
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-header-v393,
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-title-v28,
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-heading-v28,
@@ -9357,39 +9358,44 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-now-
 }
 
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
-  position:static !important;
-  flex:0 0 auto !important;
-  width:44px !important;
-  height:5px !important;
-  min-height:5px !important;
-  margin:12px auto 8px !important;
+  position:absolute !important;
+  top:0 !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:92px !important;
+  height:30px !important;
+  min-height:30px !important;
+  margin:0 !important;
   padding:0 !important;
   border:0 !important;
-  border-radius:999px !important;
-  background:rgba(36,25,18,.17) !important;
-  transform:none !important;
-  translate:none !important;
+  background:transparent !important;
+  z-index:30 !important;
   pointer-events:auto !important;
   touch-action:none !important;
 }
 
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28::before{
-  content:none !important;
-  display:none !important;
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  top:8px !important;
+  width:44px !important;
+  height:5px !important;
+  transform:translateX(-50%) !important;
+  border-radius:999px !important;
+  background:rgba(36,25,18,.18) !important;
+  display:block !important;
 }
 
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-scroll-v393{
   position:relative !important;
   flex:1 1 auto !important;
-  display:block !important;
   width:100% !important;
+  height:100% !important;
   min-height:0 !important;
-  height:auto !important;
   padding:0 !important;
   margin:0 !important;
   overflow:hidden !important;
-  clip-path:none !important;
-  contain:none !important;
   box-sizing:border-box !important;
 }
 
@@ -9397,21 +9403,20 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-shee
   position:absolute !important;
   left:12px !important;
   right:12px !important;
-  bottom:8px !important;
-  top:auto !important;
+  top:30px !important;
+  bottom:10px !important;
   display:grid !important;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-  gap:6px !important;
+  gap:7px !important;
   width:auto !important;
-  max-width:none !important;
   height:auto !important;
   min-height:0 !important;
-  margin:0 !important;
+  max-height:none !important;
   padding:0 !important;
+  margin:0 !important;
   overflow:visible !important;
-  box-sizing:border-box !important;
   background:transparent !important;
-  align-content:start !important;
+  box-sizing:border-box !important;
 }
 
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
@@ -9430,257 +9435,7 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-rend
   overflow:hidden !important;
 }
 
-@media (max-width:420px){
-  body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
-    height:154px !important;
-    min-height:154px !important;
-    max-height:154px !important;
-  }
-}
-
-/* =========================================================
-   Roadora v39.6.69 — Nu Nodig Exact Stops Sheet Match
-   ---------------------------------------------------------
-   Definitieve veilige fix:
-   - Nu nodig erft exact dezelfde finale sheet-math als Stops.
-   - Geen aparte hoogte/offset/clip-logica meer voor Nu nodig.
-   - Alleen map-specifiek; Stops/Home/Overzicht/Maps/ORS blijven onaangeraakt.
-========================================================= */
-
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
-  height:166px !important;
-  min-height:166px !important;
-  max-height:166px !important;
-  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-grab-v28{
-  margin:9px auto 7px !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-scroll-v393{
-  overflow:visible !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
-  top:auto !important;
-  bottom:10px !important;
-  gap:7px !important;
-  overflow:visible !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
-  height:38px !important;
-  min-height:38px !important;
-  max-height:38px !important;
-}
-
-/* =========================================================
-   Roadora v39.6.70 — Nu Nodig Smart Assist State
-   ---------------------------------------------------------
-   Veilige uitbreiding op v39.6.69:
-   - Stops-flow blijft gelockt.
-   - Nu nodig krijgt een eigen assist-state binnen dezelfde sheet.
-   - Eén beste optie + compacte horizontale alternatieven.
-   - Sheet/nav/kaart/Maps/ORS blijven onaangeraakt.
-========================================================= */
-
-/* v39.7.04 — oude Nu Nodig assist CSS verwijderd. Resultaatstates gebruiken Stops-layout. */
-
-/* =========================================================
-   Roadora v39.7.02 — Nu Nodig cards inherit Stops strip layout
-   ---------------------------------------------------------
-   Nu Nodig uses the same stop subpanels as Stops for real result states
-   (hotels/fuel/charge/food/discover/wc). The old Nu Nodig base CSS kept
-   the cards container in a category-grid layout, which created the blank
-   sheet area. This override only applies when Nu Nodig is already in a
-   concrete result subpanel, so the Nu Nodig category/filter screens stay
-   untouched.
-========================================================= */
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer.rd-map-sheet-v28{
-  height:166px !important;
-  min-height:166px !important;
-  max-height:166px !important;
-  position:fixed !important;
-  overflow:hidden !important;
-  padding:0 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-scroll-v393{
-  position:relative !important;
-  flex:1 1 auto !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  padding:0 !important;
-  margin:0 !important;
-  overflow:hidden !important;
-  box-sizing:border-box !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-cards-v39{
-  position:absolute !important;
-  left:0 !important;
-  right:0 !important;
-  top:0 !important;
-  bottom:0 !important;
-  display:block !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  max-height:none !important;
-  padding:0 !important;
-  margin:0 !important;
-  overflow:hidden !important;
-  background:transparent !important;
-  box-sizing:border-box !important;
-}
-
-/* =========================================================
-   Roadora v39.7.03 — Nu Nodig popover same size as Stops
-   ---------------------------------------------------------
-   The Nu Nodig result states reuse the Stops popover classes, but the
-   Nu Nodig strip-layout scope kept #mapDrawer overflow hidden. That clipped
-   the popover inside the small card sheet. This override only opens overflow
-   while an actual Nu Nodig preview is active. No pin/card/slider logic changed.
-========================================================= */
-body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapDrawer.rd-map-sheet-v28{
-  overflow:visible !important;
-  z-index:1200 !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-  bottom:82px !important;
-  min-height:236px !important;
-  max-height:calc(100vh - 220px) !important;
-  z-index:1300 !important;
-}
-
-@media (max-width:390px){
-  body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-    bottom:78px !important;
-    min-height:220px !important;
-  }
-}
-
-
-/* =========================================================
-   Roadora v39.7.04 — Nu Nodig clean popover layer
-   ---------------------------------------------------------
-   Nu Nodig gebruikt nu dezelfde card/pin/popover-flow als Stops, maar de
-   preview mag niet meer begrensd worden door de lage card-strip. Daarom is
-   alleen in Nu Nodig-resultaatstates de preview fixed boven kaart + sheet.
-   Geen kaartcamera, pins of card-logica aangepast.
-========================================================= */
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-  position:fixed !important;
-  left:32px !important;
-  right:32px !important;
-  bottom:190px !important;
-  min-height:236px !important;
-  max-height:calc(100vh - 260px) !important;
-  z-index:9999 !important;
-  pointer-events:auto !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer.rd-map-sheet-v28{
-  overflow:visible !important;
-}
-
-@media (max-width:430px){
-  body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-    left:26px !important;
-    right:26px !important;
-    bottom:184px !important;
-    min-height:220px !important;
-    max-height:calc(100vh - 250px) !important;
-  }
-}
-
-@media (max-width:390px){
-  body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
-    left:22px !important;
-    right:22px !important;
-    bottom:178px !important;
-    min-height:214px !important;
-  }
-}
-
-
-/* =========================================================
-   Roadora v39.7.07 — Nu Nodig preview mounted outside card strip
-   ---------------------------------------------------------
-   Nu Nodig now mounts the shared stop preview directly on #mapScreen instead
-   of inside the low drawer/card strip. This keeps the working pin -> card
-   sync intact and restores the large Stops-style popover without clipping.
-========================================================= */
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
-  position:fixed !important;
-  left:26px !important;
-  right:26px !important;
-  bottom:184px !important;
-  min-height:220px !important;
-  max-height:calc(100vh - 250px) !important;
-  z-index:9999 !important;
-  display:grid !important;
-  grid-template-columns:138px minmax(0,1fr) !important;
-  gap:13px !important;
-  padding:12px !important;
-  border-radius:28px !important;
-  background:linear-gradient(145deg, rgba(249,244,234,.98), rgba(239,229,213,.98)) !important;
-  border:1px solid rgba(255,255,255,.58) !important;
-  box-shadow:0 24px 60px rgba(57,40,25,.24), inset 0 1px 0 rgba(255,255,255,.7) !important;
-  color:#231915 !important;
-  overflow:hidden !important;
-  pointer-events:auto !important;
-  backdrop-filter:blur(24px) saturate(1.14) !important;
-  -webkit-backdrop-filter:blur(24px) saturate(1.14) !important;
-}
-
-@media (min-width:431px){
-  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
-    left:32px !important;
-    right:32px !important;
-    bottom:190px !important;
-    min-height:236px !important;
-  }
-}
-
-/* =========================================================
-   Roadora v39.7.11 — Nu Nodig conflict cleanup
-   ---------------------------------------------------------
-   Doel:
-   - Nu Nodig result-states gebruiken dezelfde vaste sheet-hoogte als Stops.
-   - Cards blijven binnen de vaste 166px sheet en maken de sheet niet groter.
-   - Popover zweeft buiten de sheet op #mapScreen, met dezelfde maat/spacing als Stops.
-   - Oude Nu Nodig #mapDrawer-popover regels worden geneutraliseerd.
-   - Geen ORS, Maps, Leaflet of route-engine wijzigingen.
-========================================================= */
-
-/* 1) Result-states: exact dezelfde vaste sheet als Stops-cardstates. */
+/* C) Nu Nodig resultaat-states: exact dezelfde card-strip basis als Stops. */
 body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer.rd-map-sheet-v28,
 body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer.rd-map-sheet-v28,
 body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer.rd-map-sheet-v28,
@@ -9692,57 +9447,9 @@ body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="n
   max-height:166px !important;
   overflow:hidden !important;
   padding:0 !important;
-  transform:none !important;
 }
 
-/* 2) In result-states mag de handle geen verticale ruimte claimen.
-      Dit is hetzelfde principe als de werkende Stops-cardstate. */
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-grab-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-grab-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-grab-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-grab-v28,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-grab-v28{
-  position:absolute !important;
-  top:0 !important;
-  left:50% !important;
-  transform:translateX(-50%) !important;
-  width:92px !important;
-  height:30px !important;
-  min-height:30px !important;
-  margin:0 !important;
-  padding:0 !important;
-  z-index:30 !important;
-  pointer-events:auto !important;
-  touch-action:none !important;
-  background:transparent !important;
-}
-
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-grab-v28::before,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-grab-v28::before,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-grab-v28::before,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-grab-v28::before,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-grab-v28::before,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-grab-v28::before{
-  content:"" !important;
-  position:absolute !important;
-  left:50% !important;
-  top:8px !important;
-  width:44px !important;
-  height:5px !important;
-  transform:translateX(-50%) !important;
-  border-radius:999px !important;
-  background:rgba(36,25,18,.18) !important;
-  display:block !important;
-}
-
-/* 3) De card-strip vult de fixed sheet en scrollt intern horizontaal. */
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-scroll-v393,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-scroll-v393{
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-sheet-scroll-v393{
   height:100% !important;
   min-height:0 !important;
   padding:0 !important;
@@ -9750,12 +9457,7 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel=
   overflow:hidden !important;
 }
 
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-cards-v39,
-body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-cards-v39{
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-sheet-cards-v39{
   position:absolute !important;
   inset:0 !important;
   display:block !important;
@@ -9768,22 +9470,21 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel=
   background:transparent !important;
 }
 
-/* 4) Binnen Nu Nodig-resultstates dezelfde card-lift/ruimte als Stops.
-      De sheet groeit niet; alleen de inhoud benut de bestaande 166px goed. */
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotels-strip-shell-v39636,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-hotels-strip-shell-v39636,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-hotels-fullcards-v39637.rd-hotels-strip-shell-v39636{
+  position:relative !important;
   height:100% !important;
   min-height:0 !important;
   padding:24px 10px 7px !important;
   overflow:hidden !important;
 }
 
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotels-scroll-v39636,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-fuel-scroll-v39646,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-charge-scroll-v39647,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-food-scroll-v39648,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-discover-scroll-v39649,
-body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-wc-scroll-v39653{
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-hotels-scroll-v39636,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-fuel-scroll-v39646,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-charge-scroll-v39647,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-food-scroll-v39648,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-discover-scroll-v39649,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel] #mapDrawer .rd-wc-scroll-v39653{
   height:100% !important;
   min-height:0 !important;
   align-items:stretch !important;
@@ -9796,15 +9497,13 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-wc-s
   touch-action:pan-x !important;
 }
 
-/* 5) Als er tóch nog een oude Nu Nodig-popover in #mapDrawer belandt,
-      verberg die; de gedeelde popover hoort op #mapScreen te staan. */
+/* D) Oude inline Nu Nodig popovers in #mapDrawer mogen niet meer zichtbaar zijn. */
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
   display:none !important;
   pointer-events:none !important;
 }
 
-/* 6) De echte Nu Nodig-popover op #mapScreen krijgt dezelfde visuele maat als Stops.
-      Fixed geplaatst t.o.v. de viewport, op dezelfde positie boven de fixed sheet. */
+/* E) De echte Nu Nodig popover staat op #mapScreen en zweeft boven de fixed sheet. */
 body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
   position:fixed !important;
   left:26px !important;
