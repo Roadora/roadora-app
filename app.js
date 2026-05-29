@@ -2191,21 +2191,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     closeHotelPreview();
   }
 
-
-  // v39.7.07 — stable preview mount for Nu Nodig.
-  // Stops can keep rendering previews inside #mapDrawer. Nu Nodig uses the
-  // same preview renderers, but its drawer is a low card-strip; mounting the
-  // preview in #mapScreen prevents it from being clipped or swallowed by the
-  // strip container while keeping the same pin/card/select flow.
-  function getRoadoraPreviewMountV39707(drawer){
-    try{
-      if(document.body.getAttribute('data-instant-map-panel') === 'now'){
-        return document.getElementById('mapScreen') || drawer || document.body;
-      }
-    }catch(_){ }
-    return drawer || document.getElementById('mapScreen') || document.body;
-  }
-
   function renderWcPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
@@ -2235,7 +2220,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function renderDiscoverPreview(index){
@@ -2268,7 +2253,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function renderChargePreview(index){
@@ -2300,7 +2285,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function renderFoodPreview(index){
@@ -2333,7 +2318,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function renderFuelPreview(index){
@@ -2365,7 +2350,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function closeHotelPreview(){
@@ -2375,9 +2360,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-food-preview');
     document.body.removeAttribute('data-discover-preview');
     document.body.removeAttribute('data-wc-preview');
-    document.querySelectorAll('#mapDrawer .rd-hotel-preview-popover-v39644, #mapScreen > .rd-hotel-preview-popover-v39644, body > .rd-hotel-preview-popover-v39644').forEach(function(old){
-      old.remove();
-    });
+    const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
+    if(old) old.remove();
   }
 
 
@@ -2421,7 +2405,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
-    getRoadoraPreviewMountV39707(drawer).appendChild(pop);
+    drawer.appendChild(pop);
   }
 
   function openPanel(panel){
