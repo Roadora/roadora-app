@@ -1,4 +1,5 @@
-// Roadora v6.9.0 — Future proof ORS route API
+// Roadora v6.9.1 — Future proof ORS route API
+// Fix: ORS endpoint aangepast van api.openrouteservice.org naar api.heigit.org
 // Doel:
 // - echte ORS route blijven laden, ook als een tussenstop lastig te snappen is
 // - nooit meteen 406 teruggeven bij een foute stop; eerst herstellen
@@ -131,7 +132,7 @@ async function tryOrsRoute({ key, profile, coordinates, radiusesMode = 'wide' })
     radiuses: radiusesFor(coordinates, radiusesMode)
   };
 
-  const orsRes = await fetch(`https://api.openrouteservice.org/v2/directions/${profile}/geojson`, {
+  const orsRes = await fetch(`https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`, {
     method: 'POST',
     headers: {
       Authorization: key,
