@@ -2,6 +2,10 @@
 const STORAGE_KEY = 'roadora_phase1_state_v44_clean';
 const DEMO_TRIP_ENABLED = false;
 
+// v39.6.93 — stable shared app namespace for map/sheet controllers.
+// Some map code runs before sheet handlers, so this object must exist upfront.
+window.RoadoraApp = window.RoadoraApp || {};
+
 const defaultState = {
   activeScreen: 'overview',
   route: {
@@ -458,8 +462,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return L.divIcon({
       className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682 is-active-v39683' : ''}`,
       html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
-      iconSize: isActive ? [40,40] : [34,34],
-      iconAnchor: isActive ? [20,20] : [17,17],
+      iconSize: [34,34],
+      iconAnchor: [17,17],
       popupAnchor: [0,-18]
     });
   }
@@ -746,74 +750,65 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   function focusSelectedCategoryStopOnMap(category, index){
-    // v39.6.90 Clean Selection Foundation
-    // Bewust geen fitBounds/panBy/camera-ankers meer op card/pin selectie.
-    // Eerst moet selectie betrouwbaar centraal lopen; visuele focus bouwen we later schoon op.
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
     const safeIndex = Math.max(0, Number(index) || 0);
     const coord = getStopCoordV39686(safeCategory, safeIndex);
     if(!coord) return;
+
+    const percent = getStopPercentV39686(safeCategory, safeIndex);
+    const selected = latLng(coord);
+    const boundPoints = getRouteSegmentBoundsPointsV39685(percent, selected);
+
     try{
       map.invalidateSize && map.invalidateSize(false);
-    }catch(_){ }
+
+      const viewportH = window.innerHeight || 760;
+      const viewportW = window.innerWidth || 390;
+      const overlayTop = getActiveMapOverlayTopV39684();
+      const coveredBottom = Math.max(0, viewportH - overlayTop);
+      const bottomPadding = Math.max(360, Math.min(Math.round(viewportH * 0.72), Math.round(coveredBottom + 170)));
+      const topPadding = Math.max(118, Math.min(174, Math.round(viewportH * 0.17)));
+      const sidePadding = Math.max(30, Math.min(52, Math.round(viewportW * 0.10)));
+
+      const bounds = L.latLngBounds(boundPoints);
+      map.fitBounds(bounds.pad(0.10), {
+        animate:true,
+        duration:.45,
+        maxZoom:8,
+        paddingTopLeft:[sidePadding, topPadding],
+        paddingBottomRight:[sidePadding, bottomPadding]
+      });
+
+      // Second pass after the popover has finished rendering/measuring. Then do
+      // a pixel correction so the selected pin is physically above the popover.
+      window.setTimeout(function(){
+        try{
+          const overlayTopNow = getActiveMapOverlayTopV39684();
+          const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
+          const bottomNow = Math.max(380, Math.min(Math.round((window.innerHeight || viewportH) * 0.74), Math.round(coveredNow + 190)));
+          map.fitBounds(bounds.pad(0.10), {
+            animate:true,
+            duration:.28,
+            maxZoom:8,
+            paddingTopLeft:[sidePadding, topPadding],
+            paddingBottomRight:[sidePadding, bottomNow]
+          });
+        }catch(_){ }
+      }, 130);
+
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 430);
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 760);
+    }catch(_){
+      try{
+        map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 });
+        window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 160);
+      }catch(__){ }
+    }
   }
 
   function focusSelectedHotelOnMap(index){
     focusSelectedCategoryStopOnMap('hotels', index);
-  }
-
-  const ROADORA_PREVIEW_RENDERERS_V39690 = {
-    hotels: function(i){ renderHotelPreview(i); },
-    fuel: function(i){ renderFuelPreview(i); },
-    charge: function(i){ renderChargePreview(i); },
-    food: function(i){ renderFoodPreview(i); },
-    discover: function(i){ renderDiscoverPreview(i); },
-    wc: function(i){ renderWcPreview(i); }
-  };
-
-  function getCardSelectorForCategoryV39690(category){
-    return {
-      hotels: '.rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649):not(.rd-wc-card-v39653)',
-      fuel: '.rd-fuel-card-v39646',
-      charge: '.rd-charge-card-v39647',
-      food: '.rd-food-card-v39648',
-      discover: '.rd-discover-card-v39649',
-      wc: '.rd-wc-card-v39653'
-    }[category] || '';
-  }
-
-  function setActiveStopCardV39690(category, index){
-    const selector = getCardSelectorForCategoryV39690(category);
-    if(!selector) return;
-    document.querySelectorAll(selector).forEach(function(card){
-      const attr = card.getAttribute('data-'+(category === 'hotels' ? 'hotel' : category)+'-index');
-      const cardIndex = parseInt(attr || '0', 10) || 0;
-      card.classList.toggle('is-active', cardIndex === index);
-    });
-  }
-
-  function selectRoadoraStop(category, index, options){
-    const safeCategory = category || 'hotels';
-    const safeIndex = Math.max(0, Number(index) || 0);
-    const opts = options || {};
-
-    document.body.setAttribute('data-active-stop-category', safeCategory);
-    document.body.setAttribute('data-selected-stop-category', safeCategory);
-    document.body.setAttribute('data-selected-stop-index', String(safeIndex));
-
-    activeCategoryPinV39682 = safeCategory;
-    activeCategoryPinIndexV39682 = safeIndex;
-
-    setActiveStopCardV39690(safeCategory, safeIndex);
-
-    const renderer = ROADORA_PREVIEW_RENDERERS_V39690[safeCategory];
-    if(renderer && opts.preview !== false) renderer(safeIndex);
-
-    renderCategoryPins(safeCategory, safeIndex);
-
-    // Geen camera-animatie in foundation-stap. Deze hook blijft bestaan voor latere schone focus-v2.
-    if(opts.focus === true) focusSelectedCategoryStopOnMap(safeCategory, safeIndex);
   }
 
   function renderCategoryPins(category, activeIndex){
@@ -845,11 +840,17 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
       const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
       marker.on('click', function(ev){
-        if(ev && ev.originalEvent){
-          ev.originalEvent.preventDefault && ev.originalEvent.preventDefault();
-          ev.originalEvent.stopPropagation && ev.originalEvent.stopPropagation();
+        try{
+          if(ev && ev.originalEvent){
+            ev.originalEvent.preventDefault && ev.originalEvent.preventDefault();
+            ev.originalEvent.stopPropagation && ev.originalEvent.stopPropagation();
+          }
+          if(window.RoadoraApp && typeof window.RoadoraApp.selectStop === 'function'){
+            window.RoadoraApp.selectStop(category, i, { source:'pin' });
+          }
+        }catch(err){
+          console.warn('Roadora stop selection failed', err);
         }
-        selectRoadoraStop(category, i, { preview:true, focus:false });
       });
       marker.addTo(categoryLayer);
       created.push(marker);
@@ -875,21 +876,68 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     showMapToast(meta.toast);
   }
 
+  // v39.6.96 — gated pins for filter-based categories.
+  // Eten and Uitjes first show a filter menu. Pins are rendered only after the
+  // user chooses a concrete subfilter, so the map never shows generic/old pins.
+  function clearCategoryPinsForFilterMenuV39696(label){
+    try{
+      if(categoryLayer) categoryLayer.clearLayers();
+      activeCategoryPinV39682 = '';
+      activeCategoryPinIndexV39682 = -1;
+      if(label) setText('#mapStatusNext', label);
+    }catch(_){ }
+  }
+
   window.addEventListener('roadora:stop-category-change', function(ev){
     const category = ev.detail && ev.detail.category;
     if(!category) return;
+    if(category === 'food' && !document.body.getAttribute('data-food-filter')){
+      clearCategoryPinsForFilterMenuV39696('Kies type eten');
+      return;
+    }
+    if(category === 'discover' && !document.body.getAttribute('data-discover-filter')){
+      clearCategoryPinsForFilterMenuV39696('Kies type uitje');
+      return;
+    }
     renderCategoryPins(category);
   });
 
   if (window.RoadoraApp) {
     window.RoadoraApp.renderCategoryPins = renderCategoryPins;
+    window.RoadoraApp.clearCategoryPins = clearCategoryPinsForFilterMenuV39696;
   }
+
+
+  /* Roadora v39.6.94 — remove only orphan endpoint marker in the top-left corner.
+     This is a DOM cleanup for a stale Leaflet endpoint element; it does not touch
+     route logic, card/pin selection, ORS, Maps export or sheet flow. */
+  function cleanupTopLeftEndpointGhostV39694(){
+    const mapEl = document.getElementById('routeLeafletMap');
+    if(!mapEl) return;
+    const endpoints = Array.from(mapEl.querySelectorAll('.endpointMarker'));
+    if(endpoints.length <= 2) return;
+    const mapRect = mapEl.getBoundingClientRect();
+    endpoints.forEach(el=>{
+      const rect = el.getBoundingClientRect();
+      const isTopLeftGhost = rect.left <= mapRect.left + 4 && rect.top <= mapRect.top + 4;
+      if(isTopLeftGhost) el.classList.add('rdEndpointGhostHiddenV39694');
+      else el.classList.remove('rdEndpointGhostHiddenV39694');
+    });
+  }
+  function scheduleEndpointGhostCleanupV39694(){
+    cleanupTopLeftEndpointGhostV39694();
+    requestAnimationFrame(cleanupTopLeftEndpointGhostV39694);
+    setTimeout(cleanupTopLeftEndpointGhostV39694, 120);
+    setTimeout(cleanupTopLeftEndpointGhostV39694, 420);
+  }
+
   function addEndpoints(startCoord, endCoord){
     const r=activeRoute();
     L.marker(latLng(startCoord), { icon:endpointIcon() }).addTo(markerLayer);
     L.marker(latLng(endCoord), { icon:endpointIcon() }).addTo(markerLayer);
     L.marker(latLng(startCoord), { icon:labelIcon(`${r.start}<br><small>Start</small>`) }).addTo(labelLayer);
     L.marker(latLng(endCoord), { icon:labelIcon(`${r.end}<br><small>Eindbestemming</small>`) }).addTo(labelLayer);
+    scheduleEndpointGhostCleanupV39694();
   }
   function drawFallback(startCoord, endCoord){
     routeCoordinates=[startCoord,endCoord];
@@ -959,18 +1007,143 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraMap = {
     ensure(){ ensureBase(); setTimeout(()=>{ map?.invalidateSize(false); loadRoute(); },120); },
     refresh(){ loadRoute(true); },
-    fit: fitRoute,
-    renderCategoryPins: renderCategoryPins,
-    selectRoadoraStop: selectRoadoraStop
+    fit: fitRoute
   };
-  window.RoadoraApp = window.RoadoraApp || {};
-  window.RoadoraApp.renderCategoryPins = renderCategoryPins;
-  window.RoadoraApp.selectRoadoraStop = selectRoadoraStop;
   if(document.body.dataset.activeScreen === 'map') window.RoadoraMap.ensure();
 })();
 
 
-/* Roadora v39.6.90 Clean Selection Foundation: obsolete map-nav v1/v2/v5/v8/v9 removed. */
+/* Roadora Map Navigation Layer v1 */
+(function(){
+  if (window.__roadoraMapNavLayerV1) return;
+  window.__roadoraMapNavLayerV1 = true;
+
+  function setMapNavActive(panel){
+    document.querySelectorAll(".map-nav-layer-v1 .map-nav-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+    document.body.setAttribute("data-map-panel", panel || "roadtrip");
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-nav-layer-v1 .map-nav-item");
+    if (!btn) return;
+
+    var panel = btn.dataset.mapPanel || "roadtrip";
+    setMapNavActive(panel);
+
+    /* V1 is bewust veilig:
+       - Roadtrip = bestaande sheet blijft leidend
+       - Stops / Nu nodig / Meer zetten alleen state voor volgende stap
+       - geen route-engine, Leaflet of Google Maps export aangepast
+    */
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapNavActive(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav Pixel v2 */
+(function(){
+  if (window.__roadoraMapBottomNavPixelV2) return;
+  window.__roadoraMapBottomNavPixelV2 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-nav-pixel-v2 .mnp-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-nav-pixel-v2 .mnp-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav Correct v5 */
+(function(){
+  if (window.__roadoraMapBottomNavV5) return;
+  window.__roadoraMapBottomNavV5 = true;
+
+  function setPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v5 .mbn-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v5 .mbn-item");
+    if (!btn) return;
+    setPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav v8 Clean Rebuild */
+(function(){
+  if (window.__roadoraMapBottomNavV8) return;
+  window.__roadoraMapBottomNavV8 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v8 .mb8-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v8 .mb8-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav v9 Mockup Match */
+(function(){
+  if (window.__roadoraMapBottomNavV9) return;
+  window.__roadoraMapBottomNavV9 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v9 .mb9-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v9 .mb9-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
 
 /* Roadora v28 clean map nav active state */
 (function(){
@@ -2324,22 +2497,34 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.querySelectorAll(".rd-render-stop-card-v39619").forEach(function(item){
       item.classList.toggle("is-active", item === card);
     });
-    window.dispatchEvent(new CustomEvent("roadora:stop-category-change", { detail:{ category:category } }));
-    if(category === 'hotels'){
-      renderHotelStrip();
-    }else if(category === 'fuel'){
-      renderFuelStrip();
-    }else if(category === 'charge'){
-      renderChargeStrip();
-    }else if(category === 'food'){
+
+    // Filter-based categories should not immediately place generic pins.
+    // First show the subfilter menu; after a subfilter click, renderCategoryPins()
+    // is called with the filtered data.
+    if(category === 'food'){
+      if(window.RoadoraApp && typeof window.RoadoraApp.clearCategoryPins === 'function'){
+        window.RoadoraApp.clearCategoryPins('Kies type eten');
+      }
       renderFoodFilters();
     }else if(category === 'discover'){
+      if(window.RoadoraApp && typeof window.RoadoraApp.clearCategoryPins === 'function'){
+        window.RoadoraApp.clearCategoryPins('Kies type uitje');
+      }
       renderDiscoverFilters();
-    }else if(category === 'wc'){
-      renderWcStrip();
     }else{
-      document.body.removeAttribute('data-stop-subpanel');
-      closeHotelPreview();
+      window.dispatchEvent(new CustomEvent("roadora:stop-category-change", { detail:{ category:category } }));
+      if(category === 'hotels'){
+        renderHotelStrip();
+      }else if(category === 'fuel'){
+        renderFuelStrip();
+      }else if(category === 'charge'){
+        renderChargeStrip();
+      }else if(category === 'wc'){
+        renderWcStrip();
+      }else{
+        document.body.removeAttribute('data-stop-subpanel');
+        closeHotelPreview();
+      }
     }
   }, true);
 
@@ -2381,6 +2566,89 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     renderNowAssist(category, 0);
   }, true);
 
+
+
+  /* v39.6.92 — Roadora Stop Controller Foundation.
+     One central selection path for Stops: card-click and pin-click both call
+     selectRoadoraStop(category, index). This keeps preview, active card, active
+     pin and map focus in sync without bridge/patch functions. */
+  function getStopCardSelectorV39692(category){
+    if(category === 'fuel') return '.rd-fuel-card-v39646';
+    if(category === 'charge') return '.rd-charge-card-v39647';
+    if(category === 'food') return '.rd-food-card-v39648';
+    if(category === 'discover') return '.rd-discover-card-v39649';
+    if(category === 'wc') return '.rd-wc-card-v39653';
+    return '.rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649):not(.rd-wc-card-v39653)';
+  }
+
+  function scrollSelectedStopCardIntoViewV39692(category, index){
+    try{
+      const selector = getStopCardSelectorV39692(category);
+      const attr = category === 'fuel' ? 'data-fuel-index'
+        : category === 'charge' ? 'data-charge-index'
+        : category === 'food' ? 'data-food-index'
+        : category === 'discover' ? 'data-discover-index'
+        : category === 'wc' ? 'data-wc-index'
+        : 'data-hotel-index';
+      const card = Array.from(document.querySelectorAll(selector)).find(function(item){
+        return parseInt(item.getAttribute(attr) || '0', 10) === index;
+      });
+      if(card){
+        card.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+      }
+    }catch(_){ }
+  }
+
+  function setActiveStopCardV39692(category, index){
+    try{
+      const selector = getStopCardSelectorV39692(category);
+      const attr = category === 'fuel' ? 'data-fuel-index'
+        : category === 'charge' ? 'data-charge-index'
+        : category === 'food' ? 'data-food-index'
+        : category === 'discover' ? 'data-discover-index'
+        : category === 'wc' ? 'data-wc-index'
+        : 'data-hotel-index';
+      document.querySelectorAll(selector).forEach(function(item){
+        const itemIndex = parseInt(item.getAttribute(attr) || '0', 10) || 0;
+        item.classList.toggle('is-active', itemIndex === index);
+      });
+    }catch(_){ }
+  }
+
+  function renderStopPreviewV39692(category, index){
+    if(category === 'fuel') return renderFuelPreview(index);
+    if(category === 'charge') return renderChargePreview(index);
+    if(category === 'food') return renderFoodPreview(index);
+    if(category === 'discover') return renderDiscoverPreview(index);
+    if(category === 'wc') return renderWcPreview(index);
+    return renderHotelPreview(index);
+  }
+
+  function selectRoadoraStop(category, index, options){
+    const opts = options || {};
+    const safeCategory = category || 'hotels';
+    const safeIndex = Math.max(0, parseInt(index || 0, 10) || 0);
+
+    document.body.setAttribute('data-active-stop-category', safeCategory);
+    setActiveStopCardV39692(safeCategory, safeIndex);
+    renderStopPreviewV39692(safeCategory, safeIndex);
+
+    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+      window.RoadoraApp.renderCategoryPins(safeCategory, safeIndex);
+    }
+
+    window.setTimeout(function(){ scrollSelectedStopCardIntoViewV39692(safeCategory, safeIndex); }, 40);
+
+    if(opts.focus !== false){
+      window.setTimeout(function(){
+        try{ focusSelectedCategoryStopOnMap(safeCategory, safeIndex); }catch(_){ }
+      }, opts.source === 'pin' ? 80 : 120);
+    }
+  }
+
+  if(window.RoadoraApp){
+    window.RoadoraApp.selectStop = selectRoadoraStop;
+  }
   document.addEventListener("click", function(e){
     const close = e.target.closest && e.target.closest(".rd-hotel-preview-close-v39644");
     if(close){
@@ -2395,7 +2663,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       const fuelIndex = parseInt(fuel.getAttribute('data-fuel-index') || '0', 10) || 0;
-      selectRoadoraStop('fuel', fuelIndex, { preview:true, focus:false });
+      selectRoadoraStop('fuel', fuelIndex, { source:'card' });
       return;
     }
 
@@ -2404,7 +2672,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       const chargeIndex = parseInt(charge.getAttribute('data-charge-index') || '0', 10) || 0;
-      selectRoadoraStop('charge', chargeIndex, { preview:true, focus:false });
+      selectRoadoraStop('charge', chargeIndex, { source:'card' });
       return;
     }
 
@@ -2413,7 +2681,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       const foodIndex = parseInt(food.getAttribute('data-food-index') || '0', 10) || 0;
-      selectRoadoraStop('food', foodIndex, { preview:true, focus:false });
+      selectRoadoraStop('food', foodIndex, { source:'card' });
       return;
     }
 
@@ -2422,7 +2690,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       const discoverIndex = parseInt(discover.getAttribute('data-discover-index') || '0', 10) || 0;
-      selectRoadoraStop('discover', discoverIndex, { preview:true, focus:false });
+      selectRoadoraStop('discover', discoverIndex, { source:'card' });
       return;
     }
 
@@ -2431,7 +2699,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       const wcIndex = parseInt(wc.getAttribute('data-wc-index') || '0', 10) || 0;
-      selectRoadoraStop('wc', wcIndex, { preview:true, focus:false });
+      selectRoadoraStop('wc', wcIndex, { source:'card' });
       return;
     }
 
@@ -2440,7 +2708,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     e.preventDefault();
     e.stopPropagation();
     const index = parseInt(hotel.getAttribute('data-hotel-index') || '0', 10) || 0;
-    selectRoadoraStop('hotels', index, { preview:true, focus:false });
+    selectRoadoraStop('hotels', index, { source:'card' });
   }, true);
 
 

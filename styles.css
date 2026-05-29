@@ -9974,12 +9974,11 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
 }
 #mapScreen .rdCategoryPin.is-active-v39682,
 .rdCategoryPin.is-active-v39682{
-  width:42px !important;
-  height:42px !important;
-  transform:translateY(-3px) scale(1.02) !important;
+  width:34px !important;
+  height:34px !important;
   background:#2c2118 !important;
   border-color:rgba(255,250,242,.92) !important;
-  box-shadow:0 18px 34px rgba(36,25,18,.28) !important;
+  box-shadow:0 18px 34px rgba(36,25,18,.28), 0 0 0 7px rgba(255,250,242,.55) !important;
   z-index:999 !important;
 }
 #mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
@@ -10034,12 +10033,11 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
 .rdCategoryPin.is-active-v39682,
 #mapScreen .rdCategoryPin.is-active-v39683,
 .rdCategoryPin.is-active-v39683{
-  width:40px !important;
-  height:40px !important;
-  transform:translateY(-3px) scale(1.04) !important;
+  width:34px !important;
+  height:34px !important;
   background:#2c2118 !important;
   border-color:rgba(255,250,242,.92) !important;
-  box-shadow:0 18px 36px rgba(36,25,18,.28) !important;
+  box-shadow:0 18px 36px rgba(36,25,18,.28), 0 0 0 7px rgba(255,250,242,.55) !important;
 }
 #mapScreen .rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
 .rdCategoryPin.is-active-v39682 .rdCategoryPinInner,
@@ -10049,4 +10047,24 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
   height:30px !important;
   background:#fff8ed !important;
   color:#2c2118 !important;
+}
+
+
+/* Roadora v39.6.94 — hide only stale Leaflet endpoint ghost at top-left */
+#routeLeafletMap .endpointMarker.rdEndpointGhostHiddenV39694{
+  display:none !important;
+  pointer-events:none !important;
+}
+
+/* Extra safety: no legacy back/arrow control on the map header */
+#mapScreen .mapBackBtn,
+#mapScreen .backBtn,
+#mapScreen .back-btn,
+#mapScreen .back-button,
+#mapScreen [data-back],
+#mapScreen [data-action="back"],
+#mapScreen [aria-label="Terug"],
+#mapScreen [aria-label="Back"]{
+  display:none !important;
+  pointer-events:none !important;
 }
