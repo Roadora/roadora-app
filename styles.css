@@ -10538,3 +10538,33 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-ho
     border-bottom-right-radius:0 !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.28 — Nu Nodig Popover Nav Connect
+   ---------------------------------------------------------
+   Doel:
+   - Alleen Nu Nodig action-popover laten aansluiten op de kaart-bottomnav.
+   - Stops blijft exact zoals v39.7.27.
+   - Geen Maps, ORS, pins, cards, filters of Stops-popover aangepast.
+========================================================= */
+
+body[data-active-screen="map"][data-instant-map-panel="now"]{
+  --rd-now-popover-nav-connect-v39728: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  bottom:var(--rd-now-popover-nav-connect-v39728) !important;
+  border-bottom-left-radius:0 !important;
+  border-bottom-right-radius:0 !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"]{
+    --rd-now-popover-nav-connect-v39728: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
