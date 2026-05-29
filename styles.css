@@ -10320,3 +10320,66 @@ body[data-active-screen="map"][data-stop-subpanel="food-filter"] #mapDrawer .rd-
     padding:0 9px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.24 — Food Filter Exact Category Rail Match
+   ---------------------------------------------------------
+   Alleen Stops > Eten-filter. De geïsoleerde food-filter blijft
+   behouden, maar gebruikt nu exact dezelfde verticale rail als
+   de normale Stops-categorieën:
+   - zelfde sheet height
+   - zelfde bottom offset
+   - zelfde cardhoogte
+   - zelfde gap
+   Nu Nodig, cards, popover, Maps en ORS blijven ongemoeid.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  top:auto !important;
+  bottom:10px !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  width:auto !important;
+  display:block !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721 .rd-food-filter-grid-v39721{
+  width:100% !important;
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  grid-template-rows:repeat(3,38px) !important;
+  gap:7px !important;
+  align-content:start !important;
+  justify-content:stretch !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+    left:10px !important;
+    right:10px !important;
+    bottom:10px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721 .rd-food-filter-grid-v39721{
+    grid-template-rows:repeat(3,37px) !important;
+    gap:7px !important;
+  }
+}
