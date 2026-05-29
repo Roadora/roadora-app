@@ -10431,3 +10431,72 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview=
     bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.26 — Popover Width Match
+   ---------------------------------------------------------
+   Doel:
+   - Stops en Nu Nodig popover exact even breed als kaart-bottomnav/sheet.
+   - Geen uitstekende cardsheet-randen meer zichtbaar tijdens selectie.
+   - Alleen visuele popover-breedte/uitlijning; Maps, ORS, pins, cards en filters ongemoeid.
+========================================================= */
+
+/* Shared map edge already follows the isolated map nav width. Reuse it for popovers. */
+body[data-active-screen="map"]{
+  --rd-popover-edge-v39726: var(--rd-map-edge, max(14px, calc((100dvw - 430px) / 2 + 14px)));
+}
+
+/* Stops: popover zit in #mapDrawer. Laat hem de volledige drawer/sheet-breedte vullen. */
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-fuel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-charge-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-food-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-discover-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-wc-preview="open"] #mapDrawer.rd-map-sheet-v28{
+  overflow:visible !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-fuel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-charge-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-food-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-discover-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-wc-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644{
+  left:0 !important;
+  right:0 !important;
+  width:auto !important;
+  max-width:none !important;
+  bottom:0 !important;
+  box-sizing:border-box !important;
+  border-radius:28px !important;
+  z-index:9999 !important;
+}
+
+/* Nu Nodig: popover zit direct onder #mapScreen. Gebruik exact dezelfde edge als de bottomnav. */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  left:var(--rd-popover-edge-v39726) !important;
+  right:var(--rd-popover-edge-v39726) !important;
+  width:auto !important;
+  max-width:none !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  bottom:calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-fuel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-charge-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-food-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-discover-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-wc-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644{
+    left:0 !important;
+    right:0 !important;
+  }
+
+  body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
