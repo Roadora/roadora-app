@@ -845,9 +845,28 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
             ev.originalEvent.preventDefault && ev.originalEvent.preventDefault();
             ev.originalEvent.stopPropagation && ev.originalEvent.stopPropagation();
           }
-          if(window.RoadoraApp && typeof window.RoadoraApp.selectStop === 'function'){
+
+          // v39.7.05 — Nu Nodig pin → popover trigger restore.
+          // Leaflet marker clicks live in the map closure. Calling the global app
+          // bridge was enough to scroll to the right card, but in Nu Nodig states
+          // the preview trigger could be missed after the old assist cleanup. Use
+          // the same local Stop Controller first, then verify that a preview exists.
+          if(typeof selectRoadoraStop === 'function'){
+            selectRoadoraStop(category, i, { source:'pin' });
+          }else if(window.RoadoraApp && typeof window.RoadoraApp.selectStop === 'function'){
             window.RoadoraApp.selectStop(category, i, { source:'pin' });
           }
+
+          window.setTimeout(function(){
+            try{
+              const hasPreview = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
+              if(!hasPreview && typeof renderStopPreviewV39692 === 'function'){
+                setActiveStopCardV39692(category, i);
+                renderStopPreviewV39692(category, i);
+                scrollSelectedStopCardIntoViewV39692(category, i);
+              }
+            }catch(_){ }
+          }, 70);
         }catch(err){
           console.warn('Roadora stop selection failed', err);
         }
