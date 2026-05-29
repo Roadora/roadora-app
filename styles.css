@@ -9628,3 +9628,43 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer.rd-map-s
     min-height:214px !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.7.07 — Nu Nodig preview mounted outside card strip
+   ---------------------------------------------------------
+   Nu Nodig now mounts the shared stop preview directly on #mapScreen instead
+   of inside the low drawer/card strip. This keeps the working pin -> card
+   sync intact and restores the large Stops-style popover without clipping.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  position:fixed !important;
+  left:26px !important;
+  right:26px !important;
+  bottom:184px !important;
+  min-height:220px !important;
+  max-height:calc(100vh - 250px) !important;
+  z-index:9999 !important;
+  display:grid !important;
+  grid-template-columns:138px minmax(0,1fr) !important;
+  gap:13px !important;
+  padding:12px !important;
+  border-radius:28px !important;
+  background:linear-gradient(145deg, rgba(249,244,234,.98), rgba(239,229,213,.98)) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 24px 60px rgba(57,40,25,.24), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  color:#231915 !important;
+  overflow:hidden !important;
+  pointer-events:auto !important;
+  backdrop-filter:blur(24px) saturate(1.14) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.14) !important;
+}
+
+@media (min-width:431px){
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    left:32px !important;
+    right:32px !important;
+    bottom:190px !important;
+    min-height:236px !important;
+  }
+}
