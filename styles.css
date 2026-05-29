@@ -10383,3 +10383,51 @@ body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpane
     gap:7px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.25 — Selection Focus Popover
+   ---------------------------------------------------------
+   UX lock:
+   - Cards verdwijnen zodra een stop/popover geselecteerd is.
+   - De popover wordt het enige focuspunt en start net boven de map-bottomnav.
+   - Sluiten verwijdert data-hotel-preview en brengt de cards automatisch terug.
+   - Geen Maps, ORS, pins of route-engine wijzigingen.
+========================================================= */
+
+/* Stops: popover blijft in #mapDrawer, maar de card/scroll-content verdwijnt erachter. */
+body[data-active-screen="map"][data-hotel-preview="open"] #mapDrawer .rd-sheet-scroll-v393{
+  opacity:0 !important;
+  pointer-events:none !important;
+  transition:opacity .16s ease !important;
+}
+
+body[data-active-screen="map"][data-hotel-preview="open"] #mapDrawer > .rd-hotel-preview-popover-v39644{
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+/* Stops detail-popover lager plaatsen: net boven de bottom navigation in plaats van boven de cards. */
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-hotel-preview="open"] #mapDrawer .rd-hotel-preview-popover-v39644{
+  bottom:8px !important;
+  z-index:9999 !important;
+}
+
+/* Nu Nodig: cardsheet volledig uit beeld tijdens de compacte action-popover. */
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer{
+  opacity:0 !important;
+  pointer-events:none !important;
+  transform:translateY(8px) !important;
+  transition:opacity .16s ease, transform .16s ease !important;
+}
+
+/* Nu Nodig action-popover lager plaatsen omdat de cards tijdens selectie verborgen zijn. */
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  bottom:calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index:9999 !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
