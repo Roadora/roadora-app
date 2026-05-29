@@ -10135,3 +10135,35 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel=
   background:transparent !important;
   box-sizing:border-box !important;
 }
+
+/* =========================================================
+   Roadora v39.7.03 — Nu Nodig popover same size as Stops
+   ---------------------------------------------------------
+   The Nu Nodig result states reuse the Stops popover classes, but the
+   Nu Nodig strip-layout scope kept #mapDrawer overflow hidden. That clipped
+   the popover inside the small card sheet. This override only opens overflow
+   while an actual Nu Nodig preview is active. No pin/card/slider logic changed.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapDrawer.rd-map-sheet-v28{
+  overflow:visible !important;
+  z-index:1200 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
+  bottom:82px !important;
+  min-height:236px !important;
+  max-height:calc(100vh - 220px) !important;
+  z-index:1300 !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
+    bottom:78px !important;
+    min-height:220px !important;
+  }
+}
