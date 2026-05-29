@@ -9668,3 +9668,62 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-ho
     min-height:236px !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.7.08 — Nu Nodig popover EXACT als Stops
+   ---------------------------------------------------------
+   Nu Nodig gebruikt opnieuw dezelfde #mapDrawer mount en dezelfde
+   .rd-hotel-preview-popover-v39644 layout als Stops.
+   Geen ORS, Maps, pins, cards of focus-logica aangepast.
+========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"][data-hotel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-fuel-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-charge-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-food-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-discover-preview="open"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="open"] #mapDrawer.rd-map-sheet-v28{
+  overflow:visible !important;
+  z-index:1200 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
+  position:absolute !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:82px !important;
+  min-height:236px !important;
+  max-height:calc(100vh - 220px) !important;
+  z-index:42 !important;
+  display:grid !important;
+  grid-template-columns:138px minmax(0,1fr) !important;
+  gap:13px !important;
+  padding:12px !important;
+  border-radius:28px !important;
+  background:linear-gradient(145deg, rgba(249,244,234,.98), rgba(239,229,213,.98)) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 24px 60px rgba(57,40,25,.24), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  color:#231915 !important;
+  overflow:hidden !important;
+  pointer-events:auto !important;
+  backdrop-filter:blur(24px) saturate(1.14) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.14) !important;
+  animation:rdHotelPreviewIn39644 .18s ease-out both !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  display:none !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-hotel-preview-popover-v39644{
+    left:10px !important;
+    right:10px !important;
+    bottom:78px !important;
+    grid-template-columns:126px minmax(0,1fr) !important;
+    gap:11px !important;
+    padding:10px !important;
+    min-height:220px !important;
+    border-radius:25px !important;
+  }
+}
