@@ -846,27 +846,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
             ev.originalEvent.stopPropagation && ev.originalEvent.stopPropagation();
           }
 
-          // v39.7.05 — Nu Nodig pin → popover trigger restore.
-          // Leaflet marker clicks live in the map closure. Calling the global app
-          // bridge was enough to scroll to the right card, but in Nu Nodig states
-          // the preview trigger could be missed after the old assist cleanup. Use
-          // the same local Stop Controller first, then verify that a preview exists.
-          if(typeof selectRoadoraStop === 'function'){
-            selectRoadoraStop(category, i, { source:'pin' });
-          }else if(window.RoadoraApp && typeof window.RoadoraApp.selectStop === 'function'){
-            window.RoadoraApp.selectStop(category, i, { source:'pin' });
-          }
-
-          window.setTimeout(function(){
-            try{
-              const hasPreview = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
-              if(!hasPreview && typeof renderStopPreviewV39692 === 'function'){
-                setActiveStopCardV39692(category, i);
-                renderStopPreviewV39692(category, i);
-                scrollSelectedStopCardIntoViewV39692(category, i);
-              }
-            }catch(_){ }
-          }, 70);
+          // v39.7.06 — robust cross-scope stop selection.
+          // Leaflet marker clicks live in the map closure, while the popover
+          // renderer lives in the sheet/controller closure. Dispatch one global
+          // event so the real Stop Controller handles pin clicks exactly like
+          // card clicks. This avoids calling preview functions across scopes.
+          window.dispatchEvent(new CustomEvent('roadora:select-stop', {
+            detail:{ category: category, index: i, source:'pin' }
+          }));
         }catch(err){
           console.warn('Roadora stop selection failed', err);
         }
@@ -2661,6 +2648,23 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   if(window.RoadoraApp){
     window.RoadoraApp.selectStop = selectRoadoraStop;
+  }
+
+  // v39.7.06 — single global selection event for Leaflet pins.
+  // Pins are rendered in the map closure; previews/cards live in this controller
+  // closure. This listener keeps both sides coupled without temporary bridges.
+  if(!window.__roadoraSelectStopEventV39706){
+    window.__roadoraSelectStopEventV39706 = true;
+    window.addEventListener('roadora:select-stop', function(ev){
+      try{
+        const detail = (ev && ev.detail) || {};
+        selectRoadoraStop(detail.category || 'hotels', detail.index || 0, {
+          source: detail.source || 'pin'
+        });
+      }catch(err){
+        console.warn('Roadora select-stop event failed', err);
+      }
+    });
   }
   document.addEventListener("click", function(e){
     const savePreview = e.target.closest && e.target.closest(".rd-hotel-preview-save-v39644");
