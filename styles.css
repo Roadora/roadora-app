@@ -10068,3 +10068,70 @@ body[data-active-screen="map"] #mapDrawer .rd-now-assist-clean-v39671 .rd-now-al
   display:none !important;
   pointer-events:none !important;
 }
+
+/* =========================================================
+   Roadora v39.7.02 — Nu Nodig cards inherit Stops strip layout
+   ---------------------------------------------------------
+   Nu Nodig uses the same stop subpanels as Stops for real result states
+   (hotels/fuel/charge/food/discover/wc). The old Nu Nodig base CSS kept
+   the cards container in a category-grid layout, which created the blank
+   sheet area. This override only applies when Nu Nodig is already in a
+   concrete result subpanel, so the Nu Nodig category/filter screens stay
+   untouched.
+========================================================= */
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  position:fixed !important;
+  overflow:hidden !important;
+  padding:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-scroll-v393{
+  position:relative !important;
+  flex:1 1 auto !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"] #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="fuel"] #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="charge"] #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food"] #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="discover"] #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="wc"] #mapDrawer .rd-sheet-cards-v39{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  background:transparent !important;
+  box-sizing:border-box !important;
+}

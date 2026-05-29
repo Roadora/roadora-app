@@ -1928,10 +1928,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const container = findStopsContainer();
     if(!container) return;
     document.body.removeAttribute('data-stop-subpanel');
+    document.body.removeAttribute('data-food-filter');
+    document.body.removeAttribute('data-discover-filter');
     document.body.removeAttribute('data-now-assist');
     document.body.removeAttribute('data-now-help-sub');
     document.body.setAttribute('data-now-needed','open');
     closeHotelPreview();
+    clearStopMapPinsV39697('Kies wat je nu nodig hebt');
     container.innerHTML =
       '<span class="rd-now-gps-status-v39656" aria-live="polite">GPS voorbereiden…</span>' +
       NOW_NEEDED_CARDS_V39656.map(function(card){
@@ -1951,6 +1954,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.setAttribute('data-now-needed','open');
     document.body.setAttribute('data-now-help-sub','open');
     closeHotelPreview();
+    clearStopMapPinsV39697('Kies type hulp');
     container.innerHTML = NOW_HELP_FILTERS_V39674.map(function(card){
       return '<button type="button" class="rd-render-stop-card-v39619" data-now-help-type="'+card.category+'">' +
         '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
@@ -1992,6 +1996,60 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<div class="rd-now-alts-v39670" aria-label="Alternatieven">'+alternatives+'</div>' +
       '</div>';
     updateNowGpsStatusV39656();
+  }
+
+
+  // v39.6.99-step1 — Nu Nodig clean foundation.
+  // Reuse the stable Stops renderers instead of the old assist layout for core
+  // categories. This keeps Nu Nodig on the same pin/card/popover architecture
+  // without touching the working Stops flow.
+  function renderNowCategoryWithStopsFlowV39699(category){
+    const c = category || '';
+    document.body.setAttribute('data-now-needed','open');
+    document.body.removeAttribute('data-now-assist');
+    document.body.removeAttribute('data-now-help-sub');
+    closeHotelPreview();
+
+    if(c === 'help'){
+      renderNowHelpFilters();
+      return;
+    }
+    if(c === 'food'){
+      clearStopMapPinsV39697('Kies type eten');
+      renderFoodFilters();
+      return;
+    }
+    if(c === 'sleep'){
+      document.body.setAttribute('data-active-stop-category', 'hotels');
+      renderHotelStrip();
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('hotels');
+      }
+      return;
+    }
+    if(c === 'fuel'){
+      document.body.setAttribute('data-active-stop-category', 'fuel');
+      renderFuelStrip();
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('fuel');
+      }
+      return;
+    }
+    if(c === 'charge'){
+      document.body.setAttribute('data-active-stop-category', 'charge');
+      renderChargeStrip();
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('charge');
+      }
+      return;
+    }
+    if(c === 'wc'){
+      document.body.setAttribute('data-active-stop-category', 'wc');
+      renderWcStrip();
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('wc');
+      }
+    }
   }
 
   function renderStops(){
@@ -2382,6 +2440,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(old) old.remove();
   }
 
+
+  // v39.6.97 — safe cleanup for stop-map state.
+  // Keep this as a thin wrapper around the existing map API so the Stops
+  // selection flow remains untouched. Used when switching categories,
+  // closing the Stops tab, or leaving Stops for another bottom-nav panel.
+  function clearStopMapPinsV39697(label){
+    try{
+      if(window.RoadoraApp && typeof window.RoadoraApp.clearCategoryPins === 'function'){
+        window.RoadoraApp.clearCategoryPins(label || '');
+      }
+    }catch(_){ }
+  }
+
   function renderHotelPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
@@ -2422,9 +2493,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(panel === "stops"){
       document.body.removeAttribute('data-now-needed');
       document.body.removeAttribute('data-now-assist');
+      closeHotelPreview();
+      clearStopMapPinsV39697('Kies stop');
       renderStops();
       setTimeout(renderStops, 50);
     } else if(panel === "now"){
+      closeHotelPreview();
+      clearStopMapPinsV39697('');
       renderNowNeeded();
       setTimeout(renderNowNeeded, 50);
     } else {
@@ -2432,6 +2507,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.body.removeAttribute('data-now-assist');
       document.body.removeAttribute('data-stop-subpanel');
       closeHotelPreview();
+      clearStopMapPinsV39697('');
     }
   }
 
@@ -2443,6 +2519,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-now-help-sub');
     document.body.removeAttribute('data-now-gps');
     document.body.removeAttribute('data-food-filter');
+    document.body.removeAttribute('data-discover-filter');
+    document.body.removeAttribute('data-stop-subpanel');
+    closeHotelPreview();
+    clearStopMapPinsV39697('');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
   }
@@ -2494,6 +2574,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const category = card.getAttribute("data-category");
     if(!category) return;
     document.body.setAttribute("data-active-stop-category", category);
+    // v39.6.97 — category changes must never leave old pins/popovers behind.
+    // The selected category will render fresh pins later when applicable.
+    closeHotelPreview();
+    clearStopMapPinsV39697('');
     document.querySelectorAll(".rd-render-stop-card-v39619").forEach(function(item){
       item.classList.toggle("is-active", item === card);
     });
@@ -2533,18 +2617,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(nowHelpType){
       e.preventDefault();
       e.stopPropagation();
-      const category = nowHelpType.getAttribute('data-now-help-type') || 'help_garage';
-      renderNowAssist(category, 0);
-      return;
-    }
-
-    const nowAlt = e.target.closest && e.target.closest('[data-now-alt-index]');
-    if(nowAlt){
-      e.preventDefault();
-      e.stopPropagation();
-      const category = document.body.getAttribute('data-now-assist') || 'wc';
-      const index = parseInt(nowAlt.getAttribute('data-now-alt-index') || '0', 10);
-      renderNowAssist(category, isNaN(index) ? 0 : index);
+      // Step 1 keeps Hulp futureproof by not mixing old assist popovers with
+      // the new Stops architecture. Subtype result cards are the next isolated step.
+      renderNowHelpFilters();
+      showMapToast('Hulp-resultaten bouwen we in de volgende stap');
       return;
     }
 
@@ -2556,14 +2632,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       item.classList.toggle('is-active', item === nowCard);
     });
     const category = nowCard.getAttribute('data-now-category') || '';
-    if(category === 'help'){
-      renderNowHelpFilters();
-      return;
-    }
-    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function' && category !== 'sleep'){
-      window.RoadoraApp.renderCategoryPins(category);
-    }
-    renderNowAssist(category, 0);
+    renderNowCategoryWithStopsFlowV39699(category);
   }, true);
 
 
@@ -2650,6 +2719,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     window.RoadoraApp.selectStop = selectRoadoraStop;
   }
   document.addEventListener("click", function(e){
+    const savePreview = e.target.closest && e.target.closest(".rd-hotel-preview-save-v39644");
+    if(savePreview){
+      e.preventDefault();
+      e.stopPropagation();
+      // v39.6.97 — saving a stop should return the user to the calm sheet state.
+      // Do not change selected stop/pins here; only close the temporary popover.
+      closeHotelPreview();
+      return;
+    }
+
     const close = e.target.closest && e.target.closest(".rd-hotel-preview-close-v39644");
     if(close){
       e.preventDefault();
@@ -2800,10 +2879,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         tracking = false;
         if(isCardState()) {
           const subpanel = document.body.getAttribute('data-stop-subpanel');
+          const panel = document.body.getAttribute('data-instant-map-panel');
+          // v39.6.98/v39.6.99 — swipe-back from cards to categories must also clear
+          // the active map stop state. Stops returns to Stops categories; Nu Nodig
+          // returns to Nu Nodig categories.
           closeHotelPreview();
-          if(subpanel === 'food'){
+          clearStopMapPinsV39697(panel === 'now' ? 'Kies wat je nu nodig hebt' : 'Kies stop');
+          if(panel === 'now'){
+            renderNowNeeded();
+          } else if(subpanel === 'food'){
+            clearStopMapPinsV39697('Kies type eten');
             renderFoodFilters();
           } else if(subpanel === 'discover'){
+            clearStopMapPinsV39697('Kies type uitje');
             renderDiscoverFilters();
           } else {
             renderStops();
