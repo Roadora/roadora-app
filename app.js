@@ -2067,6 +2067,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFoodFilters(){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.add('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','food-filter');
     document.body.removeAttribute('data-food-filter');
     document.body.removeAttribute('data-hotel-preview');
@@ -2087,6 +2088,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFoodStrip(filterKey){
     const container = findStopsContainer();
     if(!container) return;
+    container.classList.remove('rd-food-filter-grid-v39719');
     const activeFilter = filterKey || document.body.getAttribute('data-food-filter') || 'restaurant';
     const foodCards = getFoodCardsV39678(activeFilter);
     document.body.setAttribute('data-stop-subpanel','food');
