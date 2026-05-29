@@ -452,62 +452,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   let activeCategoryPinV39682 = null;
   let activeCategoryPinIndexV39682 = -1;
-  let focusStopTokenV39696 = 0;
-
-  /* v39.6.93 — single selected stop state for card, popover and marker.
-     The card/preview could be active while the Leaflet marker still looked neutral.
-     Keep one explicit selected state and stamp it onto the marker DOM after Leaflet
-     creates the icon element, so CSS can always highlight the exact selected pin. */
-  function setActiveStopMarkerStateV39693(category, index){
-    activeCategoryPinV39682 = category || null;
-    activeCategoryPinIndexV39682 = (typeof index === 'number' && index >= 0) ? index : -1;
-    try{
-      document.body.setAttribute('data-active-map-stop-category', activeCategoryPinV39682 || '');
-      document.body.setAttribute('data-active-map-stop-index', String(activeCategoryPinIndexV39682));
-    }catch(_){ }
-  }
-
-  function syncMarkerDomStateV39693(marker, category, index, isActive){
-    if(!marker) return;
-    const apply = function(){
-      try{
-        const el = marker.getElement && marker.getElement();
-        if(!el) return;
-        const selected = !!isActive;
-        const muted = !!activeCategoryPinV39682 && !selected;
-        el.setAttribute('data-stop-category', category || '');
-        el.setAttribute('data-stop-index', String(index));
-        el.classList.toggle('is-selected-stop-v39693', selected);
-        el.classList.toggle('is-selected-stop-v39694', selected);
-        el.classList.toggle('is-muted-stop-v39693', muted);
-        el.classList.toggle('is-muted-stop-v39694', muted);
-        const inner = el.querySelector && el.querySelector('.rdCategoryPinInner');
-        if(inner) inner.classList.toggle('is-selected-inner-v39694', selected);
-        if(selected){
-          el.style.zIndex = '10000';
-          marker.setZIndexOffset && marker.setZIndexOffset(1600);
-          marker.bringToFront && marker.bringToFront();
-        }else{
-          marker.setZIndexOffset && marker.setZIndexOffset(0);
-        }
-      }catch(_){ }
-    };
-    apply();
-    window.setTimeout(apply, 0);
-    window.setTimeout(apply, 80);
-    window.setTimeout(apply, 180);
-  }
 
   function categoryPinIcon(category, index, isActive){
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
-    const activeClass = isActive ? ' is-active-v39682 is-active-v39683 is-selected-stop-v39694' : '';
-    const mutedClass = activeCategoryPinV39682 && !isActive ? ' is-muted-stop-v39694' : '';
     return L.divIcon({
-      className: `rdCategoryPin rdCategoryPin-${category}${activeClass}${mutedClass}`,
-      html: `<span class="rdCategoryPinHalo"></span><span class="rdCategoryPinInner${isActive ? ' is-selected-inner-v39694' : ''}" data-stop-category="${category}" data-stop-index="${index}"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
-      iconSize: [42,42],
-      iconAnchor: [21,21],
-      popupAnchor: [0,-22]
+      className: `rdCategoryPin rdCategoryPin-${category} ${isActive ? 'is-active-v39682 is-active-v39683' : ''}`,
+      html: `<span class="rdCategoryPinInner"><em class="rdCategoryPinIcon">${meta.icon}</em></span>`,
+      iconSize: isActive ? [40,40] : [34,34],
+      iconAnchor: isActive ? [20,20] : [17,17],
+      popupAnchor: [0,-18]
     });
   }
 
@@ -792,37 +745,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }catch(_){ }
   }
 
-  /* v39.6.92 — deterministic selected-pin camera anchor.
-     Root cause of the "focus does not go to the pin" bug: fitBounds kept the
-     route segment correct, but on mobile the large Roadora preview/sheet changes
-     the usable map viewport. The selected stop could therefore still end up
-     underneath the popover or too low in the map, making it look as if the map
-     did not focus. This helper calculates the exact map center required to put
-     the selected pin in the visible slot above the preview. */
-  function centerSelectedPinInVisibleSlotV39692(selected, preferredZoom){
-    if(!map || !window.L || !selected || !map.project || !map.unproject || !map.getSize) return;
-    try{
-      map.invalidateSize && map.invalidateSize(false);
-      const size = map.getSize();
-      if(!size || !size.x || !size.y) return;
-
-      const viewportH = window.innerHeight || size.y || 760;
-      const overlayTop = getActiveMapOverlayTopV39684();
-      const visibleTop = Math.max(104, Math.round(viewportH * 0.15));
-      const visibleBottom = Math.max(visibleTop + 90, overlayTop - 78);
-      const desiredY = Math.max(visibleTop + 34, Math.min(visibleBottom, Math.round(overlayTop - 132)));
-      const desiredX = Math.round(size.x * 0.50);
-
-      const currentZoom = (map.getZoom && map.getZoom()) || 6;
-      const zoom = Math.max(6.25, Math.min(8, Number(preferredZoom) || Math.max(currentZoom, 7)));
-      const selectedPoint = map.project(selected, zoom);
-      const targetPoint = L.point(desiredX, desiredY);
-      const centerPoint = selectedPoint.subtract(targetPoint).add(size.divideBy(2));
-      const center = map.unproject(centerPoint, zoom);
-      map.setView(center, zoom, { animate:true, duration:.36 });
-    }catch(_){ }
-  }
-
   function focusSelectedCategoryStopOnMap(category, index){
     if(!map || !window.L || !routeCoordinates.length) return;
     const safeCategory = category || 'hotels';
@@ -830,29 +752,55 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const coord = getStopCoordV39686(safeCategory, safeIndex);
     if(!coord) return;
 
-    /* v39.6.96 — no-shake selected stop focus.
-       The previous focus chain ran fitBounds + a second fitBounds + setView +
-       panBy timers. On marker tap Leaflet also tried to auto-pan its popup, so
-       Android Chrome visibly shook the map back and forth. A selected stop now
-       uses one camera owner only: cancel current animations, wait one paint for
-       the preview/sheet measurement, then anchor the pin once in the visible
-       slot above the sheet. */
+    const percent = getStopPercentV39686(safeCategory, safeIndex);
     const selected = latLng(coord);
-    const token = ++focusStopTokenV39696;
+    const boundPoints = getRouteSegmentBoundsPointsV39685(percent, selected);
 
     try{
-      map.stop && map.stop();
-      map.closePopup && map.closePopup();
       map.invalidateSize && map.invalidateSize(false);
-    }catch(_){ }
 
-    window.setTimeout(function(){
-      if(token !== focusStopTokenV39696) return;
+      const viewportH = window.innerHeight || 760;
+      const viewportW = window.innerWidth || 390;
+      const overlayTop = getActiveMapOverlayTopV39684();
+      const coveredBottom = Math.max(0, viewportH - overlayTop);
+      const bottomPadding = Math.max(360, Math.min(Math.round(viewportH * 0.72), Math.round(coveredBottom + 170)));
+      const topPadding = Math.max(118, Math.min(174, Math.round(viewportH * 0.17)));
+      const sidePadding = Math.max(30, Math.min(52, Math.round(viewportW * 0.10)));
+
+      const bounds = L.latLngBounds(boundPoints);
+      map.fitBounds(bounds.pad(0.10), {
+        animate:true,
+        duration:.45,
+        maxZoom:8,
+        paddingTopLeft:[sidePadding, topPadding],
+        paddingBottomRight:[sidePadding, bottomPadding]
+      });
+
+      // Second pass after the popover has finished rendering/measuring. Then do
+      // a pixel correction so the selected pin is physically above the popover.
+      window.setTimeout(function(){
+        try{
+          const overlayTopNow = getActiveMapOverlayTopV39684();
+          const coveredNow = Math.max(0, (window.innerHeight || viewportH) - overlayTopNow);
+          const bottomNow = Math.max(380, Math.min(Math.round((window.innerHeight || viewportH) * 0.74), Math.round(coveredNow + 190)));
+          map.fitBounds(bounds.pad(0.10), {
+            animate:true,
+            duration:.28,
+            maxZoom:8,
+            paddingTopLeft:[sidePadding, topPadding],
+            paddingBottomRight:[sidePadding, bottomNow]
+          });
+        }catch(_){ }
+      }, 130);
+
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 430);
+      window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 760);
+    }catch(_){
       try{
-        map.stop && map.stop();
-        centerSelectedPinInVisibleSlotV39692(selected, 7);
-      }catch(_){ }
-    }, 90);
+        map.setView(selected, Math.min((map.getZoom && map.getZoom()) || 7, 7), { animate:true, duration:.35 });
+        window.setTimeout(function(){ ensureSelectedStopAboveOverlayV39689(selected); }, 160);
+      }catch(__){ }
+    }
   }
 
   function focusSelectedHotelOnMap(index){
@@ -870,10 +818,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
 
     if(category && category !== activeCategoryPinV39682){
-      setActiveStopMarkerStateV39693(category, -1);
+      activeCategoryPinV39682 = category;
+      activeCategoryPinIndexV39682 = -1;
     }
     if(typeof activeIndex === 'number' && activeIndex >= 0){
-      setActiveStopMarkerStateV39693(category, activeIndex);
+      activeCategoryPinIndexV39682 = activeIndex;
     }
 
     const meta = CATEGORY_PIN_META[category] || CATEGORY_PIN_META.hotels;
@@ -885,30 +834,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       if(!coord) return;
       const name = (stop && stop.name) || (meta.items && meta.items[i]) || meta.label;
       const isActivePin = activeCategoryPinV39682 === category && activeCategoryPinIndexV39682 === i;
-      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 1200 : 0 });
-      marker.on('click', function(ev){
-        try{ ev && ev.originalEvent && L.DomEvent.stop(ev.originalEvent); }catch(_){ }
-
-        /* v39.6.97 — pin is now the same source action as a card tap.
-           Earlier the marker only dispatched an event after re-rendering itself.
-           On Android that could leave the sheet in strip state while the map had
-           already changed. Use one explicit UI bridge first, then keep the event
-           as a fallback for older handlers. */
-        setActiveStopMarkerStateV39693(category, i);
-        renderCategoryPins(category, i);
-        try{
-          if(window.RoadoraUISelectStopV39697){
-            window.RoadoraUISelectStopV39697(category, i, { source:'pin' });
-          }else{
-            window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } }));
-          }
-        }catch(_){
-          try{ window.dispatchEvent(new CustomEvent('roadora:map-pin-select-v39696', { detail:{ category:category, index:i } })); }catch(__){ }
-        }
-        focusSelectedCategoryStopOnMap(category, i);
-      });
+      const marker = L.marker(latLng(coord), { icon: categoryPinIcon(category, i, isActivePin), riseOnHover:true, zIndexOffset: isActivePin ? 900 : 0 });
+      marker.bindPopup(`<strong>${name}</strong><br><small>${meta.label} · langs route</small>`);
       marker.addTo(categoryLayer);
-      syncMarkerDomStateV39693(marker, category, i, isActivePin);
       created.push(marker);
     });
 
@@ -940,12 +868,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   if (window.RoadoraApp) {
     window.RoadoraApp.renderCategoryPins = renderCategoryPins;
-    window.RoadoraApp.setActiveStopMarkerState = setActiveStopMarkerStateV39693;
-    window.RoadoraApp.focusSelectedCategoryStopOnMap = focusSelectedCategoryStopOnMap;
-    window.RoadoraApp.focusSelectedHotelOnMap = focusSelectedHotelOnMap;
-    window.RoadoraApp.restoreRouteOverviewFocus = function(){
-      try{ fitRoute(); }catch(_){ }
-    };
   }
   function addEndpoints(startCoord, endCoord){
     const r=activeRoute();
@@ -1025,6 +947,138 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     fit: fitRoute
   };
   if(document.body.dataset.activeScreen === 'map') window.RoadoraMap.ensure();
+})();
+
+
+/* Roadora Map Navigation Layer v1 */
+(function(){
+  if (window.__roadoraMapNavLayerV1) return;
+  window.__roadoraMapNavLayerV1 = true;
+
+  function setMapNavActive(panel){
+    document.querySelectorAll(".map-nav-layer-v1 .map-nav-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+    document.body.setAttribute("data-map-panel", panel || "roadtrip");
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-nav-layer-v1 .map-nav-item");
+    if (!btn) return;
+
+    var panel = btn.dataset.mapPanel || "roadtrip";
+    setMapNavActive(panel);
+
+    /* V1 is bewust veilig:
+       - Roadtrip = bestaande sheet blijft leidend
+       - Stops / Nu nodig / Meer zetten alleen state voor volgende stap
+       - geen route-engine, Leaflet of Google Maps export aangepast
+    */
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapNavActive(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav Pixel v2 */
+(function(){
+  if (window.__roadoraMapBottomNavPixelV2) return;
+  window.__roadoraMapBottomNavPixelV2 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-nav-pixel-v2 .mnp-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-nav-pixel-v2 .mnp-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav Correct v5 */
+(function(){
+  if (window.__roadoraMapBottomNavV5) return;
+  window.__roadoraMapBottomNavV5 = true;
+
+  function setPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v5 .mbn-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v5 .mbn-item");
+    if (!btn) return;
+    setPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav v8 Clean Rebuild */
+(function(){
+  if (window.__roadoraMapBottomNavV8) return;
+  window.__roadoraMapBottomNavV8 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v8 .mb8-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v8 .mb8-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
+})();
+
+
+/* Roadora Map Bottom Nav v9 Mockup Match */
+(function(){
+  if (window.__roadoraMapBottomNavV9) return;
+  window.__roadoraMapBottomNavV9 = true;
+
+  function setMapPanel(panel){
+    panel = panel || "roadtrip";
+    document.body.setAttribute("data-map-panel", panel);
+    document.querySelectorAll(".map-bottom-nav-v9 .mb9-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    });
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".map-bottom-nav-v9 .mb9-item");
+    if (!btn) return;
+    setMapPanel(btn.dataset.mapPanel || "roadtrip");
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
+  });
 })();
 
 
@@ -2096,7 +2150,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const wc = WC_STRIP_CARDS_V39653[index] || WC_STRIP_CARDS_V39653[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-wc-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2129,7 +2183,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!drawer) return;
     const discoverCards = getDiscoverCardsV39681();
     const discover = discoverCards[index] || discoverCards[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-discover-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2161,7 +2215,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const charge = CHARGE_STRIP_CARDS_V39647[index] || CHARGE_STRIP_CARDS_V39647[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-charge-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2194,7 +2248,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!drawer) return;
     const foodCards = getFoodCardsV39678();
     const food = foodCards[index] || foodCards[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-food-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2226,7 +2280,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const fuel = FUEL_STRIP_CARDS_V39646[index] || FUEL_STRIP_CARDS_V39646[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-fuel-preview','open');
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
@@ -2254,29 +2308,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     drawer.appendChild(pop);
   }
 
-  function restoreRouteOverviewFocusV39690(){
-    if(!map || !window.L || !routeCoordinates.length) return;
-    try{
-      const bounds = L.latLngBounds(routeCoordinates.map(latLng));
-      map.fitBounds(bounds.pad(0.12), {
-        animate:true,
-        duration:.42,
-        maxZoom:7,
-        paddingTopLeft:[34,130],
-        paddingBottomRight:[34,320]
-      });
-    }catch(_){ }
-  }
-
-  function syncActiveCardIntoViewV39690(selector, active){
-    try{
-      const card = document.querySelector(selector + '.is-active') || active;
-      if(!card || !card.scrollIntoView) return;
-      card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
-    }catch(_){ }
-  }
-
-  function closeHotelPreview(restoreFocus){
+  function closeHotelPreview(){
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
     document.body.removeAttribute('data-charge-preview');
@@ -2285,14 +2317,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-wc-preview');
     const old = document.querySelector('#mapDrawer .rd-hotel-preview-popover-v39644');
     if(old) old.remove();
-    if(restoreFocus !== false) window.setTimeout(restoreRouteOverviewFocusV39690, 80);
   }
 
   function renderHotelPreview(index){
     const drawer = document.querySelector('#mapDrawer');
     if(!drawer) return;
     const hotel = HOTEL_STRIP_CARDS_V39636[index] || HOTEL_STRIP_CARDS_V39636[0];
-    closeHotelPreview(false);
+    closeHotelPreview();
     document.body.setAttribute('data-hotel-preview','open');
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644';
@@ -2477,12 +2508,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-fuel-card-v39646").forEach(function(item){
         item.classList.toggle("is-active", item === fuel);
       });
-      syncActiveCardIntoViewV39690('.rd-fuel-card-v39646', fuel);
       renderFuelPreview(fuelIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('fuel', fuelIndex);
       }
-      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('fuel', fuelIndex);
+      focusSelectedCategoryStopOnMap('fuel', fuelIndex);
       return;
     }
 
@@ -2494,12 +2524,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-charge-card-v39647").forEach(function(item){
         item.classList.toggle("is-active", item === charge);
       });
-      syncActiveCardIntoViewV39690('.rd-charge-card-v39647', charge);
       renderChargePreview(chargeIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('charge', chargeIndex);
       }
-      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('charge', chargeIndex);
+      focusSelectedCategoryStopOnMap('charge', chargeIndex);
       return;
     }
 
@@ -2511,12 +2540,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-food-card-v39648").forEach(function(item){
         item.classList.toggle("is-active", item === food);
       });
-      syncActiveCardIntoViewV39690('.rd-food-card-v39648', food);
       renderFoodPreview(foodIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('food', foodIndex);
       }
-      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('food', foodIndex);
+      focusSelectedCategoryStopOnMap('food', foodIndex);
       return;
     }
 
@@ -2528,12 +2556,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-discover-card-v39649").forEach(function(item){
         item.classList.toggle("is-active", item === discover);
       });
-      syncActiveCardIntoViewV39690('.rd-discover-card-v39649', discover);
       renderDiscoverPreview(discoverIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('discover', discoverIndex);
       }
-      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('discover', discoverIndex);
+      focusSelectedCategoryStopOnMap('discover', discoverIndex);
       return;
     }
 
@@ -2545,12 +2572,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       document.querySelectorAll(".rd-wc-card-v39653").forEach(function(item){
         item.classList.toggle("is-active", item === wc);
       });
-      syncActiveCardIntoViewV39690('.rd-wc-card-v39653', wc);
       renderWcPreview(wcIndex);
       if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
         window.RoadoraApp.renderCategoryPins('wc', wcIndex);
       }
-      window.RoadoraApp && window.RoadoraApp.focusSelectedCategoryStopOnMap && window.RoadoraApp.focusSelectedCategoryStopOnMap('wc', wcIndex);
+      focusSelectedCategoryStopOnMap('wc', wcIndex);
       return;
     }
 
@@ -2562,44 +2588,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.querySelectorAll(".rd-hotel-card-v39636").forEach(function(item){
       item.classList.toggle("is-active", item === hotel);
     });
-    syncActiveCardIntoViewV39690('.rd-hotel-card-v39636', hotel);
     renderHotelPreview(index);
     if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
       window.RoadoraApp.renderCategoryPins('hotels', index);
     }
-    window.setTimeout(function(){ window.RoadoraApp && window.RoadoraApp.focusSelectedHotelOnMap && window.RoadoraApp.focusSelectedHotelOnMap(index); }, 120);
+    window.setTimeout(function(){ focusSelectedHotelOnMap(index); }, 120);
   }, true);
-
-  /* v39.6.97 — central stop selection bridge.
-     Cards, pins and future API results all route through the same function,
-     so preview, active card and selected marker can never drift apart. */
-  window.RoadoraUISelectStopV39697 = function(category, index, options){
-    const c = category || 'hotels';
-    const i = Math.max(0, Number(index) || 0);
-    const map = {
-      fuel:['.rd-fuel-card-v39646','data-fuel-index',renderFuelPreview],
-      charge:['.rd-charge-card-v39647','data-charge-index',renderChargePreview],
-      food:['.rd-food-card-v39648','data-food-index',renderFoodPreview],
-      discover:['.rd-discover-card-v39649','data-discover-index',renderDiscoverPreview],
-      wc:['.rd-wc-card-v39653','data-wc-index',renderWcPreview],
-      hotels:['.rd-hotel-card-v39636:not(.rd-fuel-card-v39646):not(.rd-charge-card-v39647):not(.rd-food-card-v39648):not(.rd-discover-card-v39649):not(.rd-wc-card-v39653)','data-hotel-index',renderHotelPreview]
-    };
-    const cfg = map[c] || map.hotels;
-    const all = Array.from(document.querySelectorAll(cfg[0]));
-    const active = all.find(function(el){ return (parseInt(el.getAttribute(cfg[1]) || '0', 10) || 0) === i; }) || all[i] || null;
-    all.forEach(function(el){ el.classList.toggle('is-active', el === active); });
-    if(active) syncActiveCardIntoViewV39690(cfg[0].split(':')[0], active);
-    try{ cfg[2](i); }catch(_){ }
-    if(options && options.source === 'pin') return;
-    if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function') window.RoadoraApp.renderCategoryPins(c, i);
-    if(window.RoadoraApp && typeof window.RoadoraApp.focusSelectedCategoryStopOnMap === 'function') window.RoadoraApp.focusSelectedCategoryStopOnMap(c, i);
-  };
-
-  /* v39.6.96/v39.6.97 — fallback event bridge from map marker closure. */
-  window.addEventListener('roadora:map-pin-select-v39696', function(ev){
-    const d = ev.detail || {};
-    window.RoadoraUISelectStopV39697(d.category || 'hotels', Math.max(0, Number(d.index) || 0), { source:'pin-event' });
-  }, false);
 
 
   /* v39.6.55 — robust Android swipe-down on the visible sheet handle.
