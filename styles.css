@@ -10072,3 +10072,165 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-ho
     font-size:13px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.16 — Nu Nodig floating popover text polish
+   ---------------------------------------------------------
+   Doel:
+   - v39.7.15 mount blijft intact: preview zweeft buiten #mapDrawer.
+   - Geen wijzigingen aan ORS, Leaflet, Maps-export, pins, cards of sheet height.
+   - Alleen de content-layout in de Nu Nodig floating popover wordt rustiger:
+     geen tekst onder knoppen, geen rommelige chip-overflow, compact Apple Maps-achtig.
+========================================================= */
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+  bottom:calc(190px + env(safe-area-inset-bottom, 0px)) !important;
+  min-height:188px !important;
+  max-height:218px !important;
+  grid-template-columns:128px minmax(0,1fr) !important;
+  align-items:stretch !important;
+  gap:12px !important;
+  padding:10px !important;
+  border-radius:27px !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-photo-v39644{
+  min-height:168px !important;
+  height:168px !important;
+  align-self:stretch !important;
+  border-radius:22px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-body-v39644{
+  min-width:0 !important;
+  height:168px !important;
+  max-height:168px !important;
+  display:grid !important;
+  grid-template-rows:auto auto auto auto 1fr auto !important;
+  align-content:start !important;
+  gap:4px !important;
+  padding:1px 42px 1px 0 !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-close-v39644{
+  top:12px !important;
+  right:12px !important;
+  width:34px !important;
+  height:34px !important;
+  font-size:24px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-kicker-v39644{
+  max-width:100% !important;
+  margin:0 0 1px !important;
+  padding:5px 9px !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-title-v39644{
+  margin:0 !important;
+  font-size:18px !important;
+  line-height:1.02 !important;
+  letter-spacing:-.55px !important;
+  -webkit-line-clamp:1 !important;
+  max-height:20px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-meta-v39644{
+  margin:1px 0 0 !important;
+  font-size:11.5px !important;
+  line-height:1.08 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-chips-v39644{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:5px !important;
+  margin:5px 0 0 !important;
+  overflow:hidden !important;
+  min-width:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-chips-v39644 span{
+  flex:0 1 auto !important;
+  min-width:0 !important;
+  max-width:70px !important;
+  padding:4px 7px !important;
+  font-size:9px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-copy-v39644{
+  margin:5px 0 0 !important;
+  font-size:11px !important;
+  line-height:1.22 !important;
+  -webkit-line-clamp:2 !important;
+  max-height:28px !important;
+  min-height:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644{
+  align-self:end !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+  margin:7px 0 0 !important;
+  min-width:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644 button{
+  height:42px !important;
+  min-width:0 !important;
+  padding:0 10px !important;
+  border-radius:17px !important;
+  font-size:13px !important;
+  white-space:nowrap !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644{
+    left:22px !important;
+    right:22px !important;
+    bottom:calc(184px + env(safe-area-inset-bottom, 0px)) !important;
+    min-height:182px !important;
+    max-height:206px !important;
+    grid-template-columns:122px minmax(0,1fr) !important;
+    gap:10px !important;
+    padding:10px !important;
+  }
+
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-photo-v39644,
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-body-v39644{
+    height:162px !important;
+    max-height:162px !important;
+    min-height:162px !important;
+  }
+
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-title-v39644{
+    font-size:17px !important;
+    max-height:19px !important;
+  }
+
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-copy-v39644{
+    font-size:10.5px !important;
+    -webkit-line-clamp:2 !important;
+  }
+
+  body[data-active-screen="map"][data-instant-map-panel="now"] #mapScreen > .rd-hotel-preview-popover-v39644 .rd-hotel-preview-actions-v39644 button{
+    height:40px !important;
+    font-size:12.5px !important;
+    border-radius:16px !important;
+  }
+}
