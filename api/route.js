@@ -1,9 +1,5 @@
-// Roadora ORS Simple Stable Route API
-// Doel:
-// - eerst ORS weer betrouwbaar testen/herstellen
-// - één simpele Directions V2 call
-// - geen segmented recovery/retry-loop die Vercel kan laten time-outen
-// - Maps-export blijft volledig ongemoeid
+// Roadora ORS route API — dual endpoint + timeout + safe recovery
+// Alleen backend route lijn. Raakt Google Maps export/navigatie niet aan.
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,43 +14,48 @@ export default async function handler(req, res) {
   const profile = sanitizeProfile(q.profile);
   const start = parseCoord(q.start || '4.4777,51.9244');
   const end = parseCoord(q.end || '11.4041,47.2692');
-  const via = parseWaypoints(q.waypoints || q.via || '').slice(0, 9);
+  const via = parseWaypoints(q.waypoints || q.via || '').slice(0, 8);
 
-  if (!start || !end) {
-    return res.status(400).json({ ok:false, error:'Ongeldige start/eind coordinaten' });
-  }
+  if (!start || !end) return res.status(400).json({ ok:false, error:'Ongeldige start/eind coordinaten' });
 
-  const coordinates = compactCoords([start, ...via, end]);
-  if (coordinates.length < 2) {
-    return res.status(400).json({ ok:false, error:'Te weinig geldige routepunten' });
-  }
+  // Houd request licht en voorspelbaar: eerst alleen hoofdroute, daarna pas met waypoints.
+  const fullCoords = compactCoords([start, ...via, end]);
+  const directCoords = compactCoords([start, end]);
 
   try {
-    const result = await fetchOrsOnce({ key, profile, coordinates });
+    const attempts = [];
 
-    if (!result.ok) {
-      return res.status(result.status || 502).json({
-        ok:false,
-        error:'ORS route fout',
-        status: result.status || 502,
-        endpoint: result.endpoint,
-        detail: result.detail || null
-      });
+    // 1. Nieuw officieel ORS/HeiGIT endpoint, met volledige routepunten.
+    if (fullCoords.length >= 2) {
+      attempts.push(await callOrsBothHosts({ key, profile, coordinates: fullCoords, label:'full' }));
+      const hit = attempts[attempts.length - 1];
+      if (hit.ok) return res.status(200).json(addRoadoraMeta(hit.data, {
+        mode:'ors-full-dual-endpoint',
+        host: hit.host,
+        requestedWaypoints: via.length,
+        usedWaypoints: via.length,
+        skippedWaypoints: []
+      }));
     }
 
-    return res.status(200).json(addRoadoraMeta(result.data, {
-      mode:'simple-stable-ors-v1',
-      endpoint: result.endpoint,
+    // 2. Directe hoofdroute. Zo krijgt Roadora liever een echte wegenroute dan een rechte fallbacklijn.
+    attempts.push(await callOrsBothHosts({ key, profile, coordinates: directCoords, label:'direct' }));
+    const direct = attempts[attempts.length - 1];
+    if (direct.ok) return res.status(200).json(addRoadoraMeta(direct.data, {
+      mode:'ors-direct-recovery-dual-endpoint',
+      host: direct.host,
       requestedWaypoints: via.length,
-      usedWaypoints: via.length,
-      skippedWaypoints: []
+      usedWaypoints: 0,
+      skippedWaypoints: via.map(coordLabel)
     }));
-  } catch (err) {
+
     return res.status(502).json({
       ok:false,
-      error:'Route API fout',
-      message: err?.message || String(err)
+      error:'ORS route fout: beide endpoints faalden',
+      attempts: attempts.map(cleanAttempt)
     });
+  } catch (err) {
+    return res.status(500).json({ ok:false, error: err?.message || 'Route API fout' });
   }
 }
 
@@ -74,10 +75,7 @@ function parseCoord(value) {
 }
 
 function parseWaypoints(raw) {
-  return String(raw || '')
-    .split('|')
-    .map(parseCoord)
-    .filter(Boolean);
+  return String(raw || '').split('|').map(parseCoord).filter(Boolean);
 }
 
 function compactCoords(coords) {
@@ -90,27 +88,54 @@ function compactCoords(coords) {
 }
 
 function round6(n) { return Math.round(Number(n) * 1e6) / 1e6; }
+function coordLabel(c) { return `${round6(c[0])},${round6(c[1])}`; }
 
-async function fetchOrsOnce({ key, profile, coordinates }) {
-  const endpoint = `https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`;
+function radiusesFor(coordinates) {
+  // Klein en veilig houden. Grote radiuses kunnen ORS traag maken of validatieproblemen geven.
+  return coordinates.map(() => 5000);
+}
+
+async function callOrsBothHosts({ key, profile, coordinates, label }) {
+  const hosts = [
+    {
+      host:'heigit',
+      url:`https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`
+    },
+    {
+      host:'openrouteservice-legacy',
+      url:`https://api.openrouteservice.org/v2/directions/${profile}/geojson`
+    }
+  ];
+
+  const details = [];
+  for (const h of hosts) {
+    const r = await tryOrsRoute({ key, url: h.url, host: h.host, coordinates, timeoutMs: 6500, label });
+    if (r.ok) return r;
+    details.push(r);
+  }
+  return { ok:false, label, detail: details };
+}
+
+async function tryOrsRoute({ key, url, host, coordinates, timeoutMs, label }) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8500);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   const body = {
     coordinates,
     instructions: false,
-    geometry_simplify: false,
+    geometry_simplify: true,
     elevation: false,
     preference: 'recommended',
-    units: 'm'
+    units: 'm',
+    radiuses: radiusesFor(coordinates)
   };
 
   try {
-    const orsRes = await fetch(endpoint, {
+    const orsRes = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: key,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         Accept: 'application/json, application/geo+json'
       },
       body: JSON.stringify(body),
@@ -119,25 +144,19 @@ async function fetchOrsOnce({ key, profile, coordinates }) {
 
     const text = await orsRes.text();
     let data;
-    try { data = JSON.parse(text); }
-    catch (_) { data = { raw: String(text || '').slice(0, 1200) }; }
+    try { data = JSON.parse(text); } catch (_) { data = { raw: text.slice(0, 500) }; }
 
-    if (!orsRes.ok) {
-      return { ok:false, status:orsRes.status, endpoint, detail:data };
-    }
-
-    if (!hasGeometry(data)) {
-      return { ok:false, status:502, endpoint, detail:{ message:'ORS response zonder geometry', data } };
-    }
-
-    return { ok:true, status:orsRes.status, endpoint, data };
+    if (!orsRes.ok) return { ok:false, host, label, status:orsRes.status, detail:data };
+    if (!hasGeometry(data)) return { ok:false, host, label, status:502, detail:'ORS response zonder geometry' };
+    return { ok:true, host, status:orsRes.status, data };
   } catch (err) {
-    const isAbort = err?.name === 'AbortError';
+    const isTimeout = err?.name === 'AbortError';
     return {
       ok:false,
-      status: isAbort ? 504 : 502,
-      endpoint,
-      detail:{ message: isAbort ? 'ORS timeout na 8.5 seconden' : (err?.message || String(err)) }
+      host,
+      label,
+      status: isTimeout ? 504 : 502,
+      detail: isTimeout ? `ORS timeout na ${timeoutMs / 1000} seconden` : (err?.message || 'ORS fetch fout')
     };
   } finally {
     clearTimeout(timer);
@@ -157,4 +176,15 @@ function addRoadoraMeta(data, meta) {
     data.features[0].properties.roadora = meta;
   }
   return data;
+}
+
+function cleanAttempt(a) {
+  if (!a) return null;
+  return {
+    ok: !!a.ok,
+    label: a.label,
+    host: a.host,
+    status: a.status,
+    detail: Array.isArray(a.detail) ? a.detail.map(cleanAttempt) : a.detail
+  };
 }
