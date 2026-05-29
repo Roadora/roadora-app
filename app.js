@@ -1657,6 +1657,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
            drawer;
   }
 
+
+  // v39.7.21 — isolate Food filter layout from normal card strips.
+  // Food filters are a compact grid state, not horizontal result cards.
+  function clearFoodFilterHostV39721(){
+    try{
+      const container = findStopsContainer && findStopsContainer();
+      if(container){
+        container.classList.remove('rd-food-filter-grid-v39719');
+        container.classList.remove('rd-food-filter-host-v39720');
+        container.classList.remove('rd-food-filter-host-v39721');
+      }
+    }catch(_){ }
+  }
+
   const HOTEL_STRIP_CARDS_V39636 = [
     { name:'Van der Valk Venlo', meta:'105 km vanaf start', rating:'4.3', price:'€€', img:'assets/hero-hotels.webp' },
     { name:'Hotel Koblenz', meta:'245 km vanaf start', rating:'4.2', price:'€€', img:'assets/hero-overview.webp' },
@@ -1884,6 +1898,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderNowNeeded(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     document.body.removeAttribute('data-stop-subpanel');
     document.body.removeAttribute('data-food-filter');
     document.body.removeAttribute('data-discover-filter');
@@ -1906,6 +1921,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderNowHelpFilters(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     document.body.removeAttribute('data-stop-subpanel');
     document.body.removeAttribute('data-now-assist');
     document.body.setAttribute('data-now-needed','open');
@@ -1979,6 +1995,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderStops(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     container.classList.remove('rd-food-filter-host-v39720');
     container.classList.remove('rd-food-filter-grid-v39719');
     document.body.removeAttribute('data-stop-subpanel');
@@ -1995,6 +2012,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderHotelStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     container.classList.remove('rd-food-filter-host-v39720');
     container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','hotels');
@@ -2022,6 +2040,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderFuelStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     container.classList.remove('rd-food-filter-host-v39720');
     container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','fuel');
@@ -2047,6 +2066,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderChargeStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     container.classList.remove('rd-food-filter-host-v39720');
     container.classList.remove('rd-food-filter-grid-v39719');
     document.body.setAttribute('data-stop-subpanel','charge');
@@ -2077,8 +2097,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     // v39.7.20 — food filters use their own tiny inner grid.
     // This bypasses old Stops/Nu Nodig card-list CSS that was forcing one-column rows.
-    container.classList.add('rd-food-filter-host-v39720');
     container.classList.remove('rd-food-filter-grid-v39719');
+    container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.add('rd-food-filter-host-v39721');
     document.body.setAttribute('data-stop-subpanel','food-filter');
     document.body.removeAttribute('data-food-filter');
     document.body.removeAttribute('data-hotel-preview');
@@ -2088,9 +2109,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     document.body.removeAttribute('data-discover-preview');
     document.body.removeAttribute('data-wc-preview');
     closeHotelPreview();
-    container.innerHTML = '<div class="rd-food-filter-grid-v39720" aria-label="Kies type eten">' +
+    container.innerHTML = '<div class="rd-food-filter-grid-v39721" aria-label="Kies type eten">' +
       FOOD_FILTERS_V39678.map(function(card){
-        return '<button type="button" class="rd-render-stop-card-v39619 rd-food-filter-option-v39720" data-food-filter="'+card.key+'">' +
+        return '<button type="button" class="rd-render-stop-card-v39619 rd-food-filter-option-v39721" data-food-filter="'+card.key+'">' +
           '<span class="rd-render-stop-icon-v39619">'+card.icon+'</span>' +
           '<strong>'+card.title+'</strong><em>›</em>' +
         '</button>';
@@ -2103,6 +2124,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!container) return;
     container.classList.remove('rd-food-filter-grid-v39719');
     container.classList.remove('rd-food-filter-host-v39720');
+    container.classList.remove('rd-food-filter-host-v39721');
     const activeFilter = filterKey || document.body.getAttribute('data-food-filter') || 'restaurant';
     const foodCards = getFoodCardsV39678(activeFilter);
     document.body.setAttribute('data-stop-subpanel','food');
@@ -2132,6 +2154,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderDiscoverFilters(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     document.body.setAttribute('data-stop-subpanel','discover-filter');
     document.body.removeAttribute('data-discover-filter');
     document.body.removeAttribute('data-hotel-preview');
@@ -2152,6 +2175,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderDiscoverStrip(filterKey){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     const activeFilter = filterKey || document.body.getAttribute('data-discover-filter') || 'viewpoint';
     const discoverCards = getDiscoverCardsV39681(activeFilter);
     document.body.setAttribute('data-stop-subpanel','discover');
@@ -2183,6 +2207,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function renderWcStrip(){
     const container = findStopsContainer();
     if(!container) return;
+    clearFoodFilterHostV39721();
     document.body.setAttribute('data-stop-subpanel','wc');
     document.body.removeAttribute('data-hotel-preview');
     document.body.removeAttribute('data-fuel-preview');
