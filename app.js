@@ -1855,56 +1855,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   ];
 
 
-  const NOW_ASSIST_DATA_V39670 = {
-    fuel: {
-      title:'Tanken dichtbij', label:'Tanken', icon:'⛽', best:'Shell Hazeldonk', meta:'4 min · 2,1 km', sub:'Open 24/7 · snel bereikbaar', chips:['Open','Shop'], action:'Navigeer',
-      alternatives:[{name:'BP Galder', meta:'6 min · 3,4 km'},{name:'TotalEnergies', meta:'7 min · 4,2 km'},{name:'Esso Rijsbergen', meta:'9 min · 5,6 km'}]
-    },
-    charge: {
-      title:'Laden dichtbij', label:'Laden', icon:'⚡', best:'Fastned Breda', meta:'5 min · 3,0 km', sub:'Snellader · 150 kW', chips:['150 kW','Vrij'], action:'Navigeer',
-      alternatives:[{name:'Allego', meta:'8 min · 4,8 km'},{name:'Ionity', meta:'12 min · 8,1 km'},{name:'Shell Recharge', meta:'14 min · 9,6 km'}]
-    },
-    wc: {
-      title:'WC in de buurt', label:'WC', icon:'WC', best:'Rastplaats Hazeldonk', meta:'4 min · 2,1 km', sub:'Schoon · parkeren dichtbij', chips:['Schoon','Open'], action:'Navigeer',
-      alternatives:[{name:'Shell Hazeldonk', meta:'5 min · 2,8 km'},{name:'BP Galder', meta:'7 min · 4,1 km'},{name:'Servicepunt Breda', meta:'9 min · 5,9 km'}]
-    },
-    food: {
-      title:'Eten dichtbij', label:'Eten', icon:'☕', best:'La Place Breda', meta:'6 min · 3,4 km', sub:'Koffie · snelle hap', chips:['Koffie','Lunch'], action:'Navigeer',
-      alternatives:[{name:'McDonald’s', meta:'7 min · 4,0 km'},{name:'Bakker Bart', meta:'9 min · 5,2 km'},{name:'Starbucks', meta:'11 min · 6,8 km'}]
-    },
-    sleep: {
-      title:'Slapen dichtbij', label:'Slapen', icon:'☾', best:'Van der Valk Breda', meta:'9 min · 6,2 km', sub:'Parkeren · late check-in', chips:['Parkeren','Wifi'], action:'Bekijk',
-      alternatives:[{name:'Bastion Hotel', meta:'11 min · 7,4 km'},{name:'Hotel Nassau', meta:'15 min · 10,1 km'},{name:'Campanile', meta:'18 min · 12,6 km'}]
-    },
-    help: {
-      title:'Hulp dichtbij', label:'Hulp', icon:'SOS', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pechhulp · banden · olie', chips:['Garage','Open'], action:'Bel / Navigeer',
-      alternatives:[{name:'ANWB punt', meta:'10 min · 6,8 km'},{name:'Apotheek', meta:'12 min · 8,0 km'},{name:'Ziekenhuis', meta:'16 min · 11,3 km'}]
-    },
-    help_pharmacy: {
-      title:'Apotheek dichtbij', label:'Apotheek', icon:'💊', best:'Apotheek Breda Zuid', meta:'7 min · 3,8 km', sub:'Medicijnen · advies · open', chips:['Apotheek','Open'], action:'Navigeer',
-      alternatives:[{name:'Service Apotheek', meta:'10 min · 6,1 km'},{name:'BENU Apotheek', meta:'13 min · 8,4 km'},{name:'Apotheek Centrum', meta:'15 min · 10,2 km'}]
-    },
-    help_hospital: {
-      title:'Ziekenhuis dichtbij', label:'Ziekenhuis', icon:'🏥', best:'Amphia Ziekenhuis', meta:'11 min · 6,5 km', sub:'Spoed · parkeren · route', chips:['Spoed','Zorg'], action:'Navigeer',
-      alternatives:[{name:'Huisartsenpost', meta:'14 min · 8,8 km'},{name:'Spoedpost Breda', meta:'16 min · 10,6 km'},{name:'Medisch Centrum', meta:'18 min · 12,4 km'}]
-    },
-    help_garage: {
-      title:'Garage dichtbij', label:'Garage', icon:'🔧', best:'Garage Breda Service', meta:'8 min · 5,1 km', sub:'Pech · olie · diagnose', chips:['Garage','Open'], action:'Bel / Navigeer',
-      alternatives:[{name:'KwikFit Breda', meta:'9 min · 5,6 km'},{name:'Bosch Car Service', meta:'12 min · 7,9 km'},{name:'Euromaster', meta:'14 min · 9,1 km'}]
-    },
-    help_roadside: {
-      title:'Pechhulp dichtbij', label:'Pechhulp', icon:'🚑', best:'ANWB Servicepunt', meta:'10 min · 7,0 km', sub:'Pechhulp · noodservice', chips:['Pechhulp','24/7'], action:'Bel / Navigeer',
-      alternatives:[{name:'Route Mobiel', meta:'12 min · 8,2 km'},{name:'Bergingsdienst', meta:'15 min · 10,4 km'},{name:'Garage noodhulp', meta:'18 min · 12,7 km'}]
-    },
-    help_tires: {
-      title:'Bandenservice dichtbij', label:'Banden', icon:'🛞', best:'Euromaster Breda', meta:'9 min · 5,8 km', sub:'Bandenspanning · reparatie', chips:['Banden','Service'], action:'Navigeer',
-      alternatives:[{name:'KwikFit', meta:'11 min · 7,1 km'},{name:'Profile Tyrecenter', meta:'13 min · 8,7 km'},{name:'Banden Express', meta:'16 min · 10,9 km'}]
-    },
-    help_police: {
-      title:'Politie dichtbij', label:'Politie', icon:'👮', best:'Politiebureau Breda', meta:'13 min · 8,2 km', sub:'Veiligheid · melding', chips:['Politie','Veilig'], action:'Navigeer',
-      alternatives:[{name:'Servicepunt Politie', meta:'17 min · 10,8 km'},{name:'Gemeente loket', meta:'19 min · 12,0 km'},{name:'Noodnummer 112', meta:'Direct'}]
-    }
-  };
+  // v39.7.04 — oude Nu Nodig assist-data verwijderd. Nu Nodig gebruikt dezelfde stop/card/popover-flow als Stops.
 
   function updateNowGpsStatusV39656(){
     const status = document.querySelector('#mapDrawer .rd-now-gps-status-v39656');
@@ -1963,40 +1914,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }).join('');
   }
 
-  function renderNowAssist(category, selectedIndex){
-    const container = findStopsContainer();
-    if(!container) return;
-    const data = NOW_ASSIST_DATA_V39670[category] || NOW_ASSIST_DATA_V39670.wc;
-    const allOptions = [{
-      name:data.best,
-      meta:data.meta,
-      sub:data.sub,
-      originalBest:true
-    }].concat(data.alternatives || []);
-    const activeIndex = Math.max(0, Math.min(Number(selectedIndex || 0), allOptions.length - 1));
-    const active = allOptions[activeIndex] || allOptions[0];
-    document.body.removeAttribute('data-stop-subpanel');
-    document.body.removeAttribute('data-now-help-sub');
-    document.body.setAttribute('data-now-needed','open');
-    document.body.setAttribute('data-now-assist', category);
-    document.body.setAttribute('data-now-selected-index', String(activeIndex));
-    closeHotelPreview();
-    const alternatives = allOptions.map(function(item, index){
-      if(index === activeIndex) return '';
-      return '<button type="button" class="rd-now-alt-v39670" data-now-alt-index="'+index+'"><strong>'+item.name+'</strong><span>'+item.meta+'</span><em>›</em></button>';
-    }).join('');
-    container.innerHTML =
-      '<div class="rd-now-assist-v39670 rd-now-assist-clean-v39671">' +
-        '<div class="rd-now-best-v39670">' +
-          '<span class="rd-now-best-icon-v39670">'+data.icon+'</span>' +
-          '<span class="rd-now-best-copy-v39670"><strong>'+active.name+'</strong><small>'+(active.sub || data.sub)+'</small></span>' +
-          '<span class="rd-now-best-time-v39670">'+active.meta+'</span>' +
-          '<button type="button" class="rd-now-nav-v39670">'+data.action+'</button>' +
-        '</div>' +
-        '<div class="rd-now-alts-v39670" aria-label="Alternatieven">'+alternatives+'</div>' +
-      '</div>';
-    updateNowGpsStatusV39656();
-  }
+  // v39.7.04 — oude renderNowAssist verwijderd; Nu Nodig resultaat-states lopen via Stops-renderers.
 
 
   // v39.6.99-step1 — Nu Nodig clean foundation.
@@ -2617,10 +2535,17 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(nowHelpType){
       e.preventDefault();
       e.stopPropagation();
-      // Step 1 keeps Hulp futureproof by not mixing old assist popovers with
-      // the new Stops architecture. Subtype result cards are the next isolated step.
-      renderNowHelpFilters();
-      showMapToast('Hulp-resultaten bouwen we in de volgende stap');
+      document.querySelectorAll('[data-now-help-type]').forEach(function(item){
+        item.classList.toggle('is-active', item === nowHelpType);
+      });
+      // v39.7.04 — hulp-subtypes blijven in dezelfde clean Stops-architectuur.
+      // Tot echte hulp-API's gekoppeld worden, gebruiken we de uitjes/voorzieningen-strip
+      // als veilige card/pin/popover basis in plaats van de oude assist-flow.
+      document.body.setAttribute('data-active-stop-category', 'discover');
+      renderDiscoverStrip('viewpoint');
+      if(window.RoadoraApp && typeof window.RoadoraApp.renderCategoryPins === 'function'){
+        window.RoadoraApp.renderCategoryPins('discover');
+      }
       return;
     }
 
@@ -2930,7 +2855,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRenderChargeStrip = renderChargeStrip;
   window.RoadoraRenderWcStrip = renderWcStrip;
   window.RoadoraRenderNowNeeded = renderNowNeeded;
-  window.RoadoraRenderNowAssist = renderNowAssist;
   window.RoadoraRenderNowHelpFilters = renderNowHelpFilters;
   window.RoadoraCloseInstantPanel = closePanel;
 })();
