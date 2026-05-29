@@ -10156,3 +10156,58 @@ body[data-active-screen="map"] #mapDrawer .rd-food-filter-grid-v39721 .rd-render
     font-size:10px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.22 — Food Filter Vertical Balance Lock
+   ---------------------------------------------------------
+   Alleen Eten-filter. Stops en Nu Nodig gebruiken dezelfde
+   geïsoleerde food component, maar krijgen elk hun eigen
+   verticale preset binnen dezelfde fixed sheet:
+   - Stops: iets hoger, zodat onderkant niet achter nav valt.
+   - Nu Nodig: iets lager, zodat hij niet tegen de handle/top plakt.
+   Geen Maps/ORS/popover/card-result wijzigingen.
+========================================================= */
+body[data-active-screen="map"][data-stop-subpanel="food-filter"] #mapDrawer.rd-map-sheet-v28{
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+  padding:18px 12px 20px !important;
+  inset:0 !important;
+  height:100% !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+  padding:40px 12px 8px !important;
+  inset:0 !important;
+  height:100% !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721 .rd-food-filter-grid-v39721{
+  height:auto !important;
+  max-height:none !important;
+  grid-template-rows:repeat(3, 35px) !important;
+  gap:6px 8px !important;
+  align-content:start !important;
+  overflow:hidden !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"][data-instant-map-panel="stops"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+    padding:17px 10px 18px !important;
+  }
+  body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721{
+    padding:38px 10px 8px !important;
+  }
+  body[data-active-screen="map"][data-stop-subpanel="food-filter"] #mapDrawer .rd-sheet-cards-v39.rd-food-filter-host-v39721 .rd-food-filter-grid-v39721{
+    grid-template-rows:repeat(3, 34px) !important;
+    gap:5px 7px !important;
+  }
+}
