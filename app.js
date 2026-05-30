@@ -203,6 +203,7 @@ function openScreen(name, options = {}){
     requestAnimationFrame(() => window.RoadoraMap?.ensure?.());
     setTimeout(() => window.RoadoraMap?.ensure?.(), 120);
     setTimeout(() => window.RoadoraMap?.refresh?.(), 420);
+    setTimeout(() => window.RoadoraMap?.fit?.(), 780);
   }
 
   if(options.scroll !== false){
@@ -336,6 +337,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     'hendrik ido ambacht': [4.6389,51.8442],
     hendrikidoambacht: [4.6389,51.8442],
     innsbruck: DEFAULT_END,
+    praag: [14.4378,50.0755],
+    prague: [14.4378,50.0755],
+    praha: [14.4378,50.0755],
     utrecht: [5.1214,52.0907],
     breda: [4.7758,51.5719],
     eindhoven: [5.4697,51.4416],
@@ -1077,10 +1081,41 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       setTimeout(()=>map?.invalidateSize(false),80);
     }
   }
+  // Roadora v39.7.44 — route label + fit padding fix.
+  // Keep ORS/Maps untouched. Fit only adapts to the visible topbar + map bottom nav
+  // so the real route, start marker and destination marker stay out of the UI surfaces.
   function fitRoute(){
     if(!map || !routeCoordinates.length) return;
     const bounds=L.latLngBounds(routeCoordinates.map(latLng));
-    map.fitBounds(bounds, { paddingTopLeft:[44,190], paddingBottomRight:[44,190], maxZoom:9, animate:true });
+    let topPad = 154;
+    let bottomPad = 178;
+    try{
+      const topbar = document.querySelector('#mapScreen .mapTopbar.smartTopbar');
+      const nav = document.querySelector('.rd-map-nav-v28');
+      const drawer = document.querySelector('#mapDrawer');
+      if(topbar){
+        const r = topbar.getBoundingClientRect();
+        if(r.height) topPad = Math.max(138, Math.round(r.bottom + 24));
+      }
+      const vh = window.innerHeight || 760;
+      let overlayTop = vh;
+      [drawer, nav].forEach(function(el){
+        if(!el) return;
+        const r = el.getBoundingClientRect();
+        const visible = r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < vh;
+        if(visible && r.top > 0) overlayTop = Math.min(overlayTop, r.top);
+      });
+      if(overlayTop < vh){
+        bottomPad = Math.max(188, Math.min(310, Math.round(vh - overlayTop + 72)));
+      }
+    }catch(_){ }
+    map.fitBounds(bounds, {
+      paddingTopLeft:[44,topPad],
+      paddingBottomRight:[44,bottomPad],
+      maxZoom:9,
+      animate:true
+    });
+    setTimeout(function(){ try{ map.invalidateSize(false); }catch(_){ } }, 80);
   }
   function sampleWaypoints(coords,max){
     if(!coords || coords.length<=2) return coords || [];
