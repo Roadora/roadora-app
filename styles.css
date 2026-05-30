@@ -11861,3 +11861,196 @@ body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-re
   min-height:38px !important;
   max-height:38px !important;
 }
+
+/* =========================================================
+   Roadora v39.7.54 — Mijn Roadtrip Saved Hotels Cards
+   Basis: v39.7.53 locked fallback.
+   Doel:
+   - Alleen Mijn Roadtrip > Opgeslagen stops > Hotels uitbreiden.
+   - Kaart, ORS, Maps, sheet/nav en route-load blijven onaangeraakt.
+   ========================================================= */
+.roadtrip-hotels-state-v39754{
+  padding-bottom:24px;
+}
+
+.saved-hotels-head-v39754{
+  padding:2px 6px 14px;
+  color:#2d2118;
+}
+
+.saved-hotels-head-v39754 small{
+  display:block;
+  color:#a86b27;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.22em;
+  margin-bottom:8px;
+}
+
+.saved-hotels-head-v39754 h2{
+  margin:0;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:32px;
+  line-height:.98;
+  letter-spacing:-.04em;
+}
+
+.saved-hotels-head-v39754 p{
+  margin:10px 0 0;
+  max-width:360px;
+  color:rgba(47,36,27,.66);
+  font-size:14px;
+  line-height:1.45;
+}
+
+.saved-hotel-card-v39754{
+  overflow:hidden;
+  border-radius:30px;
+  background:rgba(255,250,244,.78);
+  border:1px solid rgba(255,255,255,.58);
+  box-shadow:0 18px 42px rgba(60,39,22,.10);
+  margin:0 0 16px;
+}
+
+.hotel-photo-rail-v39754{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  background:#d8c8b4;
+}
+
+.hotel-photo-rail-v39754::-webkit-scrollbar{display:none;}
+
+.hotel-photo-rail-v39754 img{
+  flex:0 0 100%;
+  width:100%;
+  height:188px;
+  object-fit:cover;
+  scroll-snap-align:start;
+}
+
+.hotel-card-body-v39754{
+  padding:16px;
+}
+
+.hotel-title-row-v39754{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:start;
+}
+
+.hotel-title-row-v39754 h3{
+  margin:0;
+  font-size:21px;
+  line-height:1.05;
+  letter-spacing:-.035em;
+  color:#201813;
+}
+
+.hotel-title-row-v39754 p{
+  margin:5px 0 0;
+  color:rgba(47,36,27,.62);
+  font-size:13px;
+  line-height:1.3;
+  font-weight:650;
+}
+
+.hotel-title-row-v39754 b{
+  height:30px;
+  padding:0 10px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(169,101,32,.11);
+  color:#8d551d;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.hotel-badges-v39754{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:13px 0 12px;
+}
+.hotel-badges-v39754::-webkit-scrollbar{display:none;}
+.hotel-badges-v39754 span{
+  flex:0 0 auto;
+  height:28px;
+  border-radius:999px;
+  padding:0 10px;
+  display:inline-flex;
+  align-items:center;
+  background:rgba(234,218,198,.58);
+  color:#5d4937;
+  font-size:11px;
+  font-weight:850;
+}
+
+.hotel-meta-grid-v39754{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border-radius:20px;
+  overflow:hidden;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(101,72,44,.08);
+}
+
+.hotel-meta-grid-v39754 span{
+  min-height:58px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.hotel-meta-grid-v39754 span + span{border-left:1px solid rgba(101,72,44,.08);}
+.hotel-meta-grid-v39754 strong{font-size:16px;color:#241b15;line-height:1;}
+.hotel-meta-grid-v39754 small{margin-top:5px;font-size:10px;color:#7a6b5e;font-weight:750;}
+
+.hotel-actions-v39754{
+  display:grid;
+  grid-template-columns:1fr 1fr 44px;
+  gap:9px;
+  margin-top:14px;
+}
+
+.hotel-actions-v39754 button{
+  min-height:44px;
+  border-radius:16px;
+  background:rgba(255,255,255,.62);
+  color:#38291e;
+  font-weight:900;
+  font-size:13px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+.hotel-actions-v39754 button.primary{
+  background:linear-gradient(135deg,#a96520,#83501c);
+  color:#fff8ef;
+  box-shadow:0 12px 24px rgba(130,76,24,.18);
+}
+
+.hotel-actions-v39754 button.danger{
+  font-size:0;
+  position:relative;
+  background:rgba(72,51,36,.08);
+}
+.hotel-actions-v39754 button.danger::before{
+  content:'×';
+  font-size:24px;
+  line-height:1;
+  color:#7a5f49;
+}
+
+@media (max-width:390px){
+  .hotel-photo-rail-v39754 img{height:166px;}
+  .saved-hotels-head-v39754 h2{font-size:29px;}
+  .hotel-card-body-v39754{padding:14px;}
+  .hotel-title-row-v39754 h3{font-size:19px;}
+}

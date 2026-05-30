@@ -274,7 +274,7 @@ vehicleButtons.forEach(btn => {
 planBtn?.addEventListener('click', planRoute);
 
 function setRoadtripView(view){
-  const safeView = view === 'saved-stops' ? 'saved-stops' : 'home';
+  const safeView = ['saved-stops','saved-hotels'].includes(view) ? view : 'home';
   const hub = document.querySelector('[data-roadtrip-view]');
   if(hub) hub.dataset.roadtripView = safeView;
   document.body.dataset.roadtripView = safeView;
@@ -290,6 +290,7 @@ document.addEventListener('click', (event) => {
     event.preventDefault();
     const entry = roadtripEntry.dataset.roadtripEntry;
     if(entry === 'saved-stops') setRoadtripView('saved-stops');
+    else if(entry === 'saved-hotels') setRoadtripView('saved-hotels');
     else if(entry === 'home') setRoadtripView('home');
     return;
   }
@@ -297,6 +298,11 @@ document.addEventListener('click', (event) => {
   const savedCategory = event.target.closest('[data-saved-stop-category]');
   if(savedCategory){
     event.preventDefault();
+    const category = savedCategory.dataset.savedStopCategory;
+    if(category === 'hotels'){
+      setRoadtripView('saved-hotels');
+      return;
+    }
     showToast(`${savedCategory.textContent.trim().replace(/›/g,'')} komt in fase 3`);
     return;
   }
