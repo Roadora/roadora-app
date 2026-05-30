@@ -12681,3 +12681,55 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-men
     left:28px !important;
   }
 }
+
+
+/* ROADORA v39.7.63 — Phase 1 hotel route actions
+   UI-only: adds Toevoegen actions without coupling to ORS/route-stop engine yet. */
+.roadtrip-hotels-state-v39754 .hotel-actions-v39763{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+}
+.roadtrip-hotels-state-v39754 .hotel-actions-v39763 button{
+  min-height:42px !important;
+  border-radius:16px !important;
+  font-weight:850 !important;
+}
+.roadtrip-hotels-state-v39754 .hotel-add-route-v39763{
+  background:rgba(255,250,244,.74) !important;
+  color:#6f461f !important;
+  border:1px solid rgba(160,105,43,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+.roadtrip-hotels-state-v39754 .hotel-add-route-v39763.is-added-v39763,
+.rd-hotel-preview-add-v39763.is-added-v39763{
+  background:#2f241b !important;
+  color:#fff8ee !important;
+}
+.rd-hotel-preview-actions-v39763{
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1fr !important;
+  gap:8px !important;
+}
+.rd-hotel-preview-actions-v39763 button{
+  min-width:0 !important;
+  min-height:38px !important;
+  border-radius:14px !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+}
+.rd-hotel-preview-add-v39763{
+  background:rgba(255,250,244,.84) !important;
+  color:#6f461f !important;
+  border:1px solid rgba(160,105,43,.18) !important;
+}
+@media(max-width:380px){
+  .rd-hotel-preview-actions-v39763{
+    gap:6px !important;
+  }
+  .rd-hotel-preview-actions-v39763 button{
+    font-size:10px !important;
+    min-height:36px !important;
+    border-radius:13px !important;
+  }
+}

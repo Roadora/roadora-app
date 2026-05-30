@@ -2518,9 +2518,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
           '<span>Parkeren</span><span>Ontbijt</span><span>Wifi</span>' +
         '</div>' +
         '<p class="rd-hotel-preview-copy-v39644">Comfortabele overnachtingsstop langs je route, handig gelegen voor een rustige pauze.</p>' +
-        '<div class="rd-hotel-preview-actions-v39644">' +
-          '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
+        '<div class="rd-hotel-preview-actions-v39644 rd-hotel-preview-actions-v39763">' +
           '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+          '<button type="button" class="rd-hotel-preview-add-v39763">Toevoegen</button>' +
+          '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2785,6 +2786,34 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     });
   }
   document.addEventListener("click", function(e){
+    const addHotelRoute = e.target.closest && e.target.closest("[data-hotel-add-route]");
+    if(addHotelRoute){
+      e.preventDefault();
+      e.stopPropagation();
+      addHotelRoute.classList.add("is-added-v39763");
+      addHotelRoute.textContent = "Toegevoegd";
+      showToast("Hotel klaar om toe te voegen aan je route");
+      return;
+    }
+
+    const addPreviewRoute = e.target.closest && e.target.closest(".rd-hotel-preview-add-v39763");
+    if(addPreviewRoute){
+      e.preventDefault();
+      e.stopPropagation();
+      addPreviewRoute.classList.add("is-added-v39763");
+      addPreviewRoute.textContent = "Toegevoegd";
+      showMapToast("Hotel klaar om toe te voegen aan je route");
+      return;
+    }
+
+    const previewNav = e.target.closest && e.target.closest(".rd-hotel-preview-nav-v39644");
+    if(previewNav){
+      e.preventDefault();
+      e.stopPropagation();
+      openGoogleMapsRoute();
+      return;
+    }
+
     const savePreview = e.target.closest && e.target.closest(".rd-hotel-preview-save-v39644");
     if(savePreview){
       e.preventDefault();
