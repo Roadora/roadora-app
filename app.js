@@ -3010,3 +3010,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRenderNowHelpFilters = renderNowHelpFilters;
   window.RoadoraCloseInstantPanel = closePanel;
 })();
+
+/* =========================================================
+   Roadora v39.7.42 — router/nav public guard
+   Houdt de bestaande router intact, maar maakt hem ook beschikbaar
+   voor oudere kaart-handlers die window.RoadoraApp.openScreen zoeken.
+   ========================================================= */
+(function(){
+  window.RoadoraApp = window.RoadoraApp || {};
+  if (typeof openScreen === 'function') window.RoadoraApp.openScreen = openScreen;
+  if (typeof renderAll === 'function') window.RoadoraApp.render = renderAll;
+})();
