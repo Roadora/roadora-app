@@ -10587,3 +10587,64 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="op
   font-size:22px !important;
   color:#9a744c !important;
 }
+
+
+/* ===== Roadora v39.7.34 — Mijn Roadtrip state header cleanup =====
+   Saved Stops blijft een in-page state: dezelfde hub-row componenten, geen extra back-card.
+   Alleen in de saved-stops state verschijnt rechtsboven een compacte terugknop. */
+body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-top-v39734{
+  left:62px !important;
+  right:20px !important;
+  top:calc(env(safe-area-inset-top, 0px) + 16px) !important;
+  min-height:40px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  pointer-events:none !important;
+}
+body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-title-v39734{
+  display:inline-flex !important;
+  align-items:center !important;
+  min-height:40px !important;
+  color:#fff7ed !important;
+  font-size:15px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.02em !important;
+  text-shadow:0 2px 16px rgba(0,0,0,.36) !important;
+  white-space:nowrap !important;
+}
+.roadtrip-state-close-v39734{
+  display:none !important;
+}
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-stops"] .roadtrip-state-close-v39734{
+  pointer-events:auto !important;
+  flex:0 0 auto !important;
+  width:38px !important;
+  height:38px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:rgba(255,250,244,.26) !important;
+  color:#fff7ed !important;
+  font-size:24px !important;
+  font-weight:650 !important;
+  line-height:1 !important;
+  box-shadow:0 10px 26px rgba(32,20,12,.16), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  backdrop-filter:blur(14px) saturate(1.05) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(1.05) !important;
+}
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-stops"] .roadtrip-state-close-v39734:active{
+  transform:scale(.94) !important;
+}
+body[data-active-screen="roadtrip"] .roadtrip-hub-v39733[data-roadtrip-view="saved-stops"] .hub-row{
+  min-height:76px !important;
+}
+@media(max-width:380px){
+  body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-top-v39734{
+    left:58px !important;
+    right:18px !important;
+  }
+}

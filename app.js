@@ -224,6 +224,7 @@ function setRoadtripView(view){
   const safeView = view === 'saved-stops' ? 'saved-stops' : 'home';
   const hub = document.querySelector('[data-roadtrip-view]');
   if(hub) hub.dataset.roadtripView = safeView;
+  document.body.dataset.roadtripView = safeView;
   document.querySelectorAll('[data-roadtrip-state]').forEach(panel => {
     const active = panel.dataset.roadtripState === safeView;
     panel.hidden = !active;
