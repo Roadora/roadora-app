@@ -3031,3 +3031,66 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   document.addEventListener('DOMContentLoaded', function(){ sync('roadtrip'); });
   window.addEventListener('roadora:map-nav-sync', function(e){ sync(e.detail && e.detail.panel); });
 })();
+
+/* Roadora v39.7.50 — definitive map-nav active root fix.
+   Root cause: older sheet/nav controllers could re-add active/is-active/aria-current
+   after a panel switch. This guard makes body[data-map-panel] the single source
+   of truth for the isolated body > nav.rd-map-nav-v28. ORS/Map route load untouched. */
+(function(){
+  if(window.__roadoraMapNavRootFixV39750) return;
+  window.__roadoraMapNavRootFixV39750 = true;
+
+  function getNav(){ return document.querySelector('body > nav.rd-map-nav-v28'); }
+  function getButtons(){ return Array.from(document.querySelectorAll('body > nav.rd-map-nav-v28 .rd-nav-btn-v28')); }
+  function panelOf(btn){ return (btn && btn.dataset && btn.dataset.mapPanel) || ''; }
+
+  function sync(panel){
+    var nav = getNav();
+    if(!nav) return;
+    panel = panel || document.body.getAttribute('data-map-panel') || document.body.getAttribute('data-instant-map-panel') || 'roadtrip';
+    if(['roadtrip','stops','now','more'].indexOf(panel) === -1) panel = 'roadtrip';
+    document.body.setAttribute('data-map-panel', panel);
+    if(panel !== 'roadtrip') document.body.setAttribute('data-instant-map-panel', panel);
+
+    getButtons().forEach(function(btn){
+      var active = panelOf(btn) === panel;
+      btn.classList.toggle('is-active', active);
+      btn.classList.remove('active');
+      if(active) btn.setAttribute('aria-current','page');
+      else btn.removeAttribute('aria-current');
+    });
+  }
+
+  function delayedSync(panel){
+    sync(panel);
+    [0, 24, 80, 180, 360].forEach(function(delay){
+      setTimeout(function(){ sync(panel); }, delay);
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('body > nav.rd-map-nav-v28 .rd-nav-btn-v28');
+    if(!btn) return;
+    delayedSync(panelOf(btn));
+  }, false);
+
+  var observer = null;
+  function installObserver(){
+    var nav = getNav();
+    if(!nav || observer) return;
+    observer = new MutationObserver(function(){
+      var panel = document.body.getAttribute('data-map-panel') || document.body.getAttribute('data-instant-map-panel') || 'roadtrip';
+      // Only correct when an old controller creates a mixed active state.
+      var activeButtons = getButtons().filter(function(btn){ return btn.classList.contains('is-active') || btn.classList.contains('active') || btn.getAttribute('aria-current') === 'page'; });
+      var hasWrong = activeButtons.some(function(btn){ return panelOf(btn) !== panel || btn.classList.contains('active'); });
+      var matching = getButtons().some(function(btn){ return panelOf(btn) === panel && btn.classList.contains('is-active') && btn.getAttribute('aria-current') === 'page'; });
+      if(hasWrong || !matching) sync(panel);
+    });
+    observer.observe(nav, { attributes:true, subtree:true, attributeFilter:['class','aria-current'] });
+    observer.observe(document.body, { attributes:true, attributeFilter:['data-map-panel','data-instant-map-panel','data-map-drawer'] });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){ installObserver(); sync(document.body.getAttribute('data-map-panel') || 'roadtrip'); });
+  setTimeout(function(){ installObserver(); sync(document.body.getAttribute('data-map-panel') || 'roadtrip'); }, 300);
+  window.addEventListener('roadora:map-nav-sync', function(e){ delayedSync(e.detail && e.detail.panel); });
+})();

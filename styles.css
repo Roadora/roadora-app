@@ -11795,3 +11795,85 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
     --rd-v39746-nav-bottom:calc(5px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.50 — Active Nav + Category Height Micro Fix
+   - Roadtrip mag nooit meer visueel actief blijven bij Stops/Nu nodig/Meer.
+   - Stops- en Nu nodig-categoriegrid krijgen exact dezelfde rijhoogte.
+   - CSS-only layout polish; ORS/Leaflet/Maps untouched.
+   ========================================================= */
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
+  background:transparent !important;
+  color:#5b4d43 !important;
+  box-shadow:none !important;
+  transform:none !important;
+  opacity:.88 !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28.active{
+  background:transparent !important;
+  color:#5b4d43 !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28.is-active,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[aria-current="page"]{
+  opacity:1 !important;
+  color:#8a5b2d !important;
+  background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.95), rgba(255,255,255,.34) 45%, rgba(255,255,255,0) 72%), linear-gradient(180deg,#f8ead8,#f1dcc5) !important;
+  box-shadow:0 10px 22px rgba(145,92,36,.16), inset 0 1px 0 rgba(255,255,255,.82) !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="map"][data-map-panel="stops"] > nav.rd-map-nav-v28 .rd-nav-btn-v28:not([data-map-panel="stops"]),
+body[data-active-screen="map"][data-map-panel="now"] > nav.rd-map-nav-v28 .rd-nav-btn-v28:not([data-map-panel="now"]),
+body[data-active-screen="map"][data-map-panel="more"] > nav.rd-map-nav-v28 .rd-nav-btn-v28:not([data-map-panel="more"]),
+body[data-active-screen="map"][data-map-panel="roadtrip"] > nav.rd-map-nav-v28 .rd-nav-btn-v28:not([data-map-panel="roadtrip"]){
+  background:transparent !important;
+  color:#5b4d43 !important;
+  box-shadow:none !important;
+  transform:none !important;
+  opacity:.88 !important;
+}
+
+body[data-active-screen="map"][data-map-panel="stops"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="stops"],
+body[data-active-screen="map"][data-map-panel="now"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="now"],
+body[data-active-screen="map"][data-map-panel="more"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="more"],
+body[data-active-screen="map"][data-map-panel="roadtrip"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[data-map-panel="roadtrip"]{
+  opacity:1 !important;
+  color:#8a5b2d !important;
+  background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.95), rgba(255,255,255,.34) 45%, rgba(255,255,255,0) 72%), linear-gradient(180deg,#f8ead8,#f1dcc5) !important;
+  box-shadow:0 10px 22px rgba(145,92,36,.16), inset 0 1px 0 rgba(255,255,255,.82) !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="stops"]:not([data-stop-subpanel]) #mapDrawer.rd-map-sheet-v28,
+body[data-active-screen="map"][data-map-drawer="open"][data-instant-map-panel="now"]:not([data-stop-subpanel]) #mapDrawer.rd-map-sheet-v28{
+  height:252px !important;
+  min-height:252px !important;
+  max-height:252px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"]:not([data-stop-subpanel]) #mapDrawer .rd-sheet-scroll-v393,
+body[data-active-screen="map"][data-instant-map-panel="now"]:not([data-stop-subpanel]) #mapDrawer .rd-sheet-scroll-v393{
+  height:100% !important;
+  min-height:0 !important;
+  padding-top:34px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"]:not([data-stop-subpanel]) #mapDrawer .rd-sheet-cards-v39,
+body[data-active-screen="map"][data-instant-map-panel="now"]:not([data-stop-subpanel]) #mapDrawer .rd-sheet-cards-v39{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  grid-auto-rows:54px !important;
+  gap:10px 12px !important;
+  align-content:start !important;
+  margin-top:0 !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"]:not([data-stop-subpanel]) #mapDrawer .rd-render-stop-card-v39619,
+body[data-active-screen="map"][data-instant-map-panel="now"]:not([data-stop-subpanel]) #mapDrawer .rd-render-stop-card-v39619{
+  min-height:54px !important;
+  height:54px !important;
+}
