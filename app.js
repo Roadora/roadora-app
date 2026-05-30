@@ -274,7 +274,7 @@ vehicleButtons.forEach(btn => {
 planBtn?.addEventListener('click', planRoute);
 
 function setRoadtripView(view){
-  const safeView = ['saved-stops','saved-hotels'].includes(view) ? view : 'home';
+  const safeView = ['saved-stops','saved-hotels','saved-food','saved-discover'].includes(view) ? view : 'home';
   const hub = document.querySelector('[data-roadtrip-view]');
   if(hub) hub.dataset.roadtripView = safeView;
   document.body.dataset.roadtripView = safeView;
@@ -291,6 +291,8 @@ document.addEventListener('click', (event) => {
     const entry = roadtripEntry.dataset.roadtripEntry;
     if(entry === 'saved-stops') setRoadtripView('saved-stops');
     else if(entry === 'saved-hotels') setRoadtripView('saved-hotels');
+    else if(entry === 'saved-food') setRoadtripView('saved-food');
+    else if(entry === 'saved-discover') setRoadtripView('saved-discover');
     else if(entry === 'home') setRoadtripView('home');
     return;
   }
@@ -301,6 +303,14 @@ document.addEventListener('click', (event) => {
     const category = savedCategory.dataset.savedStopCategory;
     if(category === 'hotels'){
       setRoadtripView('saved-hotels');
+      return;
+    }
+    if(category === 'food'){
+      setRoadtripView('saved-food');
+      return;
+    }
+    if(category === 'discover'){
+      setRoadtripView('saved-discover');
       return;
     }
     showToast(`${savedCategory.textContent.trim().replace(/›/g,'')} komt in fase 3`);
@@ -3139,4 +3149,68 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   });
 
   window.RoadoraSavedHotelsCompareV39756 = { update: updateCompareBar };
+})();
+
+
+/* =========================================================
+   Roadora v39.7.64 — Saved Eten & Uitjes component reuse
+   Scope: Mijn Roadtrip saved content states only. No map/ORS/sheet logic touched.
+   ========================================================= */
+(function(){
+  if(window.__roadoraSavedFoodDiscoverV39764) return;
+  window.__roadoraSavedFoodDiscoverV39764 = true;
+
+  function getStateName(state){
+    if(!state) return 'plekken';
+    if(state.dataset.roadtripState === 'saved-food') return 'plekken';
+    if(state.dataset.roadtripState === 'saved-discover') return 'uitjes';
+    return 'items';
+  }
+
+  function updateCompareBar(state){
+    if(!state) return;
+    var selected = state.querySelectorAll('[data-saved-content-card].is-compare-selected-v39756');
+    var bar = state.querySelector('.saved-content-comparebar-v39764');
+    var count = state.querySelector('[data-saved-content-count]');
+    var action = state.querySelector('[data-saved-content-compare-action]');
+    var amount = selected.length;
+    if(count) count.textContent = String(amount);
+    if(action) action.textContent = 'Vergelijk ' + amount + ' ' + getStateName(state);
+    if(bar) bar.hidden = amount < 2;
+  }
+
+  document.addEventListener('click', function(event){
+    var compare = event.target.closest && event.target.closest('[data-saved-place-compare]');
+    if(compare){
+      var state = compare.closest('[data-roadtrip-state="saved-food"], [data-roadtrip-state="saved-discover"]');
+      if(!state) return;
+      event.preventDefault();
+      var card = compare.closest('[data-saved-content-card]');
+      if(!card) return;
+      var active = !card.classList.contains('is-compare-selected-v39756');
+      card.classList.toggle('is-compare-selected-v39756', active);
+      compare.setAttribute('aria-pressed', String(active));
+      updateCompareBar(state);
+      return;
+    }
+
+    var add = event.target.closest && event.target.closest('[data-saved-place-add-route]');
+    if(add){
+      event.preventDefault();
+      add.classList.add('is-added-v39763');
+      add.textContent = 'Toegevoegd';
+      var state = add.closest('[data-roadtrip-state]');
+      var label = state && state.dataset.roadtripState === 'saved-discover' ? 'Uitje' : 'Plek';
+      if(window.showToast) window.showToast(label + ' klaar om toe te voegen aan je route');
+      return;
+    }
+
+    var action = event.target.closest && event.target.closest('[data-saved-content-compare-action]');
+    if(action){
+      event.preventDefault();
+      var state = action.closest('[data-roadtrip-state="saved-food"], [data-roadtrip-state="saved-discover"]');
+      var amount = state ? state.querySelectorAll('[data-saved-content-card].is-compare-selected-v39756').length : 0;
+      if(window.showToast) window.showToast('Vergelijking met ' + amount + ' ' + getStateName(state) + ' komt in de volgende stap');
+    }
+  });
 })();
