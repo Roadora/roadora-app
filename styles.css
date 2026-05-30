@@ -12146,3 +12146,134 @@ body[data-roadtrip-view="saved-hotels"] .hotel-photo-rail-v39754 img{
     height:158px;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.56 — Hotels Compact Compare UX
+   Basis: v39.7.55 Hotels Planner UX.
+   Doel:
+   - Compacte Hotels-header zonder extra uitleg.
+   - Compare-toggle per hotelcard.
+   - Sticky vergelijk-actie pas zichtbaar bij 2+ geselecteerde hotels.
+   - Geen wijzigingen aan kaart, ORS, sheet of bottom navigation.
+   ========================================================= */
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
+  grid-template-columns:minmax(0,1fr) 44px !important;
+  align-items:center !important;
+  margin:0 -2px 10px !important;
+  padding:4px 2px 10px !important;
+}
+
+.saved-hotels-title-v39756 h2{
+  margin:0 !important;
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:34px !important;
+  line-height:.96 !important;
+  letter-spacing:-.045em !important;
+  color:#2d2118 !important;
+}
+
+.saved-hotels-head-v39756 small,
+.saved-hotels-head-v39756 p{
+  display:none !important;
+}
+
+.saved-hotels-comparebar-v39756{
+  position:sticky;
+  top:58px;
+  z-index:11;
+  margin:0 0 12px;
+  padding:8px;
+  border-radius:22px;
+  background:rgba(255,250,244,.86);
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:0 14px 30px rgba(55,35,20,.10), inset 0 1px 0 rgba(255,255,255,.68);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:10px;
+  align-items:center;
+}
+
+.saved-hotels-comparebar-v39756[hidden]{
+  display:none !important;
+}
+
+.saved-hotels-comparebar-v39756 span{
+  padding-left:8px;
+  color:#6f5f51;
+  font-size:12px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.saved-hotels-comparebar-v39756 button{
+  justify-self:end;
+  min-height:40px;
+  border-radius:16px;
+  padding:0 16px;
+  background:linear-gradient(135deg,#a96520,#83501c);
+  color:#fff8ef;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 12px 24px rgba(130,76,24,.18);
+}
+
+.hotel-actions-v39756{
+  grid-template-columns:1fr 1.15fr 44px !important;
+}
+
+.hotel-compare-toggle-v39756{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+}
+
+.hotel-compare-toggle-v39756 span{
+  width:16px;
+  height:16px;
+  border-radius:7px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1.6px solid rgba(112,87,67,.45);
+  background:rgba(255,255,255,.50);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.62);
+}
+
+.saved-hotel-card-v39754.is-compare-selected-v39756{
+  box-shadow:0 18px 42px rgba(60,39,22,.10), 0 0 0 2px rgba(169,101,32,.28) !important;
+}
+
+.saved-hotel-card-v39754.is-compare-selected-v39756 .hotel-compare-toggle-v39756{
+  background:rgba(169,101,32,.13) !important;
+  color:#8b541d !important;
+}
+
+.saved-hotel-card-v39754.is-compare-selected-v39756 .hotel-compare-toggle-v39756 span{
+  border-color:#a96520;
+  background:#a96520;
+}
+
+.saved-hotel-card-v39754.is-compare-selected-v39756 .hotel-compare-toggle-v39756 span::after{
+  content:'✓';
+  color:#fff8ef;
+  font-size:11px;
+  font-weight:950;
+  line-height:1;
+}
+
+@media (max-width:390px){
+  .saved-hotels-title-v39756 h2{
+    font-size:31px !important;
+  }
+  .saved-hotels-comparebar-v39756{
+    top:54px;
+    border-radius:20px;
+  }
+  .saved-hotels-comparebar-v39756 button{
+    padding:0 12px;
+    font-size:12px;
+  }
+}

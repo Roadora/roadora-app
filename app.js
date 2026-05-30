@@ -3066,3 +3066,48 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.addEventListener('roadora:map-nav-sync', function(e){ sync(e.detail && e.detail.panel); });
   window.RoadoraMapNavSyncV39751 = sync;
 })();
+
+/* =========================================================
+   Roadora v39.7.56 — Hotels compare toggle
+   Scope: Mijn Roadtrip > Hotels only. No map/ORS/sheet logic touched.
+   ========================================================= */
+(function(){
+  if(window.__roadoraSavedHotelsCompareV39756) return;
+  window.__roadoraSavedHotelsCompareV39756 = true;
+
+  function updateCompareBar(){
+    var selected = document.querySelectorAll('[data-roadtrip-state="saved-hotels"] [data-saved-hotel-card].is-compare-selected-v39756');
+    var bar = document.querySelector('.saved-hotels-comparebar-v39756');
+    var count = document.getElementById('savedHotelCompareCount');
+    var action = document.getElementById('savedHotelCompareAction');
+    var amount = selected.length;
+    if(count) count.textContent = String(amount);
+    if(action) action.textContent = 'Vergelijk ' + amount + ' hotels';
+    if(bar) bar.hidden = amount < 2;
+  }
+
+  document.addEventListener('click', function(event){
+    var compare = event.target.closest && event.target.closest('[data-hotel-compare]');
+    if(compare){
+      var hotelsState = compare.closest('[data-roadtrip-state="saved-hotels"]');
+      if(!hotelsState) return;
+      event.preventDefault();
+      var card = compare.closest('[data-saved-hotel-card]');
+      if(!card) return;
+      var active = !card.classList.contains('is-compare-selected-v39756');
+      card.classList.toggle('is-compare-selected-v39756', active);
+      compare.setAttribute('aria-pressed', String(active));
+      updateCompareBar();
+      return;
+    }
+
+    var compareAction = event.target.closest && event.target.closest('#savedHotelCompareAction');
+    if(compareAction){
+      event.preventDefault();
+      var amount = document.querySelectorAll('[data-roadtrip-state="saved-hotels"] [data-saved-hotel-card].is-compare-selected-v39756').length;
+      if(window.showToast) window.showToast('Vergelijking met ' + amount + ' hotels komt in de volgende stap');
+    }
+  });
+
+  window.RoadoraSavedHotelsCompareV39756 = { update: updateCompareBar };
+})();
