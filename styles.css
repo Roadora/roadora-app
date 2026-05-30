@@ -12277,3 +12277,88 @@ body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
     font-size:12px;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.57 — Hotels Safe Header + Scroll Guards
+   Basis: v39.7.56 Hotels Compact Compare UX.
+   Doel:
+   - Hotels-titel staat netjes naast de bestaande hamburger.
+   - Hotelcards lopen niet meer onder top-header of bottom navigation door.
+   - Alleen Mijn Roadtrip > Hotels UX; kaart/ORS/sheet/nav onaangeraakt.
+   ========================================================= */
+body[data-roadtrip-view="saved-hotels"] .roadtrip-hub-v39733{
+  padding-top:calc(env(safe-area-inset-top, 0px) + 22px) !important;
+  padding-bottom:calc(168px + env(safe-area-inset-bottom, 0px)) !important;
+  scroll-padding-top:86px !important;
+  scroll-padding-bottom:168px !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
+  position:sticky !important;
+  top:0 !important;
+  z-index:40 !important;
+  min-height:64px !important;
+  grid-template-columns:minmax(0,1fr) 54px !important;
+  align-items:center !important;
+  gap:12px !important;
+  margin:0 -4px 16px !important;
+  padding:8px 4px 12px 74px !important;
+  background:linear-gradient(180deg,#f1e7db 0%,#f1e7db 76%,rgba(241,231,219,.92) 100%) !important;
+  box-shadow:0 10px 22px rgba(54,35,20,.035) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+  font-size:32px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+  width:50px !important;
+  height:50px !important;
+  border-radius:18px !important;
+  align-self:center !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotel-card-v39754:first-of-type{
+  margin-top:0 !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotel-card-v39754:last-of-type{
+  margin-bottom:calc(34px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-comparebar-v39756{
+  top:78px !important;
+  z-index:39 !important;
+  margin-bottom:14px !important;
+}
+
+@media (max-width:390px){
+  body[data-roadtrip-view="saved-hotels"] .roadtrip-hub-v39733{
+    padding-top:calc(env(safe-area-inset-top, 0px) + 18px) !important;
+    padding-bottom:calc(166px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
+    min-height:60px !important;
+    padding-left:70px !important;
+    grid-template-columns:minmax(0,1fr) 50px !important;
+    margin-bottom:14px !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+    font-size:29px !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+    width:46px !important;
+    height:46px !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-comparebar-v39756{
+    top:72px !important;
+  }
+}
