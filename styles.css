@@ -12589,3 +12589,65 @@ body[data-roadtrip-view="saved-hotels"] .bottom-nav{
     padding-bottom:calc(190px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.61 — Hotels Header Alignment
+   Basis: v39.7.60 Hotels Final Polish.
+   Doel:
+   - Hamburger, Hotels-titel en sluitknop optisch op één horizontale lijn.
+   - Geen nieuwe header-container.
+   - Cards/compare/bottom nav/kaart/ORS onaangeraakt.
+   ========================================================= */
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
+  transform:translateY(-8px) !important;
+  min-height:54px !important;
+  align-items:center !important;
+  margin-bottom:0 !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756{
+  display:flex !important;
+  align-items:center !important;
+  min-height:54px !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+  transform:none !important;
+  line-height:1 !important;
+  margin:0 !important;
+  display:block !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+  transform:none !important;
+  align-self:center !important;
+  display:grid !important;
+  place-items:center !important;
+  line-height:1 !important;
+}
+
+/* De globale hamburger staat buiten de Roadtrip-state. Alleen in Hotels wordt hij
+   optisch op dezelfde middenlijn gezet als de titel en sluitknop. */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
+  top:calc(env(safe-area-inset-top, 0px) + 50px) !important;
+  left:30px !important;
+  width:34px !important;
+  height:34px !important;
+  transform:none !important;
+}
+
+@media (max-width:390px){
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
+    transform:translateY(-7px) !important;
+    min-height:52px !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756{
+    min-height:52px !important;
+  }
+
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
+    top:calc(env(safe-area-inset-top, 0px) + 48px) !important;
+    left:28px !important;
+  }
+}
