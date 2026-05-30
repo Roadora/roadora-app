@@ -12482,3 +12482,43 @@ body[data-roadtrip-view="saved-hotels"] .saved-hotels-list-v39758 .saved-hotel-c
     height:42px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.59 — Hotels Scroll Into Bottom Nav
+   Basis: v39.7.58 Hotels Clipped Scroll Window.
+   Doel:
+   - Bovenkant blijft hetzelfde; alleen titel Hotels subtiel hoger.
+   - Hotelcards/list lopen visueel door achter de bottom navigation.
+   - Geen bruine rand meer net boven de bottom navigation.
+   - Alleen Mijn Roadtrip > Hotels UX; kaart/ORS/sheet/nav onaangeraakt.
+   ========================================================= */
+body[data-roadtrip-view="saved-hotels"] .roadtrip-hotels-state-v39754{
+  padding-bottom:calc(26px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+  transform:translateY(-4px) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-list-v39758{
+  padding-top:0 !important;
+  padding-bottom:calc(136px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotels-list-v39758 .saved-hotel-card-v39754:last-child{
+  margin-bottom:0 !important;
+}
+
+@media (max-width:390px){
+  body[data-roadtrip-view="saved-hotels"] .roadtrip-hotels-state-v39754{
+    padding-bottom:calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+    transform:translateY(-3px) !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .saved-hotels-list-v39758{
+    padding-bottom:calc(132px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
