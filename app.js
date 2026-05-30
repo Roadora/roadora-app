@@ -13,7 +13,8 @@ const defaultState = {
     end: '',
     vehicle: 'auto',
     planned: false,
-    plannedAt: null
+    plannedAt: null,
+    summary: null
   },
   activeTrip: DEMO_TRIP_ENABLED ? {
     title: 'Noord-Spanje Roadtrip',
@@ -54,6 +55,10 @@ const mapSearchLabel = document.getElementById('mapSearchLabel');
 const mapSheetKicker = document.getElementById('mapSheetKicker');
 const mapRouteChipMain = document.getElementById('mapRouteChipMain');
 const mapRouteChipSub = document.getElementById('mapRouteChipSub');
+const routePlanPreview = document.getElementById('routePlanPreview');
+const routePreviewDistance = document.getElementById('routePreviewDistance');
+const routePreviewDuration = document.getElementById('routePreviewDuration');
+const routePreviewHint = document.getElementById('routePreviewHint');
 
 function saveState(){
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(RoadoraState)); } catch(e) {}
@@ -90,8 +95,25 @@ function renderRoutePlan(){
     btn.setAttribute('aria-pressed', String(isActive));
   });
 
+  const ready = isRouteReady();
+  const summary = RoadoraState.route.summary || null;
+  const hasSummary = !!(ready && summary && (Number(summary.distance) || Number(summary.duration)));
+
+  if(routePlanPreview){
+    routePlanPreview.classList.toggle('is-ready', ready);
+    routePlanPreview.classList.toggle('has-summary', hasSummary);
+  }
+  if(routePreviewDistance){
+    routePreviewDistance.textContent = hasSummary ? fmtKm(summary.distance) : (ready ? 'Live afstand' : '— km');
+  }
+  if(routePreviewDuration){
+    routePreviewDuration.textContent = hasSummary ? fmtTime(summary.duration) : (ready ? 'Live reistijd' : '—');
+  }
+  if(routePreviewHint){
+    routePreviewHint.textContent = hasSummary ? 'Live ORS-preview' : (ready ? 'Plan route om afstand en tijd te berekenen' : 'Vul vertrek en bestemming in');
+  }
+
   if(planBtn){
-    const ready = isRouteReady();
     planBtn.disabled = !ready;
     planBtn.classList.toggle('is-ready', ready);
     planBtn.textContent = ready ? 'Plan route' : 'Vul vertrek en bestemming in';
@@ -163,6 +185,7 @@ function openScreen(name, options = {}){
 function updateRouteField(field, value){
   RoadoraState.route[field] = value;
   RoadoraState.route.planned = false;
+  RoadoraState.route.summary = null;
   saveState();
   renderAll();
 }
@@ -213,6 +236,7 @@ vehicleButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     RoadoraState.route.vehicle = btn.dataset.vehicle || 'auto';
     RoadoraState.route.planned = false;
+    RoadoraState.route.summary = null;
     saveState();
     renderAll();
   });
@@ -988,7 +1012,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     routeDistanceCacheV39686 = null;
     L.geoJSON(data, { style:{ color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' } }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
-    updateLabels(data?.features?.[0]?.properties?.summary || {});
+    const summary = data?.features?.[0]?.properties?.summary || {};
+    updateLabels(summary);
+    if(summary && (Number(summary.distance) || Number(summary.duration))){
+      RoadoraState.route.summary = {
+        distance: Number(summary.distance || 0),
+        duration: Number(summary.duration || 0)
+      };
+      saveState();
+      renderRoutePlan();
+    }
     fitRoute();
   }
   async function loadRoute(force=false){
