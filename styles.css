@@ -11749,3 +11749,49 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
     --rd-v39746-edge:14px;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.49 — Sheet/Nav Geometry Polish
+   - CSS-only bovenop v39.7.48.
+   - Sheet + kaartnav iets breder en lager.
+   - Geen wijzigingen aan JS, ORS, route-load, Maps of sheet-content.
+   ========================================================= */
+body[data-active-screen="map"]{
+  --rd-v39746-edge:14px !important;
+  --rd-v39746-nav-bottom:calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+  --rd-v39746-nav-height:70px !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28{
+  left:var(--rd-v39746-edge) !important;
+  right:var(--rd-v39746-edge) !important;
+  bottom:var(--rd-v39746-nav-bottom) !important;
+  height:var(--rd-v39746-nav-height) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28{
+  left:var(--rd-v39746-edge) !important;
+  right:var(--rd-v39746-edge) !important;
+  bottom:calc(var(--rd-v39746-nav-bottom) + var(--rd-v39746-nav-height) - 1px) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] > nav.rd-map-nav-v28{
+  border-radius:0 0 24px 24px !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28{
+  border-radius:24px 24px 0 0 !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
+  height:56px !important;
+  min-height:56px !important;
+  border-radius:18px !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"]{
+    --rd-v39746-edge:10px !important;
+    --rd-v39746-nav-bottom:calc(5px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
