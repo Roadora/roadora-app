@@ -175,7 +175,19 @@ function openScreen(name, options = {}){
   saveState();
   renderAll();
   if(name === 'roadtrip') setRoadtripView('home');
-  if(name === 'map' && window.RoadoraMap){ window.RoadoraMap.ensure(); }
+
+  // Roadora v39.7.40 — safe map boot after routeplan layout changes.
+  // The routeplan screen now uses a fixed/sticky hero. On some mobile browsers
+  // Leaflet can be initialized one frame too early while the map screen is
+  // still settling, causing a beige fallback layer instead of the real map.
+  // Keep Maps/ORS logic unchanged, but retry invalidate/load after the map
+  // screen is visibly active.
+  if(name === 'map' && window.RoadoraMap){
+    window.RoadoraMap.ensure();
+    requestAnimationFrame(() => window.RoadoraMap?.ensure?.());
+    setTimeout(() => window.RoadoraMap?.ensure?.(), 120);
+    setTimeout(() => window.RoadoraMap?.refresh?.(), 420);
+  }
 
   if(options.scroll !== false){
     requestAnimationFrame(() => window.scrollTo({ top:0, behavior: options.instant ? 'auto' : 'smooth' }));

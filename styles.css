@@ -11318,3 +11318,132 @@ body[data-active-screen="plan"] .luxury-main-cta{
     gap:12px !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.7.40 — Map boot visibility guard
+   ---------------------------------------------------------
+   Fix voor beige kaartvlak na Plan route:
+   - Routeplan mag nooit boven de actieve kaartlaag blijven hangen
+   - MapScreen/Leaflet krijgen expliciet volledige viewport-afmetingen
+   - Geen ORS/Maps/Stops/Nu Nodig gedrag aangepast
+   ========================================================= */
+body[data-active-screen="map"] .screen-plan.routeplan-premium{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+body[data-active-screen="map"] #mapScreen.screen-map,
+body[data-active-screen="map"] .screen-map.mapScreen,
+body[data-active-screen="map"] #mapScreen .roadMapApp,
+body[data-active-screen="map"] #routeLeafletMap,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-container{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  overflow:hidden !important;
+}
+
+body[data-active-screen="map"] #mapScreen.screen-map,
+body[data-active-screen="map"] .screen-map.mapScreen{
+  z-index:20 !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap{
+  background:#a9cfe3 !important;
+}
+
+/* === Roadora v39.7.41 — Legacy mini-photo nav removed / unified nav locked ===
+   Doel: oude bottom-nav mini-foto laag definitief uitschakelen, maar dezelfde
+   knoppen, data-screen-targets en routerfuncties behouden. */
+body.hero-nav-integrated .bottom-nav button::before,
+body.hero-nav-integrated .bottom-nav a::before,
+.hero-nav-integrated .bottom-nav button::before,
+.hero-nav-integrated .bottom-nav a::before,
+.hero-nav-integrated .tabbar button::before,
+.hero-nav-integrated .tabbar a::before,
+.hero-nav-integrated .app-nav button::before,
+.hero-nav-integrated .app-nav a::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] button::before,
+.hero-nav-integrated nav[aria-label="Bottom navigation"] a::before{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+  background:none !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+
+body.hero-nav-integrated .bottom-nav,
+.hero-nav-integrated .bottom-nav{
+  position:absolute !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:calc(22px + env(safe-area-inset-bottom, 0px)) !important;
+  height:74px !important;
+  border-radius:26px !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  padding:7px !important;
+  background:rgba(255,250,244,.90) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 18px 46px rgba(46,30,16,.18) !important;
+  backdrop-filter:blur(22px) !important;
+  -webkit-backdrop-filter:blur(22px) !important;
+  z-index:40 !important;
+}
+
+body.hero-nav-integrated .bottom-nav button,
+body.hero-nav-integrated .bottom-nav a,
+.hero-nav-integrated .bottom-nav button,
+.hero-nav-integrated .bottom-nav a{
+  position:relative !important;
+  min-height:0 !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:20px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  background:transparent !important;
+  color:#6e6259 !important;
+  font-size:10px !important;
+  font-weight:850 !important;
+  overflow:hidden !important;
+}
+
+body.hero-nav-integrated .bottom-nav button span,
+.hero-nav-integrated .bottom-nav button span{
+  font-size:22px !important;
+  line-height:1 !important;
+  display:block !important;
+}
+
+body.hero-nav-integrated .bottom-nav button b,
+.hero-nav-integrated .bottom-nav button b{
+  display:block !important;
+  font-size:10px !important;
+  line-height:1.05 !important;
+  font-weight:850 !important;
+}
+
+body.hero-nav-integrated .bottom-nav button.active,
+body.hero-nav-integrated .bottom-nav a.active,
+.hero-nav-integrated .bottom-nav button.active,
+.hero-nav-integrated .bottom-nav a.active{
+  background:#f2e7dd !important;
+  color:var(--brown) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45) !important;
+}
