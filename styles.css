@@ -11600,3 +11600,63 @@ body[data-active-screen="map"] #routeLeafletMap .leaflet-shadow-pane{ z-index:50
 
 body[data-active-screen="map"] #mapScreen .ui{ z-index:900 !important; }
 body[data-active-screen="map"] > nav.rd-map-nav-v28{ z-index:1400 !important; }
+
+/* =========================================================
+   Roadora v39.7.45 — Route Load + Map Nav Stability
+   - kaart-nav blijft een losse afgeronde pil als de sheet niet zichtbaar is
+   - actieve state is exclusief per map-tab
+   - geen wijzigingen aan ORS, Maps export of sheet content
+   ========================================================= */
+body[data-active-screen="map"] > nav.rd-map-nav-v28{
+  left:22px !important;
+  right:22px !important;
+  bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  height:72px !important;
+  padding:7px 10px !important;
+  border-radius:28px !important;
+  overflow:visible !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:5px !important;
+  background:linear-gradient(180deg, rgba(255,250,242,.96), rgba(246,234,218,.93)) !important;
+  border:1px solid rgba(255,255,255,.62) !important;
+  box-shadow:0 18px 46px rgba(37,25,16,.17), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(22px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.08) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] > nav.rd-map-nav-v28{
+  border-radius:28px !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
+  height:58px !important;
+  min-height:58px !important;
+  padding:6px 4px 5px !important;
+  border-radius:21px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:none !important;
+  color:#5b4d43 !important;
+  opacity:.88 !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28:not(.is-active):not([aria-current="page"]){
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#5b4d43 !important;
+  transform:none !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28.is-active,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[aria-current="page"]{
+  opacity:1 !important;
+  color:#8a5b2d !important;
+  background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.95), rgba(255,255,255,.34) 45%, rgba(255,255,255,0) 72%), linear-gradient(180deg,#f8ead8,#f1dcc5) !important;
+  box-shadow:0 10px 22px rgba(145,92,36,.16), inset 0 1px 0 rgba(255,255,255,.82) !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane svg path{
+  transition:none !important;
+}

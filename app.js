@@ -199,10 +199,10 @@ function openScreen(name, options = {}){
   // Keep Maps/ORS logic unchanged, but retry invalidate/load after the map
   // screen is visibly active.
   if(name === 'map' && window.RoadoraMap){
+    // Roadora v39.7.45 — single map boot.
+    // Do not call ensure/refresh multiple times here: every refresh starts with
+    // a fallback line before ORS returns, which caused straight-line → ORS flicker.
     window.RoadoraMap.ensure();
-    requestAnimationFrame(() => window.RoadoraMap?.ensure?.());
-    setTimeout(() => window.RoadoraMap?.ensure?.(), 120);
-    setTimeout(() => window.RoadoraMap?.refresh?.(), 420);
     setTimeout(() => window.RoadoraMap?.fit?.(), 780);
   }
 
@@ -360,6 +360,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     sansebastian: [-1.9812,43.3183]
   };
   let map, routeLayer, markerLayer, labelLayer, categoryLayer, initialized=false, loading=false, routeCoordinates=[];
+  let activeLoadKeyV39745 = '';
+  let displayedRouteKeyV39745 = '';
+  let pendingReloadV39745 = false;
 
   function norm(v){ return String(v||'').toLowerCase().trim().replace(/[,].*$/,'').replace(/[-_]/g,' ').replace(/\s+/g,' '); }
   function coordFor(label, fallback){
@@ -392,6 +395,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const start=placeLabel(r.start,'Rotterdam');
     const end=placeLabel(r.end,'Innsbruck');
     return { ...r, start, end, vehicle:r.vehicle || 'auto' };
+  }
+
+  function routeKeyV39745(route){
+    const r = route || activeRoute();
+    return [norm(r.start), norm(r.end), r.vehicle || 'auto'].join('|');
   }
 
   function updateVehicleButtons(){
@@ -1057,28 +1065,62 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     fitRoute();
   }
   async function loadRoute(force=false){
-    ensureBase(); if(!map || (loading && !force)) return;
-    loading=true;
+    ensureBase();
+    if(!map) return;
+
     const r=activeRoute();
+    const key = routeKeyV39745(r);
+
+    // Roadora v39.7.45 — no concurrent route builds.
+    // A forced refresh during an active ORS request used to draw the fallback line
+    // again, then ORS again. That created the visible straight-line flicker.
+    if(loading){
+      if(force) pendingReloadV39745 = true;
+      return;
+    }
+
+    // If this exact route is already on the map, only repair Leaflet's size/fit.
+    if(!force && displayedRouteKeyV39745 === key && routeCoordinates.length){
+      try{ map.invalidateSize(false); }catch(_){ }
+      fitRoute();
+      return;
+    }
+
+    loading=true;
+    activeLoadKeyV39745 = key;
     const startCoord=coordFor(r.start, DEFAULT_START);
     const endCoord=coordFor(r.end, DEFAULT_END);
     updateLabels(null);
-    drawFallback(startCoord,endCoord);
+
+    // Draw fallback only for a new route or when there is no route on screen yet.
+    // Never redraw fallback over an already rendered ORS route for the same key.
+    if(displayedRouteKeyV39745 !== key || !routeCoordinates.length){
+      drawFallback(startCoord,endCoord);
+      displayedRouteKeyV39745 = key;
+    }
+
     showMapToast('Route laden…');
     try{
       const url=`/api/route?start=${encodeURIComponent(startCoord.join(','))}&end=${encodeURIComponent(endCoord.join(','))}&profile=${encodeURIComponent(profileFor(r.vehicle))}`;
       const res=await fetch(url);
       if(!res.ok) throw new Error(`ORS ${res.status}`);
       const data=await res.json();
+      if(activeLoadKeyV39745 !== key) return;
       drawGeoJson(data,startCoord,endCoord);
+      displayedRouteKeyV39745 = key;
       showMapToast('Echte ORS route geladen');
     }catch(err){
       console.warn('Roadora map fallback:',err);
       updateLabels(null);
+      displayedRouteKeyV39745 = key;
       showMapToast('Fallback route actief');
     }finally{
       loading=false;
       setTimeout(()=>map?.invalidateSize(false),80);
+      if(pendingReloadV39745){
+        pendingReloadV39745 = false;
+        setTimeout(()=>loadRoute(true), 120);
+      }
     }
   }
   // Roadora v39.7.44 — route label + fit padding fix.
@@ -1144,10 +1186,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       setTimeout(function(){ bootMapV39743(force); }, 160);
       return;
     }
-    [60, 180, 420, 900, 1500].forEach(function(delay){
+
+    // Roadora v39.7.45 — one route load, multiple size repairs.
+    // The size repairs keep Leaflet stable after screen changes, but they no
+    // longer trigger new route fetches/fallback redraws.
+    setTimeout(function(){ loadRoute(!!force); }, 80);
+    [180, 420, 900, 1500].forEach(function(delay){
       setTimeout(function(){
         try{ map.invalidateSize(false); }catch(_){ }
-        if(force || !routeCoordinates.length) loadRoute(!!force);
+        if(routeCoordinates.length) fitRoute();
       }, delay);
     });
   }
@@ -3089,4 +3136,31 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraApp = window.RoadoraApp || {};
   if (typeof openScreen === 'function') window.RoadoraApp.openScreen = openScreen;
   if (typeof renderAll === 'function') window.RoadoraApp.render = renderAll;
+})();
+
+
+/* Roadora v39.7.45 — final map nav exclusivity guard.
+   Keeps the map bottom nav from inheriting old mixed active states. */
+(function(){
+  if(window.__roadoraMapNavExclusivityV39745) return;
+  window.__roadoraMapNavExclusivityV39745 = true;
+  function panelFrom(btn){ return (btn && btn.dataset && btn.dataset.mapPanel) || 'roadtrip'; }
+  function sync(panel){
+    panel = panel || document.body.getAttribute('data-map-panel') || 'roadtrip';
+    document.body.setAttribute('data-map-panel', panel);
+    document.querySelectorAll('body > nav.rd-map-nav-v28 .rd-nav-btn-v28').forEach(function(btn){
+      const active = panelFrom(btn) === panel;
+      btn.classList.toggle('is-active', active);
+      btn.classList.remove('active');
+      if(active) btn.setAttribute('aria-current','page');
+      else btn.removeAttribute('aria-current');
+    });
+  }
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('body > nav.rd-map-nav-v28 .rd-nav-btn-v28');
+    if(!btn) return;
+    setTimeout(function(){ sync(panelFrom(btn)); }, 0);
+  }, true);
+  document.addEventListener('DOMContentLoaded', function(){ sync('roadtrip'); });
+  window.addEventListener('roadora:map-nav-sync', function(e){ sync(e.detail && e.detail.panel); });
 })();
