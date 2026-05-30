@@ -12054,3 +12054,95 @@ body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-re
   .hotel-card-body-v39754{padding:14px;}
   .hotel-title-row-v39754 h3{font-size:19px;}
 }
+
+/* =========================================================
+   Roadora v39.7.55 — Hotels Planner UX
+   Basis: v39.7.54 Saved Hotels Cards.
+   Doel:
+   - Hotels is een functionele planner-state, dus geen hero.
+   - Compacte header met sluitknop terug naar Opgeslagen stops.
+   - Meer ruimte voor hotelcards bij 5+ opgeslagen hotels.
+   - Kaart/ORS/Maps/sheet/nav blijven onaangeraakt.
+   ========================================================= */
+body[data-roadtrip-view="saved-hotels"] .screen-roadtrip .photo-head{
+  display:none !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .screen-roadtrip{
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .roadtrip-hub-v39733{
+  height:100dvh !important;
+  padding:calc(env(safe-area-inset-top, 0px) + 18px) 18px 132px !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .roadtrip-hotels-state-v39754{
+  padding-bottom:0 !important;
+}
+
+.saved-hotels-head-v39755{
+  position:sticky;
+  top:0;
+  z-index:12;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 44px;
+  align-items:start;
+  gap:12px;
+  margin:0 -2px 14px;
+  padding:6px 2px 12px !important;
+  background:linear-gradient(180deg,#f1e7db 0%,rgba(241,231,219,.96) 78%,rgba(241,231,219,0) 100%);
+}
+
+.saved-hotels-head-v39755 h2{
+  font-size:34px !important;
+  line-height:.96 !important;
+}
+
+.saved-hotels-head-v39755 p{
+  max-width:310px !important;
+  margin-top:8px !important;
+  font-size:13.5px !important;
+}
+
+.saved-hotels-close-v39755{
+  width:42px;
+  height:42px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,250,244,.66);
+  border:1px solid rgba(255,255,255,.64);
+  color:#3a2a1e;
+  font-size:28px;
+  line-height:1;
+  font-weight:500;
+  box-shadow:0 12px 26px rgba(55,35,20,.09), inset 0 1px 0 rgba(255,255,255,.68);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+body[data-roadtrip-view="saved-hotels"] .saved-hotel-card-v39754{
+  margin-bottom:14px !important;
+}
+
+body[data-roadtrip-view="saved-hotels"] .hotel-photo-rail-v39754 img{
+  height:172px;
+}
+
+@media (max-width:390px){
+  body[data-roadtrip-view="saved-hotels"] .roadtrip-hub-v39733{
+    padding-left:16px !important;
+    padding-right:16px !important;
+  }
+
+  .saved-hotels-head-v39755 h2{
+    font-size:31px !important;
+  }
+
+  body[data-roadtrip-view="saved-hotels"] .hotel-photo-rail-v39754 img{
+    height:158px;
+  }
+}
