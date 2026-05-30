@@ -10658,7 +10658,8 @@ body[data-active-screen="roadtrip"] .roadtrip-hub-v39733[data-roadtrip-view="sav
    Mini-foto's worden hier uitgezet.
    ========================================================= */
 body[data-active-screen="overview"] .bottom-nav,
-body[data-active-screen="roadtrip"] .bottom-nav{
+body[data-active-screen="roadtrip"] .bottom-nav,
+body[data-active-screen="profile"] .bottom-nav{
   position:absolute !important;
   left:14px !important;
   right:14px !important;
@@ -10683,7 +10684,8 @@ body[data-active-screen="roadtrip"] .bottom-nav{
 }
 
 body[data-active-screen="overview"] .bottom-nav button,
-body[data-active-screen="roadtrip"] .bottom-nav button{
+body[data-active-screen="roadtrip"] .bottom-nav button,
+body[data-active-screen="profile"] .bottom-nav button{
   position:relative !important;
   min-width:0 !important;
   min-height:50px !important;
@@ -10710,7 +10712,8 @@ body[data-active-screen="roadtrip"] .bottom-nav button{
 
 /* Mini-foto's uit op Overzicht en Mijn Roadtrip; iconen/labels blijven de bestaande knoppen. */
 body[data-active-screen="overview"] .bottom-nav button::before,
-body[data-active-screen="roadtrip"] .bottom-nav button::before{
+body[data-active-screen="roadtrip"] .bottom-nav button::before,
+body[data-active-screen="profile"] .bottom-nav button::before{
   content:none !important;
   display:none !important;
   background:none !important;
@@ -10718,7 +10721,8 @@ body[data-active-screen="roadtrip"] .bottom-nav button::before{
 }
 
 body[data-active-screen="overview"] .bottom-nav button span,
-body[data-active-screen="roadtrip"] .bottom-nav button span{
+body[data-active-screen="roadtrip"] .bottom-nav button span,
+body[data-active-screen="profile"] .bottom-nav button span{
   display:block !important;
   margin:0 0 1px !important;
   font-size:15px !important;
@@ -10729,7 +10733,8 @@ body[data-active-screen="roadtrip"] .bottom-nav button span{
 }
 
 body[data-active-screen="overview"] .bottom-nav button b,
-body[data-active-screen="roadtrip"] .bottom-nav button b{
+body[data-active-screen="roadtrip"] .bottom-nav button b,
+body[data-active-screen="profile"] .bottom-nav button b{
   display:block !important;
   font-size:10px !important;
   line-height:1.05 !important;
@@ -10738,7 +10743,8 @@ body[data-active-screen="roadtrip"] .bottom-nav button b{
 }
 
 body[data-active-screen="overview"] .bottom-nav button.active,
-body[data-active-screen="roadtrip"] .bottom-nav button.active{
+body[data-active-screen="roadtrip"] .bottom-nav button.active,
+body[data-active-screen="profile"] .bottom-nav button.active{
   opacity:1 !important;
   color:#8a5b2d !important;
   background:radial-gradient(circle at 50% 5%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.38) 42%, rgba(255,255,255,0) 72%), linear-gradient(180deg, #f8ead8 0%, #f1dcc5 100%) !important;
@@ -10747,7 +10753,8 @@ body[data-active-screen="roadtrip"] .bottom-nav button.active{
 }
 
 body[data-active-screen="overview"] .bottom-nav button.active::after,
-body[data-active-screen="roadtrip"] .bottom-nav button.active::after{
+body[data-active-screen="roadtrip"] .bottom-nav button.active::after,
+body[data-active-screen="profile"] .bottom-nav button.active::after{
   content:"" !important;
   position:absolute !important;
   inset:4px !important;
@@ -10757,17 +10764,28 @@ body[data-active-screen="roadtrip"] .bottom-nav button.active::after{
 }
 
 body[data-active-screen="overview"] .bottom-nav button.active span,
-body[data-active-screen="roadtrip"] .bottom-nav button.active span{
+body[data-active-screen="roadtrip"] .bottom-nav button.active span,
+body[data-active-screen="profile"] .bottom-nav button.active span{
   color:#7c4d20 !important;
   opacity:1 !important;
 }
 
 @media (min-width:621px){
   body[data-active-screen="overview"] .bottom-nav,
-  body[data-active-screen="roadtrip"] .bottom-nav{
+  body[data-active-screen="roadtrip"] .bottom-nav,
+  body[data-active-screen="profile"] .bottom-nav{
     left:14px !important;
     right:14px !important;
     width:auto !important;
     transform:none !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.7.36 — Profile Bottom Nav Unified
+   ---------------------------------------------------------
+   Profiel gebruikt nu dezelfde rustige map-style bottomnav als
+   Overzicht en Mijn Roadtrip. Alleen visuele styling; router,
+   profielcontent, Maps/ORS en sheetflows blijven ongemoeid.
+   ========================================================= */
