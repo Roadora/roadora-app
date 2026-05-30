@@ -1213,154 +1213,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 })();
 
 
-/* Roadora Map Navigation Layer v1 */
-(function(){
-  if (window.__roadoraMapNavLayerV1) return;
-  window.__roadoraMapNavLayerV1 = true;
+/* Roadora v39.7.48 — oude ongebruikte map-nav handlers verwijderd.
+   De huidige kaart gebruikt alleen body > nav.rd-map-nav-v28. */
 
-  function setMapNavActive(panel){
-    document.querySelectorAll(".map-nav-layer-v1 .map-nav-item").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
-    });
-    document.body.setAttribute("data-map-panel", panel || "roadtrip");
-  }
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".map-nav-layer-v1 .map-nav-item");
-    if (!btn) return;
-
-    var panel = btn.dataset.mapPanel || "roadtrip";
-    setMapNavActive(panel);
-
-    /* V1 is bewust veilig:
-       - Roadtrip = bestaande sheet blijft leidend
-       - Stops / Nu nodig / Meer zetten alleen state voor volgende stap
-       - geen route-engine, Leaflet of Google Maps export aangepast
-    */
-  });
-
-  document.addEventListener("DOMContentLoaded", function(){
-    setMapNavActive(document.body.getAttribute("data-map-panel") || "roadtrip");
-  });
-})();
-
-
-/* Roadora Map Bottom Nav Pixel v2 */
-(function(){
-  if (window.__roadoraMapBottomNavPixelV2) return;
-  window.__roadoraMapBottomNavPixelV2 = true;
-
-  function setMapPanel(panel){
-    panel = panel || "roadtrip";
-    document.body.setAttribute("data-map-panel", panel);
-    document.querySelectorAll(".map-nav-pixel-v2 .mnp-item").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
-    });
-  }
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".map-nav-pixel-v2 .mnp-item");
-    if (!btn) return;
-    setMapPanel(btn.dataset.mapPanel || "roadtrip");
-  });
-
-  document.addEventListener("DOMContentLoaded", function(){
-    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
-  });
-})();
-
-
-/* Roadora Map Bottom Nav Correct v5 */
-(function(){
-  if (window.__roadoraMapBottomNavV5) return;
-  window.__roadoraMapBottomNavV5 = true;
-
-  function setPanel(panel){
-    panel = panel || "roadtrip";
-    document.body.setAttribute("data-map-panel", panel);
-    document.querySelectorAll(".map-bottom-nav-v5 .mbn-item").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
-    });
-  }
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".map-bottom-nav-v5 .mbn-item");
-    if (!btn) return;
-    setPanel(btn.dataset.mapPanel || "roadtrip");
-  });
-
-  document.addEventListener("DOMContentLoaded", function(){
-    setPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
-  });
-})();
-
-
-/* Roadora Map Bottom Nav v8 Clean Rebuild */
-(function(){
-  if (window.__roadoraMapBottomNavV8) return;
-  window.__roadoraMapBottomNavV8 = true;
-
-  function setMapPanel(panel){
-    panel = panel || "roadtrip";
-    document.body.setAttribute("data-map-panel", panel);
-    document.querySelectorAll(".map-bottom-nav-v8 .mb8-item").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
-    });
-  }
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".map-bottom-nav-v8 .mb8-item");
-    if (!btn) return;
-    setMapPanel(btn.dataset.mapPanel || "roadtrip");
-  });
-
-  document.addEventListener("DOMContentLoaded", function(){
-    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
-  });
-})();
-
-
-/* Roadora Map Bottom Nav v9 Mockup Match */
-(function(){
-  if (window.__roadoraMapBottomNavV9) return;
-  window.__roadoraMapBottomNavV9 = true;
-
-  function setMapPanel(panel){
-    panel = panel || "roadtrip";
-    document.body.setAttribute("data-map-panel", panel);
-    document.querySelectorAll(".map-bottom-nav-v9 .mb9-item").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
-    });
-  }
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".map-bottom-nav-v9 .mb9-item");
-    if (!btn) return;
-    setMapPanel(btn.dataset.mapPanel || "roadtrip");
-  });
-
-  document.addEventListener("DOMContentLoaded", function(){
-    setMapPanel(document.body.getAttribute("data-map-panel") || "roadtrip");
-  });
-})();
-
-
-/* Roadora v28 clean map nav active state */
-(function(){
-  if (window.__roadoraMapNavV28) return;
-  window.__roadoraMapNavV28 = true;
-
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".rd-map-nav-v28 .rd-nav-btn-v28");
-    if (!btn) return;
-    var panel = btn.dataset.mapPanel || "roadtrip";
-    document.body.setAttribute("data-map-panel", panel);
-    document.querySelectorAll(".rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(x){
-      x.classList.toggle("is-active", x === btn);
-    });
-  });
-})();
-
+/* Roadora v39.7.48 — dubbele v28 active-state handler verwijderd.
+   Drawer-controller is nu de enige bron voor map-panel state. */
 
 /* Roadora v38 Map Sheet Drawer */
 (function(){
@@ -1499,8 +1356,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     body.setAttribute("data-active-map-tab", panel);
     setDrawerState("half");
 
-    document.querySelectorAll(".rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
-      btn.classList.toggle("is-active", btn.dataset.mapPanel === panel);
+    document.querySelectorAll("body > nav.rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
+      var active = btn.dataset.mapPanel === panel;
+      btn.classList.toggle("is-active", active);
+      btn.classList.remove("active");
+      if(active) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
     });
 
     if (sheet) {
@@ -1566,13 +1427,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function closeDrawer(){
     document.body.removeAttribute("data-map-drawer");
-    document.querySelectorAll(".rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
-      btn.classList.remove("is-active");
+    document.querySelectorAll("body > nav.rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
+      btn.classList.remove("is-active", "active");
+      btn.removeAttribute("aria-current");
     });
   }
 
   document.addEventListener("click", function(e){
-    var btn = e.target.closest(".rd-map-nav-v28 .rd-nav-btn-v28");
+    var btn = e.target.closest("body > nav.rd-map-nav-v28 .rd-nav-btn-v28");
     if (!btn) return;
 
     var panel = btn.dataset.mapPanel || "roadtrip";
@@ -1720,7 +1582,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   document.addEventListener("click", function(e){
-    var btn = e.target.closest(".rd-map-nav-v28 .rd-nav-btn-v28, .rd-map-bottom-nav-v28 button, .map-bottom-nav button, .bottom-nav button, .rd-bottom-nav button");
+    var btn = e.target.closest("body > nav.rd-map-nav-v28 .rd-nav-btn-v28");
     if (!btn) return;
 
     var label = (btn.textContent || "").toLowerCase();
@@ -1742,7 +1604,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.__roadoraInstantSheetPanelV3968 = true;
 
   function getMapNavButton(target){
-    return target.closest(".rd-map-nav-v28 .rd-nav-btn-v28, .rd-map-bottom-nav-v28 button, .map-bottom-nav button, .bottom-nav button, .rd-bottom-nav button");
+    return target.closest("body > nav.rd-map-nav-v28 .rd-nav-btn-v28");
   }
 
   function getPanelFromButton(btn){
@@ -1760,7 +1622,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   function markActiveNav(panel){
-    document.querySelectorAll(".rd-map-nav-v28 .rd-nav-btn-v28, .rd-map-bottom-nav-v28 button, .map-bottom-nav button, .bottom-nav button, .rd-bottom-nav button").forEach(function(btn){
+    document.querySelectorAll("body > nav.rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
       var btnPanel = getPanelFromButton(btn);
       btn.classList.toggle("is-active", btnPanel === panel);
     });
@@ -1820,7 +1682,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   ];
 
   function getBtn(target){
-    return target && target.closest && target.closest(".rd-map-nav-v28 .rd-nav-btn-v28, .rd-map-bottom-nav-v28 button, .map-bottom-nav button, .bottom-nav button, .rd-bottom-nav button");
+    return target && target.closest && target.closest("body > nav.rd-map-nav-v28 .rd-nav-btn-v28");
   }
 
   function getPanel(btn){
@@ -1837,7 +1699,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   function setNavActive(panel){
-    document.querySelectorAll(".rd-map-nav-v28 .rd-nav-btn-v28, .rd-map-bottom-nav-v28 button, .map-bottom-nav button, .bottom-nav button, .rd-bottom-nav button").forEach(function(btn){
+    document.querySelectorAll("body > nav.rd-map-nav-v28 .rd-nav-btn-v28").forEach(function(btn){
       btn.classList.toggle("is-active", getPanel(btn) === panel);
     });
   }
