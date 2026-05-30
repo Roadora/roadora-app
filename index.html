@@ -156,7 +156,7 @@
     </header>
     <div class="content hub-list">
       <button class="hub-row" data-screen-target="plan"><b>▱</b><span><strong>Routeplan</strong><small>Plan en bewerk je route</small></span><i>›</i></button>
-      <button class="hub-row" data-screen-target="hotels"><b>▭</b><span><strong>Hotels</strong><small>Jouw verblijven onderweg</small></span><i>›</i></button>
+      <button class="hub-row" data-screen-target="saved-stops"><b>♡</b><span><strong>Opgeslagen stops</strong><small>Hotels, eten, uitjes en laden</small></span><i>›</i></button>
       <button class="hub-row" data-screen-target="routes"><b>⌁</b><span><strong>Trajecten</strong><small>Bekijk je etappes</small></span><i>›</i></button>
       <button class="hub-row" data-screen-target="diary"><b>◇</b><span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small></span><i>›</i></button>
     </div>
@@ -222,6 +222,16 @@
 
   </section>
 
+
+  <section class="screen screen-saved-stops" data-screen="saved-stops">
+    <header class="plain-top"><h1>Opgeslagen stops</h1><button class="circle-btn light" data-screen-target="roadtrip">×</button></header>
+    <div class="content hub-list saved-stops-phase1">
+      <button class="hub-row" type="button" data-saved-category="hotels"><b>▭</b><span><strong>Hotels</strong><small>Opgeslagen hotels langs je route</small></span><i>0</i></button>
+      <button class="hub-row" type="button" data-saved-category="food"><b>🍴</b><span><strong>Eten</strong><small>Restaurants, koffie en pauzes</small></span><i>0</i></button>
+      <button class="hub-row" type="button" data-saved-category="discover"><b>◇</b><span><strong>Uitjes</strong><small>Plekken en bezienswaardigheden</small></span><i>0</i></button>
+      <button class="hub-row" type="button" data-saved-category="charge"><b>⚡</b><span><strong>Laden</strong><small>Laadstops voor onderweg</small></span><i>0</i></button>
+    </div>
+  </section>
 
   <section class="screen screen-hotels" data-screen="hotels">
     <header class="plain-top"><h1>Hotels</h1><button class="circle-btn light">•••</button></header>
