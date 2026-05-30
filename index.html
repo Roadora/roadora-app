@@ -154,12 +154,22 @@
       <div class="inner-top"><span>Mijn Roadtrip</span><button class="circle-btn light">•••</button></div>
       <div class="head-copy"><small>REISCENTRUM</small><h1>Alles voor je reis op één plek.</h1><p>Route, verblijven, trajecten en herinneringen rustig georganiseerd.</p></div>
     </header>
-    <div class="content hub-list">
-      <button class="hub-row" data-screen-target="plan"><b>▱</b><span><strong>Routeplan</strong><small>Plan en bewerk je route</small></span><i>›</i></button>
-      <!-- Roadora v39.7.32 — Phase 1: Mijn Roadtrip voorbereiden voor opgeslagen stops. Geen aparte subpage; deze knop wordt later een in-page state. -->
-      <button class="hub-row" type="button" data-roadtrip-entry="saved-stops"><b>♡</b><span><strong>Opgeslagen stops</strong><small>Hotels, eten, uitjes en laden</small></span><i>›</i></button>
-      <button class="hub-row" data-screen-target="routes"><b>⌁</b><span><strong>Trajecten</strong><small>Bekijk je etappes</small></span><i>›</i></button>
-      <button class="hub-row" data-screen-target="diary"><b>◇</b><span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small></span><i>›</i></button>
+    <div class="content hub-list roadtrip-hub-v39733" data-roadtrip-view="home">
+      <div class="roadtrip-state-v39733" data-roadtrip-state="home">
+        <button class="hub-row" data-screen-target="plan"><b>▱</b><span><strong>Routeplan</strong><small>Plan en bewerk je route</small></span><i>›</i></button>
+        <!-- Roadora v39.7.33 — Phase 2: Opgeslagen stops openen als in-page state binnen Mijn Roadtrip. Geen aparte subpage. -->
+        <button class="hub-row" type="button" data-roadtrip-entry="saved-stops"><b>♡</b><span><strong>Opgeslagen stops</strong><small>Hotels, eten, uitjes en laden</small></span><i>›</i></button>
+        <button class="hub-row" data-screen-target="routes"><b>⌁</b><span><strong>Trajecten</strong><small>Bekijk je etappes</small></span><i>›</i></button>
+        <button class="hub-row" data-screen-target="diary"><b>◇</b><span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small></span><i>›</i></button>
+      </div>
+
+      <div class="roadtrip-state-v39733" data-roadtrip-state="saved-stops" hidden>
+        <button class="hub-row roadtrip-back-row-v39733" type="button" data-roadtrip-entry="home"><b>‹</b><span><strong>Opgeslagen stops</strong><small>Terug naar Mijn Roadtrip</small></span><i>×</i></button>
+        <button class="hub-row" type="button" data-saved-stop-category="hotels"><b>☾</b><span><strong>Hotels</strong><small>Opgeslagen overnachtingen langs je route</small></span><i>›</i></button>
+        <button class="hub-row" type="button" data-saved-stop-category="food"><b>🍴</b><span><strong>Eten</strong><small>Restaurants, koffie en pauzeplekken</small></span><i>›</i></button>
+        <button class="hub-row" type="button" data-saved-stop-category="discover"><b>◎</b><span><strong>Uitjes</strong><small>Plekken en stops die je wilt bewaren</small></span><i>›</i></button>
+        <button class="hub-row" type="button" data-saved-stop-category="charge"><b>⚡</b><span><strong>Laden</strong><small>Laadstops voor je roadtrip</small></span><i>›</i></button>
+      </div>
     </div>
   </section>
 

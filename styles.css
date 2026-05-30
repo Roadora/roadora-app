@@ -10568,3 +10568,22 @@ body[data-active-screen="map"][data-instant-map-panel="now"][data-wc-preview="op
     --rd-now-popover-nav-connect-v39728: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ===== Roadora v39.7.33 — Mijn Roadtrip in-page states =====
+   Phase 2: Opgeslagen stops vervangt de hub-knoppen binnen dezelfde Mijn Roadtrip pagina.
+   Geen aparte subpage, geen Maps/ORS/Stops/Nu Nodig wijzigingen. */
+.roadtrip-hub-v39733 .roadtrip-state-v39733[hidden]{
+  display:none !important;
+}
+.roadtrip-back-row-v39733{
+  min-height:64px !important;
+  background:rgba(255,250,244,.44) !important;
+}
+.roadtrip-back-row-v39733 b{
+  font-size:34px !important;
+  line-height:1 !important;
+}
+.roadtrip-back-row-v39733 i{
+  font-size:22px !important;
+  color:#9a744c !important;
+}

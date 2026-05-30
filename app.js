@@ -152,6 +152,7 @@ function openScreen(name, options = {}){
   closeMenu();
   saveState();
   renderAll();
+  if(name === 'roadtrip') setRoadtripView('home');
   if(name === 'map' && window.RoadoraMap){ window.RoadoraMap.ensure(); }
 
   if(options.scroll !== false){
@@ -219,7 +220,33 @@ vehicleButtons.forEach(btn => {
 
 planBtn?.addEventListener('click', planRoute);
 
+function setRoadtripView(view){
+  const safeView = view === 'saved-stops' ? 'saved-stops' : 'home';
+  const hub = document.querySelector('[data-roadtrip-view]');
+  if(hub) hub.dataset.roadtripView = safeView;
+  document.querySelectorAll('[data-roadtrip-state]').forEach(panel => {
+    const active = panel.dataset.roadtripState === safeView;
+    panel.hidden = !active;
+  });
+}
+
 document.addEventListener('click', (event) => {
+  const roadtripEntry = event.target.closest('[data-roadtrip-entry]');
+  if(roadtripEntry){
+    event.preventDefault();
+    const entry = roadtripEntry.dataset.roadtripEntry;
+    if(entry === 'saved-stops') setRoadtripView('saved-stops');
+    else if(entry === 'home') setRoadtripView('home');
+    return;
+  }
+
+  const savedCategory = event.target.closest('[data-saved-stop-category]');
+  if(savedCategory){
+    event.preventDefault();
+    showToast(`${savedCategory.textContent.trim().replace(/›/g,'')} komt in fase 3`);
+    return;
+  }
+
   const action = event.target.closest('[data-action]');
   if(action?.dataset.action === 'demo-trip'){
     RoadoraState.activeTrip = { title:'Noord-Spanje Roadtrip', meta:'12 dagen · 6 stops · 16 – 27 mei 2025' };
