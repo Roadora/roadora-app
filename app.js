@@ -1092,11 +1092,15 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const endCoord=coordFor(r.end, DEFAULT_END);
     updateLabels(null);
 
-    // Draw fallback only for a new route or when there is no route on screen yet.
-    // Never redraw fallback over an already rendered ORS route for the same key.
-    if(displayedRouteKeyV39745 !== key || !routeCoordinates.length){
-      drawFallback(startCoord,endCoord);
-      displayedRouteKeyV39745 = key;
+    // Roadora v39.7.46 — no pre-fallback.
+    // Do not draw the straight fallback line while ORS is still loading.
+    // The fallback is only visualised when ORS really fails. If an older route is
+    // already visible, keep it on screen until the new ORS geometry replaces it.
+    if(displayedRouteKeyV39745 !== key && !routeCoordinates.length){
+      routeLayer.clearLayers();
+      markerLayer.clearLayers();
+      labelLayer.clearLayers();
+      if(categoryLayer) categoryLayer.clearLayers();
     }
 
     showMapToast('Route laden…');
@@ -1111,6 +1115,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       showMapToast('Echte ORS route geladen');
     }catch(err){
       console.warn('Roadora map fallback:',err);
+      drawFallback(startCoord,endCoord);
       updateLabels(null);
       displayedRouteKeyV39745 = key;
       showMapToast('Fallback route actief');

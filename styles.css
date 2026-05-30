@@ -11660,3 +11660,92 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[aria-current
 body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane svg path{
   transition:none !important;
 }
+
+/* =========================================================
+   Roadora v39.7.46 — No Pre-Fallback + Connected Sheet/Nav
+   - Fallback wordt alleen nog getekend bij ORS-fout (JS).
+   - Sheet en kaart-bottomnav vormen visueel één surface.
+   - Alleen map-specifieke selectors; Home/Overzicht blijft ongemoeid.
+   ========================================================= */
+body[data-active-screen="map"]{
+  --rd-v39746-edge:22px;
+  --rd-v39746-nav-bottom:calc(14px + env(safe-area-inset-bottom, 0px));
+  --rd-v39746-nav-height:72px;
+  --rd-v39746-surface-top:rgba(255,250,242,.97);
+  --rd-v39746-surface-bottom:rgba(246,234,218,.95);
+  --rd-v39746-border:rgba(255,255,255,.62);
+}
+
+/* Nav los wanneer de drawer dicht is: één normale pil. */
+body[data-active-screen="map"]:not([data-map-drawer="open"]) > nav.rd-map-nav-v28{
+  left:var(--rd-v39746-edge) !important;
+  right:var(--rd-v39746-edge) !important;
+  bottom:var(--rd-v39746-nav-bottom) !important;
+  height:var(--rd-v39746-nav-height) !important;
+  border-radius:28px !important;
+}
+
+/* Drawer open: sheet sluit fysiek aan op de nav. */
+body[data-active-screen="map"][data-map-drawer="open"] > nav.rd-map-nav-v28{
+  left:var(--rd-v39746-edge) !important;
+  right:var(--rd-v39746-edge) !important;
+  bottom:var(--rd-v39746-nav-bottom) !important;
+  height:var(--rd-v39746-nav-height) !important;
+  padding:7px 10px !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:5px !important;
+  border-radius:0 0 28px 28px !important;
+  border-top:0 !important;
+  background:linear-gradient(180deg, var(--rd-v39746-surface-top), var(--rd-v39746-surface-bottom)) !important;
+  border-left:1px solid var(--rd-v39746-border) !important;
+  border-right:1px solid var(--rd-v39746-border) !important;
+  border-bottom:1px solid var(--rd-v39746-border) !important;
+  box-shadow:0 18px 46px rgba(37,25,16,.17), inset 0 1px 0 rgba(255,255,255,.50) !important;
+  backdrop-filter:blur(22px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.08) !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28{
+  left:var(--rd-v39746-edge) !important;
+  right:var(--rd-v39746-edge) !important;
+  bottom:calc(var(--rd-v39746-nav-bottom) + var(--rd-v39746-nav-height) - 1px) !important;
+  border-radius:28px 28px 0 0 !important;
+  border-bottom:0 !important;
+  background:linear-gradient(180deg, var(--rd-v39746-surface-top), var(--rd-v39746-surface-bottom)) !important;
+  box-shadow:0 -14px 36px rgba(37,25,16,.12), inset 0 1px 0 rgba(255,255,255,.60) !important;
+  overflow:hidden !important;
+}
+
+/* De twee surfaces mogen geen zichtbare naad of tweede radius maken. */
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28::after,
+body[data-active-screen="map"][data-map-drawer="open"] > nav.rd-map-nav-v28::before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  height:2px !important;
+  background:linear-gradient(180deg, rgba(246,234,218,.96), rgba(246,234,218,.96)) !important;
+  pointer-events:none !important;
+  box-shadow:none !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28::after{
+  bottom:-1px !important;
+}
+
+body[data-active-screen="map"][data-map-drawer="open"] > nav.rd-map-nav-v28::before{
+  top:-1px !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28{
+  height:58px !important;
+  min-height:58px !important;
+  border-radius:21px !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"]{
+    --rd-v39746-edge:14px;
+  }
+}
