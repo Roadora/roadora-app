@@ -10671,3 +10671,44 @@ body[data-active-screen="saved-stops"] .hero-menu-btn{
     max-width:205px;
   }
 }
+
+/* ROADORA v39.7.31 — Mijn Roadtrip hero title next to hamburger
+   Alleen Mijn Roadtrip hoofdscherm: titel horizontaal naast hamburger zetten.
+   Opgeslagen Stops, kaart/ORS, sheets, popovers en bottom nav ongemoeid. */
+body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top{
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:72px !important;
+  right:22px !important;
+  height:42px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:10px !important;
+  pointer-events:none !important;
+}
+
+body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top span{
+  display:block !important;
+  margin:0 !important;
+  color:#fff !important;
+  font-size:20px !important;
+  line-height:1 !important;
+  font-weight:950 !important;
+  letter-spacing:-.045em !important;
+  text-shadow:0 2px 16px rgba(20,13,8,.46) !important;
+}
+
+body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top .circle-btn,
+body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top button{
+  display:none !important;
+}
+
+@media(max-width:380px){
+  body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top{
+    left:66px !important;
+    right:18px !important;
+  }
+  body[data-active-screen="roadtrip"] .screen-roadtrip .inner-top span{
+    font-size:19px !important;
+  }
+}
