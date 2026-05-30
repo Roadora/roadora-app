@@ -224,7 +224,13 @@
 
 
   <section class="screen screen-saved-stops" data-screen="saved-stops">
-    <header class="plain-top"><h1>Opgeslagen stops</h1><button class="circle-btn light" data-screen-target="roadtrip">×</button></header>
+    <header class="saved-stops-topbar" aria-label="Opgeslagen stops navigatie">
+      <div class="saved-stops-top-title">
+        <small>MIJN ROADTRIP</small>
+        <strong>Opgeslagen stops</strong>
+      </div>
+      <button class="saved-stops-back" type="button" data-screen-target="roadtrip" aria-label="Terug naar Mijn Roadtrip">×</button>
+    </header>
     <div class="content hub-list saved-stops-phase1">
       <button class="hub-row" type="button" data-saved-category="hotels"><b>▭</b><span><strong>Hotels</strong><small>Opgeslagen hotels langs je route</small></span><i>0</i></button>
       <button class="hub-row" type="button" data-saved-category="food"><b>🍴</b><span><strong>Eten</strong><small>Restaurants, koffie en pauzes</small></span><i>0</i></button>
