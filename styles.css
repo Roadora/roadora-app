@@ -11569,3 +11569,34 @@ body:not([data-active-screen="map"]) .map-nav-layer-v1{
   display:none !important;
   pointer-events:none !important;
 }
+
+/* =========================================================
+   Roadora v39.7.43 — map canvas render repair
+   Fix voor leeg blauw kaartvlak na Plan route:
+   - Leaflet panes expliciet zichtbaar boven de fallback background.
+   - Roadora overlay/topbar/nav blijven erboven.
+   - Geen ORS/Maps/sheet-logica aangepast.
+   ========================================================= */
+body[data-active-screen="map"] #routeLeafletMap{
+  background:#d8d0bf !important;
+  z-index:1 !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap .leaflet-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-map-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-tile-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-marker-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-shadow-pane{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap .leaflet-tile-pane{ z-index:200 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane{ z-index:400 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-marker-pane{ z-index:600 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-shadow-pane{ z-index:500 !important; }
+
+body[data-active-screen="map"] #mapScreen .ui{ z-index:900 !important; }
+body[data-active-screen="map"] > nav.rd-map-nav-v28{ z-index:1400 !important; }

@@ -80,6 +80,22 @@ function getVehicleLabel(value){
   return ({ auto:'Auto', ev:'EV', camper:'Camper', motor:'Motor' })[value] || 'Auto';
 }
 
+/* Roadora v39.7.43 — global route summary formatters.
+   renderRoutePlan() can be called after ORS updates from inside the map engine;
+   these helpers must exist outside the map closure to prevent a silent JS stop. */
+function fmtKm(value){
+  const n = Number(value || 0);
+  return n ? `${Math.round(n/1000).toLocaleString('nl-NL')} km` : '— km';
+}
+
+function fmtTime(value){
+  const sec = Number(value || 0);
+  if(!sec) return '—';
+  const h = Math.floor(sec / 3600);
+  const min = Math.round((sec % 3600) / 60);
+  return h ? `${h}u ${String(min).padStart(2,'0')}m` : `${min} min`;
+}
+
 function isRouteReady(){
   return RoadoraState.route.start.trim().length > 1 && RoadoraState.route.end.trim().length > 1;
 }
@@ -405,7 +421,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(initialized || !$('#routeLeafletMap') || !window.L) return;
     initialized=true;
     map = L.map('routeLeafletMap', { zoomControl:false, attributionControl:false, preferCanvas:true, tap:true, zoomSnap:.25, zoomDelta:.5 }).setView([50.2,7.4],6);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.webp', { maxZoom:19 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
     routeLayer=L.layerGroup().addTo(map);
     markerLayer=L.layerGroup().addTo(map);
     labelLayer=L.layerGroup().addTo(map);
@@ -1083,9 +1099,27 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
   }
   window.RoadoraMapsExport = { open: openGoogleMapsRoute };
+  // Roadora v39.7.43 — robust map boot after Routeplan → Map.
+  // Some mobile browsers open the map screen before Leaflet has a measurable
+  // container. Keep ORS/Maps logic unchanged, but retry size + route load a few
+  // times so the user never lands on an empty blue fallback canvas.
+  function bootMapV39743(force){
+    ensureBase();
+    if(!map){
+      setTimeout(function(){ bootMapV39743(force); }, 160);
+      return;
+    }
+    [60, 180, 420, 900, 1500].forEach(function(delay){
+      setTimeout(function(){
+        try{ map.invalidateSize(false); }catch(_){ }
+        if(force || !routeCoordinates.length) loadRoute(!!force);
+      }, delay);
+    });
+  }
+
   window.RoadoraMap = {
-    ensure(){ ensureBase(); setTimeout(()=>{ map?.invalidateSize(false); loadRoute(); },120); },
-    refresh(){ loadRoute(true); },
+    ensure(){ bootMapV39743(false); },
+    refresh(){ bootMapV39743(true); },
     fit: fitRoute
   };
   if(document.body.dataset.activeScreen === 'map') window.RoadoraMap.ensure();
