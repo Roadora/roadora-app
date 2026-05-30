@@ -11842,3 +11842,22 @@ body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-rend
   min-height:38px !important;
   max-height:38px !important;
 }
+
+/* =========================================================
+   Roadora v39.7.53 — Stops Clearance Match + Nu Nodig Locked
+   Basis: v39.7.52 Nu Nodig Clearance Fix.
+   Doel:
+   - Nu Nodig clearance blijft exact locked zoals v39.7.52.
+   - Stops krijgt dezelfde lokale bottom-clearance als Nu Nodig.
+   - Geen wijzigingen aan sheet/nav/handle, ORS, Maps of route-load.
+   ========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-sheet-cards-v39{
+  top:22px !important;
+  bottom:16px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="stops"] #mapDrawer .rd-render-stop-card-v39619{
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+}
