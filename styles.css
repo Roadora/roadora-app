@@ -11083,3 +11083,238 @@ body[data-active-screen="plan"] .luxury-vehicle-section{
     transform:none !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.7.39 — Routeplan Fit Screen + Flat Vehicle Block
+   ---------------------------------------------------------
+   Alleen Routeplan UX-polish:
+   - hero blijft visueel vast, content schuift niet meer over de hero
+   - op normale telefoons past routeplan zonder scroll
+   - op kleine/lagere telefoons scrolt alleen de content onder de hero
+   - voertuig-label verwijderd en voertuigblok platter gemaakt
+   - Maps/ORS/Stops/Nu Nodig blijven ongemoeid
+   ========================================================= */
+
+body[data-active-screen="plan"] .screen-plan.routeplan-premium{
+  position:absolute !important;
+  inset:0 !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  overflow:hidden !important;
+  padding-bottom:0 !important;
+  background:#f1e7db !important;
+}
+
+body[data-active-screen="plan"] .routeplan-hero{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  z-index:1 !important;
+  height:clamp(286px, 37dvh, 356px) !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  transform:translateZ(0) !important;
+}
+
+body[data-active-screen="plan"] .routeplan-title{
+  bottom:84px !important;
+}
+
+body[data-active-screen="plan"] .routeplan-title h1{
+  font-size:clamp(34px, 9.6vw, 42px) !important;
+  line-height:.94 !important;
+}
+
+body[data-active-screen="plan"] .routeplan-panel{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:clamp(244px, 32dvh, 306px) !important;
+  bottom:calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+  z-index:3 !important;
+  margin:0 !important;
+  padding:58px 22px 14px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  overflow:visible !important;
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(241,231,219,0) 0px,
+      rgba(241,231,219,.54) 28px,
+      rgba(241,231,219,.92) 58px,
+      #f1e7db 82px,
+      #efe2d2 100%
+    ) !important;
+}
+
+body[data-active-screen="plan"] .routeplan-panel::before{
+  top:20px !important;
+  height:90px !important;
+  opacity:.45 !important;
+  filter:blur(18px) !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-card{
+  flex:0 0 auto !important;
+  border-radius:25px !important;
+  padding:0 !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-row{
+  min-height:54px !important;
+  padding:4px 20px !important;
+  grid-template-columns:22px minmax(0,1fr) !important;
+  gap:11px !important;
+}
+
+body[data-active-screen="plan"] .luxury-divider{
+  height:10px !important;
+  margin:-3px 0 -3px 31px !important;
+}
+
+body[data-active-screen="plan"] .luxury-marker{
+  width:12px !important;
+  height:12px !important;
+}
+
+body[data-active-screen="plan"] .luxury-marker::after{
+  inset:-5px !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-copy small{
+  margin-bottom:1px !important;
+  font-size:8.4px !important;
+  letter-spacing:.17em !important;
+}
+
+body[data-active-screen="plan"] .route-input{
+  font-size:17.5px !important;
+  line-height:1.02 !important;
+  padding-bottom:3px !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-preview{
+  margin:0 10px 10px !important;
+  min-height:32px !important;
+  border-radius:15px !important;
+  padding:0 10px !important;
+  gap:7px !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-preview .luxury-preview-icon{
+  width:21px !important;
+  height:21px !important;
+  font-size:11px !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-preview strong{
+  font-size:11.4px !important;
+}
+
+body[data-active-screen="plan"] .luxury-route-preview em{
+  display:none !important;
+}
+
+body[data-active-screen="plan"] .luxury-vehicle-section{
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+body[data-active-screen="plan"] .luxury-vehicle-section > small{
+  display:none !important;
+}
+
+body[data-active-screen="plan"] .luxury-vehicle-switch{
+  min-height:46px !important;
+  padding:5px !important;
+  gap:6px !important;
+  border-radius:24px !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+
+body[data-active-screen="plan"] .luxury-vehicle-switch button{
+  min-height:36px !important;
+  height:36px !important;
+  padding:0 4px !important;
+  border-radius:15px !important;
+  font-size:12.2px !important;
+  font-weight:800 !important;
+}
+
+body[data-active-screen="plan"] .routeplan-main-cta,
+body[data-active-screen="plan"] .luxury-main-cta{
+  flex:0 0 auto !important;
+  min-height:54px !important;
+  border-radius:23px !important;
+  margin:2px 0 0 !important;
+  font-size:16px !important;
+}
+
+@media (max-height:760px){
+  body[data-active-screen="plan"] .routeplan-hero{
+    height:276px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-title{
+    bottom:76px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-panel{
+    top:228px !important;
+    padding-top:54px !important;
+    gap:8px !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:18px !important;
+  }
+  body[data-active-screen="plan"] .luxury-route-row{
+    min-height:50px !important;
+  }
+  body[data-active-screen="plan"] .luxury-route-preview{
+    min-height:30px !important;
+    margin-bottom:8px !important;
+  }
+  body[data-active-screen="plan"] .luxury-vehicle-switch{
+    min-height:42px !important;
+  }
+  body[data-active-screen="plan"] .luxury-vehicle-switch button{
+    min-height:32px !important;
+    height:32px !important;
+    font-size:11.6px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-main-cta,
+  body[data-active-screen="plan"] .luxury-main-cta{
+    min-height:50px !important;
+  }
+}
+
+@media (max-height:680px){
+  body[data-active-screen="plan"] .routeplan-hero{
+    height:244px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-title{
+    bottom:66px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-title h1{
+    font-size:31px !important;
+  }
+  body[data-active-screen="plan"] .routeplan-panel{
+    top:206px !important;
+    bottom:calc(env(safe-area-inset-bottom, 0px) + 66px) !important;
+    padding-top:48px !important;
+  }
+}
+
+@media (min-height:850px){
+  body[data-active-screen="plan"] .routeplan-panel{
+    gap:12px !important;
+  }
+}
