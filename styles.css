@@ -11824,3 +11824,21 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-btn-v28[data-map-pan
   opacity:.92 !important;
   transform:none !important;
 }
+
+/* =========================================================
+   Roadora v39.7.52 — Nu Nodig Category Bottom Clearance
+   Basis: v39.7.51 locked fallback.
+   Doel:
+   - Alleen het Nu Nodig categorie-grid een fractie omhoog zetten.
+   - Sheet, nav, handle, Stops, ORS, Maps en route-load blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-sheet-cards-v39{
+  top:22px !important;
+  bottom:16px !important;
+}
+
+body[data-active-screen="map"][data-instant-map-panel="now"] #mapDrawer .rd-render-stop-card-v39619{
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+}
