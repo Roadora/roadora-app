@@ -12626,16 +12626,6 @@ body[data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
   line-height:1 !important;
 }
 
-/* De globale hamburger staat buiten de Roadtrip-state. Alleen in Hotels wordt hij
-   optisch op dezelfde middenlijn gezet als de titel en sluitknop. */
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
-  top:calc(env(safe-area-inset-top, 0px) + 50px) !important;
-  left:30px !important;
-  width:34px !important;
-  height:34px !important;
-  transform:none !important;
-}
-
 @media (max-width:390px){
   body[data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756{
     transform:translateY(-7px) !important;
@@ -12646,41 +12636,10 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-men
     min-height:52px !important;
   }
 
-  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
-    top:calc(env(safe-area-inset-top, 0px) + 48px) !important;
-    left:28px !important;
   }
-}
-
-/* =========================================================
-   Roadora v39.7.62 — Hotels Hamburger Optical Line Fix
-   Basis: v39.7.61 Hotels Header Alignment.
-   Doel:
-   - Alleen de hamburger in de Hotels-state optisch op dezelfde lijn zetten
-     als de titel en sluitknop.
-   - Geen wijzigingen aan cards, compare, scroll-window, bottom nav, kaart of ORS.
-   ========================================================= */
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
-  top:calc(env(safe-area-inset-top, 0px) + 22px) !important;
-  left:30px !important;
-  width:34px !important;
-  height:34px !important;
-  transform:none !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn span{
-  transform:none !important;
-}
 
 @media (max-width:390px){
-  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .hero-menu-btn{
-    top:calc(env(safe-area-inset-top, 0px) + 21px) !important;
-    left:28px !important;
   }
-}
 
 
 /* ROADORA v39.7.63 — Phase 1 hotel route actions
@@ -12789,17 +12748,6 @@ body[data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
   place-items:center !important;
   line-height:1 !important;
   z-index:25 !important;
-}
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .hero-menu-btn,
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .hero-menu-btn{
-  top:calc(env(safe-area-inset-top, 0px) + 22px) !important;
-  left:30px !important;
-  width:34px !important;
-  height:34px !important;
-  transform:none !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
 }
 body[data-roadtrip-view="saved-food"] .saved-hotels-list-v39758,
 body[data-roadtrip-view="saved-discover"] .saved-hotels-list-v39758{
@@ -13750,5 +13698,53 @@ body[data-active-screen="diary"] .hero-menu-btn span{
   body.hero-nav-integrated .hero-menu-btn,
   body[data-active-screen] .hero-menu-btn{
     position:absolute !important;
+  }
+}
+
+
+/* =========================================================
+   Roadora v39.9.10 — Legacy Header Override Cleanup
+   Oude Roadtrip-subpage/Profile hamburger overrides geneutraliseerd.
+   Eén master hamburgerpositie voor alle tabs en alle Roadtrip-substates.
+   ========================================================= */
+body.hero-nav-integrated .hero-menu-btn,
+body[data-active-screen] .hero-menu-btn,
+body[data-active-screen="roadtrip"][data-roadtrip-view] .hero-menu-btn,
+body[data-active-screen="profile"] .hero-menu-btn{
+  position:fixed !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:24px !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+  padding:0 !important;
+  margin:0 !important;
+  transform:none !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:5px !important;
+}
+body.hero-nav-integrated .hero-menu-btn span,
+body[data-active-screen] .hero-menu-btn span,
+body[data-active-screen="roadtrip"][data-roadtrip-view] .hero-menu-btn span,
+body[data-active-screen="profile"] .hero-menu-btn span{
+  width:22px !important;
+  height:2px !important;
+  min-height:2px !important;
+}
+@media (max-width:390px){
+  body.hero-nav-integrated .hero-menu-btn,
+  body[data-active-screen] .hero-menu-btn,
+  body[data-active-screen="roadtrip"][data-roadtrip-view] .hero-menu-btn,
+  body[data-active-screen="profile"] .hero-menu-btn{
+    top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+    left:24px !important;
+    width:34px !important;
+    height:34px !important;
   }
 }
