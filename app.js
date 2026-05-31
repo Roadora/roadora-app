@@ -2796,16 +2796,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     });
   }
   document.addEventListener("click", function(e){
-    const addHotelRoute = e.target.closest && e.target.closest("[data-hotel-add-route]");
-    if(addHotelRoute){
-      e.preventDefault();
-      e.stopPropagation();
-      addHotelRoute.classList.add("is-added-v39763");
-      addHotelRoute.textContent = "Toegevoegd";
-      showToast("Hotel klaar om toe te voegen aan je route");
-      return;
-    }
-
+    // Roadora v39.7.70 — remove legacy saved-hotel intercept.
+    // Saved Hotels now use the real persistent route-state handler below
+    // ([data-hotel-add-route] inside [data-saved-hotel-card]).
+    // Map preview "Toevoegen" keeps using .rd-hotel-preview-add-v39763.
     const addPreviewRoute = e.target.closest && e.target.closest(".rd-hotel-preview-add-v39763");
     if(addPreviewRoute){
       e.preventDefault();
