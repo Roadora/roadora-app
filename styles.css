@@ -13463,3 +13463,28 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-pres
 #mapScreen .rdRouteStopPinV39775.hotel span{ background:#2b211a; }
 #mapScreen .rdRouteStopPinV39775.food span{ background:#8b5422; }
 #mapScreen .rdRouteStopPinV39775.discover span{ background:#5f6f4a; }
+
+/* =========================================================
+   Roadora v39.7.78 — Route Creates Traject
+   Trajecten toont start → bestemming zodra er een route gepland is,
+   ook zonder toegevoegde stops. Geen map/ORS styling changes.
+   ========================================================= */
+.routes-premium-list-v39772.has-empty-route-v39778 .routes-timeline-v39767{
+  display: block;
+}
+.routes-premium-list-v39772.has-empty-route-v39778 .route-stops-v39767{
+  min-height: 34px;
+  position: relative;
+}
+.routes-premium-list-v39772.has-empty-route-v39778 .route-stops-v39767::before{
+  content: '';
+  display: block;
+  width: 2px;
+  height: 34px;
+  margin-left: 27px;
+  background: linear-gradient(180deg, rgba(166,106,35,.52), rgba(166,106,35,.18));
+  border-radius: 999px;
+}
+.routes-premium-list-v39772.has-empty-route-v39778 .routes-empty-v39767{
+  display: none !important;
+}

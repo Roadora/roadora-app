@@ -4119,3 +4119,126 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     key: SAVED_HOTELS_KEY
   };
 })();
+
+/* =========================================================
+   Roadora v39.7.78 — Route Creates Traject
+   - Geen route: Trajecten blijft lege state.
+   - Wel route gepland: Trajecten toont direct start → bestemming,
+     ook wanneer er nog 0 stops zijn.
+   - Geen ORS/Maps/export wijziging.
+   ========================================================= */
+(function(){
+  if(window.__roadoraRouteCreatesTrajectV39778) return;
+  window.__roadoraRouteCreatesTrajectV39778 = true;
+
+  function readStops(){
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'){
+        var apiStops = window.RoadoraRouteStopsV39766.all();
+        return Array.isArray(apiStops) ? apiStops.filter(function(stop){ return stop && stop.status === 'in_route'; }) : [];
+      }
+      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      return Array.isArray(raw) ? raw.filter(function(stop){ return stop && stop.status === 'in_route'; }) : [];
+    }catch(_){ return []; }
+  }
+
+  function routeState(){
+    try{ return (window.RoadoraState && window.RoadoraState.route) || {}; }catch(_){ return {}; }
+  }
+
+  function activeTrip(){
+    try{ return window.RoadoraState && window.RoadoraState.activeTrip; }catch(_){ return null; }
+  }
+
+  function hasPlannedRoute(route){
+    var start = String((route && route.start) || '').trim();
+    var end = String((route && route.end) || '').trim();
+    return !!(route && route.planned && start.length > 1 && end.length > 1);
+  }
+
+  function fmtKm(value){
+    var n = Number(value || 0);
+    return n ? Math.round(n / 1000).toLocaleString('nl-NL') + ' km' : '— km';
+  }
+
+  function fmtDuration(seconds){
+    seconds = Number(seconds) || 0;
+    if(!seconds) return '—';
+    var h = Math.floor(seconds / 3600);
+    var m = Math.round((seconds % 3600) / 60);
+    if(m === 60){ h += 1; m = 0; }
+    return h ? (h + 'u ' + String(m).padStart(2,'0') + 'm') : (m + ' min');
+  }
+
+  function ensureStatsCard(list){
+    var stats = document.getElementById('routesStatsV39772');
+    if(stats) return stats;
+    stats = document.createElement('section');
+    stats.className = 'routes-stats-v39772';
+    stats.id = 'routesStatsV39772';
+    stats.innerHTML = '<div><small>AFSTAND</small><strong id="routesStatsKmV39772">— km</strong></div>' +
+      '<div><small>REISTIJD</small><strong id="routesStatsTimeV39772">—</strong></div>' +
+      '<div><small>STOPS</small><strong id="routesStatsStopsV39772">0</strong></div>';
+    var empty = document.getElementById('routesEmptyV39767');
+    if(empty && empty.parentNode === list) list.insertBefore(stats, empty);
+    else list.insertBefore(stats, list.firstChild);
+    return stats;
+  }
+
+  function applyTrajectRouteState(){
+    var list = document.getElementById('routesListV39767');
+    var empty = document.getElementById('routesEmptyV39767');
+    var timeline = document.getElementById('routesTimelineV39767');
+    var stopsWrap = document.getElementById('routesStopsV39767');
+    if(!list || !empty || !timeline || !stopsWrap) return;
+
+    var route = routeState();
+    var stops = readStops();
+    var planned = hasPlannedRoute(route);
+    var shouldShowTimeline = planned || stops.length > 0;
+
+    var intro = list.querySelector('.routes-intro-card-v39767');
+    if(intro) intro.hidden = true;
+
+    var start = document.getElementById('routesStartV39767');
+    var end = document.getElementById('routesEndV39767');
+    if(start) start.textContent = planned ? route.start : 'Vertrekpunt';
+    if(end) end.textContent = planned ? route.end : 'Bestemming';
+
+    empty.hidden = shouldShowTimeline;
+    timeline.hidden = !shouldShowTimeline;
+
+    var stats = ensureStatsCard(list);
+    var summary = route.summary || {};
+    var kmEl = document.getElementById('routesStatsKmV39772');
+    var timeEl = document.getElementById('routesStatsTimeV39772');
+    var stopsEl = document.getElementById('routesStatsStopsV39772');
+    if(stats) stats.hidden = !shouldShowTimeline;
+    if(kmEl) kmEl.textContent = fmtKm(summary.distance || 0);
+    if(timeEl) timeEl.textContent = fmtDuration(summary.duration || 0);
+    if(stopsEl) stopsEl.textContent = String(stops.length);
+
+    list.classList.toggle('has-planned-route-v39778', planned);
+    list.classList.toggle('has-empty-route-v39778', planned && stops.length === 0);
+  }
+
+  function schedule(){
+    setTimeout(applyTrajectRouteState, 0);
+    setTimeout(applyTrajectRouteState, 120);
+    setTimeout(applyTrajectRouteState, 450);
+  }
+
+  document.addEventListener('DOMContentLoaded', schedule);
+  window.addEventListener('roadora:route-stops-updated', schedule);
+  window.addEventListener('storage', function(e){
+    if(e && (e.key === 'roadora_route_stops_v39766' || e.key === 'roadora_phase1_state_v44_clean')) schedule();
+  });
+  document.addEventListener('click', function(event){
+    if(event.target.closest && (event.target.closest('[data-screen-target="routes"]') || event.target.closest('#planRouteBtn'))){
+      schedule();
+    }
+  });
+
+  window.RoadoraTrajectV39778 = { render:schedule };
+  schedule();
+})();
