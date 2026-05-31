@@ -4242,3 +4242,108 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraTrajectV39778 = { render:schedule };
   schedule();
 })();
+
+/* =========================================================
+   Roadora v39.7.79 — Next Stop Resolver
+   - Navigeer kijkt altijd opnieuw naar de actuele route-state.
+   - 1, 2, 10 of meer stops: altijd eerstvolgende actieve stop.
+   - Verwijderde / afgeronde stops worden genegeerd.
+   - Geen ORS-herberekening, geen kaart-route wijziging, geen multi-stop export.
+   ========================================================= */
+(function(){
+  if(window.__roadoraNextStopResolverV39779) return;
+  window.__roadoraNextStopResolverV39779 = true;
+
+  var ROUTE_STOPS_KEY = 'roadora_route_stops_v39766';
+
+  function readRawStops(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(ROUTE_STOPS_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    }catch(_){ return []; }
+  }
+
+  function isActiveStop(stop){
+    if(!stop) return false;
+    var status = String(stop.status || 'in_route').toLowerCase();
+    if(status === 'removed' || status === 'deleted' || status === 'complete' || status === 'completed' || status === 'passed' || status === 'done') return false;
+    if(stop.removed || stop.deleted || stop.completed || stop.passed || stop.done) return false;
+    return status === 'in_route' || status === 'active' || status === 'added' || !stop.status;
+  }
+
+  function readActiveStops(){
+    var source = readRawStops();
+    var seen = {};
+    return source
+      .filter(isActiveStop)
+      .filter(function(stop){
+        var id = String(stop.id || stop.name || stop.title || Math.random()).trim();
+        if(seen[id]) return false;
+        seen[id] = true;
+        return true;
+      })
+      .sort(function(a,b){
+        var ao = Number(a.order ?? a.routeOrder ?? a.index ?? 0);
+        var bo = Number(b.order ?? b.routeOrder ?? b.index ?? 0);
+        if(ao || bo) return ao - bo;
+        var at = Date.parse(a.addedAt || a.createdAt || a.updatedAt || '') || 0;
+        var bt = Date.parse(b.addedAt || b.createdAt || b.updatedAt || '') || 0;
+        return at - bt;
+      });
+  }
+
+  function destinationForStop(stop){
+    if(!stop) return '';
+    var lat = Number(stop.lat);
+    var lng = Number(stop.lng ?? stop.lon);
+    if(Number.isFinite(lat) && Number.isFinite(lng)) return lat + ',' + lng;
+
+    if(Array.isArray(stop.coord) && stop.coord.length >= 2){
+      var lon = Number(stop.coord[0]);
+      var lat2 = Number(stop.coord[1]);
+      if(Number.isFinite(lat2) && Number.isFinite(lon)) return lat2 + ',' + lon;
+    }
+
+    return String(stop.name || stop.title || stop.label || '').trim();
+  }
+
+  function activeRoute(){
+    try{ return (window.RoadoraState && window.RoadoraState.route) || {}; }catch(_){ return {}; }
+  }
+
+  function fallbackEndDestination(){
+    var route = activeRoute();
+    // Keep the existing clean A → B behavior: named destination is enough for
+    // Google Maps and avoids reintroducing old sampled route-shape points.
+    return String(route.end || route.destination || '').trim() || 'Praag';
+  }
+
+  function openNextStopOrDestination(){
+    var activeStops = readActiveStops();
+    var nextStop = activeStops[0] || null;
+    var destination = destinationForStop(nextStop) || fallbackEndDestination();
+    var params = new URLSearchParams({ api:'1', travelmode:'driving', destination:destination });
+    window.open('https://www.google.com/maps/dir/?' + params.toString(), '_blank', 'noopener');
+  }
+
+  function interceptNavigateClick(event){
+    var btn = event.target && event.target.closest && event.target.closest(
+      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"], #mapsRouteBtn, #mapNavMainBtn'
+    );
+    if(!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    openNextStopOrDestination();
+  }
+
+  document.addEventListener('click', interceptNavigateClick, true);
+
+  window.RoadoraMapsExport = window.RoadoraMapsExport || {};
+  window.RoadoraMapsExport.open = openNextStopOrDestination;
+  window.RoadoraNextStopResolverV39779 = {
+    stops: readActiveStops,
+    next: function(){ return readActiveStops()[0] || null; },
+    open: openNextStopOrDestination
+  };
+})();
