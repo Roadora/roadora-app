@@ -4525,6 +4525,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return bits.slice(0, 2).join(' · ') || 'Toegevoegd aan je route';
   }
 
+  function stopImage(stop, meta){
+    var img = (stop && (stop.img || stop.image || stop.photo || stop.photoUrl)) || '';
+    if(img) return img;
+    var tone = meta && meta.tone;
+    if(tone === 'food') return 'assets/hero-hotels.webp';
+    if(tone === 'discover') return 'assets/hero-diary.webp';
+    if(tone === 'fuel' || tone === 'charge' || tone === 'wc') return 'assets/hero-routes.webp';
+    return 'assets/hero-hotels.webp';
+  }
+
   function ensureV2Hero(list){
     var hero = document.getElementById('routesHeroV3990');
     if(hero) return hero;
@@ -4591,10 +4601,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       var meta = typeMeta(stop.type);
       var metric = metricFor(index, stops, total);
       var subtitle = stopSubtitle(stop);
-      return '<article class="route-stop-card-v39767 route-stop-card-v39771 route-stop-card-v39772 route-stop-card-v3990 is-'+escapeText(meta.tone)+'" data-route-stop-id="'+escapeText(stop.id)+'">' +
-        '<div class="route-stop-index-v3990"><span>'+escapeText(String(index + 1))+'</span></div>' +
-        '<span class="route-stop-icon-v39767 route-stop-icon-v39772 route-stop-icon-v3990">'+escapeText(meta.icon)+'</span>' +
-        '<div class="route-stop-copy-v39767 route-stop-copy-v39772 route-stop-copy-v3990">' +
+      var photo = stopImage(stop, meta);
+      return '<article class="route-stop-card-v39767 route-stop-card-v39771 route-stop-card-v39772 route-stop-card-v3990 route-stop-card-v3992 is-'+escapeText(meta.tone)+'" data-route-stop-id="'+escapeText(stop.id)+'">' +
+        '<div class="route-stop-index-v3990 route-stop-index-v3992"><span>'+escapeText(String(index + 1))+'</span></div>' +
+        '<div class="route-stop-photo-v3992" style="background-image:url(\''+escapeText(photo)+'\')"><span>'+escapeText(meta.icon)+'</span></div>' +
+        '<div class="route-stop-copy-v39767 route-stop-copy-v39772 route-stop-copy-v3990 route-stop-copy-v3992">' +
           '<small><em>'+escapeText(meta.label)+'</em><b>'+escapeText(metric)+'</b></small>' +
           '<strong>'+escapeText(stop.name || 'Stop')+'</strong>' +
           '<p>'+escapeText(subtitle)+'</p>' +
