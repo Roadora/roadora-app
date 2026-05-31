@@ -3429,6 +3429,63 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   syncSavedButtons();
 })();
 
+
+
+/* =========================================================
+   Roadora v39.7.69 — Hotel Add Handler Sync
+   Scope: fix saved Hotels so they use the same route-stop state as Eten/Uitjes.
+   No ORS/Maps/export recalculation yet.
+   ========================================================= */
+(function(){
+  if(window.__roadoraHotelAddHandlerSyncV39769) return;
+  window.__roadoraHotelAddHandlerSyncV39769 = true;
+
+  function slug(value){
+    return String(value || 'hotel')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'hotel';
+  }
+
+  function normalizeHotelCards(){
+    document.querySelectorAll('[data-roadtrip-state="saved-hotels"] [data-saved-hotel-card]').forEach(function(card){
+      var title = card.querySelector('h3');
+      var name = (card.dataset.routeStopName || (title && title.textContent.trim()) || 'Hotel').trim();
+      if(!card.dataset.routeStopType) card.dataset.routeStopType = 'hotel';
+      if(!card.dataset.routeStopName) card.dataset.routeStopName = name;
+      if(!card.dataset.routeStopId) card.dataset.routeStopId = 'hotel-' + slug(name);
+
+      var button = card.querySelector('[data-hotel-add-route]');
+      if(button){
+        button.dataset.routeStopId = card.dataset.routeStopId;
+        button.dataset.routeStopType = 'hotel';
+      }
+    });
+  }
+
+  function sync(){
+    normalizeHotelCards();
+    if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.sync === 'function'){
+      window.RoadoraRouteStopsV39766.sync();
+    }
+    if(window.RoadoraTrajectenV39767 && typeof window.RoadoraTrajectenV39767.render === 'function'){
+      window.RoadoraTrajectenV39767.render();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', sync);
+  window.addEventListener('roadora:route-stops-updated', sync);
+  document.addEventListener('click', function(event){
+    if(event.target.closest && event.target.closest('[data-roadtrip-entry="saved-hotels"], [data-saved-stop-category="hotels"], [data-hotel-add-route]')){
+      setTimeout(sync, 0);
+      setTimeout(sync, 120);
+    }
+  }, true);
+
+  sync();
+})();
+
 /* =========================================================
    Roadora v39.7.67 — Trajecten v1
    Scope: reads route-stop state from v39.7.66 and renders a clean timeline.
