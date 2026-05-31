@@ -13121,3 +13121,18 @@ body[data-roadtrip-view="saved-discover"] .hotel-actions-v39763 button{
   .route-stop-card-v39767{grid-template-columns:38px minmax(0,1fr);}
   .route-stop-card-v39767 em{grid-column:2;justify-self:start;margin-top:-4px;}
 }
+
+
+/* =========================================================
+   Roadora v39.7.68 — Route State Complete polish
+   Toggle state for Toevoegen ⇄ In route. No ORS/Maps changes.
+   ========================================================= */
+.hotel-add-route-v39763.is-in-route-v39766,
+.rd-hotel-preview-add-v39763.is-in-route-v39766{
+  background:linear-gradient(135deg,#2f241b,#211812) !important;
+  color:#fff8ee !important;
+}
+.saved-hotel-card-v39754.is-in-route-v39766 .hotel-add-route-v39763::after,
+.saved-content-card-v39764.is-in-route-v39766 .hotel-add-route-v39763::after{
+  content:"";
+}

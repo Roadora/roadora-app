@@ -3325,12 +3325,27 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return true;
   }
 
+  // Roadora v39.7.68 — complete route state toggle.
+  // Removing from route only updates the local route-stop state; ORS/Maps export
+  // are still intentionally untouched until the next integration phase.
+  function removeStop(id){
+    if(!id) return false;
+    var before = readStops();
+    var after = before.filter(function(item){ return item && item.id !== id; });
+    writeStops(after);
+    try{
+      window.RoadoraState = window.RoadoraState || {};
+      window.RoadoraState.routeStops = after;
+    }catch(_){ }
+    return after.length !== before.length;
+  }
+
   function markButton(button, added){
     if(!button) return;
     button.classList.toggle('is-added-v39763', !!added);
     button.classList.toggle('is-in-route-v39766', !!added);
     button.setAttribute('aria-pressed', String(!!added));
-    button.textContent = added ? '✓ Toegevoegd' : 'Toevoegen';
+    button.textContent = added ? '✓ In route' : 'Toevoegen';
   }
 
   function markCard(card, added){
@@ -3362,12 +3377,24 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function handleAdd(button, getDataFn){
     var data = getDataFn(button);
     if(!data) return;
+    var alreadyAdded = hasStop(data.id);
+    if(alreadyAdded){
+      removeStop(data.id);
+      markButton(button, false);
+      var removedCard = button.closest && button.closest('[data-saved-hotel-card], [data-saved-content-card]');
+      if(removedCard) markCard(removedCard, false);
+      toast(typeLabel(data.type) + ' verwijderd uit je route');
+      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ stops: readStops(), removed:data } }));
+      syncSavedButtons();
+      return;
+    }
     addStop(data);
     markButton(button, true);
     var card = button.closest && button.closest('[data-saved-hotel-card], [data-saved-content-card]');
     if(card) markCard(card, true);
     toast(typeLabel(data.type) + ' toegevoegd aan je route');
     window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ stops: readStops(), added:data } }));
+    syncSavedButtons();
   }
 
   document.addEventListener('click', function(event){
@@ -3393,6 +3420,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraRouteStopsV39766 = {
     all: readStops,
     add: addStop,
+    remove: removeStop,
+    has: hasStop,
     sync: syncSavedButtons,
     key: STORAGE_KEY
   };
