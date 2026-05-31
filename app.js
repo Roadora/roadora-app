@@ -459,8 +459,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     $('#zoomIn')?.addEventListener('click',()=>map.zoomIn());
     $('#zoomOut')?.addEventListener('click',()=>map.zoomOut());
     $('#fitRoute')?.addEventListener('click',()=>fitRoute());
-    $('#mapsRouteBtn')?.addEventListener('click',()=>openGoogleMapsRoute());
-    $('#mapNavMainBtn')?.addEventListener('click',()=>openGoogleMapsRoute());
+    // Roadora v39.8.0 cleanup step 3: removed legacy Maps button hooks.
+    // Current navigation uses body > nav.rd-map-nav-v28 [data-map-action="navigate-route"].
     $('#routeInfoBtn')?.addEventListener('click',()=>showMapToast('Route-info staat klaar'));
     $('#openAddStopMode')?.addEventListener('click',()=>setRoadtripSheetMode('add'));
     $('#openAssistMode')?.addEventListener('click',()=>setRoadtripSheetMode('assist'));
@@ -476,14 +476,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       b.classList.toggle('active');
       showMapToast(`${b.textContent.trim()} bijgewerkt`);
     });
-    document.querySelector('.bottomNavV59')?.addEventListener('click',(e)=>{
-      const b=e.target.closest('.navItem'); if(!b) return;
-      document.querySelectorAll('.bottomNavV59 .navItem').forEach(x=>x.classList.toggle('active',x===b));
-      if(b.dataset.nav === 'navigate') openGoogleMapsRoute();
-      else if(b.dataset.nav === 'stops') showMapToast('Stops openen we in de volgende stap');
-      else if(b.dataset.nav === 'more') showMapToast('Meer kaartopties komen later');
-      else showMapToast('Route overzicht');
-    });
+    // Roadora v39.8.0 cleanup step 3: removed old .bottomNavV59 handler.
+    // The active map bottom navigation is rd-map-nav-v28 / rd-map-nav-v39773.
     document.querySelector('#mapVehicleSwitch')?.addEventListener('click',(e)=>{
       const b=e.target.closest('[data-map-vehicle]'); if(!b) return;
       if(window.RoadoraState?.route){
@@ -4443,7 +4437,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function interceptNavigateClick(event){
     var btn = event.target && event.target.closest && event.target.closest(
-      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"], #mapsRouteBtn, #mapNavMainBtn'
+      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"]'
     );
     if(!btn) return;
     event.preventDefault();
