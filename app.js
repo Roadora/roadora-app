@@ -3061,7 +3061,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       }
       button.classList.add('is-added-v39763','is-in-route-v39766');
       button.textContent = '✓ In route';
-      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'route-only-preview-v3988' } }));
+      // Roadora v39.8.9 — practical stops become the immediate next Maps target.
+      // Tanken/Laden/WC are not favorites, but when the user adds one, the
+      // central Navigeer CTA should go to that exact practical stop first.
+      try{ localStorage.setItem('roadora_next_stop_id_v3989', stop.id); }catch(_){ }
+      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'route-only-preview-v3988', nextStopId:stop.id } }));
       try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
       try{ closeHotelPreview(); }catch(_){ }
       if(typeof showMapToast === 'function') showMapToast(stop.name + ' toegevoegd aan je traject');
@@ -4487,9 +4491,26 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return String(route.end || route.destination || '').trim() || 'Praag';
   }
 
+  function preferredNextStopIdV3989(){
+    try{ return String(localStorage.getItem('roadora_next_stop_id_v3989') || '').trim(); }catch(_){ return ''; }
+  }
+
+  function chooseNextStopV3989(activeStops){
+    activeStops = Array.isArray(activeStops) ? activeStops : [];
+    var preferredId = preferredNextStopIdV3989();
+    if(preferredId){
+      var preferred = activeStops.find(function(stop){
+        return String(stop && stop.id || '') === preferredId;
+      });
+      if(preferred) return preferred;
+      try{ localStorage.removeItem('roadora_next_stop_id_v3989'); }catch(_){ }
+    }
+    return activeStops[0] || null;
+  }
+
   function openNextStopOrDestination(){
     var activeStops = readActiveStops();
-    var nextStop = activeStops[0] || null;
+    var nextStop = chooseNextStopV3989(activeStops);
     var destination = destinationForStop(nextStop) || fallbackEndDestination();
     var params = new URLSearchParams({ api:'1', travelmode:'driving', destination:destination });
     window.open('https://www.google.com/maps/dir/?' + params.toString(), '_blank', 'noopener');
@@ -4512,7 +4533,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraMapsExport.open = openNextStopOrDestination;
   window.RoadoraNextStopResolverV39779 = {
     stops: readActiveStops,
-    next: function(){ return readActiveStops()[0] || null; },
+    next: function(){ return chooseNextStopV3989(readActiveStops()); },
     open: openNextStopOrDestination
   };
 })();
