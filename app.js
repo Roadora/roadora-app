@@ -1013,8 +1013,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function routeStopIconV39775(stop){
     const type = (stop && stop.type) || 'stop';
-    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : (type === 'fuel' ? '⛽' : (type === 'charge' ? '⚡' : (type === 'wc' ? 'WC' : '⌁')))));
-    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : (type === 'fuel' ? 'fuel' : (type === 'charge' ? 'charge' : (type === 'wc' ? 'wc' : 'stop')))));
+    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : '⌁'));
+    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : 'stop'));
     return L.divIcon({
       className:`rdRouteStopPinV39775 ${cls}`,
       html:`<span>${icon}</span><b>✓</b>`,
@@ -1053,9 +1053,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Hotel', cls:'hotel', action:'Boek' };
     if(type === 'food') return { icon:'🍴', label:'Eten', cls:'food', action:'Navigeer' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', cls:'discover', action:'Navigeer' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', cls:'fuel', action:'Navigeer' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop', cls:'charge', action:'Navigeer' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop', cls:'wc', action:'Navigeer' };
     return { icon:'⌁', label:'Stop', cls:'stop', action:'Navigeer' };
   }
 
@@ -1369,39 +1366,20 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return String(stop.name || stop.title || stop.label || '').trim();
   }
 
-  function uniqueRouteDestinationsV39811(items){
-    const seen = new Set();
-    return (Array.isArray(items) ? items : [])
-      .map(destinationForRouteStopV39777)
-      .map(value => String(value || '').trim())
-      .filter(Boolean)
-      .filter(value => {
-        const key = value.toLowerCase();
-        if(seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-  }
-
   function openGoogleMapsRoute(){
     const r=activeRoute();
     const endCoord=routeCoordinates[routeCoordinates.length-1] || coordFor(r.end, DEFAULT_END);
 
-    // Roadora v39.8.11 — preview/nav buttons must keep the full route intact.
-    // Practical stops (fuel/charge/WC) are waypoints, never replacement destinations.
-    // This fixes Android Google Maps opening a fuel stop as a search result instead
-    // of opening the complete route with Starten visible.
-    const routeStops = readRouteStopsForMapsV39777().filter(stop => {
-      const status = String((stop && stop.status) || 'in_route').toLowerCase();
-      return stop && status !== 'removed' && status !== 'deleted' && status !== 'complete' && status !== 'completed' && !stop.removed && !stop.deleted;
-    });
-    const waypoints = uniqueRouteDestinationsV39811(routeStops);
-    const routeEndName = String(r.end || '').trim();
-    const destination = routeEndName || `${endCoord[1]},${endCoord[0]}`;
+    // Roadora v39.7.77 — Navigate to first selected route stop.
+    // Safe phase: if the user added stops to Trajecten, the central Navigeer
+    // button opens Google Maps to the first selected stop. If no stops exist,
+    // it keeps the clean A → B behavior from v39.7.74. No ORS redraw, no map
+    // route recalculation and no full multi-stop export yet.
+    const routeStops = readRouteStopsForMapsV39777();
+    const firstStopDestination = destinationForRouteStopV39777(routeStops[0]);
+    const destination = firstStopDestination || `${endCoord[1]},${endCoord[0]}`;
 
-    const params=new URLSearchParams({ api:'1', travelmode:'driving', dir_action:'navigate', destination });
-    if(waypoints.length) params.set('waypoints', waypoints.join('|'));
-
+    const params=new URLSearchParams({ api:'1', travelmode:'driving', destination });
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
   }
   window.RoadoraMapsExport = { open: openGoogleMapsRoute };
@@ -2566,7 +2544,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Praktische korte stop langs je route voor een snelle en rustige pauze onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-route-only-add-v3988" data-route-only-type="wc">Toevoegen</button>' +
+          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2633,7 +2611,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Snelle laadstop langs je route met actuele laadcapaciteit en handige voorzieningen.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-route-only-add-v3988" data-route-only-type="charge">Toevoegen</button>' +
+          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2700,7 +2678,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Handige tankstop langs je route met snelle voorzieningen voor onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-route-only-add-v3988" data-route-only-type="fuel">Toevoegen</button>' +
+          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -3023,104 +3001,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       }
     });
   }
-
-
-  /* Roadora v39.8.8 — route-only practical stops.
-     Tanken, Laden en WC zijn onderweg-stops: ze worden niet opgeslagen als favoriet,
-     maar direct toegevoegd aan de actieve route/Trajecten. ORS/Maps/export blijven onaangeraakt. */
-  function routeOnlyPreviewMetaV3988(type){
-    if(type === 'fuel') return { label:'Tankstop', routeType:'fuel', icon:'⛽' };
-    if(type === 'charge') return { label:'Laadstop', routeType:'charge', icon:'⚡' };
-    if(type === 'wc') return { label:'WC-stop', routeType:'wc', icon:'WC' };
-    return { label:'Stop', routeType:'stop', icon:'⌁' };
-  }
-
-  function slugRouteOnlyV3988(value){
-    return String(value || 'stop')
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'stop';
-  }
-
-  function routeOnlyDataFromPreviewV3988(button){
-    const pop = button && button.closest && button.closest('.rd-hotel-preview-popover-v39644');
-    if(!pop) return null;
-    const type = button.getAttribute('data-route-only-type') || 'stop';
-    const meta = routeOnlyPreviewMetaV3988(type);
-    const titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
-    const metaEl = pop.querySelector('.rd-hotel-preview-meta-v39644');
-    const kickerEl = pop.querySelector('.rd-hotel-preview-kicker-v39644');
-    const name = (titleEl && titleEl.textContent.trim()) || meta.label;
-    const info = (kickerEl && kickerEl.textContent.trim()) || (metaEl && metaEl.textContent.trim()) || 'Toegevoegd aan je traject';
-
-    // Roadora v39.8.12 — practical stops must use the same Maps route-flow as hotels.
-    // Google Maps falls back to search results when a fuel/charge/WC waypoint is only
-    // a loose text query like "Aral Koblenz". We therefore enrich the route-only stop
-    // with the exact route-derived coordinate that is already used for its card/pin.
-    let coord = null;
-    let distanceKm;
-    try{
-      if(typeof getActiveCategoryCardsV39686 === 'function'){
-        const cards = getActiveCategoryCardsV39686(type) || [];
-        const wanted = String(name || '').trim().toLowerCase();
-        const match = cards.find(function(card){
-          return String((card && (card.name || card.title || card.label)) || '').trim().toLowerCase() === wanted;
-        }) || cards[0];
-        if(match && Array.isArray(match.coord) && match.coord.length >= 2){
-          coord = [Number(match.coord[0]), Number(match.coord[1])];
-          distanceKm = match.distanceKm;
-        }
-      }
-    }catch(_){ }
-
-    const stop = {
-      id: meta.routeType + '-' + slugRouteOnlyV3988(name),
-      type: meta.routeType,
-      category: type,
-      name: name,
-      title: name,
-      meta: info,
-      source: 'route-only-preview',
-      status: 'in_route',
-      addedAt: new Date().toISOString()
-    };
-
-    if(Array.isArray(coord) && Number.isFinite(coord[0]) && Number.isFinite(coord[1])){
-      stop.coord = coord;
-      stop.coordinates = coord;
-      stop.lon = coord[0];
-      stop.lng = coord[0];
-      stop.lat = coord[1];
-      if(Number.isFinite(Number(distanceKm))) stop.distanceKm = Number(distanceKm);
-    }
-
-    return stop;
-  }
-
-  function addRouteOnlyStopV3988(button){
-    const stop = routeOnlyDataFromPreviewV3988(button);
-    if(!stop || !stop.id) return;
-    try{
-      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.add === 'function'){
-        window.RoadoraRouteStopsV39766.add(stop);
-      }else{
-        const raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
-        const stops = Array.isArray(raw) ? raw : [];
-        const existing = stops.findIndex(function(item){ return item && item.id === stop.id; });
-        if(existing >= 0) stops[existing] = Object.assign({}, stops[existing], stop, { updatedAt:new Date().toISOString() });
-        else stops.push(stop);
-        localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
-      }
-      button.classList.add('is-added-v39763','is-in-route-v39766');
-      button.textContent = '✓ In route';
-      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'route-only-preview-v3988' } }));
-      try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
-      try{ closeHotelPreview(); }catch(_){ }
-      if(typeof showMapToast === 'function') showMapToast(stop.name + ' toegevoegd aan je traject');
-    }catch(_){ }
-  }
-
   document.addEventListener("click", function(e){
     // Roadora v39.7.70 — remove legacy saved-hotel intercept.
     // Saved Hotels now use the real persistent route-state handler below
@@ -3141,16 +3021,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       e.preventDefault();
       e.stopPropagation();
       openGoogleMapsRoute();
-      return;
-    }
-
-
-    const routeOnlyAdd = e.target.closest && e.target.closest(".rd-route-only-add-v3988");
-    if(routeOnlyAdd){
-      e.preventDefault();
-      e.stopPropagation();
-      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-      addRouteOnlyStopV3988(routeOnlyAdd);
       return;
     }
 
@@ -3844,9 +3714,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting' };
     if(type === 'food') return { icon:'🍴', label:'Eten' };
     if(type === 'discover') return { icon:'◎', label:'Uitje' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop' };
     return { icon:'⌁', label:'Stop' };
   }
 
@@ -3979,9 +3846,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting', className:'is-hotel' };
     if(type === 'food') return { icon:'🍴', label:'Eten', className:'is-food' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', className:'is-discover' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', className:'is-fuel' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop', className:'is-charge' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop', className:'is-wc' };
     return { icon:'⌁', label:'Stop', className:'is-stop' };
   }
 
@@ -4466,11 +4330,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 })();
 
 /* =========================================================
-   Roadora v39.8.10 — Route Stop Maps Export Fix
-   - Navigeer opent weer de volledige route naar de eindbestemming.
-   - Actieve route-stops gaan als tussenstops/waypoints mee.
-   - Tanken/Laden/WC blijven route-only, maar vervangen de eindbestemming niet.
-   - Geen ORS-herberekening, geen Leaflet-route wijziging.
+   Roadora v39.7.79 — Next Stop Resolver
+   - Navigeer kijkt altijd opnieuw naar de actuele route-state.
+   - 1, 2, 10 of meer stops: altijd eerstvolgende actieve stop.
+   - Verwijderde / afgeronde stops worden genegeerd.
+   - Geen ORS-herberekening, geen kaart-route wijziging, geen multi-stop export.
    ========================================================= */
 (function(){
   if(window.__roadoraNextStopResolverV39779) return;
@@ -4535,51 +4399,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function fallbackEndDestination(){
     var route = activeRoute();
-    // Keep final planned destination intact. Do not fall back to a random city;
-    // if the route label is missing, use the map engine's coordinate fallback.
-    var named = String(route.end || route.destination || '').trim();
-    if(named) return named;
-    try{
-      var coords = (window.routeCoordinates || []);
-      var last = coords[coords.length - 1];
-      if(Array.isArray(last) && last.length >= 2) return last[1] + ',' + last[0];
-    }catch(_){ }
-    return 'Innsbruck';
-  }
-
-  function uniqueDestinationsV39810(items){
-    var seen = {};
-    return (Array.isArray(items) ? items : [])
-      .map(destinationForStop)
-      .map(function(value){ return String(value || '').trim(); })
-      .filter(Boolean)
-      .filter(function(value){
-        var key = value.toLowerCase();
-        if(seen[key]) return false;
-        seen[key] = true;
-        return true;
-      });
+    // Keep the existing clean A → B behavior: named destination is enough for
+    // Google Maps and avoids reintroducing old sampled route-shape points.
+    return String(route.end || route.destination || '').trim() || 'Praag';
   }
 
   function openNextStopOrDestination(){
     var activeStops = readActiveStops();
-    var routeEnd = fallbackEndDestination();
-
-    // v39.8.10 — keep the final destination intact.
-    // Google Maps gets selected route-stops as waypoints, so a tank/charge/WC
-    // stop behaves like a real tussenstop instead of replacing the route.
-    var waypoints = uniqueDestinationsV39810(activeStops);
-    var params = new URLSearchParams({
-      api:'1',
-      travelmode:'driving',
-      dir_action:'navigate',
-      destination:routeEnd
-    });
-
-    if(waypoints.length){
-      params.set('waypoints', waypoints.join('|'));
-    }
-
+    var nextStop = activeStops[0] || null;
+    var destination = destinationForStop(nextStop) || fallbackEndDestination();
+    var params = new URLSearchParams({ api:'1', travelmode:'driving', destination:destination });
     window.open('https://www.google.com/maps/dir/?' + params.toString(), '_blank', 'noopener');
   }
 
