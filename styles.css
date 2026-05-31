@@ -13770,3 +13770,18 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-ho
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
   font-weight:600 !important;
 }
+
+/* =========================================================
+   Roadora v39.9.13 — Hotels Close Button Subtle Surface
+   Basis: v39.9.12 Hotels Header Typography Locked.
+   Doel:
+   - Alleen het rondje achter het kruisje subtieler maken.
+   - Positie, grootte, titel, hamburger, cards, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+  background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.03) !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+}
