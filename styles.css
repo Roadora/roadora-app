@@ -13893,3 +13893,179 @@ body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sh
   .route-stop-copy-v3990 strong{font-size:17px !important;}
   .route-stop-actions-v3990{grid-column:2 / 4;}
 }
+
+/* =========================================================
+   Roadora v39.9.1 — Trajecten Premium Polish
+   UX-only layer. No ORS, Leaflet, Maps, hotel or route-stop logic changes.
+   ========================================================= */
+
+/* Oude dubbele statskaart volledig uitzetten, ook als oudere renderer hem terugzet. */
+#routesStatsV39772,
+.routes-stats-v39772{
+  display:none !important;
+  visibility:hidden !important;
+  height:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+.routes-premium-list-v3990{
+  padding-bottom:132px !important;
+}
+
+.routes-journey-card-v3990{
+  margin-bottom:12px !important;
+  padding:14px !important;
+  border-radius:27px !important;
+}
+
+.routes-journey-bottom-v3990{
+  margin-bottom:9px !important;
+}
+
+.routes-journey-bottom-v3990 div{
+  min-height:52px !important;
+  border-radius:17px !important;
+}
+
+.routes-next-stop-v3990{
+  min-height:50px !important;
+  padding:8px 10px !important;
+  border-radius:19px !important;
+}
+
+.routes-next-stop-v3990 > span{
+  width:34px !important;
+  height:34px !important;
+  border-radius:14px !important;
+}
+
+/* Timeline compacter en met doorlopende route-lijn. */
+.routes-premium-timeline-v3990{
+  position:relative !important;
+  padding:18px 13px 18px !important;
+  overflow:hidden !important;
+}
+
+.routes-premium-timeline-v3990::before{
+  left:32px !important;
+  top:58px !important;
+  bottom:58px !important;
+  width:2px !important;
+  z-index:0 !important;
+  opacity:.9 !important;
+  background:linear-gradient(180deg,rgba(169,101,32,.16),rgba(169,101,32,.58),rgba(169,101,32,.16)) !important;
+}
+
+.routes-premium-timeline-v3990 .route-point-v39767,
+.routes-premium-timeline-v3990 .route-stops-v39767,
+.routes-premium-timeline-v3990 .route-stop-card-v3990{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+.routes-premium-timeline-v3990 .route-point-v39767{
+  min-height:58px !important;
+}
+
+.routes-premium-timeline-v3990 .route-point-v39767 span{
+  position:relative !important;
+  z-index:3 !important;
+}
+
+.routes-premium-timeline-v3990 .route-point-v39767 strong{
+  font-size:19px !important;
+  line-height:1.05 !important;
+}
+
+/* Stopcard 20-25% rustiger: minder hoogte, minder labels, acties compacter. */
+.route-stop-card-v3990{
+  min-height:104px !important;
+  padding:11px !important;
+  gap:8px !important;
+  border-radius:23px !important;
+  grid-template-columns:30px 34px minmax(0,1fr) !important;
+  margin:6px 0 !important;
+}
+
+.route-stop-index-v3990{
+  width:28px !important;
+  height:28px !important;
+  border-radius:12px !important;
+  margin-top:3px !important;
+}
+
+.route-stop-icon-v3990{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  border-radius:14px !important;
+}
+
+.route-stop-copy-v3990 small{
+  margin-bottom:5px !important;
+  gap:5px !important;
+}
+
+.route-stop-copy-v3990 small em{
+  min-height:20px !important;
+  padding:0 8px !important;
+  font-size:7.9px !important;
+}
+
+.route-stop-copy-v3990 small b{
+  min-height:20px !important;
+  font-size:8.2px !important;
+}
+
+.route-stop-copy-v3990 strong{
+  font-size:16.5px !important;
+  line-height:1.08 !important;
+}
+
+.route-stop-copy-v3990 p{
+  margin-top:5px !important;
+  font-size:11.2px !important;
+  line-height:1.25 !important;
+  -webkit-line-clamp:1 !important;
+}
+
+/* Badges opschonen: alleen status behouden. */
+.route-stop-tags-v3990{
+  margin-top:7px !important;
+}
+.route-stop-tags-v3990 span:first-child{
+  display:none !important;
+}
+.route-stop-tags-v3990 span{
+  min-height:20px !important;
+  padding:0 8px !important;
+  font-size:8px !important;
+}
+.route-stop-tags-v3990 span:last-child::before{
+  content:'✓ ';
+}
+
+.route-stop-actions-v3990{
+  gap:8px !important;
+  margin-top:0 !important;
+}
+
+.route-stop-actions-v3990 .route-stop-view-v39772,
+.route-stop-actions-v3990 .route-stop-remove-v39771{
+  min-height:34px !important;
+  border-radius:14px !important;
+  font-size:10.2px !important;
+}
+
+@media (max-width:390px){
+  .routes-journey-card-v3990{padding:13px !important;}
+  .routes-premium-timeline-v3990{padding-left:12px !important;padding-right:12px !important;}
+  .route-stop-card-v3990{
+    grid-template-columns:28px 32px minmax(0,1fr) !important;
+    padding:10px !important;
+  }
+  .route-stop-copy-v3990 strong{font-size:16px !important;}
+}
