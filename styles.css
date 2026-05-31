@@ -13907,3 +13907,171 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtr
     --rd-header-title-line:28px;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.12 — Roadtrip Beige Master Topbar
+   Doel:
+   - één Roadora-beige topbar-oppervlak voor Roadtrip-subpagina's
+   - hamburger, titel en sluitknop op één optische middenlijn
+   - geen JS / ORS / Maps / Leaflet wijzigingen
+   ========================================================= */
+body{
+  --rd-header-top: calc(22px + env(safe-area-inset-top, 0px));
+  --rd-header-left-title: 66px;
+  --rd-header-title-top-nudge: 0px;
+  --rd-header-title-size: 28px;
+  --rd-header-title-line: 34px;
+  --rd-header-surface-height: calc(82px + env(safe-area-inset-top, 0px));
+  --rd-header-beige: #f1e7db;
+  --rd-header-beige-2: #eadcc9;
+}
+
+/* zelfde hamburger-masterpositie als Overzicht, ook na oude overrides */
+body.hero-nav-integrated .hero-menu-btn,
+body[data-active-screen] .hero-menu-btn,
+body[data-active-screen="routes"] .hero-menu-btn,
+body[data-active-screen="roadtrip"][data-roadtrip-view] .hero-menu-btn,
+body[data-active-screen="profile"] .hero-menu-btn{
+  position:fixed !important;
+  top:var(--rd-header-top) !important;
+  left:24px !important;
+  width:34px !important;
+  height:34px !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-direction:column !important;
+  gap:5px !important;
+  z-index:1800 !important;
+}
+body.hero-nav-integrated .hero-menu-btn span,
+body[data-active-screen] .hero-menu-btn span{
+  width:22px !important;
+  height:2px !important;
+  border-radius:999px !important;
+}
+
+/* beige header surface achter routes en opgeslagen states */
+body[data-active-screen="routes"] .routes-native-head-v39767::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756::before{
+  content:"" !important;
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  height:var(--rd-header-surface-height) !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,var(--rd-header-beige) 0%, var(--rd-header-beige-2) 100%) !important;
+  border-bottom:1px solid rgba(120,90,60,.08) !important;
+  box-shadow:0 10px 28px rgba(52,35,21,.045) !important;
+}
+
+/* Master topbar: titel en sluitknop exact op dezelfde 34px-lijn als hamburger */
+body[data-active-screen="routes"] .routes-native-head-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
+  position:fixed !important;
+  top:var(--rd-header-top) !important;
+  left:0 !important;
+  right:0 !important;
+  height:34px !important;
+  min-height:34px !important;
+  display:grid !important;
+  grid-template-columns:var(--rd-header-left-title) minmax(0,1fr) 54px !important;
+  align-items:center !important;
+  gap:0 !important;
+  padding:0 22px 0 0 !important;
+  margin:0 !important;
+  z-index:1700 !important;
+  pointer-events:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border:0 !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756{
+  grid-column:2 !important;
+  height:34px !important;
+  min-height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  padding:0 !important;
+  margin:0 !important;
+  pointer-events:none !important;
+}
+body[data-active-screen="routes"] .routes-title-v39767 small,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 small,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 small,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 small,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756 p,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756 p,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756 p{
+  display:none !important;
+}
+body[data-active-screen="routes"] .routes-title-v39767 h1,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(var(--rd-header-title-top-nudge)) !important;
+  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size:var(--rd-header-title-size) !important;
+  line-height:var(--rd-header-title-line) !important;
+  font-weight:850 !important;
+  letter-spacing:-.04em !important;
+  color:#241b15 !important;
+  white-space:nowrap !important;
+}
+
+body[data-active-screen="routes"] .routes-close-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
+  grid-column:3 !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  display:grid !important;
+  place-items:center !important;
+  align-self:center !important;
+  justify-self:end !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:none !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.52) !important;
+  background:rgba(255,250,244,.62) !important;
+  color:#241b15 !important;
+  box-shadow:0 8px 18px rgba(52,35,21,.08), inset 0 1px 0 rgba(255,255,255,.58) !important;
+  font-size:24px !important;
+  line-height:1 !important;
+  font-weight:800 !important;
+  pointer-events:auto !important;
+}
+
+/* Content start exact onder beige topbar, zodat cards nooit achter de nieuwe header vallen */
+body[data-active-screen="routes"] .routes-scroll-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .roadtrip-hotels-state-v39754,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtrip-saved-content-state-v39764{
+  padding-top:calc(var(--rd-header-surface-height) + 18px) !important;
+}
+
+@media (max-width:390px){
+  body{
+    --rd-header-left-title:66px;
+    --rd-header-title-size:27px;
+    --rd-header-title-line:34px;
+  }
+}
