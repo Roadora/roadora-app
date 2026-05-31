@@ -13759,3 +13759,14 @@ body[data-active-screen="profile"] .hero-menu-btn span{
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756{
   transform:translateX(12px) !important;
 }
+
+/* =========================================================
+   Roadora v39.9.12 — Hotels Title Weight Only
+   Basis: v39.9.11 Hotels Title Spacing Only.
+   Doel:
+   - Alleen het lettergewicht van de Hotels-titel subtiel lichter maken.
+   - Positie, hamburger, kruisje, hoogte, kleur, kaarten, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2{
+  font-weight:600 !important;
+}
