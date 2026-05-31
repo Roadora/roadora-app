@@ -13801,3 +13801,17 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-ho
   color:#2b2119 !important;
   text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
 }
+
+/* =========================================================
+   Roadora v39.9.15 — Hotels Close Icon Raise Only
+   Basis: v39.9.14 Hotels Close Micro Polish.
+   Doel:
+   - Alleen het ×-icoon in de Hotels close-button 4px optisch hoger zetten.
+   - Knop/rondje, positie, titel, hamburger, cards, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding-bottom:4px !important;
+}
