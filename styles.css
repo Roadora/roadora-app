@@ -13165,3 +13165,186 @@ body[data-roadtrip-view="saved-discover"] .hotel-actions-v39763 button{
   .route-stop-card-v39771{grid-template-columns:38px minmax(0,1fr);}
   .route-stop-actions-v39771{grid-column:2;align-items:flex-start;flex-direction:row;justify-content:flex-start;margin-top:-2px;}
 }
+
+
+/* =========================================================
+   Roadora v39.7.72 — Trajecten Premium Timeline
+   Visual upgrade only. No ORS/Maps/export changes.
+   ========================================================= */
+.routes-scroll-v39767.routes-premium-list-v39772{
+  top:calc(88px + env(safe-area-inset-top,0px)) !important;
+  padding:0 18px calc(144px + env(safe-area-inset-bottom,0px)) !important;
+}
+.routes-premium-list-v39772 .routes-intro-card-v39767[hidden]{display:none !important;}
+.routes-stats-v39772{
+  display:grid;
+  grid-template-columns:1fr 1fr .75fr;
+  gap:8px;
+  margin:0 0 14px;
+  padding:10px;
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(255,252,248,.70),rgba(255,248,239,.46));
+  border:1px solid rgba(255,255,255,.58);
+  box-shadow:0 16px 36px rgba(63,41,24,.08), inset 0 1px 0 rgba(255,255,255,.48);
+}
+.routes-stats-v39772 div{
+  min-height:64px;
+  border-radius:18px;
+  background:rgba(255,255,255,.42);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.36);
+}
+.routes-stats-v39772 small{
+  display:block;
+  margin-bottom:5px;
+  color:#a77d4e;
+  font-size:8.5px;
+  font-weight:950;
+  letter-spacing:.15em;
+}
+.routes-stats-v39772 strong{
+  display:block;
+  color:#241b15;
+  font-size:16px;
+  line-height:1;
+  letter-spacing:-.035em;
+  font-weight:950;
+  white-space:nowrap;
+}
+.routes-premium-timeline-v39772{
+  padding:18px 14px 18px !important;
+  background:rgba(255,252,248,.62) !important;
+  border-radius:28px !important;
+  position:relative;
+  overflow:hidden;
+}
+.routes-premium-timeline-v39772::before{
+  content:"";
+  position:absolute;
+  left:31px;
+  top:48px;
+  bottom:48px;
+  width:2px;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(169,101,32,.16),rgba(169,101,32,.48),rgba(169,101,32,.16));
+  pointer-events:none;
+}
+.routes-premium-timeline-v39772 .route-point-v39767{
+  z-index:2;
+  grid-template-columns:38px minmax(0,1fr);
+  min-height:58px;
+  padding:2px 0;
+}
+.routes-premium-timeline-v39772 .route-point-v39767 span{
+  width:34px;
+  height:34px;
+  border-radius:15px;
+  position:relative;
+  z-index:2;
+}
+.routes-premium-timeline-v39772 .route-point-v39767.is-start span::before{content:"📍";font-size:15px;}
+.routes-premium-timeline-v39772 .route-point-v39767.is-end span::before{content:"🏁";font-size:15px;}
+.routes-premium-timeline-v39772 .route-point-v39767 span{font-size:0;}
+.routes-premium-timeline-v39772 .route-point-v39767 strong{
+  font-size:20px;
+  font-weight:900;
+}
+.route-stops-v39767{
+  gap:12px !important;
+  margin:10px 0 12px !important;
+}
+.route-stop-card-v39772{
+  position:relative;
+  z-index:2;
+  min-height:104px !important;
+  grid-template-columns:38px minmax(0,1fr) auto !important;
+  gap:12px !important;
+  align-items:center !important;
+  padding:12px !important;
+  border-radius:24px !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,.40)) !important;
+  border:1px solid rgba(255,255,255,.60) !important;
+  box-shadow:0 12px 28px rgba(63,41,24,.07), inset 0 1px 0 rgba(255,255,255,.52) !important;
+}
+.route-stop-icon-v39772{
+  width:36px !important;
+  height:36px !important;
+  border-radius:16px !important;
+  background:#ead7bd !important;
+  color:#8b541d !important;
+  font-size:17px !important;
+  z-index:3;
+}
+.route-stop-card-v39772.is-food .route-stop-icon-v39772{background:#efe0c7 !important;}
+.route-stop-card-v39772.is-discover .route-stop-icon-v39772{background:#e5d3bb !important;}
+.route-stop-copy-v39772 small{
+  display:flex !important;
+  align-items:center;
+  gap:7px;
+  margin-bottom:5px;
+  line-height:1;
+}
+.route-stop-copy-v39772 small em{
+  font-style:normal;
+  color:#8b541d;
+  background:rgba(169,101,32,.11);
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:8.5px;
+  letter-spacing:.08em;
+}
+.route-stop-copy-v39772 small b{
+  color:rgba(47,36,27,.44);
+  font-size:9px;
+  letter-spacing:.10em;
+}
+.route-stop-copy-v39772 strong{
+  font-size:19px !important;
+  white-space:nowrap;
+}
+.route-stop-copy-v39772 p{
+  margin-top:6px !important;
+  color:rgba(47,36,27,.62) !important;
+  font-size:12.5px !important;
+  font-weight:750;
+  white-space:normal !important;
+}
+.route-stop-actions-v39772{
+  min-width:82px !important;
+  align-items:flex-end !important;
+  gap:7px !important;
+}
+.route-stop-view-v39772,
+.route-stop-actions-v39772 .route-stop-remove-v39771{
+  min-height:30px;
+  min-width:76px;
+  padding:0 11px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.route-stop-view-v39772{
+  background:#241b15;
+  color:#fff8ef;
+}
+.route-stop-actions-v39772 .route-stop-remove-v39771{
+  background:rgba(73,49,31,.08) !important;
+  color:#745238 !important;
+}
+@media (max-width:390px){
+  .routes-scroll-v39767.routes-premium-list-v39772{top:calc(84px + env(safe-area-inset-top,0px)) !important;padding-left:16px !important;padding-right:16px !important;}
+  .routes-stats-v39772{gap:7px;padding:8px;border-radius:22px;}
+  .routes-stats-v39772 div{min-height:58px;border-radius:16px;}
+  .routes-stats-v39772 strong{font-size:14px;}
+  .routes-premium-timeline-v39772{padding-left:12px !important;padding-right:12px !important;}
+  .routes-premium-timeline-v39772::before{left:29px;}
+  .route-stop-card-v39772{grid-template-columns:36px minmax(0,1fr) !important;min-height:112px !important;}
+  .route-stop-actions-v39772{grid-column:2;align-items:flex-start !important;flex-direction:row !important;justify-content:flex-start !important;margin-top:2px !important;}
+  .route-stop-view-v39772,
+  .route-stop-actions-v39772 .route-stop-remove-v39771{min-width:72px;}
+}

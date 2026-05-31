@@ -3604,3 +3604,162 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraTrajectenV39767 = { render: renderTrajecten };
   renderTrajecten();
 })();
+
+
+/* =========================================================
+   Roadora v39.7.72 — Trajecten Premium Timeline
+   Scope: visual timeline + stats based on existing route-stop state.
+   No ORS/Maps/export recalculation.
+   ========================================================= */
+(function(){
+  if(window.__roadoraTrajectenPremiumV39772) return;
+  window.__roadoraTrajectenPremiumV39772 = true;
+
+  function readStops(){
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'){
+        var apiStops = window.RoadoraRouteStopsV39766.all();
+        if(Array.isArray(apiStops)) return apiStops.filter(function(stop){ return stop && stop.status === 'in_route'; });
+      }
+      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      return Array.isArray(raw) ? raw.filter(function(stop){ return stop && stop.status === 'in_route'; }) : [];
+    }catch(_){ return []; }
+  }
+
+  function routeState(){
+    try{ return (window.RoadoraState && window.RoadoraState.route) || {}; }catch(_){ return {}; }
+  }
+
+  function escapeText(value){
+    return String(value || '').replace(/[&<>\"]/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'})[ch];
+    });
+  }
+
+  function typeMeta(type){
+    if(type === 'hotel') return { icon:'☾', label:'Overnachting', className:'is-hotel' };
+    if(type === 'food') return { icon:'🍴', label:'Eten', className:'is-food' };
+    if(type === 'discover') return { icon:'◎', label:'Uitje', className:'is-discover' };
+    return { icon:'⌁', label:'Stop', className:'is-stop' };
+  }
+
+  function fmtKmMeters(meters){
+    var km = Math.round((Number(meters) || 0) / 1000);
+    return km ? km.toLocaleString('nl-NL') + ' km' : '— km';
+  }
+
+  function fmtDuration(seconds){
+    seconds = Number(seconds) || 0;
+    if(!seconds) return '—';
+    var h = Math.floor(seconds / 3600);
+    var m = Math.round((seconds % 3600) / 60);
+    if(m === 60){ h += 1; m = 0; }
+    return h ? (h + 'u ' + String(m).padStart(2,'0') + 'm') : (m + ' min');
+  }
+
+  function fallbackTotal(stops){
+    var count = Math.max(1, stops.length + 1);
+    return { distance: count * 145000, duration: count * 5400 };
+  }
+
+  function totals(stops){
+    var summary = routeState().summary || null;
+    if(summary && (Number(summary.distance) || Number(summary.duration))){
+      return { distance:Number(summary.distance || 0), duration:Number(summary.duration || 0), source:'ors' };
+    }
+    var fb = fallbackTotal(stops);
+    fb.source = 'preview';
+    return fb;
+  }
+
+  function metricFor(index, stops, total){
+    var fraction = (index + 1) / (stops.length + 1);
+    var distance = Math.max(0, Math.round((Number(total.distance) || 0) * fraction));
+    var duration = Math.max(0, Math.round((Number(total.duration) || 0) * fraction));
+    return fmtKmMeters(distance) + ' vanaf start · ' + fmtDuration(duration) + ' rijden';
+  }
+
+  function ensureStatsCard(list){
+    var stats = document.getElementById('routesStatsV39772');
+    if(stats) return stats;
+    stats = document.createElement('section');
+    stats.className = 'routes-stats-v39772';
+    stats.id = 'routesStatsV39772';
+    stats.innerHTML = '<div><small>AFSTAND</small><strong id="routesStatsKmV39772">— km</strong></div>' +
+      '<div><small>REISTIJD</small><strong id="routesStatsTimeV39772">—</strong></div>' +
+      '<div><small>STOPS</small><strong id="routesStatsStopsV39772">0</strong></div>';
+    var empty = document.getElementById('routesEmptyV39767');
+    if(empty && empty.parentNode === list) list.insertBefore(stats, empty);
+    else list.insertBefore(stats, list.firstChild);
+    return stats;
+  }
+
+  function renderPremiumTrajecten(){
+    var list = document.getElementById('routesListV39767');
+    var empty = document.getElementById('routesEmptyV39767');
+    var timeline = document.getElementById('routesTimelineV39767');
+    var stopsWrap = document.getElementById('routesStopsV39767');
+    if(!list || !empty || !timeline || !stopsWrap) return;
+
+    var stops = readStops();
+    var route = routeState();
+    var start = document.getElementById('routesStartV39767');
+    var end = document.getElementById('routesEndV39767');
+    if(start) start.textContent = route.start || 'Vertrekpunt';
+    if(end) end.textContent = route.end || 'Bestemming';
+
+    list.classList.add('routes-premium-list-v39772');
+    timeline.classList.add('routes-premium-timeline-v39772');
+    var intro = list.querySelector('.routes-intro-card-v39767');
+    if(intro) intro.hidden = true;
+
+    var stats = ensureStatsCard(list);
+    var total = totals(stops);
+    var kmEl = document.getElementById('routesStatsKmV39772');
+    var timeEl = document.getElementById('routesStatsTimeV39772');
+    var stopsEl = document.getElementById('routesStatsStopsV39772');
+    if(kmEl) kmEl.textContent = fmtKmMeters(total.distance);
+    if(timeEl) timeEl.textContent = fmtDuration(total.duration);
+    if(stopsEl) stopsEl.textContent = String(stops.length);
+    if(stats) stats.hidden = stops.length === 0;
+
+    empty.hidden = stops.length > 0;
+    timeline.hidden = stops.length === 0;
+
+    stopsWrap.innerHTML = stops.map(function(stop, index){
+      var meta = typeMeta(stop.type);
+      var metric = metricFor(index, stops, total);
+      return '<article class="route-stop-card-v39767 route-stop-card-v39771 route-stop-card-v39772 ' + meta.className + '" data-route-stop-id="' + escapeText(stop.id) + '">' +
+        '<span class="route-stop-icon-v39767 route-stop-icon-v39772">' + meta.icon + '</span>' +
+        '<div class="route-stop-copy-v39767 route-stop-copy-v39772">' +
+          '<small><em>' + meta.label + '</em><b>Stop ' + (index + 1) + '</b></small>' +
+          '<strong>' + escapeText(stop.name || 'Stop') + '</strong>' +
+          '<p>' + escapeText(metric) + '</p>' +
+        '</div>' +
+        '<div class="route-stop-actions-v39771 route-stop-actions-v39772">' +
+          '<button class="route-stop-view-v39772" type="button" data-route-stop-view="' + escapeText(stop.id) + '">Bekijk</button>' +
+          '<button class="route-stop-remove-v39771" type="button" data-route-stop-remove="' + escapeText(stop.id) + '" aria-label="Verwijder uit traject">Verwijder</button>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function schedule(){
+    setTimeout(renderPremiumTrajecten, 0);
+    setTimeout(renderPremiumTrajecten, 90);
+  }
+
+  document.addEventListener('DOMContentLoaded', schedule);
+  window.addEventListener('roadora:route-stops-updated', schedule);
+  window.addEventListener('storage', function(e){ if(e && e.key === 'roadora_route_stops_v39766') schedule(); });
+  document.addEventListener('click', function(event){
+    if(event.target.closest && event.target.closest('[data-screen-target="routes"]')) schedule();
+    if(event.target.closest && event.target.closest('[data-route-stop-view]')){
+      event.preventDefault();
+      if(typeof window.showToast === 'function') window.showToast('Stopdetails komen in de volgende stap');
+    }
+  });
+
+  window.RoadoraTrajectenPremiumV39772 = { render: renderPremiumTrajecten };
+  schedule();
+})();
