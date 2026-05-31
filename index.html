@@ -387,12 +387,48 @@
     </div>
   </section>
 
-  <section class="screen screen-routes" data-screen="routes">
-    <header class="plain-top"><h1>Trajecten</h1><button class="circle-btn light">•••</button></header>
-    <div class="content routes-layout">
-      <img src="assets/hero-routes.webp" alt="Trajecten" />
-      <div class="story-empty"><small>ETAPPES</small><h2>Nog geen trajecten</h2><p>Plan een route en je etappes verschijnen hier vanzelf.</p></div>
-      <button class="primary wide" data-screen-target="plan">Traject toevoegen</button>
+  <section class="screen screen-routes routes-v39767" data-screen="routes">
+    <div class="routes-native-head-v39767">
+      <div class="routes-title-v39767">
+        <small>MIJN ROADTRIP</small>
+        <h1>Trajecten</h1>
+      </div>
+      <button class="routes-close-v39767" type="button" data-screen-target="roadtrip" aria-label="Terug naar Mijn Roadtrip">×</button>
+    </div>
+
+    <div class="routes-scroll-v39767" id="routesListV39767" aria-live="polite">
+      <section class="routes-intro-card-v39767">
+        <small>ROUTE-OPBOUW</small>
+        <h2>Je toegevoegde stops komen hier samen.</h2>
+        <p>Hotels, eetplekken en uitjes die je toevoegt aan je route worden straks de basis van je traject.</p>
+      </section>
+
+      <section class="routes-empty-v39767" id="routesEmptyV39767">
+        <div class="routes-empty-icon-v39767">⌁</div>
+        <h2>Nog geen stops in je traject</h2>
+        <p>Voeg eerst een hotel, eetplek of uitje toe vanuit je opgeslagen stops. Daarna verschijnt je route-opbouw hier automatisch.</p>
+        <button class="routes-empty-cta-v39767" type="button" data-roadtrip-entry="saved-stops">Opgeslagen stops openen</button>
+      </section>
+
+      <section class="routes-timeline-v39767" id="routesTimelineV39767" hidden>
+        <div class="route-point-v39767 is-start">
+          <span></span>
+          <div>
+            <small>START</small>
+            <strong id="routesStartV39767">Vertrekpunt</strong>
+          </div>
+        </div>
+
+        <div class="route-stops-v39767" id="routesStopsV39767"></div>
+
+        <div class="route-point-v39767 is-end">
+          <span></span>
+          <div>
+            <small>BESTEMMING</small>
+            <strong id="routesEndV39767">Bestemming</strong>
+          </div>
+        </div>
+      </section>
     </div>
   </section>
 

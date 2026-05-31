@@ -3399,3 +3399,99 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   syncSavedButtons();
 })();
+
+/* =========================================================
+   Roadora v39.7.67 — Trajecten v1
+   Scope: reads route-stop state from v39.7.66 and renders a clean timeline.
+   No ORS/Maps/export recalculation yet.
+   ========================================================= */
+(function(){
+  if(window.__roadoraTrajectenV39767) return;
+  window.__roadoraTrajectenV39767 = true;
+
+  function readStops(){
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'){
+        var apiStops = window.RoadoraRouteStopsV39766.all();
+        if(Array.isArray(apiStops)) return apiStops;
+      }
+      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      return Array.isArray(raw) ? raw : [];
+    }catch(_){ return []; }
+  }
+
+  function routeState(){
+    try{ return (window.RoadoraState && window.RoadoraState.route) || {}; }catch(_){ return {}; }
+  }
+
+  function typeMeta(type){
+    if(type === 'hotel') return { icon:'☾', label:'Overnachting' };
+    if(type === 'food') return { icon:'🍴', label:'Eten' };
+    if(type === 'discover') return { icon:'◎', label:'Uitje' };
+    return { icon:'⌁', label:'Stop' };
+  }
+
+  function escapeText(value){
+    return String(value || '').replace(/[&<>"]/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch];
+    });
+  }
+
+  function renderTrajecten(){
+    var list = document.getElementById('routesListV39767');
+    var empty = document.getElementById('routesEmptyV39767');
+    var timeline = document.getElementById('routesTimelineV39767');
+    var stopsWrap = document.getElementById('routesStopsV39767');
+    if(!list || !empty || !timeline || !stopsWrap) return;
+
+    var stops = readStops().filter(function(stop){ return stop && stop.status === 'in_route'; });
+    var route = routeState();
+    var start = document.getElementById('routesStartV39767');
+    var end = document.getElementById('routesEndV39767');
+    if(start) start.textContent = route.start || 'Vertrekpunt';
+    if(end) end.textContent = route.end || 'Bestemming';
+
+    empty.hidden = stops.length > 0;
+    timeline.hidden = stops.length === 0;
+
+    stopsWrap.innerHTML = stops.map(function(stop, index){
+      var meta = typeMeta(stop.type);
+      return '<article class="route-stop-card-v39767" data-route-stop-id="' + escapeText(stop.id) + '">' +
+        '<span class="route-stop-icon-v39767">' + meta.icon + '</span>' +
+        '<div class="route-stop-copy-v39767">' +
+          '<small>' + meta.label + ' ' + (index + 1) + '</small>' +
+          '<strong>' + escapeText(stop.name || 'Stop') + '</strong>' +
+          '<p>' + escapeText(stop.meta || 'Toegevoegd aan je route') + '</p>' +
+        '</div>' +
+        '<em>In route</em>' +
+      '</article>';
+    }).join('');
+  }
+
+  document.addEventListener('click', function(event){
+    var cta = event.target.closest && event.target.closest('.routes-empty-cta-v39767');
+    if(!cta) return;
+    event.preventDefault();
+    try{
+      if(window.RoadoraRouter && typeof window.RoadoraRouter.open === 'function'){
+        window.RoadoraRouter.open('roadtrip');
+        setTimeout(function(){
+          var btn = document.querySelector('[data-roadtrip-entry="saved-stops"]');
+          if(btn) btn.click();
+        }, 80);
+      }
+    }catch(_){ }
+  });
+
+  window.addEventListener('roadora:route-stops-updated', renderTrajecten);
+  window.addEventListener('storage', function(e){ if(e && e.key === 'roadora_route_stops_v39766') renderTrajecten(); });
+  document.addEventListener('DOMContentLoaded', renderTrajecten);
+  document.addEventListener('click', function(event){
+    if(event.target.closest && event.target.closest('[data-screen-target="routes"]')){
+      setTimeout(renderTrajecten, 120);
+    }
+  });
+
+  window.RoadoraTrajectenV39767 = { render: renderTrajecten };
+  renderTrajecten();
+})();
