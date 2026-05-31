@@ -13748,3 +13748,14 @@ body[data-active-screen="profile"] .hero-menu-btn span{
     height:34px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.11 — Hotels Title Spacing Only
+   Basis: v39.9.10 locked fallback.
+   Doel:
+   - Alleen de titel "Hotels" iets verder van het hamburger-menu zetten.
+   - Hamburger, kruisje, hoogte, font, kaarten, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756{
+  transform:translateX(12px) !important;
+}
