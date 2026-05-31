@@ -14429,8 +14429,11 @@ body[data-active-screen="routes"] .routes-close-v39767,
 }
 
 /* =========================================================
-   Roadora v39.9.5 — Trajecten pixel alignment fix
-   Scope: Trajecten UI only. No JS, ORS, Maps, Leaflet or route-state changes.
+   Roadora v39.9.6 — Trajecten premium waypoint alignment
+   Built from v39.9.4 fallback. CSS-only.
+   - marker numbers sit on the visual route spine
+   - header title aligned with hamburger
+   - no JS / ORS / Maps / Leaflet changes
    ========================================================= */
 body[data-active-screen="routes"] .routes-native-head-v39767,
 .screen-routes.routes-v39767 .routes-native-head-v39767{
@@ -14442,9 +14445,9 @@ body[data-active-screen="routes"] .routes-native-head-v39767,
 
 body[data-active-screen="routes"] .routes-title-v39767,
 .screen-routes.routes-v39767 .routes-title-v39767{
+  height:44px !important;
   display:flex !important;
   align-items:center !important;
-  height:44px !important;
 }
 
 body[data-active-screen="routes"] .routes-title-v39767 h1,
@@ -14454,23 +14457,44 @@ body[data-active-screen="routes"] .routes-title-v39767 h1,
 }
 
 .routes-premium-timeline-v3990{
-  --rd-route-spine-x-v3995:32px;
+  --rd-route-spine-x-v3996:32px;
+  --rd-card-offset-x-v3996:24px;
+  --rd-marker-x-v3996:calc(var(--rd-route-spine-x-v3996) - var(--rd-card-offset-x-v3996));
 }
 
 .routes-premium-timeline-v3990::before{
-  left:var(--rd-route-spine-x-v3995) !important;
+  left:var(--rd-route-spine-x-v3996) !important;
   width:2px !important;
+  background:rgba(169,101,32,.32) !important;
+  z-index:0 !important;
 }
 
+/* The stop card itself is shifted by its layout context. Compensate that
+   offset so the marker centre lands exactly on the global route spine. */
 .route-stop-card-v3992 .route-stop-index-v3992{
-  left:var(--rd-route-spine-x-v3995) !important;
+  position:absolute !important;
+  left:var(--rd-marker-x-v3996) !important;
   top:50% !important;
   transform:translate(-50%, -50%) !important;
-  margin:0 !important;
   width:28px !important;
   height:28px !important;
+  margin:0 !important;
+  display:grid !important;
+  place-items:center !important;
   border-radius:999px !important;
-  z-index:9 !important;
+  background:#f4e6d2 !important;
+  border:1px solid rgba(255,255,255,.82) !important;
+  color:#8b541d !important;
+  font-size:12px !important;
+  font-weight:950 !important;
+  box-shadow:0 8px 18px rgba(63,41,24,.10), inset 0 1px 0 rgba(255,255,255,.72) !important;
+  z-index:8 !important;
+}
+
+.route-stop-card-v3992 .route-stop-index-v3992 span{
+  position:relative !important;
+  z-index:2 !important;
+  line-height:1 !important;
 }
 
 @media (max-width:390px){
@@ -14480,11 +14504,7 @@ body[data-active-screen="routes"] .routes-title-v39767 h1,
   }
 
   .routes-premium-timeline-v3990{
-    --rd-route-spine-x-v3995:32px;
-  }
-
-  .route-stop-card-v3992 .route-stop-index-v3992{
-    left:var(--rd-route-spine-x-v3995) !important;
-    transform:translate(-50%, -50%) !important;
+    --rd-route-spine-x-v3996:32px;
+    --rd-card-offset-x-v3996:24px;
   }
 }
