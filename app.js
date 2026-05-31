@@ -4604,7 +4604,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       var photo = stopImage(stop, meta);
       return '<article class="route-stop-card-v39767 route-stop-card-v39771 route-stop-card-v39772 route-stop-card-v3990 route-stop-card-v3992 is-'+escapeText(meta.tone)+'" data-route-stop-id="'+escapeText(stop.id)+'">' +
         '<div class="route-stop-index-v3990 route-stop-index-v3992"><span>'+escapeText(String(index + 1))+'</span></div>' +
-        '<div class="route-stop-photo-v3992" style="background-image:url(\''+escapeText(photo)+'\')"><span>'+escapeText(meta.icon)+'</span></div>' +
+        '<div class="route-stop-photo-v3992" style="background-image:url(\''+escapeText(photo)+'\')"></div>' +
         '<div class="route-stop-copy-v39767 route-stop-copy-v39772 route-stop-copy-v3990 route-stop-copy-v3992">' +
           '<small><em>'+escapeText(meta.label)+'</em><b>'+escapeText(metric)+'</b></small>' +
           '<strong>'+escapeText(stop.name || 'Stop')+'</strong>' +

@@ -14187,3 +14187,134 @@ body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sh
     font-size:15.4px !important;
   }
 }
+
+
+/* =========================================================
+   Roadora v39.9.3 — Timeline card balance + clean route line
+   Scope: Trajecten UI only. No ORS, Maps, Leaflet or route-state changes.
+   ========================================================= */
+.routes-premium-timeline-v3990::before{
+  left:32px !important;
+  width:2px !important;
+  top:60px !important;
+  bottom:60px !important;
+  background:rgba(169,101,32,.30) !important;
+  opacity:1 !important;
+  z-index:0 !important;
+}
+
+.route-stop-card-v3992{
+  position:relative !important;
+  isolation:isolate !important;
+  grid-template-columns:54px 78px minmax(0,1fr) !important;
+  min-height:112px !important;
+  padding:10px 12px 10px 0 !important;
+  gap:10px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+
+.route-stop-card-v3992::before{
+  content:"" !important;
+  position:absolute !important;
+  left:64px !important;
+  right:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  border-radius:24px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.48)) !important;
+  border:1px solid rgba(255,255,255,.70) !important;
+  box-shadow:0 14px 32px rgba(63,41,24,.075), inset 0 1px 0 rgba(255,255,255,.60) !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+}
+
+.route-stop-card-v3992 > *{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+.route-stop-card-v3992 .route-stop-index-v3992{
+  position:absolute !important;
+  left:18px !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  width:28px !important;
+  height:28px !important;
+  margin:0 !important;
+  border-radius:999px !important;
+  background:#f3e4cf !important;
+  border:1px solid rgba(255,255,255,.68) !important;
+  color:#8b541d !important;
+  box-shadow:0 8px 18px rgba(63,41,24,.10), inset 0 1px 0 rgba(255,255,255,.60) !important;
+  z-index:4 !important;
+}
+
+.route-stop-photo-v3992{
+  width:76px !important;
+  height:82px !important;
+  border-radius:21px !important;
+  grid-column:2 !important;
+}
+
+.route-stop-photo-v3992 span,
+.route-stop-photo-v3992::after{
+  content:none !important;
+  display:none !important;
+}
+
+.route-stop-card-v3992 .route-stop-copy-v3992{
+  grid-column:3 !important;
+  min-width:0 !important;
+}
+
+.route-stop-card-v3992 .route-stop-copy-v3992 small{
+  margin-bottom:5px !important;
+}
+
+.route-stop-card-v3992 .route-stop-copy-v3992 strong{
+  font-size:16.8px !important;
+  line-height:1.05 !important;
+}
+
+.route-stop-card-v3992 .route-stop-copy-v3992 p{
+  margin-top:4px !important;
+  font-size:10.8px !important;
+}
+
+.route-stop-card-v3992 .route-stop-actions-v3990{
+  grid-column:2 / 4 !important;
+  margin-top:6px !important;
+  padding-left:0 !important;
+  z-index:2 !important;
+}
+
+@media (max-width:390px){
+  .route-stop-card-v3992{
+    grid-template-columns:52px 70px minmax(0,1fr) !important;
+    min-height:108px !important;
+    padding:10px 10px 10px 0 !important;
+    gap:9px !important;
+  }
+
+  .route-stop-card-v3992::before{
+    left:60px !important;
+    border-radius:23px !important;
+  }
+
+  .route-stop-photo-v3992{
+    width:68px !important;
+    height:78px !important;
+    border-radius:20px !important;
+  }
+
+  .route-stop-card-v3992 .route-stop-index-v3992{
+    left:18px !important;
+  }
+
+  .route-stop-card-v3992 .route-stop-copy-v3992 strong{
+    font-size:15.8px !important;
+  }
+}
