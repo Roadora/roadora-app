@@ -1085,6 +1085,17 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return { icon:'⌁', label:'Stop', cls:'stop', action:'Navigeer' };
   }
 
+
+  function hardCloseRouteStopPopoverV39782(){
+    try{
+      document.body.removeAttribute('data-route-stop-preview');
+      document.body.removeAttribute('data-hotel-preview');
+      document.querySelectorAll('.rd-route-stop-preview-v39780, [data-route-stop-popover-v39782]').forEach(function(el){
+        try{ el.remove(); }catch(_){ }
+      });
+    }catch(_){ }
+  }
+
   function renderRouteStopPopoverV39780(stop, index){
     if(!stop) return;
     try{ closeHotelPreview(); }catch(_){ }
@@ -1099,6 +1110,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-route-stop-preview-v39780 rd-route-stop-preview-' + meta.cls + '-v39780';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Route stop');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -1166,12 +1178,24 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         const stops = Array.isArray(raw) ? raw.filter(function(item){ return item && item.id !== id; }) : [];
         localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
       }
+      hardCloseRouteStopPopoverV39782();
       window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ removedId:id, source:'map-route-pin' } }));
       try{ closeHotelPreview(); }catch(_){ }
+      hardCloseRouteStopPopoverV39782();
       renderRouteStopPinsV39775();
+      setTimeout(function(){ hardCloseRouteStopPopoverV39782(); }, 80);
       showMapToast('Stop verwijderd uit je traject');
     }catch(_){ }
   }, true);
+
+  window.addEventListener('roadora:route-stops-updated', function(ev){
+    try{
+      const removedId = ev && ev.detail && ev.detail.removedId;
+      if(!removedId) return;
+      const active = document.querySelector('[data-route-stop-popover-v39782] [data-route-stop-map-remove-v39780="' + String(removedId).replace(/"/g, '\"') + '"]');
+      if(active) hardCloseRouteStopPopoverV39782();
+    }catch(_){ }
+  });
 
   /* Roadora v39.6.94 — remove only orphan endpoint marker in the top-left corner.
      This is a DOM cleanup for a stale Leaflet endpoint element; it does not touch
@@ -2532,6 +2556,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-wc-preview-popover-v39653';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','WC preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -2565,6 +2590,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-discover-preview-popover-v39649';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Uitje preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -2597,6 +2623,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-charge-preview-popover-v39647';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Laadpaal preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -2630,6 +2657,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-food-preview-popover-v39648';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Eten preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -2662,6 +2690,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644 rd-fuel-preview-popover-v39646';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Tankstation preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
@@ -2719,6 +2748,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const pop = document.createElement('div');
     pop.className = 'rd-hotel-preview-popover-v39644';
     pop.setAttribute('role','dialog');
+    pop.setAttribute('data-route-stop-popover-v39782','true');
     pop.setAttribute('aria-label','Hotel preview');
     pop.innerHTML =
       '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
