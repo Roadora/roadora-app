@@ -1013,8 +1013,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function routeStopIconV39775(stop){
     const type = (stop && stop.type) || 'stop';
-    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : (type === 'fuel' ? '⛽' : (type === 'charge' ? '⚡' : (type === 'wc' ? 'WC' : '⌁')))));
-    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : (type === 'fuel' ? 'fuel' : (type === 'charge' ? 'charge' : (type === 'wc' ? 'wc' : 'stop')))));
+    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : '⌁'));
+    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : 'stop'));
     return L.divIcon({
       className:`rdRouteStopPinV39775 ${cls}`,
       html:`<span>${icon}</span><b>✓</b>`,
@@ -1053,9 +1053,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Hotel', cls:'hotel', action:'Boek' };
     if(type === 'food') return { icon:'🍴', label:'Eten', cls:'food', action:'Navigeer' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', cls:'discover', action:'Navigeer' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', cls:'fuel', action:'Navigeer' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop', cls:'charge', action:'Navigeer' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop', cls:'wc', action:'Navigeer' };
     return { icon:'⌁', label:'Stop', cls:'stop', action:'Navigeer' };
   }
 
@@ -2547,7 +2544,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Praktische korte stop langs je route voor een snelle en rustige pauze onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-practical-preview-add-v39815">Toevoegen</button>' +
+          '<button type="button" class="rd-practical-preview-add-v39816" data-practical-stop-type="wc">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2614,7 +2611,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Snelle laadstop langs je route met actuele laadcapaciteit en handige voorzieningen.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-practical-preview-add-v39815">Toevoegen</button>' +
+          '<button type="button" class="rd-practical-preview-add-v39816" data-practical-stop-type="charge">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2681,7 +2678,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Handige tankstop langs je route met snelle voorzieningen voor onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-practical-preview-add-v39815">Toevoegen</button>' +
+          '<button type="button" class="rd-practical-preview-add-v39816" data-practical-stop-type="fuel">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -3469,9 +3466,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return 'Hotel';
     if(type === 'food') return 'Eetplek';
     if(type === 'discover') return 'Uitje';
-    if(type === 'fuel') return 'Tankstop';
-    if(type === 'charge') return 'Laadstop';
-    if(type === 'wc') return 'WC-stop';
     return 'Stop';
   }
 
@@ -3498,24 +3492,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!pop) return null;
     var titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
     var metaEl = pop.querySelector('.rd-hotel-preview-meta-v39644');
-    var name = (titleEl && titleEl.textContent.trim()) || 'Stop';
-
-    // Roadora v39.8.13 — route-only practical stops use the same central
-    // route-stop state as hotels, but keep their own type. This fixes the
-    // “saved as hotel” issue without touching Google Maps export, ORS or Leaflet.
-    var type = 'hotel';
-    if(pop.classList.contains('rd-fuel-preview-popover-v39646')) type = 'fuel';
-    else if(pop.classList.contains('rd-charge-preview-popover-v39647')) type = 'charge';
-    else if(pop.classList.contains('rd-wc-preview-popover-v39653')) type = 'wc';
-    else if(pop.classList.contains('rd-food-preview-popover-v39648')) type = 'food';
-    else if(pop.classList.contains('rd-discover-preview-popover-v39649')) type = 'discover';
-
+    var name = (titleEl && titleEl.textContent.trim()) || 'Hotel';
     return {
-      id: type + '-' + slug(name),
-      type: type,
+      id: 'hotel-' + slug(name),
+      type: 'hotel',
       name: name,
       meta: metaEl ? metaEl.textContent.trim() : '',
-      source: type === 'hotel' ? 'map-preview' : 'map-preview-route-only',
+      source: 'map-preview',
       status: 'in_route',
       addedAt: new Date().toISOString()
     };
@@ -3731,9 +3714,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting' };
     if(type === 'food') return { icon:'🍴', label:'Eten' };
     if(type === 'discover') return { icon:'◎', label:'Uitje' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop' };
     return { icon:'⌁', label:'Stop' };
   }
 
@@ -3866,9 +3846,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting', className:'is-hotel' };
     if(type === 'food') return { icon:'🍴', label:'Eten', className:'is-food' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', className:'is-discover' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', className:'is-fuel' };
-    if(type === 'charge') return { icon:'⚡', label:'Laadstop', className:'is-charge' };
-    if(type === 'wc') return { icon:'WC', label:'WC-stop', className:'is-wc' };
     return { icon:'⌁', label:'Stop', className:'is-stop' };
   }
 
@@ -4083,7 +4060,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     // Only sync hotel previews here. Other categories keep their existing behavior.
     if(pop.classList.contains('rd-food-preview-popover-v39648') ||
        pop.classList.contains('rd-discover-preview-popover-v39649') ||
-       pop.classList.contains('rd-fuel-preview-popover-v39646') ||
        pop.classList.contains('rd-charge-preview-popover-v39647') ||
        pop.classList.contains('rd-wc-preview-popover-v39653')) return null;
 
@@ -4459,19 +4435,17 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 })();
 
 
-
-
 /* =========================================================
-   Roadora v39.8.15 — Practical Stops Dedicated Add Flow
-   Scope: Tanken/Laden/WC only. These route-only stops no longer use the
-   generic hotel preview add class, so older hotel handlers cannot swallow the
-   click. The stop is written directly to the central route-stop state and then
-   route pins/Trajecten are refreshed. No ORS, Leaflet, Maps export or hotel
-   navigation changes.
+   Roadora v39.8.16 — Practical Stops Route-State Bridge
+   Safe basis: v39.8.7 fallback. This does NOT touch Maps export, ORS,
+   Leaflet, hotel navigation or the shared hotel preview flow.
+   Tanken/Laden/WC are route-only stops: Toevoegen writes to the same
+   central route-stop state as hotels, so existing route pins, Trajecten
+   and the existing Maps flow can read them normally.
    ========================================================= */
 (function(){
-  if(window.__roadoraPracticalStopsDedicatedAddV39815) return;
-  window.__roadoraPracticalStopsDedicatedAddV39815 = true;
+  if(window.__roadoraPracticalRouteStopsV39816) return;
+  window.__roadoraPracticalRouteStopsV39816 = true;
 
   function slug(value){
     return String(value || 'stop')
@@ -4481,94 +4455,81 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       .replace(/^-+|-+$/g, '') || 'stop';
   }
 
-  function typeFromPopover(pop){
-    if(!pop) return '';
-    if(pop.classList.contains('rd-fuel-preview-popover-v39646')) return 'fuel';
-    if(pop.classList.contains('rd-charge-preview-popover-v39647')) return 'charge';
-    if(pop.classList.contains('rd-wc-preview-popover-v39653')) return 'wc';
-    return '';
-  }
-
-  function labelFor(type){
-    if(type === 'fuel') return 'Tankstop';
-    if(type === 'charge') return 'Laadstop';
-    if(type === 'wc') return 'WC-stop';
-    return 'Stop';
-  }
-
   function toast(message){
-    try{
-      var t = document.getElementById('mapToast') || document.getElementById('toast');
-      if(!t) return;
-      t.textContent = message;
-      t.classList.add('show');
-      clearTimeout(toast.timer);
-      toast.timer = setTimeout(function(){ t.classList.remove('show'); }, 1700);
-    }catch(_){ }
+    var t = document.getElementById('mapToast') || document.getElementById('toast');
+    if(!t) return;
+    t.textContent = message;
+    t.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(function(){ t.classList.remove('show'); }, 1700);
   }
 
-  function buildStop(pop, type){
+  function practicalMeta(type){
+    if(type === 'fuel') return { label:'Tankstation', toast:'Tankstation toegevoegd aan je route' };
+    if(type === 'charge') return { label:'Laadpunt', toast:'Laadpunt toegevoegd aan je route' };
+    if(type === 'wc') return { label:'WC-stop', toast:'WC-stop toegevoegd aan je route' };
+    return { label:'Stop', toast:'Stop toegevoegd aan je route' };
+  }
+
+  function extractPracticalStop(button){
+    var pop = button && button.closest && button.closest('.rd-hotel-preview-popover-v39644');
+    if(!pop) return null;
+    var type = button.getAttribute('data-practical-stop-type') ||
+      (pop.classList.contains('rd-fuel-preview-popover-v39646') ? 'fuel' :
+      (pop.classList.contains('rd-charge-preview-popover-v39647') ? 'charge' :
+      (pop.classList.contains('rd-wc-preview-popover-v39653') ? 'wc' : 'stop')));
     var titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
-    var kickerEl = pop.querySelector('.rd-hotel-preview-kicker-v39644');
     var metaEl = pop.querySelector('.rd-hotel-preview-meta-v39644');
-    var name = (titleEl && titleEl.textContent.trim()) || labelFor(type);
-    var meta = (kickerEl && kickerEl.textContent.trim()) || (metaEl && metaEl.textContent.trim()) || 'Toegevoegd aan je traject';
+    var kickerEl = pop.querySelector('.rd-hotel-preview-kicker-v39644');
+    var name = (titleEl && titleEl.textContent.trim()) || practicalMeta(type).label;
+    var meta = (kickerEl && kickerEl.textContent.trim()) || (metaEl && metaEl.textContent.trim()) || practicalMeta(type).label;
     return {
       id: type + '-' + slug(name),
       type: type,
       name: name,
       meta: meta,
-      source: 'map-preview-route-only',
+      source: 'map-preview',
       status: 'in_route',
       addedAt: new Date().toISOString()
     };
   }
 
-  function readStops(){
-    try{
-      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
-      return Array.isArray(raw) ? raw : [];
-    }catch(_){ return []; }
-  }
-
-  function writeStopFallback(stop){
-    var stops = readStops();
-    var existing = stops.findIndex(function(item){ return item && item.id === stop.id; });
-    if(existing >= 0) stops[existing] = Object.assign({}, stops[existing], stop, { status:'in_route', updatedAt:new Date().toISOString() });
-    else stops.push(stop);
-    try{ localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops)); }catch(_){ }
-  }
-
-  function addPracticalStop(stop){
+  function addStop(stop){
+    if(!stop || !stop.id) return false;
     if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.add === 'function'){
       window.RoadoraRouteStopsV39766.add(stop);
-      if(typeof window.RoadoraRouteStopsV39766.sync === 'function') window.RoadoraRouteStopsV39766.sync();
-    }else{
-      writeStopFallback(stop);
+      return true;
     }
+    try{
+      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      var stops = Array.isArray(raw) ? raw : [];
+      var idx = stops.findIndex(function(item){ return item && item.id === stop.id; });
+      if(idx >= 0) stops[idx] = Object.assign({}, stops[idx], stop, { status:'in_route', updatedAt:new Date().toISOString() });
+      else stops.push(stop);
+      localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
+      return true;
+    }catch(_){ return false; }
   }
 
   document.addEventListener('click', function(event){
-    var btn = event.target.closest && event.target.closest('.rd-practical-preview-add-v39815, .rd-practical-preview-add-v39813');
-    if(!btn) return;
-    var pop = btn.closest && btn.closest('.rd-hotel-preview-popover-v39644');
-    var type = typeFromPopover(pop);
-    if(!pop || !type) return;
-
+    var add = event.target.closest && event.target.closest('.rd-practical-preview-add-v39816');
+    if(!add) return;
     event.preventDefault();
     event.stopPropagation();
     if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-
-    var stop = buildStop(pop, type);
-    addPracticalStop(stop);
-
-    btn.classList.add('is-added-v39763','is-in-route-v39766');
-    btn.setAttribute('aria-pressed','true');
-    btn.textContent = '✓ In route';
-
-    window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'practical-stops-dedicated-add' } }));
-    setTimeout(function(){ try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ } }, 0);
-    setTimeout(function(){ try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ } }, 180);
-    toast(labelFor(type) + ' toegevoegd aan je traject');
+    var stop = extractPracticalStop(add);
+    if(!stop) return;
+    addStop(stop);
+    add.textContent = '✓ In route';
+    add.classList.add('is-added-v39763','is-in-route-v39766');
+    var stops = [];
+    try{
+      stops = window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'
+        ? window.RoadoraRouteStopsV39766.all()
+        : JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+    }catch(_){ stops = []; }
+    window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ stops:stops, added:stop, source:'practical-stop-add-v39816' } }));
+    try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
+    toast(practicalMeta(stop.type).toast);
   }, true);
 })();
