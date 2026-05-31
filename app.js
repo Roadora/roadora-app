@@ -1013,8 +1013,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function routeStopIconV39775(stop){
     const type = (stop && stop.type) || 'stop';
-    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : '⌁'));
-    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : 'stop'));
+    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : (type === 'fuel' ? '⛽' : (type === 'charge' ? '⚡' : (type === 'wc' ? 'WC' : '⌁')))));
+    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : (type === 'fuel' ? 'fuel' : (type === 'charge' ? 'charge' : (type === 'wc' ? 'wc' : 'stop')))));
     return L.divIcon({
       className:`rdRouteStopPinV39775 ${cls}`,
       html:`<span>${icon}</span><b>✓</b>`,
@@ -1053,6 +1053,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Hotel', cls:'hotel', action:'Boek' };
     if(type === 'food') return { icon:'🍴', label:'Eten', cls:'food', action:'Navigeer' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', cls:'discover', action:'Navigeer' };
+    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', cls:'fuel', action:'Navigeer' };
+    if(type === 'charge') return { icon:'⚡', label:'Laadstop', cls:'charge', action:'Navigeer' };
+    if(type === 'wc') return { icon:'WC', label:'WC-stop', cls:'wc', action:'Navigeer' };
     return { icon:'⌁', label:'Stop', cls:'stop', action:'Navigeer' };
   }
 
@@ -2544,7 +2547,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Praktische korte stop langs je route voor een snelle en rustige pauze onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+          '<button type="button" class="rd-hotel-preview-add-v39763 rd-practical-preview-add-v39813">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2611,7 +2614,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Snelle laadstop langs je route met actuele laadcapaciteit en handige voorzieningen.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+          '<button type="button" class="rd-hotel-preview-add-v39763 rd-practical-preview-add-v39813">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -2678,7 +2681,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         '<p class="rd-hotel-preview-copy-v39644">Handige tankstop langs je route met snelle voorzieningen voor onderweg.</p>' +
         '<div class="rd-hotel-preview-actions-v39644">' +
           '<button type="button" class="rd-hotel-preview-nav-v39644">Navigeer</button>' +
-          '<button type="button" class="rd-hotel-preview-save-v39644">Opslaan</button>' +
+          '<button type="button" class="rd-hotel-preview-add-v39763 rd-practical-preview-add-v39813">Toevoegen</button>' +
         '</div>' +
       '</div>';
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
@@ -3466,6 +3469,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return 'Hotel';
     if(type === 'food') return 'Eetplek';
     if(type === 'discover') return 'Uitje';
+    if(type === 'fuel') return 'Tankstop';
+    if(type === 'charge') return 'Laadstop';
+    if(type === 'wc') return 'WC-stop';
     return 'Stop';
   }
 
@@ -3492,13 +3498,24 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(!pop) return null;
     var titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
     var metaEl = pop.querySelector('.rd-hotel-preview-meta-v39644');
-    var name = (titleEl && titleEl.textContent.trim()) || 'Hotel';
+    var name = (titleEl && titleEl.textContent.trim()) || 'Stop';
+
+    // Roadora v39.8.13 — route-only practical stops use the same central
+    // route-stop state as hotels, but keep their own type. This fixes the
+    // “saved as hotel” issue without touching Google Maps export, ORS or Leaflet.
+    var type = 'hotel';
+    if(pop.classList.contains('rd-fuel-preview-popover-v39646')) type = 'fuel';
+    else if(pop.classList.contains('rd-charge-preview-popover-v39647')) type = 'charge';
+    else if(pop.classList.contains('rd-wc-preview-popover-v39653')) type = 'wc';
+    else if(pop.classList.contains('rd-food-preview-popover-v39648')) type = 'food';
+    else if(pop.classList.contains('rd-discover-preview-popover-v39649')) type = 'discover';
+
     return {
-      id: 'hotel-' + slug(name),
-      type: 'hotel',
+      id: type + '-' + slug(name),
+      type: type,
       name: name,
       meta: metaEl ? metaEl.textContent.trim() : '',
-      source: 'map-preview',
+      source: type === 'hotel' ? 'map-preview' : 'map-preview-route-only',
       status: 'in_route',
       addedAt: new Date().toISOString()
     };
@@ -3714,6 +3731,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting' };
     if(type === 'food') return { icon:'🍴', label:'Eten' };
     if(type === 'discover') return { icon:'◎', label:'Uitje' };
+    if(type === 'fuel') return { icon:'⛽', label:'Tankstop' };
+    if(type === 'charge') return { icon:'⚡', label:'Laadstop' };
+    if(type === 'wc') return { icon:'WC', label:'WC-stop' };
     return { icon:'⌁', label:'Stop' };
   }
 
@@ -3846,6 +3866,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     if(type === 'hotel') return { icon:'☾', label:'Overnachting', className:'is-hotel' };
     if(type === 'food') return { icon:'🍴', label:'Eten', className:'is-food' };
     if(type === 'discover') return { icon:'◎', label:'Uitje', className:'is-discover' };
+    if(type === 'fuel') return { icon:'⛽', label:'Tankstop', className:'is-fuel' };
+    if(type === 'charge') return { icon:'⚡', label:'Laadstop', className:'is-charge' };
+    if(type === 'wc') return { icon:'WC', label:'WC-stop', className:'is-wc' };
     return { icon:'⌁', label:'Stop', className:'is-stop' };
   }
 
@@ -4060,6 +4083,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     // Only sync hotel previews here. Other categories keep their existing behavior.
     if(pop.classList.contains('rd-food-preview-popover-v39648') ||
        pop.classList.contains('rd-discover-preview-popover-v39649') ||
+       pop.classList.contains('rd-fuel-preview-popover-v39646') ||
        pop.classList.contains('rd-charge-preview-popover-v39647') ||
        pop.classList.contains('rd-wc-preview-popover-v39653')) return null;
 
