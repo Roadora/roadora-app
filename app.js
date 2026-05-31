@@ -1369,20 +1369,39 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return String(stop.name || stop.title || stop.label || '').trim();
   }
 
+  function uniqueRouteDestinationsV39811(items){
+    const seen = new Set();
+    return (Array.isArray(items) ? items : [])
+      .map(destinationForRouteStopV39777)
+      .map(value => String(value || '').trim())
+      .filter(Boolean)
+      .filter(value => {
+        const key = value.toLowerCase();
+        if(seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  }
+
   function openGoogleMapsRoute(){
     const r=activeRoute();
     const endCoord=routeCoordinates[routeCoordinates.length-1] || coordFor(r.end, DEFAULT_END);
 
-    // Roadora v39.7.77 — Navigate to first selected route stop.
-    // Safe phase: if the user added stops to Trajecten, the central Navigeer
-    // button opens Google Maps to the first selected stop. If no stops exist,
-    // it keeps the clean A → B behavior from v39.7.74. No ORS redraw, no map
-    // route recalculation and no full multi-stop export yet.
-    const routeStops = readRouteStopsForMapsV39777();
-    const firstStopDestination = destinationForRouteStopV39777(routeStops[0]);
-    const destination = firstStopDestination || `${endCoord[1]},${endCoord[0]}`;
+    // Roadora v39.8.11 — preview/nav buttons must keep the full route intact.
+    // Practical stops (fuel/charge/WC) are waypoints, never replacement destinations.
+    // This fixes Android Google Maps opening a fuel stop as a search result instead
+    // of opening the complete route with Starten visible.
+    const routeStops = readRouteStopsForMapsV39777().filter(stop => {
+      const status = String((stop && stop.status) || 'in_route').toLowerCase();
+      return stop && status !== 'removed' && status !== 'deleted' && status !== 'complete' && status !== 'completed' && !stop.removed && !stop.deleted;
+    });
+    const waypoints = uniqueRouteDestinationsV39811(routeStops);
+    const routeEndName = String(r.end || '').trim();
+    const destination = routeEndName || `${endCoord[1]},${endCoord[0]}`;
 
     const params=new URLSearchParams({ api:'1', travelmode:'driving', destination });
+    if(waypoints.length) params.set('waypoints', waypoints.join('|'));
+
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
   }
   window.RoadoraMapsExport = { open: openGoogleMapsRoute };
@@ -4482,9 +4501,16 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function fallbackEndDestination(){
     var route = activeRoute();
-    // Keep the existing clean A → B behavior: named destination is enough for
-    // Google Maps and avoids reintroducing old sampled route-shape points.
-    return String(route.end || route.destination || '').trim() || 'Praag';
+    // Keep final planned destination intact. Do not fall back to a random city;
+    // if the route label is missing, use the map engine's coordinate fallback.
+    var named = String(route.end || route.destination || '').trim();
+    if(named) return named;
+    try{
+      var coords = (window.routeCoordinates || []);
+      var last = coords[coords.length - 1];
+      if(Array.isArray(last) && last.length >= 2) return last[1] + ',' + last[0];
+    }catch(_){ }
+    return 'Innsbruck';
   }
 
   function uniqueDestinationsV39810(items){
