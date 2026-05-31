@@ -14427,3 +14427,64 @@ body[data-active-screen="routes"] .routes-close-v39767,
     left:18px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.5 — Trajecten pixel alignment fix
+   Scope: Trajecten UI only. No JS, ORS, Maps, Leaflet or route-state changes.
+   ========================================================= */
+body[data-active-screen="routes"] .routes-native-head-v39767,
+.screen-routes.routes-v39767 .routes-native-head-v39767{
+  top:calc(13px + env(safe-area-inset-top, 0px)) !important;
+  height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767,
+.screen-routes.routes-v39767 .routes-title-v39767{
+  display:flex !important;
+  align-items:center !important;
+  height:44px !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767 h1,
+.screen-routes.routes-v39767 .routes-title-v39767 h1{
+  line-height:1 !important;
+  transform:translateY(-1px) !important;
+}
+
+.routes-premium-timeline-v3990{
+  --rd-route-spine-x-v3995:32px;
+}
+
+.routes-premium-timeline-v3990::before{
+  left:var(--rd-route-spine-x-v3995) !important;
+  width:2px !important;
+}
+
+.route-stop-card-v3992 .route-stop-index-v3992{
+  left:var(--rd-route-spine-x-v3995) !important;
+  top:50% !important;
+  transform:translate(-50%, -50%) !important;
+  margin:0 !important;
+  width:28px !important;
+  height:28px !important;
+  border-radius:999px !important;
+  z-index:9 !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="routes"] .routes-native-head-v39767,
+  .screen-routes.routes-v39767 .routes-native-head-v39767{
+    top:calc(14px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  .routes-premium-timeline-v3990{
+    --rd-route-spine-x-v3995:32px;
+  }
+
+  .route-stop-card-v3992 .route-stop-index-v3992{
+    left:var(--rd-route-spine-x-v3995) !important;
+    transform:translate(-50%, -50%) !important;
+  }
+}
