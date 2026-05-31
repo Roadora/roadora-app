@@ -352,6 +352,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     delft: [4.3571,52.0116],
     'hendrik ido ambacht': [4.6389,51.8442],
     hendrikidoambacht: [4.6389,51.8442],
+    berlijn: [13.4050,52.5200],
+    berlin: [13.4050,52.5200],
+    'berlijn duitsland': [13.4050,52.5200],
+    'berlin germany': [13.4050,52.5200],
     innsbruck: DEFAULT_END,
     praag: [14.4378,50.0755],
     prague: [14.4378,50.0755],
@@ -4410,7 +4414,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function interceptNavigateClick(event){
     var btn = event.target && event.target.closest && event.target.closest(
-      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"], #mapsRouteBtn, #mapNavMainBtn'
+      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"]'
     );
     if(!btn) return;
     event.preventDefault();
