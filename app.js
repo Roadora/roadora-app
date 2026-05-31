@@ -1191,9 +1191,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function openGoogleMapsRoute(){
     const r=activeRoute();
     const endCoord=routeCoordinates[routeCoordinates.length-1] || coordFor(r.end, DEFAULT_END);
-    const sampled=sampleWaypoints(routeCoordinates,6).slice(1,-1);
+    // Roadora v39.7.74 — Maps stop-state cleanup.
+    // Do not export sampled route-shape points as Google Maps waypoints anymore.
+    // Those points made Maps look like it had 6 saved stops, even when the
+    // user only wanted A → B navigation. Real user-selected route stops will be
+    // exported in a later dedicated phase from the central route-stop state.
     const params=new URLSearchParams({ api:'1', travelmode:'driving', destination:`${endCoord[1]},${endCoord[0]}` });
-    if(sampled.length) params.set('waypoints', sampled.map(c=>`${c[1]},${c[0]}`).join('|'));
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
   }
   window.RoadoraMapsExport = { open: openGoogleMapsRoute };
