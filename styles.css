@@ -13785,3 +13785,19 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-ho
   backdrop-filter:blur(6px) !important;
   -webkit-backdrop-filter:blur(6px) !important;
 }
+
+
+/* =========================================================
+   Roadora v39.9.14 — Hotels Close Micro Polish
+   Basis: v39.9.13 Hotels Close Subtle Surface.
+   Doel:
+   - Alleen het sluitrondje nog subtieler maken en het kruisje scherper/donkerder.
+   - Geen grotere knop, geen hogere knop, geen titel/spacing/card/ORS/Maps/JS wijzigingen.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755{
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  color:#2b2119 !important;
+  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
+}
