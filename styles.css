@@ -13615,3 +13615,281 @@ body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sh
     bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.0 — Trajecten Premium Timeline v2
+   Visual layer only. No Maps/ORS/Leaflet changes.
+   ========================================================= */
+.routes-premium-list-v3990{
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
+}
+.routes-journey-card-v3990{
+  margin:0 0 14px !important;
+  padding:15px !important;
+  border-radius:28px !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,246,232,.72), rgba(255,246,232,0) 44%),
+    linear-gradient(180deg, rgba(255,252,248,.82), rgba(255,248,240,.58)) !important;
+  border:1px solid rgba(255,255,255,.64) !important;
+  box-shadow:0 18px 42px rgba(63,41,24,.09), inset 0 1px 0 rgba(255,255,255,.62) !important;
+}
+.routes-journey-top-v3990,
+.routes-journey-bottom-v3990,
+.routes-next-stop-v3990{
+  display:flex;
+  align-items:center;
+}
+.routes-journey-top-v3990{
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+.routes-journey-top-v3990 span{
+  color:#a77d4e;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.18em;
+}
+.routes-journey-top-v3990 b{
+  color:#6d5138;
+  font-size:10px;
+  font-weight:900;
+  background:rgba(169,101,32,.10);
+  border-radius:999px;
+  padding:6px 9px;
+}
+.routes-journey-route-v3990{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  margin-bottom:13px;
+}
+.routes-journey-route-v3990 strong{
+  min-width:0;
+  color:#241b15;
+  font-size:21px;
+  line-height:1.02;
+  letter-spacing:-.045em;
+  font-weight:950;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.routes-journey-route-v3990 i{
+  color:#a77d4e;
+  font-style:normal;
+  font-weight:950;
+  text-align:center;
+}
+.routes-journey-bottom-v3990{
+  display:grid;
+  grid-template-columns:1fr 1fr .72fr;
+  gap:8px;
+  margin-bottom:10px;
+}
+.routes-journey-bottom-v3990 div{
+  min-height:58px;
+  border-radius:18px;
+  background:rgba(255,255,255,.46);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.46);
+}
+.routes-journey-bottom-v3990 small,
+.routes-next-stop-v3990 small{
+  display:block;
+  margin-bottom:4px;
+  color:rgba(47,36,27,.52);
+  font-size:8.5px;
+  font-weight:950;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.routes-journey-bottom-v3990 b{
+  color:#241b15;
+  font-size:15px;
+  line-height:1;
+  font-weight:950;
+  white-space:nowrap;
+}
+.routes-next-stop-v3990{
+  gap:10px;
+  min-height:56px;
+  border-radius:20px;
+  padding:9px 11px;
+  background:rgba(36,25,18,.055);
+}
+.routes-next-stop-v3990 > span{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#241b15;
+  color:#fff8ef;
+  font-size:16px;
+  font-weight:950;
+}
+.routes-next-stop-v3990 p{margin:0;min-width:0;}
+.routes-next-stop-v3990 strong{
+  display:block;
+  color:#241b15;
+  font-size:14px;
+  line-height:1.1;
+  font-weight:950;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.routes-next-stop-v3990.is-empty > span{background:#ead7bd;color:#8b541d;}
+.routes-premium-timeline-v3990{
+  padding:20px 13px 20px !important;
+  background:rgba(255,252,248,.54) !important;
+  border:1px solid rgba(255,255,255,.50) !important;
+  box-shadow:0 18px 42px rgba(63,41,24,.075) !important;
+}
+.routes-premium-timeline-v3990::before{
+  left:32px !important;
+  top:54px !important;
+  bottom:54px !important;
+  background:linear-gradient(180deg,rgba(169,101,32,.10),rgba(169,101,32,.55),rgba(169,101,32,.10)) !important;
+}
+.route-stop-card-v3990{
+  grid-template-columns:34px 36px minmax(0,1fr) !important;
+  min-height:126px !important;
+  align-items:start !important;
+  padding:13px !important;
+  gap:10px !important;
+  border-radius:25px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.46)) !important;
+  border:1px solid rgba(255,255,255,.70) !important;
+  box-shadow:0 14px 32px rgba(63,41,24,.075), inset 0 1px 0 rgba(255,255,255,.60) !important;
+}
+.route-stop-index-v3990{
+  width:30px;
+  height:30px;
+  border-radius:13px;
+  background:rgba(169,101,32,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#8b541d;
+  font-size:11px;
+  font-weight:950;
+  margin-top:3px;
+}
+.route-stop-index-v3990 span{line-height:1;}
+.route-stop-icon-v3990{
+  margin-top:0 !important;
+  background:#ead7bd !important;
+  box-shadow:0 8px 18px rgba(63,41,24,.08), inset 0 1px 0 rgba(255,255,255,.48) !important;
+}
+.route-stop-card-v3990.is-food .route-stop-icon-v3990{background:#efe0c7 !important;}
+.route-stop-card-v3990.is-discover .route-stop-icon-v3990{background:#e5d3bb !important;}
+.route-stop-card-v3990.is-fuel .route-stop-icon-v3990{background:#e8dcc4 !important;}
+.route-stop-card-v3990.is-charge .route-stop-icon-v3990{background:#dbe8d1 !important;}
+.route-stop-card-v3990.is-wc .route-stop-icon-v3990{font-size:10px !important;background:#e8ded0 !important;}
+.route-stop-copy-v3990{padding-top:1px;}
+.route-stop-copy-v3990 small{
+  flex-wrap:wrap;
+  gap:6px !important;
+  margin-bottom:7px !important;
+}
+.route-stop-copy-v3990 small em,
+.route-stop-copy-v3990 small b{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+}
+.route-stop-copy-v3990 small em{
+  font-size:8.2px !important;
+  padding:0 8px !important;
+}
+.route-stop-copy-v3990 small b{
+  color:rgba(47,36,27,.48) !important;
+  font-size:8.6px !important;
+}
+.route-stop-copy-v3990 strong{
+  display:block;
+  color:#241b15;
+  font-size:18px !important;
+  line-height:1.08 !important;
+  letter-spacing:-.035em !important;
+  white-space:normal !important;
+}
+.route-stop-copy-v3990 p{
+  margin:7px 0 0 !important;
+  color:rgba(47,36,27,.62) !important;
+  font-size:12px !important;
+  line-height:1.32 !important;
+  font-weight:740 !important;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.route-stop-tags-v3990{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:9px;
+}
+.route-stop-tags-v3990 span{
+  min-height:22px;
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:0 8px;
+  background:rgba(255,255,255,.62);
+  color:rgba(47,36,27,.62);
+  font-size:8.5px;
+  font-weight:900;
+}
+.route-stop-actions-v3990{
+  grid-column:2 / 4;
+  width:100%;
+  display:grid !important;
+  grid-template-columns:1fr 1fr;
+  gap:8px !important;
+  margin-top:2px !important;
+  align-items:stretch !important;
+}
+.route-stop-actions-v3990 .route-stop-view-v39772,
+.route-stop-actions-v3990 .route-stop-remove-v39771{
+  width:100% !important;
+  min-height:36px !important;
+  min-width:0 !important;
+  border-radius:15px !important;
+  font-size:10.5px !important;
+}
+.route-stop-actions-v3990 .route-stop-view-v39772{
+  background:#241b15 !important;
+  color:#fff8ef !important;
+}
+.route-stop-actions-v3990 .route-stop-remove-v39771{
+  background:rgba(73,49,31,.075) !important;
+  color:#745238 !important;
+}
+.routes-empty-v39767{
+  border-radius:28px !important;
+  background:rgba(255,252,248,.64) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:0 16px 36px rgba(63,41,24,.08) !important;
+}
+@media (max-width:390px){
+  .routes-journey-card-v3990{padding:13px !important;border-radius:26px !important;}
+  .routes-journey-route-v3990 strong{font-size:18px;}
+  .routes-journey-bottom-v3990{gap:7px;}
+  .routes-journey-bottom-v3990 div{min-height:54px;border-radius:16px;}
+  .routes-journey-bottom-v3990 b{font-size:13.5px;}
+  .route-stop-card-v3990{grid-template-columns:30px 34px minmax(0,1fr) !important;min-height:124px !important;padding:12px !important;gap:9px !important;}
+  .route-stop-index-v3990{width:28px;height:28px;border-radius:12px;}
+  .route-stop-copy-v3990 strong{font-size:17px !important;}
+  .route-stop-actions-v3990{grid-column:2 / 4;}
+}
