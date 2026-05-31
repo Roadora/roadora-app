@@ -3536,19 +3536,48 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
     stopsWrap.innerHTML = stops.map(function(stop, index){
       var meta = typeMeta(stop.type);
-      return '<article class="route-stop-card-v39767" data-route-stop-id="' + escapeText(stop.id) + '">' +
+      return '<article class="route-stop-card-v39767 route-stop-card-v39771" data-route-stop-id="' + escapeText(stop.id) + '">' +
         '<span class="route-stop-icon-v39767">' + meta.icon + '</span>' +
         '<div class="route-stop-copy-v39767">' +
           '<small>' + meta.label + ' ' + (index + 1) + '</small>' +
           '<strong>' + escapeText(stop.name || 'Stop') + '</strong>' +
           '<p>' + escapeText(stop.meta || 'Toegevoegd aan je route') + '</p>' +
         '</div>' +
-        '<em>In route</em>' +
+        '<div class="route-stop-actions-v39771">' +
+          '<em>In route</em>' +
+          '<button class="route-stop-remove-v39771" type="button" data-route-stop-remove="' + escapeText(stop.id) + '" aria-label="Verwijder uit traject">Verwijder</button>' +
+        '</div>' +
       '</article>';
     }).join('');
   }
 
+  function toastV39771(message){
+    if(typeof window.showToast === 'function'){ window.showToast(message); return; }
+    try{
+      var t = document.getElementById('toast') || document.getElementById('mapToast');
+      if(!t) return;
+      t.textContent = message;
+      t.classList.add('show');
+      clearTimeout(toastV39771.timer);
+      toastV39771.timer = setTimeout(function(){ t.classList.remove('show'); }, 1700);
+    }catch(_){ }
+  }
+
   document.addEventListener('click', function(event){
+    var removeBtn = event.target.closest && event.target.closest('[data-route-stop-remove]');
+    if(removeBtn){
+      event.preventDefault();
+      var id = removeBtn.dataset.routeStopRemove;
+      if(id && window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.remove === 'function'){
+        window.RoadoraRouteStopsV39766.remove(id);
+        renderTrajecten();
+        if(typeof window.RoadoraRouteStopsV39766.sync === 'function') window.RoadoraRouteStopsV39766.sync();
+        window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ stops: readStops(), removedId:id, source:'trajecten' } }));
+        toastV39771('Stop verwijderd uit je traject');
+      }
+      return;
+    }
+
     var cta = event.target.closest && event.target.closest('.routes-empty-cta-v39767');
     if(!cta) return;
     event.preventDefault();

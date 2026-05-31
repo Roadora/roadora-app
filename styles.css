@@ -13136,3 +13136,32 @@ body[data-roadtrip-view="saved-discover"] .hotel-actions-v39763 button{
 .saved-content-card-v39764.is-in-route-v39766 .hotel-add-route-v39763::after{
   content:"";
 }
+
+
+/* =========================================================
+   Roadora v39.7.71 — Traject Remove Stop
+   Scope: Trajecten-only remove action. No ORS/Maps/export changes.
+   ========================================================= */
+.route-stop-actions-v39771{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:center;
+  gap:7px;
+  min-width:82px;
+}
+.route-stop-remove-v39771{
+  min-height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(73,49,31,.08);
+  color:#745238;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.route-stop-remove-v39771:active{transform:scale(.97);}
+@media (max-width:390px){
+  .route-stop-card-v39771{grid-template-columns:38px minmax(0,1fr);}
+  .route-stop-actions-v39771{grid-column:2;align-items:flex-start;flex-direction:row;justify-content:flex-start;margin-top:-2px;}
+}
