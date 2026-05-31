@@ -4435,202 +4435,135 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 })();
 
 /* =========================================================
-   Roadora v39.9.0 — Trajecten Premium Timeline v2
-   Scope: visual/data presentation only.
-   No ORS, Leaflet, Google Maps export or route recalculation changes.
+   Roadora v39.9.7 — Roadtrip Component System v1 renderer
+   Scope: Trajecten uses shared Roadtrip cards; no Maps/ORS changes.
    ========================================================= */
 (function(){
-  if(window.__roadoraTrajectenPremiumV3990) return;
-  window.__roadoraTrajectenPremiumV3990 = true;
+  if(window.__roadoraRoadtripComponentSystemV3997) return;
+  window.__roadoraRoadtripComponentSystemV3997 = true;
 
-  function escapeText(value){
-    return String(value || '').replace(/[&<>\"]/g, function(ch){
-      return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'})[ch] || ch;
-    });
-  }
+  var KEY = 'roadora_route_stops_v39766';
 
   function readStops(){
     try{
       if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'){
         var apiStops = window.RoadoraRouteStopsV39766.all();
-        if(Array.isArray(apiStops)) return apiStops.filter(function(stop){ return stop && stop.status === 'in_route'; });
+        if(Array.isArray(apiStops)) return apiStops.filter(isActive);
       }
-      var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
-      return Array.isArray(raw) ? raw.filter(function(stop){ return stop && stop.status === 'in_route'; }) : [];
+      var raw = JSON.parse(localStorage.getItem(KEY) || '[]');
+      return Array.isArray(raw) ? raw.filter(isActive) : [];
     }catch(_){ return []; }
+  }
+
+  function isActive(stop){
+    if(!stop) return false;
+    var status = String(stop.status || 'in_route').toLowerCase();
+    return !(status === 'removed' || status === 'deleted' || status === 'complete' || status === 'completed' || stop.removed || stop.deleted || stop.completed);
   }
 
   function routeState(){
     try{ return (window.RoadoraState && window.RoadoraState.route) || {}; }catch(_){ return {}; }
   }
 
-  function normalizeType(type){
-    var safe = String(type || '').toLowerCase();
-    if(safe === 'hotels') return 'hotel';
-    if(safe === 'restaurant' || safe === 'restaurants') return 'food';
-    if(safe === 'activity' || safe === 'activities' || safe === 'view') return 'discover';
-    if(safe === 'ev' || safe === 'charge' || safe === 'charging') return 'charge';
-    if(safe === 'gas' || safe === 'fuel') return 'fuel';
-    if(safe === 'toilet' || safe === 'wc') return 'wc';
-    return safe || 'stop';
+  function esc(value){
+    return String(value || '').replace(/[&<>\"]/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch]; });
   }
 
-  function typeMeta(type){
-    type = normalizeType(type);
-    if(type === 'hotel') return { icon:'☾', label:'Overnachten', tone:'hotel', tag:'Verblijf' };
-    if(type === 'food') return { icon:'🍴', label:'Eten', tone:'food', tag:'Pauze' };
-    if(type === 'discover') return { icon:'◎', label:'Uitje', tone:'discover', tag:'Ontdekken' };
-    if(type === 'fuel') return { icon:'⛽', label:'Tanken', tone:'fuel', tag:'Praktisch' };
-    if(type === 'charge') return { icon:'⚡', label:'Laden', tone:'charge', tag:'Praktisch' };
-    if(type === 'wc') return { icon:'WC', label:'WC', tone:'wc', tag:'Praktisch' };
-    return { icon:'⌁', label:'Stop', tone:'stop', tag:'Route' };
-  }
-
-  function fmtKmMeters(meters){
-    var km = Math.round((Number(meters) || 0) / 1000);
-    return km ? km.toLocaleString('nl-NL') + ' km' : '— km';
-  }
-
-  function fmtDuration(seconds){
-    seconds = Number(seconds) || 0;
-    if(!seconds) return '—';
-    var h = Math.floor(seconds / 3600);
-    var m = Math.round((seconds % 3600) / 60);
-    if(m === 60){ h += 1; m = 0; }
-    return h ? (h + 'u ' + String(m).padStart(2,'0') + 'm') : (m + ' min');
-  }
-
-  function totals(stops){
-    var route = routeState();
-    var summary = route.summary || null;
-    if(summary && (Number(summary.distance) || Number(summary.duration))){
-      return { distance:Number(summary.distance || 0), duration:Number(summary.duration || 0), source:'live' };
-    }
-    var count = Math.max(1, stops.length + 1);
-    return { distance:count * 145000, duration:count * 5400, source:'preview' };
-  }
-
-  function metricFor(index, stops, total){
-    var fraction = (index + 1) / (stops.length + 1);
-    var distance = Math.max(0, Math.round((Number(total.distance) || 0) * fraction));
-    var duration = Math.max(0, Math.round((Number(total.duration) || 0) * fraction));
-    return fmtKmMeters(distance) + ' · ' + fmtDuration(duration);
-  }
-
-  function stopSubtitle(stop){
-    var bits = [];
-    if(stop.meta) bits.push(stop.meta);
-    if(stop.rating) bits.push(stop.rating);
-    if(stop.address) bits.push(stop.address);
-    return bits.slice(0, 2).join(' · ') || 'Toegevoegd aan je route';
+  function metaFor(type){
+    if(type === 'food') return {label:'Eten', img:'assets/hero-hotels.webp'};
+    if(type === 'discover') return {label:'Uitje', img:'assets/hero-routes.webp'};
+    if(type === 'fuel') return {label:'Tanken', img:'assets/hero-routes.webp'};
+    if(type === 'charge') return {label:'Laden', img:'assets/hero-routes.webp'};
+    if(type === 'wc') return {label:'Pauze', img:'assets/hero-routes.webp'};
+    return {label:'Overnachten', img:'assets/hero-hotels.webp'};
   }
 
   function stopImage(stop, meta){
-    var img = (stop && (stop.img || stop.image || stop.photo || stop.photoUrl)) || '';
-    if(img) return img;
-    var tone = meta && meta.tone;
-    if(tone === 'food') return 'assets/hero-hotels.webp';
-    if(tone === 'discover') return 'assets/hero-diary.webp';
-    if(tone === 'fuel' || tone === 'charge' || tone === 'wc') return 'assets/hero-routes.webp';
-    return 'assets/hero-hotels.webp';
+    return stop && (stop.img || stop.image || stop.photo || stop.photoUrl || stop.cover || meta.img) || meta.img;
   }
 
-  function ensureV2Hero(list){
-    var hero = document.getElementById('routesHeroV3990');
-    if(hero) return hero;
-    hero = document.createElement('section');
-    hero.id = 'routesHeroV3990';
-    hero.className = 'routes-journey-card-v3990';
-    var anchor = document.getElementById('routesStatsV39772') || list.firstChild;
-    if(anchor && anchor.parentNode === list) list.insertBefore(hero, anchor);
-    else list.insertBefore(hero, list.firstChild);
-    return hero;
+  function stopSubtitle(stop, index){
+    var bits = [];
+    if(stop.rating) bits.push(String(stop.rating));
+    if(stop.meta) bits.push(String(stop.meta));
+    if(stop.distanceLabel) bits.push(String(stop.distanceLabel));
+    if(!bits.length) bits.push('Stop ' + (index + 1) + ' in je route');
+    return bits.join(' · ');
   }
 
-  function renderHero(list, stops, total){
-    var route = routeState();
-    var hero = ensureV2Hero(list);
-    var next = stops[0] || null;
-    var nextMeta = next ? typeMeta(next.type) : null;
-    hero.innerHTML = ''+
-      '<div class="routes-journey-top-v3990">' +
-        '<span>TRAJECTEN</span>' +
-        '<b>'+escapeText(total.source === 'live' ? 'Live route' : 'Route preview')+'</b>' +
-      '</div>' +
-      '<div class="routes-journey-route-v3990">' +
-        '<strong>'+escapeText(route.start || 'Vertrekpunt')+'</strong>' +
-        '<i>→</i>' +
-        '<strong>'+escapeText(route.end || 'Bestemming')+'</strong>' +
-      '</div>' +
-      '<div class="routes-journey-bottom-v3990">' +
-        '<div><small>Afstand</small><b>'+escapeText(fmtKmMeters(total.distance))+'</b></div>' +
-        '<div><small>Rijtijd</small><b>'+escapeText(fmtDuration(total.duration))+'</b></div>' +
-        '<div><small>Stops</small><b>'+escapeText(String(stops.length))+'</b></div>' +
-      '</div>' +
-      (next ? '<div class="routes-next-stop-v3990"><span>'+escapeText(nextMeta.icon)+'</span><p><small>Volgende stop</small><strong>'+escapeText(next.name || 'Stop')+'</strong></p></div>' : '<div class="routes-next-stop-v3990 is-empty"><span>⌁</span><p><small>Nog geen stop</small><strong>Voeg iets toe vanuit de kaart of opgeslagen stops</strong></p></div>');
+  function hasPlanned(route){
+    return !!(route && (route.start || route.end || route.summary));
   }
 
-  function renderTimeline(){
+  function render(){
     var list = document.getElementById('routesListV39767');
     var empty = document.getElementById('routesEmptyV39767');
     var timeline = document.getElementById('routesTimelineV39767');
     var stopsWrap = document.getElementById('routesStopsV39767');
     if(!list || !empty || !timeline || !stopsWrap) return;
 
-    var stops = readStops();
     var route = routeState();
-    var total = totals(stops);
+    var stops = readStops();
+    var planned = hasPlanned(route);
+    var showTimeline = planned || stops.length > 0;
+
+    list.classList.add('routes-premium-list-v39772','rd-trip-component-system-v3997');
+    timeline.classList.add('routes-premium-timeline-v39772','rd-trip-timeline-v3997');
+
+    var intro = list.querySelector('.routes-intro-card-v39767');
+    if(intro) intro.hidden = true;
+
     var start = document.getElementById('routesStartV39767');
     var end = document.getElementById('routesEndV39767');
     if(start) start.textContent = route.start || 'Vertrekpunt';
     if(end) end.textContent = route.end || 'Bestemming';
 
-    list.classList.add('routes-premium-list-v39772','routes-premium-list-v3990');
-    timeline.classList.add('routes-premium-timeline-v39772','routes-premium-timeline-v3990');
-    var intro = list.querySelector('.routes-intro-card-v39767');
-    if(intro) intro.hidden = true;
-    var oldStats = document.getElementById('routesStatsV39772');
-    if(oldStats) oldStats.hidden = true;
+    empty.hidden = showTimeline;
+    timeline.hidden = !showTimeline;
 
-    renderHero(list, stops, total);
-    empty.hidden = stops.length > 0;
-    timeline.hidden = stops.length === 0;
-    list.classList.toggle('has-premium-stops-v3990', stops.length > 0);
+    var stats = document.querySelector('.routes-stats-card-v39772');
+    if(stats) stats.hidden = true;
+
+    if(empty){
+      empty.classList.add('rd-trip-empty-v3997');
+      var p = empty.querySelector('p');
+      if(p) p.textContent = 'Voeg hotels, eetplekken of uitjes toe vanaf de kaart. Daarna verschijnt je roadtrip hier automatisch als één rustige route.';
+    }
 
     stopsWrap.innerHTML = stops.map(function(stop, index){
-      var meta = typeMeta(stop.type);
-      var metric = metricFor(index, stops, total);
-      var subtitle = stopSubtitle(stop);
-      var photo = stopImage(stop, meta);
-      return '<article class="route-stop-card-v39767 route-stop-card-v39771 route-stop-card-v39772 route-stop-card-v3990 route-stop-card-v3992 is-'+escapeText(meta.tone)+'" data-route-stop-id="'+escapeText(stop.id)+'">' +
-        '<div class="route-stop-index-v3990 route-stop-index-v3992"><span>'+escapeText(String(index + 1))+'</span></div>' +
-        '<div class="route-stop-photo-v3992" style="background-image:url(\''+escapeText(photo)+'\')"></div>' +
-        '<div class="route-stop-copy-v39767 route-stop-copy-v39772 route-stop-copy-v3990 route-stop-copy-v3992">' +
-          '<small><em>'+escapeText(meta.label)+'</em><b>'+escapeText(metric)+'</b></small>' +
-          '<strong>'+escapeText(stop.name || 'Stop')+'</strong>' +
-          '<p>'+escapeText(subtitle)+'</p>' +
-          '<div class="route-stop-tags-v3990"><span>'+escapeText(meta.tag)+'</span><span>In route</span></div>' +
-        '</div>' +
-        '<div class="route-stop-actions-v39771 route-stop-actions-v39772 route-stop-actions-v3990">' +
-          '<button class="route-stop-view-v39772" type="button" data-route-stop-view="'+escapeText(stop.id)+'">Bekijk</button>' +
-          '<button class="route-stop-remove-v39771" type="button" data-route-stop-remove="'+escapeText(stop.id)+'" aria-label="Verwijder uit traject">Verwijder</button>' +
-        '</div>' +
-      '</article>';
+      var meta = metaFor(stop.type || stop.category);
+      var img = esc(stopImage(stop, meta));
+      var id = esc(stop.id || stop.name || ('stop-' + index));
+      return ''+
+        '<article class="rd-trip-card-v3997 route-stop-card-v39767" data-route-stop-id="'+id+'">'+
+          '<span class="rd-trip-waypoint-v3997">'+(index+1)+'</span>'+
+          '<div class="rd-trip-card-photo-v3997" aria-hidden="true" style="background-image:url('+img+')"></div>'+
+          '<div class="rd-trip-card-body-v3997">'+
+            '<div class="rd-trip-card-kicker-v3997"><b></b><span>'+esc(meta.label)+'</span></div>'+
+            '<strong class="rd-trip-card-title-v3997">'+esc(stop.name || stop.title || 'Stop')+'</strong>'+
+            '<p class="rd-trip-card-meta-v3997">'+esc(stopSubtitle(stop, index))+'</p>'+
+            '<div class="rd-trip-card-actions-v3997 route-stop-actions-v39771">'+
+              '<button type="button" data-route-stop-view="'+id+'">Bekijk</button>'+
+              '<button type="button" data-route-stop-remove="'+id+'">Verwijder</button>'+
+            '</div>'+
+          '</div>'+
+        '</article>';
     }).join('');
   }
 
   function schedule(){
-    setTimeout(renderTimeline, 20);
-    setTimeout(renderTimeline, 160);
+    setTimeout(render,0);
+    setTimeout(render,120);
+    setTimeout(render,420);
   }
 
   document.addEventListener('DOMContentLoaded', schedule);
   window.addEventListener('roadora:route-stops-updated', schedule);
-  window.addEventListener('storage', function(e){ if(e && e.key === 'roadora_route_stops_v39766') schedule(); });
-  document.addEventListener('click', function(event){
-    if(event.target.closest && event.target.closest('[data-screen-target="routes"]')) schedule();
+  window.addEventListener('storage', function(e){ if(e && (e.key === KEY || e.key === 'roadora_phase1_state_v44_clean')) schedule(); });
+  document.addEventListener('click', function(e){
+    if(e.target.closest && (e.target.closest('[data-screen-target="routes"]') || e.target.closest('[data-roadtrip-entry]'))) schedule();
   }, true);
 
-  window.RoadoraTrajectenPremiumV3990 = { render:renderTimeline };
+  window.RoadoraRoadtripComponentsV3997 = { render:schedule };
   schedule();
 })();
