@@ -13852,3 +13852,37 @@ body[data-active-screen="routes"] .routes-native-head-v39767{
     right:22px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.15 — Roadtrip Topbar Text Bottom-Line Fix
+   Basis: v39.9.14 / v39.9.10 stable line.
+   Correctie op user feedback:
+   - Geen balk.
+   - Witte titel blijft.
+   - ONDERKANT van de titel staat op dezelfde hoogte als het onderste hamburgerstreepje.
+   - Hamburgerpositie blijft exact master: top 22px, left 24px, 34x34.
+   - Alleen CSS; geen JS / ORS / Maps / Leaflet / route-export wijzigingen.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view] .roadtrip-hero-title-v39734,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="routes"] .routes-title-v39767 h1{
+  top:calc(25px + env(safe-area-inset-top, 0px)) !important;
+  height:22px !important;
+  min-height:22px !important;
+  line-height:22px !important;
+  align-items:flex-end !important;
+  color:#fffaf3 !important;
+  transform:none !important;
+}
+
+/* Kruisje blijft op dezelfde onderste-lijn as: center op onderste hamburgerlijn. */
+body[data-active-screen="roadtrip"][data-roadtrip-view] .roadtrip-state-close-v39734,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755,
+body[data-active-screen="routes"] .routes-close-v39767{
+  top:calc(29px + env(safe-area-inset-top, 0px)) !important;
+  color:#fffaf3 !important;
+}
