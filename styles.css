@@ -13417,3 +13417,49 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-pres
     border-radius:20px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.7.75 — Route Stops Map Preview Pins
+   Shows selected trajectory stops on the map without touching ORS/Maps export.
+   ========================================================= */
+#mapScreen .rdRouteStopPinV39775{
+  width:38px !important;
+  height:38px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(135deg, rgba(255,250,242,.98), rgba(232,214,190,.94)) !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  box-shadow:0 14px 30px rgba(42,27,14,.26), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+#mapScreen .rdRouteStopPinV39775 span{
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:#2b211a;
+  color:#fff8ed;
+  font-size:15px;
+  font-weight:950;
+  line-height:1;
+}
+#mapScreen .rdRouteStopPinV39775 b{
+  position:absolute;
+  right:-2px;
+  top:-2px;
+  width:15px;
+  height:15px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:#a96520;
+  color:#fff8ed;
+  border:2px solid #fff8ed;
+  font-size:8px;
+  font-weight:950;
+  box-shadow:0 6px 12px rgba(42,27,14,.20);
+}
+#mapScreen .rdRouteStopPinV39775.hotel span{ background:#2b211a; }
+#mapScreen .rdRouteStopPinV39775.food span{ background:#8b5422; }
+#mapScreen .rdRouteStopPinV39775.discover span{ background:#5f6f4a; }

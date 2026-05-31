@@ -375,7 +375,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     'san sebastian': [-1.9812,43.3183],
     sansebastian: [-1.9812,43.3183]
   };
-  let map, routeLayer, markerLayer, labelLayer, categoryLayer, initialized=false, loading=false, routeCoordinates=[];
+  let map, routeLayer, markerLayer, labelLayer, categoryLayer, routeStopLayer, initialized=false, loading=false, routeCoordinates=[];
   let activeLoadKeyV39745 = '';
   let displayedRouteKeyV39745 = '';
   let pendingReloadV39745 = false;
@@ -454,6 +454,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     markerLayer=L.layerGroup().addTo(map);
     labelLayer=L.layerGroup().addTo(map);
     categoryLayer=L.layerGroup().addTo(map);
+    routeStopLayer=L.layerGroup().addTo(map);
 
     $('#zoomIn')?.addEventListener('click',()=>map.zoomIn());
     $('#zoomOut')?.addEventListener('click',()=>map.zoomOut());
@@ -1022,6 +1023,76 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
 
+
+  /* Roadora v39.7.75 — selected route stops visible on map.
+     This is a preview layer only: it reads the central route-stop state and
+     shows chosen Hotels/Eten/Uitjes as persistent pins on the map. It does not
+     recalculate ORS, does not change Google Maps export, and does not alter the
+     main route polyline. */
+  function readRouteStopsV39775(){
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.all === 'function'){
+        const stops = window.RoadoraRouteStopsV39766.all();
+        return Array.isArray(stops) ? stops.filter(s => s && s.status === 'in_route') : [];
+      }
+      const raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      return Array.isArray(raw) ? raw.filter(s => s && s.status === 'in_route') : [];
+    }catch(_){ return []; }
+  }
+
+  function routeStopIconV39775(stop){
+    const type = (stop && stop.type) || 'stop';
+    const icon = type === 'hotel' ? '☾' : (type === 'food' ? '🍴' : (type === 'discover' ? '◎' : '⌁'));
+    const cls = type === 'hotel' ? 'hotel' : (type === 'food' ? 'food' : (type === 'discover' ? 'discover' : 'stop'));
+    return L.divIcon({
+      className:`rdRouteStopPinV39775 ${cls}`,
+      html:`<span>${icon}</span><b>✓</b>`,
+      iconSize:[38,38],
+      iconAnchor:[19,19]
+    });
+  }
+
+  function routeStopCoordV39775(stop, index, total){
+    const explicit = explicitCoordFromStopV39687(stop);
+    if(isValidLonLatV39687(explicit)) return explicit;
+    if(stop && isFinite(Number(stop.distanceKm))){
+      const byKm = pointAlongRouteByKmV39686(Number(stop.distanceKm));
+      if(isValidLonLatV39687(byKm)) return byKm;
+    }
+    const metaKm = parseKmFromMetaV39686(stop && stop.meta);
+    if(metaKm !== null){
+      const byMeta = pointAlongRouteByKmV39686(metaKm);
+      if(isValidLonLatV39687(byMeta)) return byMeta;
+    }
+    const pct = (Math.max(0, index) + 1) / (Math.max(1, total) + 1);
+    return routePointAt(pct);
+  }
+
+  function renderRouteStopPinsV39775(){
+    if(!map || !window.L) return;
+    if(!routeStopLayer) routeStopLayer = L.layerGroup().addTo(map);
+    routeStopLayer.clearLayers();
+    const stops = readRouteStopsV39775();
+    if(!stops.length || !routeCoordinates.length) return;
+
+    stops.forEach((stop, index)=>{
+      const coord = routeStopCoordV39775(stop, index, stops.length);
+      if(!isValidLonLatV39687(coord)) return;
+      const marker = L.marker(latLng(coord), {
+        icon: routeStopIconV39775(stop),
+        riseOnHover:true,
+        zIndexOffset:780 + index
+      });
+      marker.on('click', function(){
+        try{
+          setText('#mapStatusNext', (stop.name || 'Stop') + ' · in route');
+          showMapToast((stop.name || 'Stop') + ' staat in je traject');
+        }catch(_){ }
+      });
+      marker.addTo(routeStopLayer);
+    });
+  }
+
   /* Roadora v39.6.94 — remove only orphan endpoint marker in the top-left corner.
      This is a DOM cleanup for a stale Leaflet endpoint element; it does not touch
      route logic, card/pin selection, ORS, Maps export or sheet flow. */
@@ -1056,9 +1127,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function drawFallback(startCoord, endCoord){
     routeCoordinates=[startCoord,endCoord];
     routeDistanceCacheV39686 = null;
-    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers();
+    routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers(); if(routeStopLayer) routeStopLayer.clearLayers(); if(routeStopLayer) routeStopLayer.clearLayers();
     L.polyline([latLng(startCoord), latLng(endCoord)], { color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
+    renderRouteStopPinsV39775();
     fitRoute();
   }
   function drawGeoJson(data,startCoord,endCoord){
@@ -1068,6 +1140,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     routeDistanceCacheV39686 = null;
     L.geoJSON(data, { style:{ color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' } }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
+    renderRouteStopPinsV39775();
     const summary = data?.features?.[0]?.properties?.summary || {};
     updateLabels(summary);
     if(summary && (Number(summary.distance) || Number(summary.duration))){
@@ -1223,10 +1296,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     });
   }
 
+  window.addEventListener('roadora:route-stops-updated', function(){
+    setTimeout(renderRouteStopPinsV39775, 0);
+    setTimeout(renderRouteStopPinsV39775, 180);
+  });
+  window.addEventListener('storage', function(e){
+    if(e && e.key === 'roadora_route_stops_v39766') setTimeout(renderRouteStopPinsV39775, 80);
+  });
+
   window.RoadoraMap = {
-    ensure(){ bootMapV39743(false); },
-    refresh(){ bootMapV39743(true); },
-    fit: fitRoute
+    ensure(){ bootMapV39743(false); setTimeout(renderRouteStopPinsV39775, 300); },
+    refresh(){ bootMapV39743(true); setTimeout(renderRouteStopPinsV39775, 300); },
+    fit: fitRoute,
+    renderRouteStops: renderRouteStopPinsV39775
   };
   if(document.body.dataset.activeScreen === 'map') window.RoadoraMap.ensure();
 })();
