@@ -13815,3 +13815,183 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-ho
   justify-content:center !important;
   padding-bottom:4px !important;
 }
+
+/* =========================================================
+   Roadora v39.9.16 — Roadtrip Header Geometry Rollout
+   Basis: v39.9.15 Hotels Header Final Locked.
+   Doel:
+   - De gelockte Hotels-headergeometrie doorzetten naar Eten, Uitjes en Trajecten.
+   - Zelfde hamburger-anker, titelafstand, titelgewicht en subtiele close-control.
+   - Geen kaart, ORS, Maps, route-state, cards of JS aangepast.
+   ========================================================= */
+
+/* Eten + Uitjes gebruiken exact dezelfde header-geometrie als Hotels. */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .hero-menu-btn,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .hero-menu-btn{
+  position:fixed !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:24px !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
+  transform:translateY(-10px) !important;
+  min-height:52px !important;
+  margin:0 0 -2px !important;
+  padding:0 0 0 64px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 48px !important;
+  align-items:center !important;
+  gap:10px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756{
+  grid-column:1 !important;
+  transform:translateX(12px) !important;
+  min-height:auto !important;
+  display:block !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+  margin:0 !important;
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:31px !important;
+  line-height:1 !important;
+  letter-spacing:-.045em !important;
+  font-weight:600 !important;
+  color:#241b15 !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
+  grid-column:2 !important;
+  justify-self:end !important;
+  align-self:center !important;
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  border-radius:16px !important;
+  transform:translateY(-3px) !important;
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  color:#2b2119 !important;
+  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 0 4px 0 !important;
+  line-height:1 !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+}
+
+/* Trajecten krijgt dezelfde visuele as: hamburger 24/22, titel start op dezelfde optische plek, close subtiel. */
+body[data-active-screen="routes"] .hero-menu-btn{
+  position:fixed !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:24px !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+}
+
+body[data-active-screen="routes"] .routes-native-head-v39767{
+  left:0 !important;
+  right:24px !important;
+  top:calc(18px + env(safe-area-inset-top, 0px)) !important;
+  height:52px !important;
+  padding:0 0 0 76px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 48px !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767{
+  transform:translateX(12px) !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767 small{
+  display:none !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767 h1{
+  margin:0 !important;
+  font-size:31px !important;
+  line-height:1 !important;
+  letter-spacing:-.045em !important;
+  font-weight:600 !important;
+  transform:translateY(-2px) !important;
+}
+
+body[data-active-screen="routes"] .routes-close-v39767{
+  justify-self:end !important;
+  width:44px !important;
+  height:44px !important;
+  border-radius:16px !important;
+  transform:translateY(-3px) !important;
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  color:#2b2119 !important;
+  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 0 4px 0 !important;
+  line-height:1 !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+}
+
+body[data-active-screen="routes"] .routes-scroll-v39767{
+  top:calc(92px + env(safe-area-inset-top, 0px)) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .hero-menu-btn,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .hero-menu-btn,
+  body[data-active-screen="routes"] .hero-menu-btn{
+    top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+    left:24px !important;
+    width:34px !important;
+    height:34px !important;
+  }
+
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
+    min-height:52px !important;
+    padding-left:64px !important;
+    grid-template-columns:minmax(0,1fr) 48px !important;
+  }
+
+  body[data-active-screen="routes"] .routes-native-head-v39767{
+    top:calc(18px + env(safe-area-inset-top, 0px)) !important;
+    height:52px !important;
+    padding-left:76px !important;
+    right:24px !important;
+    grid-template-columns:minmax(0,1fr) 48px !important;
+  }
+
+  body[data-active-screen="routes"] .routes-title-v39767 h1,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+    font-size:31px !important;
+  }
+}
