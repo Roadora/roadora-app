@@ -5820,7 +5820,10 @@ body[data-sheet-state="expanded"] .rd-map-sheet-v28{
 }
 
 /* Bottom nav moet optisch onderdeel blijven van de sheet */
-.bottom-nav{
+.rd-map-bottom-nav-v28,
+.map-bottom-nav,
+.bottom-nav,
+.rd-bottom-nav{
   z-index:9999 !important;
 }
 
@@ -6113,7 +6116,10 @@ body[data-sheet-state="collapsed"] .rd-sheet-actions-v392{
 }
 
 /* Bottom nav blijft boven en functioneert als launcher */
-.bottom-nav{
+.rd-map-bottom-nav-v28,
+.map-bottom-nav,
+.bottom-nav,
+.rd-bottom-nav{
   z-index:9999 !important;
 }
 
@@ -6300,7 +6306,10 @@ body[data-sheet-state="expanded"] #mapDrawer .rd-sheet-cards-v39{
 }
 
 /* Zorg dat bottom nav optisch rustiger aansluit */
-.bottom-nav{
+.map-bottom-nav,
+.rd-map-bottom-nav-v28,
+.bottom-nav,
+.rd-bottom-nav{
   box-shadow:0 -8px 28px rgba(36,25,18,.08) !important;
 }
 
@@ -6696,7 +6705,10 @@ body[data-sheet-state="half"] .rd-map-sheet-v28{
 */
 
 body[data-active-screen="map"] .rd-map-nav-v28,
-body[data-active-screen="map"] .bottom-nav{
+body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"] .map-bottom-nav,
+body[data-active-screen="map"] .bottom-nav,
+body[data-active-screen="map"] .rd-bottom-nav{
   position:fixed !important;
   left:14px !important;
   right:14px !important;
@@ -6723,7 +6735,10 @@ body[data-active-screen="map"] .bottom-nav{
 
 /* Zorg dat alle nav-items altijd zichtbaar blijven */
 body[data-active-screen="map"] .rd-map-nav-v28 > *,
-body[data-active-screen="map"] .bottom-nav > *{
+body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
+body[data-active-screen="map"] .map-bottom-nav > *,
+body[data-active-screen="map"] .bottom-nav > *,
+body[data-active-screen="map"] .rd-bottom-nav > *{
   display:flex !important;
   visibility:visible !important;
   opacity:1 !important;
@@ -6765,7 +6780,10 @@ body[data-active-screen="map"] .rd-map-sheet-v28::after{
 /* Kleine schermen */
 @media (max-width:420px){
   body[data-active-screen="map"] .rd-map-nav-v28,
-  body[data-active-screen="map"] .bottom-nav{
+  body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+  body[data-active-screen="map"] .map-bottom-nav,
+  body[data-active-screen="map"] .bottom-nav,
+  body[data-active-screen="map"] .rd-bottom-nav{
     left:14px !important;
     right:14px !important;
     height:58px !important;
@@ -6789,7 +6807,10 @@ body[data-active-screen="map"]{
 
 /* Locked bottom nav blijft altijd zichtbaar en bovenaan in stack */
 body[data-active-screen="map"] .rd-map-nav-v28,
-body[data-active-screen="map"] .bottom-nav{
+body[data-active-screen="map"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"] .map-bottom-nav,
+body[data-active-screen="map"] .bottom-nav,
+body[data-active-screen="map"] .rd-bottom-nav{
   position:fixed !important;
   left:var(--rd-v3968-x) !important;
   right:var(--rd-v3968-x) !important;
@@ -6868,7 +6889,10 @@ body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="expande
 
 /* Visueel één blok: nav top-radius weg wanneer panel open is */
 body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28,
-body[data-active-screen="map"][data-map-drawer="open"] .bottom-nav{
+body[data-active-screen="map"][data-map-drawer="open"] .rd-map-bottom-nav-v28,
+body[data-active-screen="map"][data-map-drawer="open"] .map-bottom-nav,
+body[data-active-screen="map"][data-map-drawer="open"] .bottom-nav,
+body[data-active-screen="map"][data-map-drawer="open"] .rd-bottom-nav{
   border-top-left-radius:0 !important;
   border-top-right-radius:0 !important;
 }
@@ -6896,7 +6920,10 @@ body[data-active-screen="map"][data-instant-map-panel="roadtrip"] .rd-map-sheet-
 
 /* Alle nav items blijven zichtbaar */
 body[data-active-screen="map"] .rd-map-nav-v28 > *,
-body[data-active-screen="map"] .bottom-nav > *{
+body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
+body[data-active-screen="map"] .map-bottom-nav > *,
+body[data-active-screen="map"] .bottom-nav > *,
+body[data-active-screen="map"] .rd-bottom-nav > *{
   visibility:visible !important;
   opacity:1 !important;
   display:flex !important;
@@ -11532,6 +11559,16 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28{
 }
 
 /* Extra guard: kaart-specifieke oude nav-klassen mogen nooit op Home/Overzicht meedoen. */
+body:not([data-active-screen="map"]) .rd-map-bottom-nav-v28,
+body:not([data-active-screen="map"]) .map-bottom-nav,
+body:not([data-active-screen="map"]) .rd-bottom-nav,
+body:not([data-active-screen="map"]) .map-bottom-nav-v5,
+body:not([data-active-screen="map"]) .map-bottom-nav-v8,
+body:not([data-active-screen="map"]) .map-bottom-nav-v9,
+body:not([data-active-screen="map"]) .map-nav-layer-v1{
+  display:none !important;
+  pointer-events:none !important;
+}
 
 /* =========================================================
    Roadora v39.7.43 — map canvas render repair
@@ -13617,1022 +13654,101 @@ body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sh
 }
 
 /* =========================================================
-   Roadora v39.9.0 — Trajecten Premium Timeline v2
-   Visual layer only. No Maps/ORS/Leaflet changes.
+   Roadora v39.9.9 — Unified Hamburger Position System
+   Eén hamburger-component voor alle tabs.
+   Masterpositie exact gelijk aan Overzicht:
+   top: calc(22px + safe-area), left: 24px, 34x34.
+   Geen ORS / Maps / Leaflet / route-export wijzigingen.
    ========================================================= */
-.routes-premium-list-v3990{
-  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
-}
-.routes-journey-card-v3990{
-  margin:0 0 14px !important;
-  padding:15px !important;
-  border-radius:28px !important;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255,246,232,.72), rgba(255,246,232,0) 44%),
-    linear-gradient(180deg, rgba(255,252,248,.82), rgba(255,248,240,.58)) !important;
-  border:1px solid rgba(255,255,255,.64) !important;
-  box-shadow:0 18px 42px rgba(63,41,24,.09), inset 0 1px 0 rgba(255,255,255,.62) !important;
-}
-.routes-journey-top-v3990,
-.routes-journey-bottom-v3990,
-.routes-next-stop-v3990{
-  display:flex;
-  align-items:center;
-}
-.routes-journey-top-v3990{
-  justify-content:space-between;
-  margin-bottom:12px;
-}
-.routes-journey-top-v3990 span{
-  color:#a77d4e;
-  font-size:9px;
-  font-weight:950;
-  letter-spacing:.18em;
-}
-.routes-journey-top-v3990 b{
-  color:#6d5138;
-  font-size:10px;
-  font-weight:900;
-  background:rgba(169,101,32,.10);
-  border-radius:999px;
-  padding:6px 9px;
-}
-.routes-journey-route-v3990{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);
-  align-items:center;
-  gap:8px;
-  margin-bottom:13px;
-}
-.routes-journey-route-v3990 strong{
-  min-width:0;
-  color:#241b15;
-  font-size:21px;
-  line-height:1.02;
-  letter-spacing:-.045em;
-  font-weight:950;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.routes-journey-route-v3990 i{
-  color:#a77d4e;
-  font-style:normal;
-  font-weight:950;
-  text-align:center;
-}
-.routes-journey-bottom-v3990{
-  display:grid;
-  grid-template-columns:1fr 1fr .72fr;
-  gap:8px;
-  margin-bottom:10px;
-}
-.routes-journey-bottom-v3990 div{
-  min-height:58px;
-  border-radius:18px;
-  background:rgba(255,255,255,.46);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.46);
-}
-.routes-journey-bottom-v3990 small,
-.routes-next-stop-v3990 small{
-  display:block;
-  margin-bottom:4px;
-  color:rgba(47,36,27,.52);
-  font-size:8.5px;
-  font-weight:950;
-  letter-spacing:.13em;
-  text-transform:uppercase;
-}
-.routes-journey-bottom-v3990 b{
-  color:#241b15;
-  font-size:15px;
-  line-height:1;
-  font-weight:950;
-  white-space:nowrap;
-}
-.routes-next-stop-v3990{
-  gap:10px;
-  min-height:56px;
-  border-radius:20px;
-  padding:9px 11px;
-  background:rgba(36,25,18,.055);
-}
-.routes-next-stop-v3990 > span{
-  flex:0 0 auto;
-  width:36px;
-  height:36px;
-  border-radius:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#241b15;
-  color:#fff8ef;
-  font-size:16px;
-  font-weight:950;
-}
-.routes-next-stop-v3990 p{margin:0;min-width:0;}
-.routes-next-stop-v3990 strong{
-  display:block;
-  color:#241b15;
-  font-size:14px;
-  line-height:1.1;
-  font-weight:950;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.routes-next-stop-v3990.is-empty > span{background:#ead7bd;color:#8b541d;}
-.routes-premium-timeline-v3990{
-  padding:20px 13px 20px !important;
-  background:rgba(255,252,248,.54) !important;
-  border:1px solid rgba(255,255,255,.50) !important;
-  box-shadow:0 18px 42px rgba(63,41,24,.075) !important;
-}
-.routes-premium-timeline-v3990::before{
-  left:32px !important;
-  top:54px !important;
-  bottom:54px !important;
-  background:linear-gradient(180deg,rgba(169,101,32,.10),rgba(169,101,32,.55),rgba(169,101,32,.10)) !important;
-}
-.route-stop-card-v3990{
-  grid-template-columns:34px 36px minmax(0,1fr) !important;
-  min-height:126px !important;
-  align-items:start !important;
-  padding:13px !important;
-  gap:10px !important;
-  border-radius:25px !important;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.46)) !important;
-  border:1px solid rgba(255,255,255,.70) !important;
-  box-shadow:0 14px 32px rgba(63,41,24,.075), inset 0 1px 0 rgba(255,255,255,.60) !important;
-}
-.route-stop-index-v3990{
-  width:30px;
-  height:30px;
-  border-radius:13px;
-  background:rgba(169,101,32,.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#8b541d;
-  font-size:11px;
-  font-weight:950;
-  margin-top:3px;
-}
-.route-stop-index-v3990 span{line-height:1;}
-.route-stop-icon-v3990{
-  margin-top:0 !important;
-  background:#ead7bd !important;
-  box-shadow:0 8px 18px rgba(63,41,24,.08), inset 0 1px 0 rgba(255,255,255,.48) !important;
-}
-.route-stop-card-v3990.is-food .route-stop-icon-v3990{background:#efe0c7 !important;}
-.route-stop-card-v3990.is-discover .route-stop-icon-v3990{background:#e5d3bb !important;}
-.route-stop-card-v3990.is-fuel .route-stop-icon-v3990{background:#e8dcc4 !important;}
-.route-stop-card-v3990.is-charge .route-stop-icon-v3990{background:#dbe8d1 !important;}
-.route-stop-card-v3990.is-wc .route-stop-icon-v3990{font-size:10px !important;background:#e8ded0 !important;}
-.route-stop-copy-v3990{padding-top:1px;}
-.route-stop-copy-v3990 small{
-  flex-wrap:wrap;
-  gap:6px !important;
-  margin-bottom:7px !important;
-}
-.route-stop-copy-v3990 small em,
-.route-stop-copy-v3990 small b{
-  display:inline-flex;
-  align-items:center;
-  min-height:22px;
-}
-.route-stop-copy-v3990 small em{
-  font-size:8.2px !important;
-  padding:0 8px !important;
-}
-.route-stop-copy-v3990 small b{
-  color:rgba(47,36,27,.48) !important;
-  font-size:8.6px !important;
-}
-.route-stop-copy-v3990 strong{
-  display:block;
-  color:#241b15;
-  font-size:18px !important;
-  line-height:1.08 !important;
-  letter-spacing:-.035em !important;
-  white-space:normal !important;
-}
-.route-stop-copy-v3990 p{
-  margin:7px 0 0 !important;
-  color:rgba(47,36,27,.62) !important;
-  font-size:12px !important;
-  line-height:1.32 !important;
-  font-weight:740 !important;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-.route-stop-tags-v3990{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin-top:9px;
-}
-.route-stop-tags-v3990 span{
-  min-height:22px;
-  display:inline-flex;
-  align-items:center;
-  border-radius:999px;
-  padding:0 8px;
-  background:rgba(255,255,255,.62);
-  color:rgba(47,36,27,.62);
-  font-size:8.5px;
-  font-weight:900;
-}
-.route-stop-actions-v3990{
-  grid-column:2 / 4;
-  width:100%;
-  display:grid !important;
-  grid-template-columns:1fr 1fr;
-  gap:8px !important;
-  margin-top:2px !important;
-  align-items:stretch !important;
-}
-.route-stop-actions-v3990 .route-stop-view-v39772,
-.route-stop-actions-v3990 .route-stop-remove-v39771{
-  width:100% !important;
-  min-height:36px !important;
-  min-width:0 !important;
-  border-radius:15px !important;
-  font-size:10.5px !important;
-}
-.route-stop-actions-v3990 .route-stop-view-v39772{
-  background:#241b15 !important;
-  color:#fff8ef !important;
-}
-.route-stop-actions-v3990 .route-stop-remove-v39771{
-  background:rgba(73,49,31,.075) !important;
-  color:#745238 !important;
-}
-.routes-empty-v39767{
-  border-radius:28px !important;
-  background:rgba(255,252,248,.64) !important;
-  border:1px solid rgba(255,255,255,.58) !important;
-  box-shadow:0 16px 36px rgba(63,41,24,.08) !important;
-}
-@media (max-width:390px){
-  .routes-journey-card-v3990{padding:13px !important;border-radius:26px !important;}
-  .routes-journey-route-v3990 strong{font-size:18px;}
-  .routes-journey-bottom-v3990{gap:7px;}
-  .routes-journey-bottom-v3990 div{min-height:54px;border-radius:16px;}
-  .routes-journey-bottom-v3990 b{font-size:13.5px;}
-  .route-stop-card-v3990{grid-template-columns:30px 34px minmax(0,1fr) !important;min-height:124px !important;padding:12px !important;gap:9px !important;}
-  .route-stop-index-v3990{width:28px;height:28px;border-radius:12px;}
-  .route-stop-copy-v3990 strong{font-size:17px !important;}
-  .route-stop-actions-v3990{grid-column:2 / 4;}
-}
-
-/* =========================================================
-   Roadora v39.9.1 — Trajecten Premium Polish
-   UX-only layer. No ORS, Leaflet, Maps, hotel or route-stop logic changes.
-   ========================================================= */
-
-/* Oude dubbele statskaart volledig uitzetten, ook als oudere renderer hem terugzet. */
-#routesStatsV39772,
-.routes-stats-v39772{
-  display:none !important;
-  visibility:hidden !important;
-  height:0 !important;
-  min-height:0 !important;
-  margin:0 !important;
-  padding:0 !important;
-  overflow:hidden !important;
-}
-
-.routes-premium-list-v3990{
-  padding-bottom:132px !important;
-}
-
-.routes-journey-card-v3990{
-  margin-bottom:12px !important;
-  padding:14px !important;
-  border-radius:27px !important;
-}
-
-.routes-journey-bottom-v3990{
-  margin-bottom:9px !important;
-}
-
-.routes-journey-bottom-v3990 div{
-  min-height:52px !important;
-  border-radius:17px !important;
-}
-
-.routes-next-stop-v3990{
-  min-height:50px !important;
-  padding:8px 10px !important;
-  border-radius:19px !important;
-}
-
-.routes-next-stop-v3990 > span{
-  width:34px !important;
-  height:34px !important;
-  border-radius:14px !important;
-}
-
-/* Timeline compacter en met doorlopende route-lijn. */
-.routes-premium-timeline-v3990{
-  position:relative !important;
-  padding:18px 13px 18px !important;
-  overflow:hidden !important;
-}
-
-.routes-premium-timeline-v3990::before{
-  left:32px !important;
-  top:58px !important;
-  bottom:58px !important;
-  width:2px !important;
-  z-index:0 !important;
-  opacity:.9 !important;
-  background:linear-gradient(180deg,rgba(169,101,32,.16),rgba(169,101,32,.58),rgba(169,101,32,.16)) !important;
-}
-
-.routes-premium-timeline-v3990 .route-point-v39767,
-.routes-premium-timeline-v3990 .route-stops-v39767,
-.routes-premium-timeline-v3990 .route-stop-card-v3990{
-  position:relative !important;
-  z-index:2 !important;
-}
-
-.routes-premium-timeline-v3990 .route-point-v39767{
-  min-height:58px !important;
-}
-
-.routes-premium-timeline-v3990 .route-point-v39767 span{
-  position:relative !important;
-  z-index:3 !important;
-}
-
-.routes-premium-timeline-v3990 .route-point-v39767 strong{
-  font-size:19px !important;
-  line-height:1.05 !important;
-}
-
-/* Stopcard 20-25% rustiger: minder hoogte, minder labels, acties compacter. */
-.route-stop-card-v3990{
-  min-height:104px !important;
-  padding:11px !important;
-  gap:8px !important;
-  border-radius:23px !important;
-  grid-template-columns:30px 34px minmax(0,1fr) !important;
-  margin:6px 0 !important;
-}
-
-.route-stop-index-v3990{
-  width:28px !important;
-  height:28px !important;
-  border-radius:12px !important;
-  margin-top:3px !important;
-}
-
-.route-stop-icon-v3990{
+body.hero-nav-integrated .hero-menu-btn,
+body[data-active-screen="overview"] .hero-menu-btn,
+body[data-active-screen="plan"] .hero-menu-btn,
+body[data-active-screen="map"] .hero-menu-btn,
+body[data-active-screen="roadtrip"] .hero-menu-btn,
+body[data-active-screen="routes"] .hero-menu-btn,
+body[data-active-screen="hotels"] .hero-menu-btn,
+body[data-active-screen="diary"] .hero-menu-btn,
+body[data-active-screen="profile"] .hero-menu-btn{
+  position:fixed !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:24px !important;
   width:34px !important;
   height:34px !important;
   min-width:34px !important;
-  border-radius:14px !important;
-}
-
-.route-stop-copy-v3990 small{
-  margin-bottom:5px !important;
-  gap:5px !important;
-}
-
-.route-stop-copy-v3990 small em{
-  min-height:20px !important;
-  padding:0 8px !important;
-  font-size:7.9px !important;
-}
-
-.route-stop-copy-v3990 small b{
-  min-height:20px !important;
-  font-size:8.2px !important;
-}
-
-.route-stop-copy-v3990 strong{
-  font-size:16.5px !important;
-  line-height:1.08 !important;
-}
-
-.route-stop-copy-v3990 p{
-  margin-top:5px !important;
-  font-size:11.2px !important;
-  line-height:1.25 !important;
-  -webkit-line-clamp:1 !important;
-}
-
-/* Badges opschonen: alleen status behouden. */
-.route-stop-tags-v3990{
-  margin-top:7px !important;
-}
-.route-stop-tags-v3990 span:first-child{
-  display:none !important;
-}
-.route-stop-tags-v3990 span{
-  min-height:20px !important;
-  padding:0 8px !important;
-  font-size:8px !important;
-}
-.route-stop-tags-v3990 span:last-child::before{
-  content:'✓ ';
-}
-
-.route-stop-actions-v3990{
-  gap:8px !important;
-  margin-top:0 !important;
-}
-
-.route-stop-actions-v3990 .route-stop-view-v39772,
-.route-stop-actions-v3990 .route-stop-remove-v39771{
   min-height:34px !important;
-  border-radius:14px !important;
-  font-size:10.2px !important;
-}
-
-@media (max-width:390px){
-  .routes-journey-card-v3990{padding:13px !important;}
-  .routes-premium-timeline-v3990{padding-left:12px !important;padding-right:12px !important;}
-  .route-stop-card-v3990{
-    grid-template-columns:28px 32px minmax(0,1fr) !important;
-    padding:10px !important;
-  }
-  .route-stop-copy-v3990 strong{font-size:16px !important;}
-}
-
-/* =========================================================
-   Roadora v39.9.2 — Timeline stopcard left photo polish
-   Scope: Trajecten UI only. No ORS, Maps, Leaflet or route-state changes.
-   ========================================================= */
-.route-stop-card-v3992{
-  grid-template-columns:28px 78px minmax(0,1fr) !important;
-  min-height:118px !important;
-  align-items:center !important;
-  padding:10px 12px 10px 10px !important;
-  gap:10px !important;
-}
-
-.route-stop-photo-v3992{
-  position:relative !important;
-  width:76px !important;
-  height:84px !important;
-  border-radius:22px !important;
-  overflow:hidden !important;
-  background-size:cover !important;
-  background-position:center !important;
-  box-shadow:
-    0 12px 24px rgba(36,25,18,.12),
-    inset 0 0 0 1px rgba(255,255,255,.46) !important;
-  flex:0 0 auto !important;
-}
-
-.route-stop-photo-v3992::before{
-  content:"" !important;
-  position:absolute !important;
-  inset:0 !important;
-  background:
-    linear-gradient(180deg,rgba(20,14,9,.04),rgba(20,14,9,.34)),
-    radial-gradient(circle at 30% 18%,rgba(255,246,232,.20),rgba(255,246,232,0) 46%) !important;
-  pointer-events:none !important;
-}
-
-.route-stop-photo-v3992 span{
-  position:absolute !important;
-  left:8px !important;
-  bottom:8px !important;
-  width:28px !important;
-  height:28px !important;
-  border-radius:12px !important;
-  display:grid !important;
-  place-items:center !important;
-  background:rgba(255,246,232,.88) !important;
-  color:#2b1d14 !important;
-  font-size:14px !important;
-  font-weight:950 !important;
-  box-shadow:0 8px 16px rgba(36,25,18,.16), inset 0 1px 0 rgba(255,255,255,.70) !important;
-}
-
-.route-stop-card-v3992 .route-stop-index-v3992{
-  align-self:start !important;
-  margin-top:8px !important;
-  z-index:4 !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 small{
-  flex-wrap:wrap !important;
-  margin-bottom:6px !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 strong{
-  font-size:16.2px !important;
-  line-height:1.05 !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 p{
-  font-size:10.8px !important;
-  margin-top:4px !important;
-}
-
-.route-stop-card-v3992 .route-stop-tags-v3990{
-  margin-top:6px !important;
-}
-
-.route-stop-card-v3992 .route-stop-actions-v3990{
-  grid-column:2 / 4 !important;
-  margin-top:8px !important;
-  padding-left:0 !important;
-}
-
-/* Keep the main route line visually behind the new image card. */
-.routes-premium-timeline-v3990::before{
-  z-index:0 !important;
-}
-
-.routes-premium-timeline-v3990 .route-stop-card-v3992{
-  z-index:2 !important;
-}
-
-@media (max-width:390px){
-  .route-stop-card-v3992{
-    grid-template-columns:26px 70px minmax(0,1fr) !important;
-    min-height:112px !important;
-    padding:10px !important;
-    gap:9px !important;
-  }
-
-  .route-stop-photo-v3992{
-    width:68px !important;
-    height:78px !important;
-    border-radius:20px !important;
-  }
-
-  .route-stop-photo-v3992 span{
-    width:26px !important;
-    height:26px !important;
-    border-radius:11px !important;
-    font-size:13px !important;
-  }
-
-  .route-stop-card-v3992 .route-stop-copy-v3992 strong{
-    font-size:15.4px !important;
-  }
-}
-
-
-/* =========================================================
-   Roadora v39.9.3 — Timeline card balance + clean route line
-   Scope: Trajecten UI only. No ORS, Maps, Leaflet or route-state changes.
-   ========================================================= */
-.routes-premium-timeline-v3990::before{
-  left:32px !important;
-  width:2px !important;
-  top:60px !important;
-  bottom:60px !important;
-  background:rgba(169,101,32,.30) !important;
-  opacity:1 !important;
-  z-index:0 !important;
-}
-
-.route-stop-card-v3992{
-  position:relative !important;
-  isolation:isolate !important;
-  grid-template-columns:54px 78px minmax(0,1fr) !important;
-  min-height:112px !important;
-  padding:10px 12px 10px 0 !important;
-  gap:10px !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-}
-
-.route-stop-card-v3992::before{
-  content:"" !important;
-  position:absolute !important;
-  left:64px !important;
-  right:0 !important;
-  top:0 !important;
-  bottom:0 !important;
-  border-radius:24px !important;
-  background:linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.48)) !important;
-  border:1px solid rgba(255,255,255,.70) !important;
-  box-shadow:0 14px 32px rgba(63,41,24,.075), inset 0 1px 0 rgba(255,255,255,.60) !important;
-  z-index:1 !important;
-  pointer-events:none !important;
-}
-
-.route-stop-card-v3992 > *{
-  position:relative !important;
-  z-index:2 !important;
-}
-
-.route-stop-card-v3992 .route-stop-index-v3992{
-  position:absolute !important;
-  left:18px !important;
-  top:50% !important;
-  transform:translateY(-50%) !important;
-  width:28px !important;
-  height:28px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+  padding:0 !important;
   margin:0 !important;
-  border-radius:999px !important;
-  background:#f3e4cf !important;
-  border:1px solid rgba(255,255,255,.68) !important;
-  color:#8b541d !important;
-  box-shadow:0 8px 18px rgba(63,41,24,.10), inset 0 1px 0 rgba(255,255,255,.60) !important;
-  z-index:4 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  filter:none !important;
+  opacity:1 !important;
+  z-index:1600 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:5px !important;
+  pointer-events:auto !important;
+  transform:none !important;
+  line-height:1 !important;
 }
 
-.route-stop-photo-v3992{
-  width:76px !important;
-  height:82px !important;
-  border-radius:21px !important;
-  grid-column:2 !important;
-}
-
-.route-stop-photo-v3992 span,
-.route-stop-photo-v3992::after{
+body.hero-nav-integrated .hero-menu-btn::before,
+body.hero-nav-integrated .hero-menu-btn::after,
+body[data-active-screen] .hero-menu-btn::before,
+body[data-active-screen] .hero-menu-btn::after{
   content:none !important;
   display:none !important;
 }
 
-.route-stop-card-v3992 .route-stop-copy-v3992{
-  grid-column:3 !important;
-  min-width:0 !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 small{
-  margin-bottom:5px !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 strong{
-  font-size:16.8px !important;
-  line-height:1.05 !important;
-}
-
-.route-stop-card-v3992 .route-stop-copy-v3992 p{
-  margin-top:4px !important;
-  font-size:10.8px !important;
-}
-
-.route-stop-card-v3992 .route-stop-actions-v3990{
-  grid-column:2 / 4 !important;
-  margin-top:6px !important;
-  padding-left:0 !important;
-  z-index:2 !important;
-}
-
-@media (max-width:390px){
-  .route-stop-card-v3992{
-    grid-template-columns:52px 70px minmax(0,1fr) !important;
-    min-height:108px !important;
-    padding:10px 10px 10px 0 !important;
-    gap:9px !important;
-  }
-
-  .route-stop-card-v3992::before{
-    left:60px !important;
-    border-radius:23px !important;
-  }
-
-  .route-stop-photo-v3992{
-    width:68px !important;
-    height:78px !important;
-    border-radius:20px !important;
-  }
-
-  .route-stop-card-v3992 .route-stop-index-v3992{
-    left:18px !important;
-  }
-
-  .route-stop-card-v3992 .route-stop-copy-v3992 strong{
-    font-size:15.8px !important;
-  }
-}
-
-/* =========================================================
-   Roadora v39.9.4 — Trajecten header + centred waypoint line polish
-   Scope: Trajecten UI only. No ORS, Maps, Leaflet or route-state changes.
-   ========================================================= */
-body[data-active-screen="routes"] .routes-native-head-v39767,
-.screen-routes.routes-v39767 .routes-native-head-v39767{
-  left:72px !important;
-  right:22px !important;
-  top:calc(19px + env(safe-area-inset-top, 0px)) !important;
-  height:46px !important;
-  align-items:center !important;
-}
-
-body[data-active-screen="routes"] .routes-title-v39767 small,
-.screen-routes.routes-v39767 .routes-title-v39767 small{
-  display:none !important;
-}
-
-body[data-active-screen="routes"] .routes-title-v39767 h1,
-.screen-routes.routes-v39767 .routes-title-v39767 h1{
-  font-family:"Playfair Display", Georgia, serif !important;
-  font-size:31px !important;
-  line-height:.96 !important;
-  letter-spacing:-.045em !important;
-  margin:0 !important;
-}
-
-body[data-active-screen="routes"] .routes-close-v39767,
-.screen-routes.routes-v39767 .routes-close-v39767{
-  width:42px !important;
-  height:42px !important;
-}
-
-/* Put waypoint numbers exactly on the route spine and let the line break behind them. */
-.routes-premium-timeline-v3990::before{
-  left:32px !important;
-  width:2px !important;
-  background:rgba(169,101,32,.30) !important;
-}
-
-.route-stop-card-v3992 .route-stop-index-v3992{
-  left:18px !important;
-  top:50% !important;
-  transform:translateY(-50%) !important;
-  width:28px !important;
-  height:28px !important;
-  display:grid !important;
-  place-items:center !important;
-  border-radius:999px !important;
-  background:#f4e6d2 !important;
-  border:1px solid rgba(255,255,255,.78) !important;
-  color:#8b541d !important;
-  font-size:12px !important;
-  font-weight:950 !important;
-  box-shadow:
-    0 0 0 8px #f4eadf,
-    0 8px 18px rgba(63,41,24,.10),
-    inset 0 1px 0 rgba(255,255,255,.70) !important;
-  z-index:8 !important;
-}
-
-/* Keep the stop card narrower so the route line reads as one calm vertical spine. */
-.route-stop-card-v3992::before{
-  left:70px !important;
-  right:0 !important;
-}
-
-.route-stop-card-v3992{
-  grid-template-columns:58px 74px minmax(0,1fr) !important;
-  gap:10px !important;
-}
-
-.route-stop-photo-v3992{
-  width:72px !important;
-  height:78px !important;
-  border-radius:20px !important;
-}
-
-@media (max-width:390px){
-  body[data-active-screen="routes"] .routes-native-head-v39767,
-  .screen-routes.routes-v39767 .routes-native-head-v39767{
-    left:68px !important;
-    right:20px !important;
-    top:calc(20px + env(safe-area-inset-top, 0px)) !important;
-  }
-
-  body[data-active-screen="routes"] .routes-title-v39767 h1,
-  .screen-routes.routes-v39767 .routes-title-v39767 h1{
-    font-size:30px !important;
-  }
-
-  .route-stop-card-v3992{
-    grid-template-columns:56px 68px minmax(0,1fr) !important;
-  }
-
-  .route-stop-card-v3992::before{
-    left:66px !important;
-  }
-
-  .route-stop-photo-v3992{
-    width:66px !important;
-    height:74px !important;
-  }
-
-  .route-stop-card-v3992 .route-stop-index-v3992{
-    left:18px !important;
-  }
-}
-
-/* =========================================================
-   Roadora v39.9.8 — Roadtrip Unified Topbar System v1
-   Eén rustige topbar-taal voor alle Mijn Roadtrip onderdelen.
-   Scope: CSS-only. Geen ORS, Maps, Leaflet, route-state of export changes.
-   ========================================================= */
-:root{
-  --rd-roadtrip-topbar-h: 92px;
-  --rd-roadtrip-title-left: 94px;
-  --rd-roadtrip-menu-left: 48px;
-  --rd-roadtrip-close-right: 32px;
-  --rd-roadtrip-top: calc(22px + env(safe-area-inset-top, 0px));
-}
-
-/* Algemene app-shell header op Roadtrip-subpagina's */
-body[data-active-screen="routes"] .hero-menu-btn,
-body[data-active-screen="roadtrip"] .hero-menu-btn{
-  top:var(--rd-roadtrip-top) !important;
-  left:var(--rd-roadtrip-menu-left) !important;
-  width:34px !important;
-  height:34px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:5px !important;
-  z-index:1700 !important;
-  transform:none !important;
-}
-body[data-active-screen="routes"] .hero-menu-btn span,
-body[data-active-screen="roadtrip"] .hero-menu-btn span{
-  width:24px !important;
+body.hero-nav-integrated .hero-menu-btn span,
+body[data-active-screen] .hero-menu-btn span{
+  display:block !important;
+  width:22px !important;
   height:2px !important;
-  background:rgba(48,37,29,.82) !important;
-  box-shadow:0 1px 0 rgba(255,255,255,.65) !important;
-}
-body[data-active-screen="routes"] .hero-menu-btn span:nth-child(2),
-body[data-active-screen="roadtrip"] .hero-menu-btn span:nth-child(2){
-  width:24px !important;
-}
-
-/* Trajecten topbar: titel en kruisje exact op één lijn met hamburger */
-body[data-active-screen="routes"] .routes-native-head-v39767,
-.screen-routes.routes-v39767 .routes-native-head-v39767{
-  position:absolute !important;
-  left:var(--rd-roadtrip-title-left) !important;
-  right:var(--rd-roadtrip-close-right) !important;
-  top:calc(14px + env(safe-area-inset-top, 0px)) !important;
-  height:52px !important;
-  z-index:1500 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  padding:0 !important;
-  margin:0 !important;
-}
-body[data-active-screen="routes"] .routes-title-v39767,
-.screen-routes.routes-v39767 .routes-title-v39767{
-  display:flex !important;
-  align-items:center !important;
-  height:52px !important;
-  min-width:0 !important;
-}
-body[data-active-screen="routes"] .routes-title-v39767 small,
-.screen-routes.routes-v39767 .routes-title-v39767 small{
-  display:none !important;
-}
-body[data-active-screen="routes"] .routes-title-v39767 h1,
-.screen-routes.routes-v39767 .routes-title-v39767 h1{
-  margin:0 !important;
-  padding:0 !important;
-  transform:none !important;
-  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-  font-size:28px !important;
-  line-height:1 !important;
-  letter-spacing:-.055em !important;
-  font-weight:950 !important;
-  color:#211713 !important;
-}
-body[data-active-screen="routes"] .routes-close-v39767,
-.screen-routes.routes-v39767 .routes-close-v39767{
-  position:fixed !important;
-  top:calc(17px + env(safe-area-inset-top, 0px)) !important;
-  right:32px !important;
-  width:48px !important;
-  height:48px !important;
-  border-radius:18px !important;
-  display:grid !important;
-  place-items:center !important;
-  background:rgba(255,252,248,.78) !important;
-  border:1px solid rgba(255,255,255,.72) !important;
-  box-shadow:0 10px 24px rgba(63,41,24,.08), inset 0 1px 0 rgba(255,255,255,.76) !important;
-  color:#2b1d14 !important;
-  font-size:30px !important;
-  line-height:1 !important;
-  font-weight:750 !important;
-  z-index:1700 !important;
+  min-height:2px !important;
+  border-radius:999px !important;
+  background:rgba(255,252,246,.98) !important;
+  box-shadow:
+    0 1px 2px rgba(38,25,15,.55),
+    0 4px 14px rgba(38,25,15,.32) !important;
+  opacity:1 !important;
 }
 
-/* De content begint onder dezelfde topbarhoogte, niet onder losse/verschoven headers. */
-body[data-active-screen="routes"] .routes-scroll-v39767,
-.screen-routes.routes-v39767 .routes-scroll-v39767{
-  padding-top:calc(100px + env(safe-area-inset-top, 0px)) !important;
+body.hero-nav-integrated .hero-menu-btn span:nth-child(2),
+body[data-active-screen] .hero-menu-btn span:nth-child(2){
+  width:22px !important;
 }
 
-/* Mijn Roadtrip subheaders: Hotels/Eten/Uitjes volgen dezelfde topbar-taal. */
-.screen-roadtrip .saved-hotels-head-v39754,
-.screen-roadtrip .saved-hotels-head-v39755,
-.screen-roadtrip .saved-hotels-head-v39756{
-  position:sticky !important;
-  top:0 !important;
-  min-height:78px !important;
-  height:78px !important;
-  z-index:80 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  padding:14px 14px 12px 72px !important;
-  margin:0 -2px 14px !important;
-  background:linear-gradient(180deg, rgba(242,232,218,.96), rgba(242,232,218,.84)) !important;
-  border-bottom:1px solid rgba(122,92,62,.08) !important;
-  backdrop-filter:blur(16px) saturate(1.04) !important;
-  -webkit-backdrop-filter:blur(16px) saturate(1.04) !important;
-}
-.screen-roadtrip .saved-hotels-title-v39756,
-.screen-roadtrip .saved-hotels-title-v39756 h2{
-  margin:0 !important;
-  padding:0 !important;
-  min-width:0 !important;
-}
-.screen-roadtrip .saved-hotels-title-v39756 h2{
-  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-  font-size:28px !important;
-  line-height:1 !important;
-  letter-spacing:-.055em !important;
-  font-weight:950 !important;
-  color:#211713 !important;
-}
-.screen-roadtrip .saved-hotels-close-v39755{
-  width:48px !important;
-  height:48px !important;
-  min-width:48px !important;
-  border-radius:18px !important;
-  display:grid !important;
-  place-items:center !important;
-  background:rgba(255,252,248,.78) !important;
-  border:1px solid rgba(255,255,255,.72) !important;
-  box-shadow:0 10px 24px rgba(63,41,24,.08), inset 0 1px 0 rgba(255,255,255,.76) !important;
-  color:#2b1d14 !important;
-  font-size:30px !important;
-  line-height:1 !important;
-  font-weight:750 !important;
+/* Op lichte kaart/topbar blijft dezelfde positie gelden; alleen kleur wisselt. */
+body[data-active-screen="map"] .hero-menu-btn span,
+body[data-active-screen="routes"] .hero-menu-btn span,
+body[data-active-screen="hotels"] .hero-menu-btn span,
+body[data-active-screen="diary"] .hero-menu-btn span{
+  background:rgba(42,30,22,.90) !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.55) !important;
 }
 
-/* Hub-states krijgen dezelfde rustige Roadtrip-spacing onder de topbar/hero. */
-.screen-roadtrip .roadtrip-hotels-state-v39754,
-.screen-roadtrip .roadtrip-saved-content-state-v39764{
-  padding-top:0 !important;
-}
-
-/* Roadtrip component cards: dezelfde zachte surface taal voor opgeslagen content. */
-.screen-roadtrip .saved-hotel-card-v39754{
-  border-radius:28px !important;
-  background:linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.48)) !important;
-  border:1px solid rgba(255,255,255,.70) !important;
-  box-shadow:0 14px 32px rgba(63,41,24,.075), inset 0 1px 0 rgba(255,255,255,.60) !important;
-}
-.screen-roadtrip .hotel-actions-v39754 button,
-.screen-roadtrip .hotel-actions-v39756 button,
-.screen-roadtrip .hotel-actions-v39763 button{
-  border-radius:18px !important;
-  min-height:46px !important;
-  font-weight:900 !important;
-}
-.screen-roadtrip .hotel-actions-v39754 .primary,
-.screen-roadtrip .hotel-actions-v39756 .primary,
-.screen-roadtrip .hotel-actions-v39763 .primary{
-  background:#241b15 !important;
-  color:#fff8ef !important;
-}
-.screen-roadtrip .hotel-actions-v39754 .danger,
-.screen-roadtrip .hotel-actions-v39756 .danger,
-.screen-roadtrip .hotel-actions-v39763 .danger{
-  background:rgba(73,49,31,.075) !important;
-  color:#745238 !important;
-}
-
-@media (max-width:390px){
-  :root{
-    --rd-roadtrip-title-left: 90px;
-    --rd-roadtrip-menu-left: 46px;
-    --rd-roadtrip-close-right: 28px;
+@media (max-width:380px){
+  body.hero-nav-integrated .hero-menu-btn,
+  body[data-active-screen] .hero-menu-btn{
+    top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+    left:24px !important;
+    width:34px !important;
+    height:34px !important;
   }
-  body[data-active-screen="routes"] .routes-native-head-v39767,
-  .screen-routes.routes-v39767 .routes-native-head-v39767{
-    top:calc(14px + env(safe-area-inset-top, 0px)) !important;
-  }
-  body[data-active-screen="routes"] .routes-title-v39767 h1,
-  .screen-routes.routes-v39767 .routes-title-v39767 h1,
-  .screen-roadtrip .saved-hotels-title-v39756 h2{
-    font-size:27px !important;
-  }
-  body[data-active-screen="routes"] .routes-close-v39767,
-  .screen-routes.routes-v39767 .routes-close-v39767,
-  .screen-roadtrip .saved-hotels-close-v39755{
-    width:46px !important;
-    height:46px !important;
-    border-radius:17px !important;
+}
+
+@media (min-width:621px){
+  body.hero-nav-integrated .hero-menu-btn,
+  body[data-active-screen] .hero-menu-btn{
+    position:absolute !important;
   }
 }
