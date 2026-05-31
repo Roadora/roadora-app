@@ -13584,3 +13584,71 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-pres
   background:rgba(130,59,35,.11);
   color:#8b3f24;
 }
+
+
+/* Roadora v39.7.81 — Route Pin Popover Render Fix
+   Route-stop pins open an actual fixed popover instead of toast-only feedback.
+   Scoped to route-stop preview only; ORS/Maps/export remain untouched. */
+body[data-active-screen="map"]{
+  --rd-route-stop-popover-edge-v39781: var(--rd-map-edge, max(14px, calc((100dvw - 430px) / 2 + 14px)));
+}
+
+body[data-active-screen="map"][data-route-stop-preview="open"] #mapScreen > .rd-route-stop-preview-v39780{
+  position:fixed !important;
+  left:var(--rd-route-stop-popover-edge-v39781) !important;
+  right:var(--rd-route-stop-popover-edge-v39781) !important;
+  bottom:calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+  width:auto !important;
+  max-width:none !important;
+  min-height:0 !important;
+  max-height:252px !important;
+  z-index:10050 !important;
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  padding:0 !important;
+  box-sizing:border-box !important;
+  border-radius:28px 28px 0 0 !important;
+  overflow:hidden !important;
+  background:linear-gradient(145deg, rgba(249,244,234,.98), rgba(239,229,213,.98)) !important;
+  border:1px solid rgba(255,255,255,.64) !important;
+  box-shadow:0 24px 60px rgba(57,40,25,.24), inset 0 1px 0 rgba(255,255,255,.70) !important;
+  color:#231915 !important;
+  backdrop-filter:blur(24px) saturate(1.14) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.14) !important;
+  animation:rdHotelPreviewIn39644 .18s ease-out both !important;
+}
+
+body[data-active-screen="map"][data-route-stop-preview="open"] #mapScreen > .rd-route-stop-preview-v39780 .rd-hotel-preview-close-v39644{
+  position:absolute !important;
+  top:10px !important;
+  right:10px !important;
+  width:36px !important;
+  height:36px !important;
+  border-radius:14px !important;
+  display:grid !important;
+  place-items:center !important;
+  z-index:3 !important;
+  background:rgba(255,255,255,.70) !important;
+  color:#2b211a !important;
+  font-size:24px !important;
+  font-weight:800 !important;
+  box-shadow:0 8px 20px rgba(34,22,13,.12), inset 0 1px 0 rgba(255,255,255,.8) !important;
+}
+
+body[data-active-screen="map"][data-route-stop-preview="open"] #mapScreen > .rd-route-stop-preview-v39780 .rd-route-stop-preview-head-v39780{
+  padding-right:58px !important;
+}
+
+body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sheet-scroll-v393{
+  opacity:.18 !important;
+  pointer-events:none !important;
+  transition:opacity .16s ease !important;
+}
+
+@media(max-width:390px){
+  body[data-active-screen="map"][data-route-stop-preview="open"] #mapScreen > .rd-route-stop-preview-v39780{
+    bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
