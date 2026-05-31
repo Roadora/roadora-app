@@ -14075,3 +14075,88 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtr
     --rd-header-title-line:34px;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.13 — Roadtrip Topbar Typography Fix
+   Scope: topbar only.
+   - geen beige balk/surface
+   - titel in Roadora beige
+   - meer afstand tussen hamburger en titel
+   - kruisje op dezelfde optische lijn
+   - geen JS / ORS / Maps / Leaflet wijzigingen
+   ========================================================= */
+body{
+  --rd-header-top: calc(22px + env(safe-area-inset-top, 0px));
+  --rd-header-left-title: 84px;
+  --rd-header-title-top-nudge: -2px;
+  --rd-header-title-size: 28px;
+  --rd-header-title-line: 34px;
+  --rd-header-accent: #a66a2c;
+}
+
+/* Verwijder de v39.9.12 beige balk volledig: alleen tekst krijgt kleur. */
+body[data-active-screen="routes"] .routes-native-head-v39767::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756::before,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756::before{
+  content:none !important;
+  display:none !important;
+  background:none !important;
+  box-shadow:none !important;
+  border:0 !important;
+}
+
+/* Master topbar blijft transparant en gebruikt hamburger als vaste referentie. */
+body[data-active-screen="routes"] .routes-native-head-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-head-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
+  top:var(--rd-header-top) !important;
+  height:34px !important;
+  min-height:34px !important;
+  grid-template-columns:var(--rd-header-left-title) minmax(0,1fr) 58px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border:0 !important;
+  padding:0 24px 0 0 !important;
+}
+
+/* Titel: meer ademruimte na hamburger + optisch op middelste hamburgerstreepje. */
+body[data-active-screen="routes"] .routes-title-v39767 h1,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+  color:var(--rd-header-accent) !important;
+  transform:translateY(var(--rd-header-title-top-nudge)) !important;
+  line-height:var(--rd-header-title-line) !important;
+}
+
+/* Sluitknop op dezelfde optische as als titel/middelste hamburgerstreepje. */
+body[data-active-screen="routes"] .routes-close-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  transform:translateY(-2px) !important;
+  color:#241b15 !important;
+  background:rgba(255,250,244,.72) !important;
+}
+
+/* Content niet kunstmatig onder een balk duwen; alleen veilige header-clearance. */
+body[data-active-screen="routes"] .routes-scroll-v39767,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .roadtrip-hotels-state-v39754,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtrip-saved-content-state-v39764{
+  padding-top:calc(72px + env(safe-area-inset-top, 0px)) !important;
+}
+
+@media (max-width:390px){
+  body{
+    --rd-header-left-title:84px;
+    --rd-header-title-size:27px;
+    --rd-header-title-line:34px;
+  }
+}
