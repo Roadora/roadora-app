@@ -1,3 +1,10 @@
+
+/* =========================================================
+   Roadora v39.8.1 cleanup step 4
+   Oude #mapRouteSheet CSS-selector geïsoleerd.
+   Huidige actieve sheet blijft #mapDrawer.
+   Geen wijzigingen aan ORS, Maps, Leaflet, #mapDrawer of rd-map-nav-v28.
+   ========================================================= */
 :root{
   --bg:#f4eadf; --bg2:#eadbcc; --text:#18120f; --muted:#7a6b5e; --brown:#995719; --brown2:#7f4512;
   --card:rgba(255,250,244,.82); --line:rgba(83,53,31,.10); --shadow:0 18px 46px rgba(50,31,16,.16);
@@ -4591,7 +4598,7 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 /* nieuwe sheet */
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   position:fixed !important;
   left:14px !important;
   right:14px !important;
@@ -4615,7 +4622,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
   -webkit-backdrop-filter:none !important;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grab-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grab-v28{
   position:absolute;
   top:7px;
   left:50%;
@@ -4626,7 +4633,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grab-v2
   background:rgba(118,106,95,.22);
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grid-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28{
   display:grid;
   grid-template-columns:56px minmax(0,1fr);
   align-items:center;
@@ -4636,7 +4643,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grid-v2
   overflow:hidden;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-thumb-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-thumb-v28{
   width:56px;
   height:56px;
   border-radius:13px;
@@ -4646,7 +4653,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-thumb-v
   position:relative;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-thumb-v28::after{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-thumb-v28::after{
   content:"⌁";
   position:absolute;
   inset:0;
@@ -4656,12 +4663,12 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-thumb-v
   font-weight:900;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-copy-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-copy-v28{
   min-width:0;
   overflow:hidden;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-overline-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-overline-v28{
   font-size:7.2px;
   line-height:8px;
   letter-spacing:.13em;
@@ -4671,7 +4678,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-overlin
   margin:0 0 3px;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 h2{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 h2{
   font-family:Inter,system-ui,sans-serif;
   font-size:13px;
   line-height:14px;
@@ -4680,7 +4687,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 h2{
   color:#211914;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-meta-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-meta-v28{
   font-size:8.6px;
   line-height:10px;
   color:#5f544b;
@@ -4688,7 +4695,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-meta-v2
   margin:0 0 3px;
 }
 
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-desc-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-desc-v28{
   font-size:8.8px;
   line-height:10.6px;
   max-height:21.2px;
@@ -4710,7 +4717,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-desc-v2
     height:var(--rd-v28-nav-height);
   }
 
-  body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+  body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
     left:10px !important;
     right:10px !important;
     height:100px !important;
@@ -5152,7 +5159,7 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 /* Sheet standaard verborgen achter/onder de nav */
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   bottom:var(--rd-v38-sheet-bottom) !important;
   transform:translateY(calc(100% + 92px)) !important;
   opacity:0 !important;
@@ -5164,7 +5171,7 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
 }
 
 /* Bij actieve drawer schuift de sheet omhoog */
-body[data-active-screen="map"][data-map-drawer="open"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   transform:translateY(0) !important;
   opacity:1 !important;
   pointer-events:auto !important;
@@ -5181,18 +5188,18 @@ body[data-active-screen="map"]:not([data-map-drawer="open"]) .rd-nav-btn-v28.is-
 }
 
 /* Panel-specifieke subtiele state binnen sheet */
-body[data-map-panel="stops"] #mapRouteSheet.rd-map-sheet-v28,
-body[data-map-panel="now"] #mapRouteSheet.rd-map-sheet-v28,
-body[data-map-panel="more"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-map-panel="stops"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
+body[data-map-panel="now"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
+body[data-map-panel="more"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   height:112px !important;
   min-height:112px !important;
   max-height:112px !important;
 }
 
 /* Stops/now/more mogen iets meer ademruimte */
-body[data-map-panel="stops"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grid-v28,
-body[data-map-panel="now"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grid-v28,
-body[data-map-panel="more"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-grid-v28{
+body[data-map-panel="stops"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28,
+body[data-map-panel="now"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28,
+body[data-map-panel="more"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28{
   height:76px !important;
 }
 
@@ -5231,7 +5238,7 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 /* Sheet sluit direct aan boven de nav */
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   bottom:var(--rd-v39-sheet-bottom) !important;
   border-bottom-left-radius:0 !important;
   border-bottom-right-radius:0 !important;
@@ -5239,12 +5246,12 @@ body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
 }
 
 /* Gesloten: sheet schuift achter/onder de nav weg */
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   transform:translateY(calc(100% + var(--rd-v39-nav-height) + 8px)) !important;
 }
 
 /* Open: sheet vormt één geheel met nav */
-body[data-active-screen="map"][data-map-drawer="open"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   transform:translateY(0) !important;
 }
 
@@ -7617,7 +7624,7 @@ body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[aria-current="pag
 
 /* Visueel één systeem: alleen map sheet aan de map nav koppelen, nooit de globale Home nav. */
 body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   border-bottom-left-radius:0 !important;
   border-bottom-right-radius:0 !important;
   box-shadow:0 -10px 28px rgba(36,25,18,.09) !important;
@@ -7648,7 +7655,7 @@ body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28{
 ========================================================= */
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
 body[data-active-screen="map"] .rd-map-sheet-v28{
   background:
     radial-gradient(circle at 50% 0%, rgba(255,255,255,.72) 0%, rgba(255,255,255,.30) 36%, rgba(255,255,255,0) 68%),
@@ -7661,13 +7668,13 @@ body[data-active-screen="map"] .rd-map-sheet-v28{
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-scroll-v393,
 body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-scroll-v393{
   background:transparent !important;
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-cards-v39,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-cards-v39,
 body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-cards-v39{
   background:transparent !important;
 }
@@ -7695,7 +7702,7 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
   border:1px solid var(--rd-map-surface-border) !important;
   border-bottom:0 !important;
@@ -7801,7 +7808,7 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
   left:var(--rd-map-edge) !important;
   right:var(--rd-map-edge) !important;
   width:auto !important;
@@ -7844,7 +7851,7 @@ body[data-active-screen="map"]{
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
 body[data-active-screen="map"] .rd-map-nav-v28{
   background:linear-gradient(180deg, var(--rd-map-unified-surface-soft) 0%, var(--rd-map-unified-surface) 100%) !important;
   background-color:var(--rd-map-unified-surface) !important;
@@ -7854,19 +7861,19 @@ body[data-active-screen="map"] .rd-map-nav-v28{
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::before,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28::before,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28::before,
 body[data-active-screen="map"] .rd-map-nav-v28::before,
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::after,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28::after,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28::after,
 body[data-active-screen="map"] .rd-map-nav-v28::after{
   background:transparent !important;
   box-shadow:none !important;
 }
 
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-scroll-v393,
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-scroll-v393,
 body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
-body[data-active-screen="map"] #mapRouteSheet.rd-map-sheet-v28 .rd-sheet-cards-v39{
+body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-cards-v39{
   background:transparent !important;
 }
 
