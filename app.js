@@ -1261,15 +1261,50 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     out.push(coords[coords.length-1]);
     return out;
   }
+  function readRouteStopsForMapsV39777(){
+    try{
+      const stops = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+      return Array.isArray(stops) ? stops.filter(Boolean) : [];
+    }catch(_){
+      return [];
+    }
+  }
+
+  function destinationForRouteStopV39777(stop){
+    if(!stop) return '';
+
+    // Future-ready: if a real Places/API coordinate is available, prefer it.
+    const lat = Number(stop.lat);
+    const lng = Number(stop.lng ?? stop.lon);
+    if(Number.isFinite(lat) && Number.isFinite(lng)){
+      return `${lat},${lng}`;
+    }
+
+    if(Array.isArray(stop.coord) && stop.coord.length >= 2){
+      const lon = Number(stop.coord[0]);
+      const lat2 = Number(stop.coord[1]);
+      if(Number.isFinite(lat2) && Number.isFinite(lon)) return `${lat2},${lon}`;
+    }
+
+    // Demo/current fallback: Google Maps can navigate to a named destination.
+    // Keep it simple so we do not touch ORS, map drawing or multi-stop export.
+    return String(stop.name || stop.title || stop.label || '').trim();
+  }
+
   function openGoogleMapsRoute(){
     const r=activeRoute();
     const endCoord=routeCoordinates[routeCoordinates.length-1] || coordFor(r.end, DEFAULT_END);
-    // Roadora v39.7.74 — Maps stop-state cleanup.
-    // Do not export sampled route-shape points as Google Maps waypoints anymore.
-    // Those points made Maps look like it had 6 saved stops, even when the
-    // user only wanted A → B navigation. Real user-selected route stops will be
-    // exported in a later dedicated phase from the central route-stop state.
-    const params=new URLSearchParams({ api:'1', travelmode:'driving', destination:`${endCoord[1]},${endCoord[0]}` });
+
+    // Roadora v39.7.77 — Navigate to first selected route stop.
+    // Safe phase: if the user added stops to Trajecten, the central Navigeer
+    // button opens Google Maps to the first selected stop. If no stops exist,
+    // it keeps the clean A → B behavior from v39.7.74. No ORS redraw, no map
+    // route recalculation and no full multi-stop export yet.
+    const routeStops = readRouteStopsForMapsV39777();
+    const firstStopDestination = destinationForRouteStopV39777(routeStops[0]);
+    const destination = firstStopDestination || `${endCoord[1]},${endCoord[0]}`;
+
+    const params=new URLSearchParams({ api:'1', travelmode:'driving', destination });
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
   }
   window.RoadoraMapsExport = { open: openGoogleMapsRoute };
