@@ -11447,32 +11447,3 @@ body.hero-nav-integrated .bottom-nav a.active,
   color:var(--brown) !important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.45) !important;
 }
-
-/* =========================================================
-   Roadora v39.8.0 — Safe Cleanup Lock
-   ---------------------------------------------------------
-   Final guard after legacy cleanup:
-   - Home/Overzicht keeps the normal app bottom navigation.
-   - Map uses only the isolated rd-map-nav-v28 navigation.
-   - Route pins/popovers/ORS/Maps are not restyled here.
-========================================================= */
-body:not([data-active-screen="map"]) > nav.rd-map-nav-v28{
-  display:none !important;
-  visibility:hidden !important;
-  opacity:0 !important;
-  pointer-events:none !important;
-}
-
-body[data-active-screen="map"] .app > nav.bottom-nav[aria-label="Roadora navigatie"]{
-  display:none !important;
-  visibility:hidden !important;
-  opacity:0 !important;
-  pointer-events:none !important;
-}
-
-body[data-active-screen="map"] > nav.rd-map-nav-v28{
-  display:grid !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  pointer-events:auto !important;
-}
