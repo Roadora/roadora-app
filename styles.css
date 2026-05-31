@@ -1,8 +1,8 @@
 
 /* =========================================================
-   Roadora v39.8.1 cleanup step 4
-   Oude #mapRouteSheet CSS-selector geïsoleerd.
-   Huidige actieve sheet blijft #mapDrawer.
+   Roadora v39.8.3 cleanup phase A1
+   Oude geïsoleerde #mapRouteSheet legacy CSS verwijderd.
+   Actieve sheet blijft #mapDrawer.
    Geen wijzigingen aan ORS, Maps, Leaflet, #mapDrawer of rd-map-nav-v28.
    ========================================================= */
 :root{
@@ -4436,8 +4436,7 @@ body[data-active-screen="map"] .hero-menu-btn{
   height:105px !important;
   background:linear-gradient(180deg,rgba(244,236,224,.38),rgba(244,236,224,.10) 60%,rgba(244,236,224,0)) !important;
 }
-@media(max-height:760px){
-}
+
 
 /* Categorieën en controls behouden hun bestaande functie, maar krijgen iets meer rust onderin. */
 #mapScreen .cats{
@@ -4597,113 +4596,6 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   background:#f3e6d8;
 }
 
-/* nieuwe sheet */
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  position:fixed !important;
-  left:14px !important;
-  right:14px !important;
-  bottom:var(--rd-v28-sheet-bottom) !important;
-  z-index:1200 !important;
-  width:auto !important;
-  height:104px !important;
-  min-height:104px !important;
-  max-height:104px !important;
-  margin:0 !important;
-  padding:15px 14px 13px !important;
-  border-radius:24px !important;
-  box-sizing:border-box !important;
-  background:#fffaf3 !important;
-  border:1px solid rgba(154,126,98,.10) !important;
-  box-shadow:0 10px 22px rgba(72,52,34,.09) !important;
-  overflow:hidden !important;
-  transform:none !important;
-  filter:none !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grab-v28{
-  position:absolute;
-  top:7px;
-  left:50%;
-  transform:translateX(-50%);
-  width:34px;
-  height:4px;
-  border-radius:999px;
-  background:rgba(118,106,95,.22);
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28{
-  display:grid;
-  grid-template-columns:56px minmax(0,1fr);
-  align-items:center;
-  gap:10px;
-  height:68px;
-  margin:12px 0 0;
-  overflow:hidden;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-thumb-v28{
-  width:56px;
-  height:56px;
-  border-radius:13px;
-  overflow:hidden;
-  background:linear-gradient(135deg,#dfe4d8,#657866 52%,#1f2d27);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 22px rgba(33,22,11,.12);
-  position:relative;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-thumb-v28::after{
-  content:"⌁";
-  position:absolute;
-  inset:0;
-  display:grid;
-  place-items:center;
-  color:rgba(255,255,255,.85);
-  font-weight:900;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-copy-v28{
-  min-width:0;
-  overflow:hidden;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-overline-v28{
-  font-size:7.2px;
-  line-height:8px;
-  letter-spacing:.13em;
-  color:#a66e31;
-  font-weight:900;
-  text-transform:uppercase;
-  margin:0 0 3px;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 h2{
-  font-family:Inter,system-ui,sans-serif;
-  font-size:13px;
-  line-height:14px;
-  letter-spacing:-.45px;
-  margin:0 0 3px;
-  color:#211914;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-meta-v28{
-  font-size:8.6px;
-  line-height:10px;
-  color:#5f544b;
-  font-weight:800;
-  margin:0 0 3px;
-}
-
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-desc-v28{
-  font-size:8.8px;
-  line-height:10.6px;
-  max-height:21.2px;
-  color:#5f544b;
-  margin:0;
-  overflow:hidden;
-}
-
 /* kleine telefoons */
 @media (max-width:360px){
   body[data-active-screen="map"]{
@@ -4717,16 +4609,7 @@ body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-
     height:var(--rd-v28-nav-height);
   }
 
-  body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-    left:10px !important;
-    right:10px !important;
-    height:100px !important;
-    min-height:100px !important;
-    max-height:100px !important;
-    padding:14px 12px 12px !important;
-    border-radius:22px !important;
   }
-}
 
 
 
@@ -5158,25 +5041,6 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   z-index:1320 !important;
 }
 
-/* Sheet standaard verborgen achter/onder de nav */
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  bottom:var(--rd-v38-sheet-bottom) !important;
-  transform:translateY(calc(100% + 92px)) !important;
-  opacity:0 !important;
-  pointer-events:none !important;
-  transition:
-    transform .34s cubic-bezier(.22,.9,.22,1),
-    opacity .22s ease !important;
-  will-change:transform, opacity !important;
-}
-
-/* Bij actieve drawer schuift de sheet omhoog */
-body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  transform:translateY(0) !important;
-  opacity:1 !important;
-  pointer-events:auto !important;
-}
-
 /* Actieve knop blijft duidelijk, maar rustig */
 body[data-active-screen="map"] .rd-nav-btn-v28.is-active{
   background:#f3e6d8 !important;
@@ -5185,22 +5049,6 @@ body[data-active-screen="map"] .rd-nav-btn-v28.is-active{
 /* Als drawer dicht is: geen knop actief visueel forceren */
 body[data-active-screen="map"]:not([data-map-drawer="open"]) .rd-nav-btn-v28.is-active{
   background:transparent !important;
-}
-
-/* Panel-specifieke subtiele state binnen sheet */
-body[data-map-panel="stops"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
-body[data-map-panel="now"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
-body[data-map-panel="more"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  height:112px !important;
-  min-height:112px !important;
-  max-height:112px !important;
-}
-
-/* Stops/now/more mogen iets meer ademruimte */
-body[data-map-panel="stops"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28,
-body[data-map-panel="now"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28,
-body[data-map-panel="more"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-grid-v28{
-  height:76px !important;
 }
 
 /* Kleine telefoons */
@@ -5235,24 +5083,6 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   border-top-left-radius:0 !important;
   border-top-right-radius:0 !important;
   z-index:1320 !important;
-}
-
-/* Sheet sluit direct aan boven de nav */
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  bottom:var(--rd-v39-sheet-bottom) !important;
-  border-bottom-left-radius:0 !important;
-  border-bottom-right-radius:0 !important;
-  box-shadow:0 -6px 18px rgba(72,52,34,.075) !important;
-}
-
-/* Gesloten: sheet schuift achter/onder de nav weg */
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  transform:translateY(calc(100% + var(--rd-v39-nav-height) + 8px)) !important;
-}
-
-/* Open: sheet vormt één geheel met nav */
-body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  transform:translateY(0) !important;
 }
 
 /* Als drawer open is, nav en sheet optisch één kaart */
@@ -7622,14 +7452,6 @@ body[data-active-screen="map"] .rd-map-nav-v28 .rd-nav-btn-v28[aria-current="pag
   opacity:1 !important;
 }
 
-/* Visueel één systeem: alleen map sheet aan de map nav koppelen, nooit de globale Home nav. */
-body[data-active-screen="map"][data-map-drawer="open"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"][data-map-drawer="open"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  border-bottom-left-radius:0 !important;
-  border-bottom-right-radius:0 !important;
-  box-shadow:0 -10px 28px rgba(36,25,18,.09) !important;
-}
-
 body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28{
   border-top-left-radius:0 !important;
   border-top-right-radius:0 !important;
@@ -7642,41 +7464,6 @@ body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28{
     height:64px !important;
     padding:6px 8px !important;
   }
-}
-
-/* =========================================================
-   Roadora v39.6.31 — Map Sheet Color Match Isolated
-   ---------------------------------------------------------
-   Doel:
-   - Alleen de kaart-sheet dezelfde warme premium kleur geven
-     als de geisoleerde kaart-bottomnav.
-   - Home/Overzicht bottom nav blijft volledig ongemoeid.
-   - Geen wijzigingen aan Leaflet / Maps / ORS / pins-core.
-========================================================= */
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
-body[data-active-screen="map"] .rd-map-sheet-v28{
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255,255,255,.72) 0%, rgba(255,255,255,.30) 36%, rgba(255,255,255,0) 68%),
-    linear-gradient(180deg, rgba(252,246,238,.98) 0%, rgba(246,235,221,.96) 100%) !important;
-  border:1px solid rgba(255,255,255,.54) !important;
-  border-bottom:0 !important;
-  box-shadow:0 -10px 28px rgba(36,25,18,.09) !important;
-  backdrop-filter:blur(20px) saturate(1.06) !important;
-  -webkit-backdrop-filter:blur(20px) saturate(1.06) !important;
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-scroll-v393{
-  background:transparent !important;
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-cards-v39,
-body[data-active-screen="map"] .rd-map-sheet-v28 .rd-sheet-cards-v39{
-  background:transparent !important;
 }
 
 /* =========================================================
@@ -7699,13 +7486,6 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
   border-color:var(--rd-map-surface-border) !important;
   border-top:1px solid rgba(86,60,35,.045) !important;
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  background:linear-gradient(180deg, var(--rd-map-surface-top) 0%, var(--rd-map-surface-bottom) 100%) !important;
-  border:1px solid var(--rd-map-surface-border) !important;
-  border-bottom:0 !important;
 }
 
 /* Stops panel: make the content math fit. Previous 154px height + absolute grid caused the first row to clip. */
@@ -7807,17 +7587,6 @@ body[data-active-screen="map"] .rd-map-nav-v28{
   box-sizing:border-box !important;
 }
 
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28{
-  left:var(--rd-map-edge) !important;
-  right:var(--rd-map-edge) !important;
-  width:auto !important;
-  max-width:none !important;
-  min-width:0 !important;
-  margin:0 !important;
-  box-sizing:border-box !important;
-}
-
 @media (max-width:430px){
   body[data-active-screen="map"]{
     --rd-map-edge:14px;
@@ -7848,33 +7617,6 @@ body[data-active-screen="map"]{
   --rd-map-unified-surface:#f7ecde;
   --rd-map-unified-surface-soft:#fbf4eb;
   --rd-map-unified-border:rgba(255,255,255,.58);
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28,
-body[data-active-screen="map"] .rd-map-nav-v28{
-  background:linear-gradient(180deg, var(--rd-map-unified-surface-soft) 0%, var(--rd-map-unified-surface) 100%) !important;
-  background-color:var(--rd-map-unified-surface) !important;
-  border-color:var(--rd-map-unified-border) !important;
-  backdrop-filter:blur(18px) saturate(1.02) !important;
-  -webkit-backdrop-filter:blur(18px) saturate(1.02) !important;
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::before,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28::before,
-body[data-active-screen="map"] .rd-map-nav-v28::before,
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28::after,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28::after,
-body[data-active-screen="map"] .rd-map-nav-v28::after{
-  background:transparent !important;
-  box-shadow:none !important;
-}
-
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-scroll-v393,
-body[data-active-screen="map"] #mapDrawer.rd-map-sheet-v28 .rd-sheet-cards-v39,
-body[data-active-screen="map"] #__rd_legacy_mapRouteSheet_disabled_v3981.rd-map-sheet-v28 .rd-sheet-cards-v39{
-  background:transparent !important;
 }
 
 /* =========================================================

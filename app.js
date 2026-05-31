@@ -353,6 +353,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     'hendrik ido ambacht': [4.6389,51.8442],
     hendrikidoambacht: [4.6389,51.8442],
     innsbruck: DEFAULT_END,
+    // Roadora v39.8.2 — Berlin hotfix.
+    // Zonder deze alias viel Berlijn terug op DEFAULT_END (Innsbruck), omdat
+    // de tijdelijke city resolver alleen bekende demo-steden ondersteunt.
+    berlijn: [13.4050,52.5200],
+    berlin: [13.4050,52.5200],
     praag: [14.4378,50.0755],
     prague: [14.4378,50.0755],
     praha: [14.4378,50.0755],
