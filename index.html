@@ -158,7 +158,7 @@
       <div class="roadtrip-state-v39733" data-roadtrip-state="home">
         <button class="hub-row" data-screen-target="plan"><b>▱</b><span><strong>Routeplan</strong><small>Plan en bewerk je route</small></span><i>›</i></button>
         <!-- Roadora v39.7.33 — Phase 2: Opgeslagen stops openen als in-page state binnen Mijn Roadtrip. Geen aparte subpage. -->
-        <button class="hub-row" type="button" data-roadtrip-entry="saved-stops"><b>♡</b><span><strong>Opgeslagen stops</strong><small>Hotels, eten, uitjes en laden</small></span><i>›</i></button>
+        <button class="hub-row" type="button" data-roadtrip-entry="saved-stops"><b>♡</b><span><strong>Opgeslagen stops</strong><small>Overnachten, eten en uitjes</small></span><i>›</i></button>
         <button class="hub-row" data-screen-target="routes"><b>⌁</b><span><strong>Trajecten</strong><small>Bekijk je etappes</small></span><i>›</i></button>
         <button class="hub-row" data-screen-target="diary"><b>◇</b><span><strong>Dagboek</strong><small>Bewaar je mooiste momenten</small></span><i>›</i></button>
       </div>
@@ -167,7 +167,138 @@
         <button class="hub-row" type="button" data-saved-stop-category="hotels"><b>☾</b><span><strong>Hotels</strong><small>Opgeslagen overnachtingen langs je route</small></span><i>›</i></button>
         <button class="hub-row" type="button" data-saved-stop-category="food"><b>🍴</b><span><strong>Eten</strong><small>Restaurants, koffie en pauzeplekken</small></span><i>›</i></button>
         <button class="hub-row" type="button" data-saved-stop-category="discover"><b>◎</b><span><strong>Uitjes</strong><small>Plekken en stops die je wilt bewaren</small></span><i>›</i></button>
-        <button class="hub-row" type="button" data-saved-stop-category="charge"><b>⚡</b><span><strong>Laden</strong><small>Laadstops voor je roadtrip</small></span><i>›</i></button>
+      </div>
+
+      <div class="roadtrip-state-v39733 roadtrip-hotels-state-v39754" data-roadtrip-state="saved-hotels" hidden>
+        <div class="saved-hotels-head-v39754 saved-hotels-head-v39755 saved-hotels-head-v39756">
+          <div class="saved-hotels-title-v39756">
+            <h2>Hotels</h2>
+          </div>
+          <button class="saved-hotels-close-v39755" type="button" data-roadtrip-entry="saved-stops" aria-label="Terug naar opgeslagen stops">×</button>
+        </div>
+
+        <div class="saved-hotels-comparebar-v39756" hidden aria-live="polite">
+          <span><b id="savedHotelCompareCount">0</b> geselecteerd</span>
+          <button type="button" id="savedHotelCompareAction">Vergelijk hotels</button>
+        </div>
+
+        <div class="saved-hotels-list-v39758" aria-label="Opgeslagen hotels">
+        <article class="saved-hotel-card-v39754" data-saved-hotel-card data-route-stop-type="hotel" data-route-stop-id="hotel-alpenhof-innsbruck" data-route-stop-name="Alpenhof Innsbruck">
+          <div class="hotel-photo-rail-v39754" aria-label="Hotelfoto's">
+            <img src="assets/hero-hotels.webp" alt="Hotel foto 1">
+            <img src="assets/hero-roadtrip.webp" alt="Hotel omgeving">
+            <img src="assets/hero-routeplan.webp" alt="Route omgeving">
+          </div>
+          <div class="hotel-card-body-v39754">
+            <div class="hotel-title-row-v39754"><div><h3>Alpenhof Innsbruck</h3><p>Innsbruck · dicht bij je eindbestemming</p></div><b>★ 8.8</b></div>
+            <div class="hotel-badges-v39754"><span>EV mogelijk</span><span>Familiekamer</span><span>Parkeren</span></div>
+            <div class="hotel-meta-grid-v39754"><span><strong>6 km</strong><small>vanaf route</small></span><span><strong>12 min</strong><small>omweg</small></span><span><strong>€€</strong><small>prijsniveau</small></span></div>
+            <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-hotel-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-hotel-add-route>Toevoegen</button><button class="primary" type="button">Boek</button><button class="danger" type="button">Verwijder</button></div>
+          </div>
+        </article>
+
+        <article class="saved-hotel-card-v39754" data-saved-hotel-card data-route-stop-type="hotel" data-route-stop-id="hotel-rheinblick-boutique" data-route-stop-name="Rheinblick Boutique Hotel">
+          <div class="hotel-photo-rail-v39754" aria-label="Hotelfoto's">
+            <img src="assets/hero-roadtrip.webp" alt="Hotel foto 1">
+            <img src="assets/hero-hotels.webp" alt="Hotel foto 2">
+            <img src="assets/hero-diary.webp" alt="Hotel foto 3">
+          </div>
+          <div class="hotel-card-body-v39754">
+            <div class="hotel-title-row-v39754"><div><h3>Rheinblick Boutique Hotel</h3><p>Koblenz · fijne tussenstop langs de route</p></div><b>★ 9.1</b></div>
+            <div class="hotel-badges-v39754"><span>Ontbijt</span><span>Hond welkom</span><span>Rustige ligging</span></div>
+            <div class="hotel-meta-grid-v39754"><span><strong>3 km</strong><small>vanaf route</small></span><span><strong>8 min</strong><small>omweg</small></span><span><strong>€€€</strong><small>prijsniveau</small></span></div>
+            <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-hotel-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-hotel-add-route>Toevoegen</button><button class="primary" type="button">Boek</button><button class="danger" type="button">Verwijder</button></div>
+          </div>
+        </article>
+
+        </div>      </div>
+
+      <div class="roadtrip-state-v39733 roadtrip-hotels-state-v39754 roadtrip-saved-content-state-v39764" data-roadtrip-state="saved-food" hidden>
+        <div class="saved-hotels-head-v39754 saved-hotels-head-v39755 saved-hotels-head-v39756">
+          <div class="saved-hotels-title-v39756">
+            <h2>Eten</h2>
+          </div>
+          <button class="saved-hotels-close-v39755" type="button" data-roadtrip-entry="saved-stops" aria-label="Terug naar opgeslagen stops">×</button>
+        </div>
+
+        <div class="saved-hotels-comparebar-v39756 saved-content-comparebar-v39764" hidden aria-live="polite">
+          <span><b data-saved-content-count>0</b> geselecteerd</span>
+          <button type="button" data-saved-content-compare-action>Vergelijk plekken</button>
+        </div>
+
+        <div class="saved-hotels-list-v39758" aria-label="Opgeslagen eten">
+          <article class="saved-hotel-card-v39754" data-saved-content-card>
+            <div class="hotel-photo-rail-v39754" aria-label="Foto's van eetplek">
+              <img src="assets/hero-hotels.webp" alt="Restaurant foto 1">
+              <img src="assets/hero-roadtrip.webp" alt="Restaurant omgeving">
+              <img src="assets/hero-routeplan.webp" alt="Route omgeving">
+            </div>
+            <div class="hotel-card-body-v39754">
+              <div class="hotel-title-row-v39754"><div><h3>Gasthof Alpenblick</h3><p>Tirol · warme dinerstop langs de route</p></div><b>★ 4.7</b></div>
+              <div class="hotel-badges-v39754"><span>Diner</span><span>Terras</span><span>Kindvriendelijk</span></div>
+              <div class="hotel-meta-grid-v39754"><span><strong>4 km</strong><small>vanaf route</small></span><span><strong>9 min</strong><small>omweg</small></span><span><strong>€€</strong><small>prijsniveau</small></span></div>
+              <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-saved-place-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-saved-place-add-route>Toevoegen</button><button class="primary" type="button">Navigeer</button><button class="danger" type="button">Verwijder</button></div>
+            </div>
+          </article>
+
+          <article class="saved-hotel-card-v39754" data-saved-content-card>
+            <div class="hotel-photo-rail-v39754" aria-label="Foto's van eetplek">
+              <img src="assets/hero-roadtrip.webp" alt="Koffiestop foto 1">
+              <img src="assets/hero-hotels.webp" alt="Koffiestop foto 2">
+              <img src="assets/hero-diary.webp" alt="Koffiestop foto 3">
+            </div>
+            <div class="hotel-card-body-v39754">
+              <div class="hotel-title-row-v39754"><div><h3>Coffee Fellows Nürnberg</h3><p>Nürnberg · korte koffiepauze zonder omweg</p></div><b>★ 4.5</b></div>
+              <div class="hotel-badges-v39754"><span>Koffie</span><span>Ontbijt</span><span>Parkeren</span></div>
+              <div class="hotel-meta-grid-v39754"><span><strong>2 km</strong><small>vanaf route</small></span><span><strong>6 min</strong><small>omweg</small></span><span><strong>€</strong><small>prijsniveau</small></span></div>
+              <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-saved-place-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-saved-place-add-route>Toevoegen</button><button class="primary" type="button">Navigeer</button><button class="danger" type="button">Verwijder</button></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="roadtrip-state-v39733 roadtrip-hotels-state-v39754 roadtrip-saved-content-state-v39764" data-roadtrip-state="saved-discover" hidden>
+        <div class="saved-hotels-head-v39754 saved-hotels-head-v39755 saved-hotels-head-v39756">
+          <div class="saved-hotels-title-v39756">
+            <h2>Uitjes</h2>
+          </div>
+          <button class="saved-hotels-close-v39755" type="button" data-roadtrip-entry="saved-stops" aria-label="Terug naar opgeslagen stops">×</button>
+        </div>
+
+        <div class="saved-hotels-comparebar-v39756 saved-content-comparebar-v39764" hidden aria-live="polite">
+          <span><b data-saved-content-count>0</b> geselecteerd</span>
+          <button type="button" data-saved-content-compare-action>Vergelijk uitjes</button>
+        </div>
+
+        <div class="saved-hotels-list-v39758" aria-label="Opgeslagen uitjes">
+          <article class="saved-hotel-card-v39754" data-saved-content-card>
+            <div class="hotel-photo-rail-v39754" aria-label="Foto's van uitje">
+              <img src="assets/hero-roadtrip.webp" alt="Uitje foto 1">
+              <img src="assets/hero-routes.webp" alt="Uitje omgeving">
+              <img src="assets/hero-diary.webp" alt="Uitje detail">
+            </div>
+            <div class="hotel-card-body-v39754">
+              <div class="hotel-title-row-v39754"><div><h3>Kasteel Nürnberg</h3><p>Nürnberg · cultuurstop met uitzicht</p></div><b>★ 4.8</b></div>
+              <div class="hotel-badges-v39754"><span>Cultuur</span><span>Uitzicht</span><span>Fotostop</span></div>
+              <div class="hotel-meta-grid-v39754"><span><strong>5 km</strong><small>vanaf route</small></span><span><strong>14 min</strong><small>omweg</small></span><span><strong>1u</strong><small>bezoekduur</small></span></div>
+              <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-saved-place-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-saved-place-add-route>Toevoegen</button><button class="primary" type="button">Navigeer</button><button class="danger" type="button">Verwijder</button></div>
+            </div>
+          </article>
+
+          <article class="saved-hotel-card-v39754" data-saved-content-card>
+            <div class="hotel-photo-rail-v39754" aria-label="Foto's van uitje">
+              <img src="assets/hero-diary.webp" alt="Natuurstop foto 1">
+              <img src="assets/hero-roadtrip.webp" alt="Natuurstop foto 2">
+              <img src="assets/hero-routeplan.webp" alt="Natuurstop foto 3">
+            </div>
+            <div class="hotel-card-body-v39754">
+              <div class="hotel-title-row-v39754"><div><h3>Fränkische Schweiz</h3><p>Beieren · rustige natuurstop onderweg</p></div><b>★ 4.7</b></div>
+              <div class="hotel-badges-v39754"><span>Natuur</span><span>Wandelen</span><span>Panorama</span></div>
+              <div class="hotel-meta-grid-v39754"><span><strong>8 km</strong><small>vanaf route</small></span><span><strong>18 min</strong><small>omweg</small></span><span><strong>2u</strong><small>bezoekduur</small></span></div>
+              <div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-saved-place-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-saved-place-add-route>Toevoegen</button><button class="primary" type="button">Navigeer</button><button class="danger" type="button">Verwijder</button></div>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -256,12 +387,48 @@
     </div>
   </section>
 
-  <section class="screen screen-routes" data-screen="routes">
-    <header class="plain-top"><h1>Trajecten</h1><button class="circle-btn light">•••</button></header>
-    <div class="content routes-layout">
-      <img src="assets/hero-routes.webp" alt="Trajecten" />
-      <div class="story-empty"><small>ETAPPES</small><h2>Nog geen trajecten</h2><p>Plan een route en je etappes verschijnen hier vanzelf.</p></div>
-      <button class="primary wide" data-screen-target="plan">Traject toevoegen</button>
+  <section class="screen screen-routes routes-v39767" data-screen="routes">
+    <div class="routes-native-head-v39767">
+      <div class="routes-title-v39767">
+        <small>MIJN ROADTRIP</small>
+        <h1>Trajecten</h1>
+      </div>
+      <button class="routes-close-v39767" type="button" data-screen-target="roadtrip" aria-label="Terug naar Mijn Roadtrip">×</button>
+    </div>
+
+    <div class="routes-scroll-v39767" id="routesListV39767" aria-live="polite">
+      <section class="routes-intro-card-v39767">
+        <small>ROUTE-OPBOUW</small>
+        <h2>Je toegevoegde stops komen hier samen.</h2>
+        <p>Hotels, eetplekken en uitjes die je toevoegt aan je route worden straks de basis van je traject.</p>
+      </section>
+
+      <section class="routes-empty-v39767" id="routesEmptyV39767">
+        <div class="routes-empty-icon-v39767">⌁</div>
+        <h2>Nog geen stops in je traject</h2>
+        <p>Voeg eerst een hotel, eetplek of uitje toe vanuit je opgeslagen stops. Daarna verschijnt je route-opbouw hier automatisch.</p>
+        <button class="routes-empty-cta-v39767" type="button" data-roadtrip-entry="saved-stops">Opgeslagen stops openen</button>
+      </section>
+
+      <section class="routes-timeline-v39767" id="routesTimelineV39767" hidden>
+        <div class="route-point-v39767 is-start">
+          <span></span>
+          <div>
+            <small>START</small>
+            <strong id="routesStartV39767">Vertrekpunt</strong>
+          </div>
+        </div>
+
+        <div class="route-stops-v39767" id="routesStopsV39767"></div>
+
+        <div class="route-point-v39767 is-end">
+          <span></span>
+          <div>
+            <small>BESTEMMING</small>
+            <strong id="routesEndV39767">Bestemming</strong>
+          </div>
+        </div>
+      </section>
     </div>
   </section>
 
@@ -347,9 +514,10 @@
 
 
   <!-- Roadora Map Bottom Navigation v28 - clean only -->
-  <nav class="rd-map-nav-v28" aria-label="Roadora kaart navigatie">
-    <button class="rd-nav-btn-v28 is-active" type="button" data-map-panel="roadtrip">Roadtrip</button>
+  <nav class="rd-map-nav-v28 rd-map-nav-v39773" aria-label="Roadora kaart navigatie">
+    <button class="rd-nav-btn-v28" type="button" data-map-panel="roadtrip">Roadtrip</button>
     <button class="rd-nav-btn-v28" type="button" data-map-panel="stops">Stops</button>
+    <button class="rd-nav-btn-v28 rd-nav-route-v39773" type="button" data-map-action="navigate-route" aria-label="Navigeer route">Navigeer</button>
     <button class="rd-nav-btn-v28" type="button" data-map-panel="now">Nu<br>nodig</button>
     <button class="rd-nav-btn-v28" type="button" data-map-panel="more">Meer</button>
   </nav>
