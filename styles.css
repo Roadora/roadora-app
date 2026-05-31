@@ -14318,3 +14318,112 @@ body[data-active-screen="map"][data-route-stop-preview="open"] #mapDrawer .rd-sh
     font-size:15.8px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.4 — Trajecten header + centred waypoint line polish
+   Scope: Trajecten UI only. No ORS, Maps, Leaflet or route-state changes.
+   ========================================================= */
+body[data-active-screen="routes"] .routes-native-head-v39767,
+.screen-routes.routes-v39767 .routes-native-head-v39767{
+  left:72px !important;
+  right:22px !important;
+  top:calc(19px + env(safe-area-inset-top, 0px)) !important;
+  height:46px !important;
+  align-items:center !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767 small,
+.screen-routes.routes-v39767 .routes-title-v39767 small{
+  display:none !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767 h1,
+.screen-routes.routes-v39767 .routes-title-v39767 h1{
+  font-family:"Playfair Display", Georgia, serif !important;
+  font-size:31px !important;
+  line-height:.96 !important;
+  letter-spacing:-.045em !important;
+  margin:0 !important;
+}
+
+body[data-active-screen="routes"] .routes-close-v39767,
+.screen-routes.routes-v39767 .routes-close-v39767{
+  width:42px !important;
+  height:42px !important;
+}
+
+/* Put waypoint numbers exactly on the route spine and let the line break behind them. */
+.routes-premium-timeline-v3990::before{
+  left:32px !important;
+  width:2px !important;
+  background:rgba(169,101,32,.30) !important;
+}
+
+.route-stop-card-v3992 .route-stop-index-v3992{
+  left:18px !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  width:28px !important;
+  height:28px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:999px !important;
+  background:#f4e6d2 !important;
+  border:1px solid rgba(255,255,255,.78) !important;
+  color:#8b541d !important;
+  font-size:12px !important;
+  font-weight:950 !important;
+  box-shadow:
+    0 0 0 8px #f4eadf,
+    0 8px 18px rgba(63,41,24,.10),
+    inset 0 1px 0 rgba(255,255,255,.70) !important;
+  z-index:8 !important;
+}
+
+/* Keep the stop card narrower so the route line reads as one calm vertical spine. */
+.route-stop-card-v3992::before{
+  left:70px !important;
+  right:0 !important;
+}
+
+.route-stop-card-v3992{
+  grid-template-columns:58px 74px minmax(0,1fr) !important;
+  gap:10px !important;
+}
+
+.route-stop-photo-v3992{
+  width:72px !important;
+  height:78px !important;
+  border-radius:20px !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="routes"] .routes-native-head-v39767,
+  .screen-routes.routes-v39767 .routes-native-head-v39767{
+    left:68px !important;
+    right:20px !important;
+    top:calc(20px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  body[data-active-screen="routes"] .routes-title-v39767 h1,
+  .screen-routes.routes-v39767 .routes-title-v39767 h1{
+    font-size:30px !important;
+  }
+
+  .route-stop-card-v3992{
+    grid-template-columns:56px 68px minmax(0,1fr) !important;
+  }
+
+  .route-stop-card-v3992::before{
+    left:66px !important;
+  }
+
+  .route-stop-photo-v3992{
+    width:66px !important;
+    height:74px !important;
+  }
+
+  .route-stop-card-v3992 .route-stop-index-v3992{
+    left:18px !important;
+  }
+}
