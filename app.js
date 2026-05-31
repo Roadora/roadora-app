@@ -1068,6 +1068,60 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return routePointAt(pct);
   }
 
+  /* Roadora v39.7.80 — route pin popover + remove.
+     Route pins are now interactive, using the same route-stop state as
+     Trajecten. No ORS recalculation, no Maps export changes. */
+  function escapeRouteStopHtmlV39780(value){
+    return String(value || '').replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch] || ch;
+    });
+  }
+
+  function routeStopMetaV39780(stop){
+    const type = (stop && stop.type) || 'stop';
+    if(type === 'hotel') return { icon:'☾', label:'Hotel', cls:'hotel', action:'Boek' };
+    if(type === 'food') return { icon:'🍴', label:'Eten', cls:'food', action:'Navigeer' };
+    if(type === 'discover') return { icon:'◎', label:'Uitje', cls:'discover', action:'Navigeer' };
+    return { icon:'⌁', label:'Stop', cls:'stop', action:'Navigeer' };
+  }
+
+  function renderRouteStopPopoverV39780(stop, index){
+    if(!stop) return;
+    try{ closeHotelPreview(); }catch(_){ }
+    document.body.setAttribute('data-hotel-preview','open');
+    document.body.setAttribute('data-route-stop-preview','open');
+
+    const meta = routeStopMetaV39780(stop);
+    const mount = document.getElementById('mapScreen') || document.getElementById('mapDrawer') || document.body;
+    const name = escapeRouteStopHtmlV39780(stop.name || 'Stop');
+    const sub = escapeRouteStopHtmlV39780(stop.meta || 'Toegevoegd aan je traject');
+    const id = escapeRouteStopHtmlV39780(stop.id || '');
+    const pop = document.createElement('div');
+    pop.className = 'rd-hotel-preview-popover-v39644 rd-route-stop-preview-v39780 rd-route-stop-preview-' + meta.cls + '-v39780';
+    pop.setAttribute('role','dialog');
+    pop.setAttribute('aria-label','Route stop');
+    pop.innerHTML =
+      '<button type="button" class="rd-hotel-preview-close-v39644" aria-label="Sluiten">×</button>' +
+      '<div class="rd-route-stop-preview-head-v39780">' +
+        '<span class="rd-route-stop-preview-icon-v39780">' + meta.icon + '</span>' +
+        '<div>' +
+          '<small>IN ROUTE · ' + escapeRouteStopHtmlV39780(meta.label) + '</small>' +
+          '<strong>' + name + '</strong>' +
+          '<em>' + sub + '</em>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rd-route-stop-preview-chips-v39780">' +
+        '<span>✓ In traject</span>' +
+        '<span>Stop ' + (Number(index) + 1) + '</span>' +
+      '</div>' +
+      '<div class="rd-hotel-preview-actions-v39644 rd-route-stop-preview-actions-v39780">' +
+        '<button type="button" class="rd-route-stop-preview-view-v39780" data-route-stop-view="' + id + '">Bekijk</button>' +
+        '<button type="button" class="rd-route-stop-preview-remove-v39780" data-route-stop-map-remove-v39780="' + id + '">Verwijder</button>' +
+      '</div>';
+    mount.appendChild(pop);
+    try{ setText('#mapStatusNext', (stop.name || 'Stop') + ' · in route'); }catch(_){ }
+  }
+
   function renderRouteStopPinsV39775(){
     if(!map || !window.L) return;
     if(!routeStopLayer) routeStopLayer = L.layerGroup().addTo(map);
@@ -1083,15 +1137,42 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
         riseOnHover:true,
         zIndexOffset:780 + index
       });
-      marker.on('click', function(){
+      marker.on('click', function(ev){
         try{
-          setText('#mapStatusNext', (stop.name || 'Stop') + ' · in route');
+          if(ev && ev.originalEvent){
+            ev.originalEvent.preventDefault && ev.originalEvent.preventDefault();
+            ev.originalEvent.stopPropagation && ev.originalEvent.stopPropagation();
+          }
+          renderRouteStopPopoverV39780(stop, index);
           showMapToast((stop.name || 'Stop') + ' staat in je traject');
         }catch(_){ }
       });
       marker.addTo(routeStopLayer);
     });
   }
+
+  document.addEventListener('click', function(event){
+    const removeBtn = event.target.closest && event.target.closest('[data-route-stop-map-remove-v39780]');
+    if(!removeBtn) return;
+    const id = removeBtn.getAttribute('data-route-stop-map-remove-v39780');
+    if(!id) return;
+    event.preventDefault();
+    event.stopPropagation();
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.remove === 'function'){
+        window.RoadoraRouteStopsV39766.remove(id);
+        if(typeof window.RoadoraRouteStopsV39766.sync === 'function') window.RoadoraRouteStopsV39766.sync();
+      }else{
+        const raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+        const stops = Array.isArray(raw) ? raw.filter(function(item){ return item && item.id !== id; }) : [];
+        localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
+      }
+      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ removedId:id, source:'map-route-pin' } }));
+      try{ closeHotelPreview(); }catch(_){ }
+      renderRouteStopPinsV39775();
+      showMapToast('Stop verwijderd uit je traject');
+    }catch(_){ }
+  }, true);
 
   /* Roadora v39.6.94 — remove only orphan endpoint marker in the top-left corner.
      This is a DOM cleanup for a stale Leaflet endpoint element; it does not touch

@@ -13488,3 +13488,99 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-pres
 .routes-premium-list-v39772.has-empty-route-v39778 .routes-empty-v39767{
   display: none !important;
 }
+
+/* Roadora v39.7.80 — Route pin popover + remove */
+#mapScreen .rd-route-stop-preview-v39780{
+  background:rgba(255,250,244,.96);
+  border:1px solid rgba(255,255,255,.74);
+  box-shadow:0 22px 54px rgba(34,22,13,.18);
+}
+#mapScreen .rd-route-stop-preview-head-v39780{
+  display:grid;
+  grid-template-columns:52px minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  padding:18px 18px 10px;
+}
+#mapScreen .rd-route-stop-preview-icon-v39780{
+  width:48px;
+  height:48px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  background:#2b211a;
+  color:#fff8ef;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 12px 26px rgba(43,33,26,.18), inset 0 1px 0 rgba(255,255,255,.20);
+}
+#mapScreen .rd-route-stop-preview-food-v39780 .rd-route-stop-preview-icon-v39780{ background:#8b5422; }
+#mapScreen .rd-route-stop-preview-discover-v39780 .rd-route-stop-preview-icon-v39780{ background:#5f6f4a; }
+#mapScreen .rd-route-stop-preview-head-v39780 small{
+  display:block;
+  color:#a26b35;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.16em;
+  margin-bottom:5px;
+}
+#mapScreen .rd-route-stop-preview-head-v39780 strong{
+  display:block;
+  color:#211914;
+  font-size:18px;
+  line-height:1.08;
+  letter-spacing:-.04em;
+  font-weight:950;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#mapScreen .rd-route-stop-preview-head-v39780 em{
+  display:block;
+  margin-top:5px;
+  color:#6b5d50;
+  font-style:normal;
+  font-size:11px;
+  font-weight:750;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#mapScreen .rd-route-stop-preview-chips-v39780{
+  display:flex;
+  gap:8px;
+  padding:0 18px 12px;
+  overflow:hidden;
+}
+#mapScreen .rd-route-stop-preview-chips-v39780 span{
+  height:25px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 10px;
+  background:rgba(169,101,32,.10);
+  color:#70451f;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+#mapScreen .rd-route-stop-preview-actions-v39780{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 18px 18px;
+}
+#mapScreen .rd-route-stop-preview-actions-v39780 button{
+  height:44px;
+  border-radius:16px;
+  font-size:12px;
+  font-weight:950;
+}
+#mapScreen .rd-route-stop-preview-view-v39780{
+  background:#2b211a;
+  color:#fff8ef;
+}
+#mapScreen .rd-route-stop-preview-remove-v39780{
+  background:rgba(130,59,35,.11);
+  color:#8b3f24;
+}
