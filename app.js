@@ -353,11 +353,6 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     'hendrik ido ambacht': [4.6389,51.8442],
     hendrikidoambacht: [4.6389,51.8442],
     innsbruck: DEFAULT_END,
-    // Roadora v39.8.2 — Berlin hotfix.
-    // Zonder deze alias viel Berlijn terug op DEFAULT_END (Innsbruck), omdat
-    // de tijdelijke city resolver alleen bekende demo-steden ondersteunt.
-    berlijn: [13.4050,52.5200],
-    berlin: [13.4050,52.5200],
     praag: [14.4378,50.0755],
     prague: [14.4378,50.0755],
     praha: [14.4378,50.0755],
@@ -461,37 +456,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     categoryLayer=L.layerGroup().addTo(map);
     routeStopLayer=L.layerGroup().addTo(map);
 
-    $('#zoomIn')?.addEventListener('click',()=>map.zoomIn());
-    $('#zoomOut')?.addEventListener('click',()=>map.zoomOut());
+    // Roadora v39.8.5 — A5 cleanup: removed old hooks for legacy map controls
+    // that no longer exist in the current app shell. Keep the active center-route
+    // control only; ORS, Leaflet, Google Maps export and rd-map-nav-v28 stay untouched.
     $('#fitRoute')?.addEventListener('click',()=>fitRoute());
-    // Roadora v39.8.0 cleanup step 3: removed legacy Maps button hooks.
-    // Current navigation uses body > nav.rd-map-nav-v28 [data-map-action="navigate-route"].
-    $('#routeInfoBtn')?.addEventListener('click',()=>showMapToast('Route-info staat klaar'));
-    $('#openAddStopMode')?.addEventListener('click',()=>setRoadtripSheetMode('add'));
-    $('#openAssistMode')?.addEventListener('click',()=>setRoadtripSheetMode('assist'));
-    $('#addDemoStopBtn')?.addEventListener('click',()=>addDemoStopToRoute());
-    document.querySelectorAll('[data-sheet-mode]').forEach(btn=>btn.addEventListener('click',()=>setRoadtripSheetMode(btn.dataset.sheetMode || 'live')));
-    document.querySelectorAll('[data-assist]').forEach(btn=>btn.addEventListener('click',()=>{
-      document.querySelectorAll('[data-assist]').forEach(x=>x.classList.toggle('active', x===btn));
-      showMapToast(`${btn.textContent.trim()} dichtbij gezocht`);
-    }));
-    document.querySelector('[data-menu-open]')?.addEventListener('click',()=>document.getElementById('heroMenuOverlay')?.classList.add('open'));
-    $('#mapCats')?.addEventListener('click',(e)=>{
-      const b=e.target.closest('.cat'); if(!b) return;
-      b.classList.toggle('active');
-      showMapToast(`${b.textContent.trim()} bijgewerkt`);
-    });
-    // Roadora v39.8.0 cleanup step 3: removed old .bottomNavV59 handler.
-    // The active map bottom navigation is rd-map-nav-v28 / rd-map-nav-v39773.
-    document.querySelector('#mapVehicleSwitch')?.addEventListener('click',(e)=>{
-      const b=e.target.closest('[data-map-vehicle]'); if(!b) return;
-      if(window.RoadoraState?.route){
-        window.RoadoraState.route.vehicle = b.dataset.mapVehicle;
-        try{ localStorage.setItem('roadora_phase1_state_v44_clean', JSON.stringify(window.RoadoraState)); }catch(_){ }
-      }
-      updateVehicleButtons();
-      loadRoute(true);
-    });
   }
 
   function endpointIcon(){ return L.divIcon({ className:'endpointMarker', iconSize:[30,30], iconAnchor:[15,15] }); }
@@ -4442,7 +4410,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   function interceptNavigateClick(event){
     var btn = event.target && event.target.closest && event.target.closest(
-      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"]'
+      'body > nav.rd-map-nav-v28 [data-map-action="navigate-route"], #mapsRouteBtn, #mapNavMainBtn'
     );
     if(!btn) return;
     event.preventDefault();
