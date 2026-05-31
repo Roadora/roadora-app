@@ -4457,3 +4457,97 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     open: openNextStopOrDestination
   };
 })();
+
+/* =========================================================
+   Roadora v39.8.14 — Practical Stop Add Bridge
+   Scope: Tanken/Laden/WC only. The practical preview button is intentionally
+   route-only, but an older generic preview handler can catch the click before
+   the central route-stop state sees it. This bridge writes only practical
+   stops to the same route-stop state so their route pins/Trajecten appear.
+   No ORS, Leaflet, Maps export or hotel navigation changes.
+   ========================================================= */
+(function(){
+  if(window.__roadoraPracticalStopAddBridgeV39814) return;
+  window.__roadoraPracticalStopAddBridgeV39814 = true;
+
+  function slug(value){
+    return String(value || 'stop')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'stop';
+  }
+
+  function practicalTypeFromPopover(pop){
+    if(!pop) return '';
+    if(pop.classList.contains('rd-fuel-preview-popover-v39646')) return 'fuel';
+    if(pop.classList.contains('rd-charge-preview-popover-v39647')) return 'charge';
+    if(pop.classList.contains('rd-wc-preview-popover-v39653')) return 'wc';
+    return '';
+  }
+
+  function labelFor(type){
+    if(type === 'fuel') return 'Tankstop';
+    if(type === 'charge') return 'Laadstop';
+    if(type === 'wc') return 'WC-stop';
+    return 'Stop';
+  }
+
+  function toast(message){
+    try{
+      var t = document.getElementById('mapToast') || document.getElementById('toast');
+      if(!t) return;
+      t.textContent = message;
+      t.classList.add('show');
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(function(){ t.classList.remove('show'); }, 1700);
+    }catch(_){ }
+  }
+
+  function buildStopFromPopover(pop, type){
+    var titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
+    var metaEl = pop.querySelector('.rd-hotel-preview-kicker-v39644') || pop.querySelector('.rd-hotel-preview-meta-v39644');
+    var name = (titleEl && titleEl.textContent.trim()) || labelFor(type);
+    var meta = (metaEl && metaEl.textContent.trim()) || 'Toegevoegd aan je traject';
+    return {
+      id: type + '-' + slug(name),
+      type: type,
+      name: name,
+      meta: meta,
+      source: 'map-preview-route-only',
+      status: 'in_route',
+      addedAt: new Date().toISOString()
+    };
+  }
+
+  document.addEventListener('click', function(event){
+    var btn = event.target.closest && event.target.closest('.rd-practical-preview-add-v39813');
+    if(!btn) return;
+    var pop = btn.closest && btn.closest('.rd-hotel-preview-popover-v39644');
+    var type = practicalTypeFromPopover(pop);
+    if(!pop || !type) return;
+
+    var stop = buildStopFromPopover(pop, type);
+    try{
+      if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.add === 'function'){
+        window.RoadoraRouteStopsV39766.add(stop);
+        if(typeof window.RoadoraRouteStopsV39766.sync === 'function') window.RoadoraRouteStopsV39766.sync();
+      }else{
+        var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+        var stops = Array.isArray(raw) ? raw : [];
+        var existing = stops.findIndex(function(item){ return item && item.id === stop.id; });
+        if(existing >= 0) stops[existing] = Object.assign({}, stops[existing], stop, { updatedAt:new Date().toISOString() });
+        else stops.push(stop);
+        localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
+      }
+      btn.classList.add('is-added-v39763','is-in-route-v39766');
+      btn.setAttribute('aria-pressed','true');
+      btn.textContent = '✓ In route';
+      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'practical-stop-add-bridge' } }));
+      try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
+      toast(labelFor(type) + ' toegevoegd aan je traject');
+    }catch(err){
+      console.warn('Roadora practical stop add failed', err);
+    }
+  }, true);
+})();
