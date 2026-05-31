@@ -3061,11 +3061,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       }
       button.classList.add('is-added-v39763','is-in-route-v39766');
       button.textContent = '✓ In route';
-      // Roadora v39.8.9 — practical stops become the immediate next Maps target.
-      // Tanken/Laden/WC are not favorites, but when the user adds one, the
-      // central Navigeer CTA should go to that exact practical stop first.
-      try{ localStorage.setItem('roadora_next_stop_id_v3989', stop.id); }catch(_){ }
-      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'route-only-preview-v3988', nextStopId:stop.id } }));
+      window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop, source:'route-only-preview-v3988' } }));
       try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
       try{ closeHotelPreview(); }catch(_){ }
       if(typeof showMapToast === 'function') showMapToast(stop.name + ' toegevoegd aan je traject');
@@ -4417,11 +4413,11 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 })();
 
 /* =========================================================
-   Roadora v39.7.79 — Next Stop Resolver
-   - Navigeer kijkt altijd opnieuw naar de actuele route-state.
-   - 1, 2, 10 of meer stops: altijd eerstvolgende actieve stop.
-   - Verwijderde / afgeronde stops worden genegeerd.
-   - Geen ORS-herberekening, geen kaart-route wijziging, geen multi-stop export.
+   Roadora v39.8.10 — Route Stop Maps Export Fix
+   - Navigeer opent weer de volledige route naar de eindbestemming.
+   - Actieve route-stops gaan als tussenstops/waypoints mee.
+   - Tanken/Laden/WC blijven route-only, maar vervangen de eindbestemming niet.
+   - Geen ORS-herberekening, geen Leaflet-route wijziging.
    ========================================================= */
 (function(){
   if(window.__roadoraNextStopResolverV39779) return;
@@ -4491,28 +4487,38 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     return String(route.end || route.destination || '').trim() || 'Praag';
   }
 
-  function preferredNextStopIdV3989(){
-    try{ return String(localStorage.getItem('roadora_next_stop_id_v3989') || '').trim(); }catch(_){ return ''; }
-  }
-
-  function chooseNextStopV3989(activeStops){
-    activeStops = Array.isArray(activeStops) ? activeStops : [];
-    var preferredId = preferredNextStopIdV3989();
-    if(preferredId){
-      var preferred = activeStops.find(function(stop){
-        return String(stop && stop.id || '') === preferredId;
+  function uniqueDestinationsV39810(items){
+    var seen = {};
+    return (Array.isArray(items) ? items : [])
+      .map(destinationForStop)
+      .map(function(value){ return String(value || '').trim(); })
+      .filter(Boolean)
+      .filter(function(value){
+        var key = value.toLowerCase();
+        if(seen[key]) return false;
+        seen[key] = true;
+        return true;
       });
-      if(preferred) return preferred;
-      try{ localStorage.removeItem('roadora_next_stop_id_v3989'); }catch(_){ }
-    }
-    return activeStops[0] || null;
   }
 
   function openNextStopOrDestination(){
     var activeStops = readActiveStops();
-    var nextStop = chooseNextStopV3989(activeStops);
-    var destination = destinationForStop(nextStop) || fallbackEndDestination();
-    var params = new URLSearchParams({ api:'1', travelmode:'driving', destination:destination });
+    var routeEnd = fallbackEndDestination();
+
+    // v39.8.10 — keep the final destination intact.
+    // Google Maps gets selected route-stops as waypoints, so a tank/charge/WC
+    // stop behaves like a real tussenstop instead of replacing the route.
+    var waypoints = uniqueDestinationsV39810(activeStops);
+    var params = new URLSearchParams({
+      api:'1',
+      travelmode:'driving',
+      destination:routeEnd
+    });
+
+    if(waypoints.length){
+      params.set('waypoints', waypoints.join('|'));
+    }
+
     window.open('https://www.google.com/maps/dir/?' + params.toString(), '_blank', 'noopener');
   }
 
@@ -4533,7 +4539,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraMapsExport.open = openNextStopOrDestination;
   window.RoadoraNextStopResolverV39779 = {
     stops: readActiveStops,
-    next: function(){ return chooseNextStopV3989(readActiveStops()); },
+    next: function(){ return readActiveStops()[0] || null; },
     open: openNextStopOrDestination
   };
 })();
