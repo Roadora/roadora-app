@@ -3886,3 +3886,201 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     }
   }, true);
 })();
+
+/* =========================================================
+   Roadora v39.7.76 — Map Preview Save/Add State Sync
+   Scope: map hotel preview buttons now use the same saved-content and
+   route-stop state as Mijn Roadtrip. ORS/Maps/export stay untouched.
+   ========================================================= */
+(function(){
+  if(window.__roadoraMapPreviewSaveAddSyncV39776) return;
+  window.__roadoraMapPreviewSaveAddSyncV39776 = true;
+
+  var SAVED_HOTELS_KEY = 'roadora_saved_hotels_v39776';
+
+  function slug(value){
+    return String(value || 'hotel')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'hotel';
+  }
+
+  function toast(message){
+    var t = document.getElementById('mapToast') || document.getElementById('toast');
+    if(!t) return;
+    t.textContent = message;
+    t.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(function(){ t.classList.remove('show'); }, 1700);
+  }
+
+  function readSavedHotels(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(SAVED_HOTELS_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    }catch(_){ return []; }
+  }
+
+  function writeSavedHotels(items){
+    try{ localStorage.setItem(SAVED_HOTELS_KEY, JSON.stringify(items || [])); }catch(_){ }
+  }
+
+  function bgUrlFrom(el){
+    if(!el) return 'assets/hero-hotels.webp';
+    var bg = el.style && el.style.backgroundImage ? el.style.backgroundImage : '';
+    var match = bg.match(/url\(["']?([^"')]+)["']?\)/i);
+    return match ? match[1] : 'assets/hero-hotels.webp';
+  }
+
+  function getHotelPreviewData(button){
+    var pop = button && button.closest && button.closest('.rd-hotel-preview-popover-v39644');
+    if(!pop) return null;
+    // Only sync hotel previews here. Other categories keep their existing behavior.
+    if(pop.classList.contains('rd-food-preview-popover-v39648') ||
+       pop.classList.contains('rd-discover-preview-popover-v39649') ||
+       pop.classList.contains('rd-charge-preview-popover-v39647') ||
+       pop.classList.contains('rd-wc-preview-popover-v39653')) return null;
+
+    var titleEl = pop.querySelector('.rd-hotel-preview-title-v39644');
+    var metaEl = pop.querySelector('.rd-hotel-preview-meta-v39644');
+    var kickerEl = pop.querySelector('.rd-hotel-preview-kicker-v39644');
+    var photoEl = pop.querySelector('.rd-hotel-preview-photo-v39644');
+    var name = (titleEl && titleEl.textContent.trim()) || 'Hotel';
+    var meta = (kickerEl && kickerEl.textContent.trim()) || 'Langs je route';
+    var rating = (metaEl && metaEl.textContent.trim()) || '★ 8.8 · €€';
+    var id = 'hotel-' + slug(name);
+    return {
+      id: id,
+      type: 'hotel',
+      name: name,
+      meta: meta,
+      rating: rating,
+      img: bgUrlFrom(photoEl),
+      source: 'map-preview',
+      status: 'in_route',
+      addedAt: new Date().toISOString()
+    };
+  }
+
+  function saveHotelToShortlist(hotel){
+    if(!hotel || !hotel.id) return false;
+    var saved = readSavedHotels();
+    var idx = saved.findIndex(function(item){ return item && item.id === hotel.id; });
+    if(idx >= 0){
+      saved[idx] = Object.assign({}, saved[idx], hotel, { updatedAt:new Date().toISOString() });
+    }else{
+      saved.unshift(hotel);
+    }
+    writeSavedHotels(saved);
+    renderSavedHotelCards();
+    return true;
+  }
+
+  function htmlEscape(value){
+    return String(value || '').replace(/[&<>"]/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch] || ch;
+    });
+  }
+
+  function dynamicCardHtml(hotel){
+    var name = htmlEscape(hotel.name || 'Hotel');
+    var meta = htmlEscape(hotel.meta || 'Langs je route');
+    var rating = htmlEscape(hotel.rating || '★ 8.8 · €€');
+    var img = htmlEscape(hotel.img || 'assets/hero-hotels.webp');
+    var id = htmlEscape(hotel.id || ('hotel-' + slug(name)));
+    return ''+
+      '<article class="saved-hotel-card-v39754 saved-hotel-card-dynamic-v39776" data-saved-hotel-card data-dynamic-saved-hotel="true" data-route-stop-type="hotel" data-route-stop-id="'+id+'" data-route-stop-name="'+name+'">'+
+        '<div class="hotel-photo-rail-v39754" aria-label="Hotelfoto\'s">'+
+          '<img src="'+img+'" alt="Hotel foto">'+
+          '<img src="assets/hero-hotels.webp" alt="Hotel omgeving">'+
+          '<img src="assets/hero-roadtrip.webp" alt="Roadtrip omgeving">'+
+        '</div>'+
+        '<div class="hotel-card-body-v39754">'+
+          '<div class="hotel-title-row-v39754"><div><h3>'+name+'</h3><p>'+meta+'</p></div><b>'+rating+'</b></div>'+
+          '<div class="hotel-badges-v39754"><span>Langs route</span><span>Opgeslagen</span><span>Roadora</span></div>'+
+          '<div class="hotel-meta-grid-v39754"><span><strong>Route</strong><small>context</small></span><span><strong>—</strong><small>omweg</small></span><span><strong>€€</strong><small>prijsniveau</small></span></div>'+
+          '<div class="hotel-actions-v39754 hotel-actions-v39756 hotel-actions-v39763"><button class="hotel-compare-toggle-v39756" type="button" data-hotel-compare aria-pressed="false"><span></span>Vergelijk</button><button class="hotel-add-route-v39763" type="button" data-hotel-add-route>Toevoegen</button><button class="primary" type="button">Boek</button><button class="danger" type="button">Verwijder</button></div>'+
+        '</div>'+
+      '</article>';
+  }
+
+  function renderSavedHotelCards(){
+    var list = document.querySelector('[data-roadtrip-state="saved-hotels"] .saved-hotels-list-v39758');
+    if(!list) return;
+    list.querySelectorAll('[data-dynamic-saved-hotel="true"]').forEach(function(node){ node.remove(); });
+    var hotels = readSavedHotels();
+    if(!hotels.length) return;
+    list.insertAdjacentHTML('afterbegin', hotels.map(dynamicCardHtml).join(''));
+    if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.sync === 'function'){
+      window.RoadoraRouteStopsV39766.sync();
+    }
+  }
+
+  function addHotelToRoute(hotel){
+    if(!hotel || !hotel.id) return false;
+    var stop = Object.assign({}, hotel, {
+      type:'hotel',
+      source:'map-preview',
+      status:'in_route',
+      addedAt: hotel.addedAt || new Date().toISOString()
+    });
+    if(window.RoadoraRouteStopsV39766 && typeof window.RoadoraRouteStopsV39766.add === 'function'){
+      window.RoadoraRouteStopsV39766.add(stop);
+    }else{
+      try{
+        var raw = JSON.parse(localStorage.getItem('roadora_route_stops_v39766') || '[]');
+        var stops = Array.isArray(raw) ? raw : [];
+        var idx = stops.findIndex(function(item){ return item && item.id === stop.id; });
+        if(idx >= 0) stops[idx] = Object.assign({}, stops[idx], stop);
+        else stops.push(stop);
+        localStorage.setItem('roadora_route_stops_v39766', JSON.stringify(stops));
+      }catch(_){ }
+    }
+    window.dispatchEvent(new CustomEvent('roadora:route-stops-updated', { detail:{ added:stop } }));
+    try{ window.RoadoraMap && window.RoadoraMap.renderRouteStops && window.RoadoraMap.renderRouteStops(); }catch(_){ }
+    return true;
+  }
+
+  // Capture phase prevents older preview handlers from swallowing map-preview actions.
+  document.addEventListener('click', function(event){
+    var add = event.target.closest && event.target.closest('.rd-hotel-preview-add-v39763');
+    var save = event.target.closest && event.target.closest('.rd-hotel-preview-save-v39644');
+    if(!add && !save) return;
+
+    var data = getHotelPreviewData(add || save);
+    if(!data) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+
+    if(save){
+      saveHotelToShortlist(data);
+      save.textContent = 'Opgeslagen';
+      save.classList.add('is-saved-v39776');
+      toast('Hotel opgeslagen');
+      return;
+    }
+
+    if(add){
+      addHotelToRoute(data);
+      add.textContent = '✓ In route';
+      add.classList.add('is-added-v39763','is-in-route-v39766');
+      saveHotelToShortlist(data);
+      toast('Hotel toegevoegd aan je route');
+    }
+  }, true);
+
+  document.addEventListener('DOMContentLoaded', renderSavedHotelCards);
+  window.addEventListener('storage', function(e){ if(e && e.key === SAVED_HOTELS_KEY) renderSavedHotelCards(); });
+  window.addEventListener('roadora:route-stops-updated', renderSavedHotelCards);
+  renderSavedHotelCards();
+
+  window.RoadoraSavedHotelsV39776 = {
+    all: readSavedHotels,
+    save: saveHotelToShortlist,
+    render: renderSavedHotelCards,
+    key: SAVED_HOTELS_KEY
+  };
+})();
