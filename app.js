@@ -1399,7 +1399,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const routeEndName = String(r.end || '').trim();
     const destination = routeEndName || `${endCoord[1]},${endCoord[0]}`;
 
-    const params=new URLSearchParams({ api:'1', travelmode:'driving', destination });
+    const params=new URLSearchParams({ api:'1', travelmode:'driving', dir_action:'navigate', destination });
     if(waypoints.length) params.set('waypoints', waypoints.join('|'));
 
     window.open(`https://www.google.com/maps/dir/?${params.toString()}`,'_blank','noopener');
@@ -3053,15 +3053,49 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const kickerEl = pop.querySelector('.rd-hotel-preview-kicker-v39644');
     const name = (titleEl && titleEl.textContent.trim()) || meta.label;
     const info = (kickerEl && kickerEl.textContent.trim()) || (metaEl && metaEl.textContent.trim()) || 'Toegevoegd aan je traject';
-    return {
+
+    // Roadora v39.8.12 — practical stops must use the same Maps route-flow as hotels.
+    // Google Maps falls back to search results when a fuel/charge/WC waypoint is only
+    // a loose text query like "Aral Koblenz". We therefore enrich the route-only stop
+    // with the exact route-derived coordinate that is already used for its card/pin.
+    let coord = null;
+    let distanceKm;
+    try{
+      if(typeof getActiveCategoryCardsV39686 === 'function'){
+        const cards = getActiveCategoryCardsV39686(type) || [];
+        const wanted = String(name || '').trim().toLowerCase();
+        const match = cards.find(function(card){
+          return String((card && (card.name || card.title || card.label)) || '').trim().toLowerCase() === wanted;
+        }) || cards[0];
+        if(match && Array.isArray(match.coord) && match.coord.length >= 2){
+          coord = [Number(match.coord[0]), Number(match.coord[1])];
+          distanceKm = match.distanceKm;
+        }
+      }
+    }catch(_){ }
+
+    const stop = {
       id: meta.routeType + '-' + slugRouteOnlyV3988(name),
       type: meta.routeType,
+      category: type,
       name: name,
+      title: name,
       meta: info,
       source: 'route-only-preview',
       status: 'in_route',
       addedAt: new Date().toISOString()
     };
+
+    if(Array.isArray(coord) && Number.isFinite(coord[0]) && Number.isFinite(coord[1])){
+      stop.coord = coord;
+      stop.coordinates = coord;
+      stop.lon = coord[0];
+      stop.lng = coord[0];
+      stop.lat = coord[1];
+      if(Number.isFinite(Number(distanceKm))) stop.distanceKm = Number(distanceKm);
+    }
+
+    return stop;
   }
 
   function addRouteOnlyStopV3988(button){
@@ -4538,6 +4572,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     var params = new URLSearchParams({
       api:'1',
       travelmode:'driving',
+      dir_action:'navigate',
       destination:routeEnd
     });
 
