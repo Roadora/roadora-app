@@ -3763,3 +3763,41 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   window.RoadoraTrajectenPremiumV39772 = { render: renderPremiumTrajecten };
   schedule();
 })();
+
+/* =========================================================
+   Roadora v39.7.73 — Map Navigate Route CTA
+   - Centrale kaartnav-knop voor direct navigeren A → B.
+   - Roept alleen de bestaande Maps-export aan.
+   - Geen wijziging aan ORS, route-load, waypoints of Maps URL-logica.
+   ========================================================= */
+(function(){
+  if(window.__roadoraMapNavigateRouteCtaV39773) return;
+  window.__roadoraMapNavigateRouteCtaV39773 = true;
+
+  function showToast(message){
+    var t = document.getElementById('mapToast') || document.getElementById('toast');
+    if(!t) return;
+    t.textContent = message;
+    t.classList.add('show');
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(function(){ t.classList.remove('show'); }, 1600);
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('body > nav.rd-map-nav-v28 [data-map-action="navigate-route"]');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+    // Keep sheet/nav state untouched: this is a direct primary action, not a sheet tab.
+    btn.classList.add('is-pressed-v39773');
+    setTimeout(function(){ btn.classList.remove('is-pressed-v39773'); }, 260);
+
+    if(window.RoadoraMapsExport && typeof window.RoadoraMapsExport.open === 'function'){
+      window.RoadoraMapsExport.open('nav');
+    }else{
+      showToast('Navigatie wordt voorbereid');
+    }
+  }, true);
+})();

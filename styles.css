@@ -13348,3 +13348,72 @@ body[data-roadtrip-view="saved-discover"] .hotel-actions-v39763 button{
   .route-stop-view-v39772,
   .route-stop-actions-v39772 .route-stop-remove-v39771{min-width:72px;}
 }
+
+/* =========================================================
+   Roadora v39.7.73 — Central Map Navigate Route CTA
+   - Centrale Navigeer-knop in de kaart-bottomnav.
+   - Alleen UI-koppeling; bestaande Maps-export blijft intact.
+   ========================================================= */
+body[data-active-screen="map"] > nav.rd-map-nav-v28.rd-map-nav-v39773{
+  grid-template-columns:.86fr .86fr 1.22fr .86fr .86fr !important;
+  gap:5px !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773{
+  position:relative !important;
+  min-height:58px !important;
+  height:58px !important;
+  margin-top:-7px !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,#2b2119 0%,#7e4a1c 100%) !important;
+  color:#fff8ed !important;
+  opacity:1 !important;
+  box-shadow:
+    0 14px 30px rgba(60,34,16,.24),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+  transform:none !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  letter-spacing:-.02em !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773::before{
+  content:"🧭" !important;
+  opacity:1 !important;
+  transform:none !important;
+  color:#fff8ed !important;
+  font-size:18px !important;
+  line-height:1 !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773::after,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-active::after,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.active::after,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773[aria-current="page"]::after{
+  display:none !important;
+  opacity:0 !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-active,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.active,
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773[aria-current="page"]{
+  background:linear-gradient(135deg,#2b2119 0%,#7e4a1c 100%) !important;
+  color:#fff8ed !important;
+  box-shadow:
+    0 14px 30px rgba(60,34,16,.24),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+
+body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773.is-pressed-v39773{
+  transform:scale(.96) !important;
+}
+
+@media (max-width:370px){
+  body[data-active-screen="map"] > nav.rd-map-nav-v28.rd-map-nav-v39773{
+    gap:4px !important;
+  }
+  body[data-active-screen="map"] > nav.rd-map-nav-v28 .rd-nav-route-v39773{
+    font-size:9px !important;
+    border-radius:20px !important;
+  }
+}
