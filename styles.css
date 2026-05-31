@@ -5657,10 +5657,7 @@ body[data-sheet-state="expanded"] .rd-map-sheet-v28{
 }
 
 /* Bottom nav moet optisch onderdeel blijven van de sheet */
-.rd-map-bottom-nav-v28,
-.map-bottom-nav,
-.bottom-nav,
-.rd-bottom-nav{
+.bottom-nav{
   z-index:9999 !important;
 }
 
@@ -5953,10 +5950,7 @@ body[data-sheet-state="collapsed"] .rd-sheet-actions-v392{
 }
 
 /* Bottom nav blijft boven en functioneert als launcher */
-.rd-map-bottom-nav-v28,
-.map-bottom-nav,
-.bottom-nav,
-.rd-bottom-nav{
+.bottom-nav{
   z-index:9999 !important;
 }
 
@@ -6143,10 +6137,7 @@ body[data-sheet-state="expanded"] #mapDrawer .rd-sheet-cards-v39{
 }
 
 /* Zorg dat bottom nav optisch rustiger aansluit */
-.map-bottom-nav,
-.rd-map-bottom-nav-v28,
-.bottom-nav,
-.rd-bottom-nav{
+.bottom-nav{
   box-shadow:0 -8px 28px rgba(36,25,18,.08) !important;
 }
 
@@ -6542,10 +6533,7 @@ body[data-sheet-state="half"] .rd-map-sheet-v28{
 */
 
 body[data-active-screen="map"] .rd-map-nav-v28,
-body[data-active-screen="map"] .rd-map-bottom-nav-v28,
-body[data-active-screen="map"] .map-bottom-nav,
-body[data-active-screen="map"] .bottom-nav,
-body[data-active-screen="map"] .rd-bottom-nav{
+body[data-active-screen="map"] .bottom-nav{
   position:fixed !important;
   left:14px !important;
   right:14px !important;
@@ -6572,10 +6560,7 @@ body[data-active-screen="map"] .rd-bottom-nav{
 
 /* Zorg dat alle nav-items altijd zichtbaar blijven */
 body[data-active-screen="map"] .rd-map-nav-v28 > *,
-body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
-body[data-active-screen="map"] .map-bottom-nav > *,
-body[data-active-screen="map"] .bottom-nav > *,
-body[data-active-screen="map"] .rd-bottom-nav > *{
+body[data-active-screen="map"] .bottom-nav > *{
   display:flex !important;
   visibility:visible !important;
   opacity:1 !important;
@@ -6617,10 +6602,7 @@ body[data-active-screen="map"] .rd-map-sheet-v28::after{
 /* Kleine schermen */
 @media (max-width:420px){
   body[data-active-screen="map"] .rd-map-nav-v28,
-  body[data-active-screen="map"] .rd-map-bottom-nav-v28,
-  body[data-active-screen="map"] .map-bottom-nav,
-  body[data-active-screen="map"] .bottom-nav,
-  body[data-active-screen="map"] .rd-bottom-nav{
+  body[data-active-screen="map"] .bottom-nav{
     left:14px !important;
     right:14px !important;
     height:58px !important;
@@ -6644,10 +6626,7 @@ body[data-active-screen="map"]{
 
 /* Locked bottom nav blijft altijd zichtbaar en bovenaan in stack */
 body[data-active-screen="map"] .rd-map-nav-v28,
-body[data-active-screen="map"] .rd-map-bottom-nav-v28,
-body[data-active-screen="map"] .map-bottom-nav,
-body[data-active-screen="map"] .bottom-nav,
-body[data-active-screen="map"] .rd-bottom-nav{
+body[data-active-screen="map"] .bottom-nav{
   position:fixed !important;
   left:var(--rd-v3968-x) !important;
   right:var(--rd-v3968-x) !important;
@@ -6726,10 +6705,7 @@ body[data-active-screen="map"][data-map-drawer="open"][data-sheet-state="expande
 
 /* Visueel één blok: nav top-radius weg wanneer panel open is */
 body[data-active-screen="map"][data-map-drawer="open"] .rd-map-nav-v28,
-body[data-active-screen="map"][data-map-drawer="open"] .rd-map-bottom-nav-v28,
-body[data-active-screen="map"][data-map-drawer="open"] .map-bottom-nav,
-body[data-active-screen="map"][data-map-drawer="open"] .bottom-nav,
-body[data-active-screen="map"][data-map-drawer="open"] .rd-bottom-nav{
+body[data-active-screen="map"][data-map-drawer="open"] .bottom-nav{
   border-top-left-radius:0 !important;
   border-top-right-radius:0 !important;
 }
@@ -6757,10 +6733,7 @@ body[data-active-screen="map"][data-instant-map-panel="roadtrip"] .rd-map-sheet-
 
 /* Alle nav items blijven zichtbaar */
 body[data-active-screen="map"] .rd-map-nav-v28 > *,
-body[data-active-screen="map"] .rd-map-bottom-nav-v28 > *,
-body[data-active-screen="map"] .map-bottom-nav > *,
-body[data-active-screen="map"] .bottom-nav > *,
-body[data-active-screen="map"] .rd-bottom-nav > *{
+body[data-active-screen="map"] .bottom-nav > *{
   visibility:visible !important;
   opacity:1 !important;
   display:flex !important;
@@ -11308,16 +11281,6 @@ body[data-active-screen="map"] > nav.rd-map-nav-v28{
 }
 
 /* Extra guard: kaart-specifieke oude nav-klassen mogen nooit op Home/Overzicht meedoen. */
-body:not([data-active-screen="map"]) .rd-map-bottom-nav-v28,
-body:not([data-active-screen="map"]) .map-bottom-nav,
-body:not([data-active-screen="map"]) .rd-bottom-nav,
-body:not([data-active-screen="map"]) .map-bottom-nav-v5,
-body:not([data-active-screen="map"]) .map-bottom-nav-v8,
-body:not([data-active-screen="map"]) .map-bottom-nav-v9,
-body:not([data-active-screen="map"]) .map-nav-layer-v1{
-  display:none !important;
-  pointer-events:none !important;
-}
 
 /* =========================================================
    Roadora v39.7.43 — map canvas render repair
