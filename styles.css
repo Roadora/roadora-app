@@ -14457,3 +14457,17 @@ body[data-active-screen="profile"] .hero-page-label-v39934{
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
   padding-top:36px !important;
 }
+
+/* =========================================================
+   Roadora v39.9.38 — Profile Hero Title Color Sync
+   Basis: v39.9.37 Profile Hero Final Polish.
+   Doel:
+   - 'Jouw Roadora' in de Profiel-hero dezelfde donkere Roadora-kleur geven
+     als de gelockte contentheaders/Overzicht-hero richting.
+   - Alleen hero-titelkleur aanpassen.
+   - Hamburger, Profiel-label, subtitel, heropositie, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
+  color:#2d2118 !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.22) !important;
+}
