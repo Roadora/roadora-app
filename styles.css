@@ -13817,62 +13817,86 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-ho
 }
 
 /* =========================================================
-   Roadora v39.9.18 — Unified Roadtrip Header From Hotels Source
+   Roadora v39.9.21 — Saved Content Header Hardlock From Hotels Source
    Basis: v39.9.15 Hotels Header Final Locked.
    Doel:
-   - Hotels blijft de bron en wordt niet opnieuw gepositioneerd.
-   - Eten, Uitjes, Trajecten en Dagboek gebruiken dezelfde header-geometrie.
-   - Geen ORS, Maps, route-state, cards of JS aangepast.
+   - Hotels blijft de bron en wordt visueel niet aangepast.
+   - Eten en Uitjes gebruiken exact dezelfde headerwaarden als Hotels:
+     padding, grid, min-height, title wrapper, h2 typography, close button.
+   - Hamburger blijft de bestaande gelockte master en wordt niet opnieuw ontworpen.
+   - Geen JS, ORS, Maps, cards of route-state aangepast.
    ========================================================= */
 
-/* Saved content states: exact dezelfde headerfamilie als Hotels, zonder Hotels zelf te overschrijven. */
+/* Exact dezelfde content-state shell als Hotels, zodat card-start en header-start gelijk blijven. */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtrip-saved-content-state-v39764{
+  position:absolute !important;
+  inset:0 !important;
+  height:100dvh !important;
+  min-height:0 !important;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 18px)
+    18px
+    calc(106px + env(safe-area-inset-bottom, 0px)) !important;
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) !important;
+  gap:0 !important;
+  overflow:hidden !important;
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
+}
+
+/* Exacte Hotels-headerbron: dezelfde box, grid, padding, transform en spacing. */
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
   position:relative !important;
   top:auto !important;
   z-index:5 !important;
-  min-height:50px !important;
-  margin:0 0 8px !important;
-  padding:0 0 0 60px !important;
+  min-height:54px !important;
+  margin:0 0 0 !important;
+  padding:0 0 0 64px !important;
   display:grid !important;
-  grid-template-columns:minmax(0,1fr) 44px !important;
+  grid-template-columns:minmax(0,1fr) 48px !important;
   align-items:center !important;
   gap:10px !important;
   background:transparent !important;
   box-shadow:none !important;
-  transform:none !important;
+  transform:translateY(-8px) !important;
 }
 
+/* Exacte Hotels-title wrapper: geen aparte food/discover offsets meer. */
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756,
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756{
   grid-column:auto !important;
-  min-height:0 !important;
-  display:block !important;
-  align-items:initial !important;
+  display:flex !important;
+  align-items:center !important;
+  min-height:54px !important;
   transform:translateX(12px) !important;
 }
 
+/* Exacte Hotels-typografie. */
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
   font-family:'Playfair Display', Georgia, serif !important;
-  font-size:28px !important;
+  font-size:31px !important;
   line-height:1 !important;
   font-weight:600 !important;
   letter-spacing:-.04em !important;
   margin:0 !important;
   transform:none !important;
+  display:block !important;
   white-space:nowrap !important;
   overflow:hidden !important;
   text-overflow:ellipsis !important;
 }
 
+/* Exacte Hotels-close styling. */
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
   grid-column:auto !important;
   justify-self:end !important;
   align-self:center !important;
-  width:42px !important;
-  height:42px !important;
+  width:44px !important;
+  height:44px !important;
   border-radius:16px !important;
   display:flex !important;
   align-items:center !important;
@@ -13890,173 +13914,58 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-
   transform:none !important;
 }
 
-/* Standalone Roadtrip screens: Dagboek + Trajecten krijgen dezelfde headerbron. */
-body[data-active-screen="diary"] .screen-diary,
-body[data-active-screen="routes"] .screen-routes{
-  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
-}
-
-body[data-active-screen="diary"] .rd-roadtrip-master-header-v39918,
-body[data-active-screen="routes"] .rd-roadtrip-master-header-v39918{
+/* Exacte Hotels-scroll window voor Eten/Uitjes; geen eigen header-spacing meer. */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-list-v39758,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-list-v39758{
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  scrollbar-width:none !important;
+  padding:6px 0 18px !important;
   position:relative !important;
-  top:auto !important;
-  z-index:5 !important;
-  min-height:50px !important;
-  margin:0 16px 8px !important;
-  padding:calc(env(safe-area-inset-top, 0px) + 16px) 0 0 60px !important;
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) 44px !important;
-  align-items:center !important;
-  gap:10px !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  transform:none !important;
+  clip-path:inset(0 0 62px 0 round 0) !important;
+  margin-bottom:-62px !important;
+  padding-bottom:calc(198px + env(safe-area-inset-bottom, 0px)) !important;
 }
-
-body[data-active-screen="diary"] .rd-roadtrip-master-header-v39918 .saved-hotels-title-v39756,
-body[data-active-screen="routes"] .rd-roadtrip-master-header-v39918 .saved-hotels-title-v39756{
-  transform:translateX(12px) !important;
-}
-
-body[data-active-screen="diary"] .rd-roadtrip-master-header-v39918 .saved-hotels-title-v39756 h2,
-body[data-active-screen="routes"] .rd-roadtrip-master-header-v39918 .saved-hotels-title-v39756 h2{
-  font-family:'Playfair Display', Georgia, serif !important;
-  font-size:28px !important;
-  line-height:1 !important;
-  font-weight:600 !important;
-  letter-spacing:-.04em !important;
-  margin:0 !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
-
-body[data-active-screen="diary"] .rd-roadtrip-master-header-v39918 .saved-hotels-close-v39755,
-body[data-active-screen="routes"] .rd-roadtrip-master-header-v39918 .saved-hotels-close-v39755{
-  justify-self:end !important;
-  align-self:center !important;
-  width:42px !important;
-  height:42px !important;
-  border-radius:16px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:0 0 4px !important;
-  background:rgba(255,255,255,.07) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  box-shadow:none !important;
-  color:#2b2119 !important;
-  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
-  backdrop-filter:blur(6px) !important;
-  -webkit-backdrop-filter:blur(6px) !important;
-  line-height:1 !important;
-}
-
-/* Oude Dagboek plain-top styling mag de nieuwe masterheader niet meer raken. */
-body[data-active-screen="diary"] .plain-top:not(.rd-roadtrip-master-header-v39918){
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-list-v39758::-webkit-scrollbar,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-list-v39758::-webkit-scrollbar{
   display:none !important;
 }
 
-body[data-active-screen="diary"] .diary-layout{
-  padding-top:18px !important;
-}
+/* Mobile behoudt Hotels-bronwaarden. */
+@media (max-width:390px){
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .roadtrip-saved-content-state-v39764,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .roadtrip-saved-content-state-v39764{
+    padding:
+      calc(env(safe-area-inset-top, 0px) + 18px)
+      18px
+      calc(106px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 
-body[data-active-screen="routes"] .routes-scroll-v39767{
-  padding-top:12px !important;
-}
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-head-v39756{
+    min-height:54px !important;
+    padding-left:64px !important;
+    grid-template-columns:minmax(0,1fr) 48px !important;
+    transform:translateY(-8px) !important;
+  }
 
-/* =========================================================
-   Roadora v39.9.19 — Eten Header Match Hotels Source Only
-   Basis: v39.9.18.
-   Doel:
-   - Hamburger blijft volledig gelockt en onaangeraakt.
-   - Alleen Eten-header/titel exact gelijkzetten aan de gelockte Hotels-bron.
-   - Uitjes, Trajecten, Dagboek, Profiel, ORS, Maps, cards en JS blijven onaangeraakt.
-   ========================================================= */
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .roadtrip-saved-content-state-v39764{
-  padding:
-    calc(env(safe-area-inset-top, 0px) + 16px)
-    16px
-    calc(104px + env(safe-area-inset-bottom, 0px)) !important;
-}
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756{
+    min-height:54px !important;
+    transform:translateX(12px) !important;
+  }
 
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-head-v39756{
-  position:relative !important;
-  top:auto !important;
-  z-index:5 !important;
-  min-height:50px !important;
-  margin:0 0 8px !important;
-  padding:0 0 0 60px !important;
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) 44px !important;
-  align-items:center !important;
-  gap:10px !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  transform:none !important;
-}
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+    font-size:31px !important;
+  }
 
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756{
-  grid-column:auto !important;
-  min-height:0 !important;
-  display:block !important;
-  transform:translateX(12px) !important;
-}
-
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2{
-  font-family:'Playfair Display', Georgia, serif !important;
-  font-size:28px !important;
-  line-height:1 !important;
-  font-weight:600 !important;
-  letter-spacing:-.04em !important;
-  margin:0 !important;
-  transform:none !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
-
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755{
-  justify-self:end !important;
-  align-self:center !important;
-  width:42px !important;
-  height:42px !important;
-  border-radius:16px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:0 0 4px !important;
-  background:rgba(255,255,255,.07) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  box-shadow:none !important;
-  color:#2b2119 !important;
-  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
-  backdrop-filter:blur(6px) !important;
-  -webkit-backdrop-filter:blur(6px) !important;
-  line-height:1 !important;
-  transform:none !important;
-}
-
-/* =========================================================
-   Roadora v39.9.20 — Eten Title Baseline From Hotels Source
-   Basis: v39.9.19.
-   Doel:
-   - Hamburger blijft volledig gelockt en onaangeraakt.
-   - Kruisje blijft onaangeraakt, want die oogt goed.
-   - Alleen de Eten-titel gebruikt dezelfde optische titelbaseline als de
-     gelockte Hotels-header.
-   - Geen Uitjes/Trajecten/Dagboek/Profiel, cards, ORS, Maps of JS gewijzigd.
-   ========================================================= */
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756{
-  display:flex !important;
-  align-items:center !important;
-  min-height:52px !important;
-  transform:translateX(12px) translateY(-7px) !important;
-}
-
-body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2{
-  transform:none !important;
-  line-height:1 !important;
-  margin:0 !important;
-  display:block !important;
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-close-v39755,
+  body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-close-v39755{
+    width:44px !important;
+    height:44px !important;
+  }
 }
