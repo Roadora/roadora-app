@@ -13969,3 +13969,32 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-
     height:44px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.22 — Saved Content Single Active State Fix
+   Basis: v39.9.21 Hotels-source header hardlock.
+   Doel:
+   - Oude v39.7.64 selectors forceerden alle saved-content states zichtbaar.
+   - Daardoor konden Eten en Uitjes titels over elkaar heen vallen.
+   - Deze guard zorgt dat per roadtrip-view exact één state zichtbaar is.
+   - Hotels-header geometrie blijft de bron; hamburger/JS/ORS/Maps/cards onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] [data-roadtrip-state="saved-discover"].roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] [data-roadtrip-state="saved-hotels"].roadtrip-hotels-state-v39754,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] [data-roadtrip-state="saved-food"].roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] [data-roadtrip-state="saved-hotels"].roadtrip-hotels-state-v39754,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] [data-roadtrip-state="saved-food"].roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] [data-roadtrip-state="saved-discover"].roadtrip-saved-content-state-v39764{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] [data-roadtrip-state="saved-food"].roadtrip-saved-content-state-v39764,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] [data-roadtrip-state="saved-discover"].roadtrip-saved-content-state-v39764{
+  display:grid !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
