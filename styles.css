@@ -14295,3 +14295,22 @@ body[data-active-screen="diary"] .rd-diary-content-v39925 .primary.wide{
     right:18px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.26 — Dagboek G Descender Fix
+   Basis: v39.9.25 Dagboek Component Family Locked.
+   Doel:
+   - Voorkomen dat de neergaande staart van letters zoals g, p, q, y, j wordt afgeknipt.
+   - Alleen typografische clipping in Dagboek oplossen.
+   - Geen headerpositie, hamburger, close-button, cards, JS, ORS of Maps aangepast.
+   ========================================================= */
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924{
+  overflow:visible !important;
+}
+
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924 h2{
+  line-height:1.12 !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  padding-bottom:3px !important;
+}
