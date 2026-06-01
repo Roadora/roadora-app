@@ -14471,3 +14471,26 @@ body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-
   color:#2d2118 !important;
   text-shadow:0 1px 0 rgba(255,255,255,.22) !important;
 }
+
+/* =========================================================
+   Roadora v39.9.40 — Profile Warm Cream Variant A Targeted
+   Basis: v39.9.38 Profile Hero Structure Locked.
+   Doel:
+   - Alleen Profiel-hero tekstkleuren testen.
+   - Geen globale kleur-replace.
+   - Layout, hamburger, hero, cards, bottomnav, JS, ORS en Maps onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  color:#E8D9C6 !important;
+  text-shadow:0 2px 14px rgba(0,0,0,.34) !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
+  color:#F7EFE3 !important;
+  text-shadow:0 2px 18px rgba(0,0,0,.34) !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 p{
+  color:rgba(247,239,227,.86) !important;
+  text-shadow:0 2px 14px rgba(0,0,0,.30) !important;
+}
