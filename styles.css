@@ -14144,3 +14144,154 @@ body[data-active-screen="routes"] .routes-scroll-v39767{
     padding-right:18px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.25 — Dagboek Phase 3 List Header Component
+   Basis: v39.9.24 Trajecten headercomponent + v39.9.23 Saved Content Header Locked.
+   Doel:
+   - Dagboek uit oude plain-top header halen.
+   - Zelfde List/Header familie als Trajecten, met Hotels als bronwaarden.
+   - Hamburger blijft volledig gelockt en onaangeraakt.
+   - Geen JS, ORS, Maps, route-state of bottom nav aangepast.
+   ========================================================= */
+body[data-active-screen="diary"] .screen-diary{
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+
+body[data-active-screen="diary"] .diary-native-head-v39925.rd-diary-header-v39925{
+  position:absolute !important;
+  left:18px !important;
+  right:18px !important;
+  top:calc(env(safe-area-inset-top, 0px) + 18px) !important;
+  height:auto !important;
+  min-height:54px !important;
+  z-index:24 !important;
+  margin:0 !important;
+  padding:0 0 0 64px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 48px !important;
+  align-items:center !important;
+  justify-content:normal !important;
+  gap:10px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:translateY(-8px) !important;
+  pointer-events:auto !important;
+}
+
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924{
+  grid-column:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  min-height:54px !important;
+  transform:translateX(12px) !important;
+  margin:0 !important;
+}
+
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924 h2{
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:31px !important;
+  line-height:1 !important;
+  font-weight:600 !important;
+  letter-spacing:-.04em !important;
+  margin:0 !important;
+  transform:translateY(-2px) !important;
+  color:#241b15 !important;
+  display:block !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-active-screen="diary"] .diary-close-v39925.rd-list-header-close-v39924{
+  grid-column:auto !important;
+  justify-self:end !important;
+  align-self:center !important;
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  border-radius:16px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 0 4px !important;
+  margin:0 !important;
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  color:#2b2119 !important;
+  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+  font-size:27px !important;
+  line-height:1 !important;
+  z-index:25 !important;
+  transform:none !important;
+}
+
+body[data-active-screen="diary"] .rd-diary-content-v39925{
+  position:absolute !important;
+  left:18px !important;
+  right:18px !important;
+  top:calc(82px + env(safe-area-inset-top, 0px)) !important;
+  bottom:calc(112px + env(safe-area-inset-bottom,0px)) !important;
+  height:auto !important;
+  padding:6px 0 26px !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+}
+body[data-active-screen="diary"] .rd-diary-content-v39925::-webkit-scrollbar{display:none !important;}
+
+body[data-active-screen="diary"] .rd-diary-content-v39925 .diary-strip{
+  width:100% !important;
+  height:190px !important;
+  object-fit:cover !important;
+  border-radius:28px !important;
+  margin:0 0 32px !important;
+  box-shadow:0 12px 28px rgba(72,45,27,.10) !important;
+}
+
+body[data-active-screen="diary"] .rd-diary-content-v39925 .story-empty{
+  text-align:center !important;
+  margin:0 auto 26px !important;
+  max-width:310px !important;
+}
+
+body[data-active-screen="diary"] .rd-diary-content-v39925 .primary.wide{
+  width:100% !important;
+  margin-top:18px !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="diary"] .diary-native-head-v39925.rd-diary-header-v39925{
+    left:18px !important;
+    right:18px !important;
+    top:calc(env(safe-area-inset-top, 0px) + 18px) !important;
+    min-height:54px !important;
+    padding-left:64px !important;
+    grid-template-columns:minmax(0,1fr) 48px !important;
+    transform:translateY(-8px) !important;
+  }
+  body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924{
+    min-height:54px !important;
+    transform:translateX(12px) !important;
+  }
+  body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924 h2{
+    font-size:31px !important;
+    transform:translateY(-2px) !important;
+  }
+  body[data-active-screen="diary"] .diary-close-v39925.rd-list-header-close-v39924{
+    width:44px !important;
+    height:44px !important;
+  }
+  body[data-active-screen="diary"] .rd-diary-content-v39925{
+    top:calc(82px + env(safe-area-inset-top, 0px)) !important;
+    left:18px !important;
+    right:18px !important;
+  }
+}
