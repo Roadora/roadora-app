@@ -13998,3 +13998,17 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] [data-r
   opacity:1 !important;
   pointer-events:auto !important;
 }
+
+/* =========================================================
+   Roadora v39.9.23 — Saved Content Title Baseline Micro Polish
+   Basis: v39.9.22 Saved Content Single Active State Fix.
+   Doel:
+   - Eén gedeelde titel-baseline voor Hotels, Eten en Uitjes.
+   - Alleen de titeltekst 2px omhoog binnen dezelfde headercomponent.
+   - Hamburger, close-button, cards, JS, ORS, Maps en route-logica blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-hotels"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2,
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
+  transform:translateY(-2px) !important;
+}
