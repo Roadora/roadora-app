@@ -14444,3 +14444,16 @@ body[data-active-screen="profile"] .hero-page-label-v39934{
   letter-spacing:-.018em !important;
   text-shadow:0 1px 0 rgba(255,255,255,.28) !important;
 }
+
+
+/* =========================================================
+   Roadora v39.9.37 — Profile Hero Final Polish
+   Basis: v39.9.36 Profile Header Color + Kerning Polish.
+   Doel:
+   - Puntje op de i in Profiel visueel verwijderen via dotless-i in markup.
+   - Jouw Roadora hero-copy subtiel lager plaatsen.
+   - Hamburger, labelpositie, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  padding-top:36px !important;
+}
