@@ -14036,3 +14036,27 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hote
   line-height:1 !important;
   transform:none !important;
 }
+
+/* =========================================================
+   Roadora v39.9.20 — Eten Title Baseline From Hotels Source
+   Basis: v39.9.19.
+   Doel:
+   - Hamburger blijft volledig gelockt en onaangeraakt.
+   - Kruisje blijft onaangeraakt, want die oogt goed.
+   - Alleen de Eten-titel gebruikt dezelfde optische titelbaseline als de
+     gelockte Hotels-header.
+   - Geen Uitjes/Trajecten/Dagboek/Profiel, cards, ORS, Maps of JS gewijzigd.
+   ========================================================= */
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756{
+  display:flex !important;
+  align-items:center !important;
+  min-height:52px !important;
+  transform:translateX(12px) translateY(-7px) !important;
+}
+
+body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hotels-title-v39756 h2{
+  transform:none !important;
+  line-height:1 !important;
+  margin:0 !important;
+  display:block !important;
+}
