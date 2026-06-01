@@ -14338,41 +14338,25 @@ body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924
 
 
 /* =========================================================
-   Roadora v39.9.30 — Profile Hero Component v1
-   Basis: v39.9.27 Dagboek Baseline Locked + v39.9.29 profile rollback.
+   Roadora v39.9.33 — Hero Component Cleanup v1
+   Basis: v39.9.32 Profile legacy title DOM cleanup.
    Doel:
-   - Alleen de vaste tekst "Profiel" uit de profiel-hero verwijderen.
-   - Hero-compositie en Jouw Roadora positie behouden via een invisible spacer.
-   - Hamburger, bottomnav, contentkaarten, ORS, Maps en JS blijven onaangeraakt.
+   - Geen verborgen hero-titels of display:none header-hacks meer voor Profiel/Mijn Roadtrip.
+   - Profiel hero gebruikt alleen: hamburger + Jouw Roadora + subtitel.
+   - Mijn Roadtrip hero gebruikt alleen: hamburger + hero titel + subtitel.
+   - Hamburger, contentkaarten, bottomnav, ORS, Maps en JS blijven onaangeraakt.
    ========================================================= */
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
   position:relative !important;
   z-index:2 !important;
+  padding-top:24px !important;
   text-shadow:0 2px 18px rgba(0,0,0,.35) !important;
 }
-body[data-active-screen="profile"] .profile-hero-kicker-spacer-v39930{
-  display:block !important;
-  height:24px !important;
-  margin:0 0 0 !important;
-  pointer-events:none !important;
-  opacity:0 !important;
-}
+
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
   margin:8px 0 4px !important;
 }
 
-
-/* =========================================================
-   Roadora v39.9.31 — Mijn Roadtrip Hero Component v1
-   Basis: v39.9.30 Profile Hero Clean Locked.
-   Doel:
-   - Mijn Roadtrip naar dezelfde hero-componentfamilie als Profiel brengen.
-   - Kleine vaste toptekst naast hamburger verbergen; hamburger blijft gelockt.
-   - Hero-foto, contentkaarten, bottomnav, ORS, Maps en JS blijven onaangeraakt.
-   ========================================================= */
-body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-title-v39734{
-  display:none !important;
-}
 body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931{
   position:absolute !important;
   left:24px !important;
@@ -14381,35 +14365,26 @@ body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-he
   color:#fff !important;
   text-shadow:0 3px 22px rgba(0,0,0,.35) !important;
 }
-body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-kicker-spacer-v39931{
-  display:block !important;
-  height:24px !important;
-  margin:0 !important;
-  opacity:0 !important;
-  pointer-events:none !important;
-}
+
 body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1{
   margin:7px 0 7px !important;
 }
 
 
-/* =========================================================
-   Roadora v39.9.32 — Profile legacy title DOM cleanup
-   Basis: v39.9.31 Mijn Roadtrip Hero Component v1.
-   Doel:
-   - Oude/verborgen Profiel-tekst uit de profiel-hero verwijderen.
-   - Geen invisible spacer meer in de DOM; positie blijft behouden via padding.
-   - Hero, hamburger, content, bottomnav, ORS en Maps onaangeraakt.
-   ========================================================= */
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
-  padding-top:24px !important;
+/* Roadora v39.9.33b — Roadtrip hero close-only action row
+   De oude toptekst is uit de DOM. Alleen de terugknop blijft beschikbaar in saved-stops state. */
+body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-actions-v39933{
+  left:auto !important;
+  right:20px !important;
+  top:calc(env(safe-area-inset-top, 0px) + 16px) !important;
+  min-height:40px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  pointer-events:none !important;
 }
-body[data-active-screen="profile"] .profile-hero-kicker-spacer-v39930{
-  display:none !important;
-}
-body[data-active-screen="profile"] .profile-hero-component-v39930 .inner-top,
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-title,
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-title,
-body[data-active-screen="profile"] .profile-hero-component-v39930 .page-title{
-  display:none !important;
+@media(max-width:380px){
+  body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-actions-v39933{
+    right:18px !important;
+  }
 }
