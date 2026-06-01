@@ -14391,3 +14391,25 @@ body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-he
 body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1{
   margin:7px 0 7px !important;
 }
+
+
+/* =========================================================
+   Roadora v39.9.32 — Profile legacy title DOM cleanup
+   Basis: v39.9.31 Mijn Roadtrip Hero Component v1.
+   Doel:
+   - Oude/verborgen Profiel-tekst uit de profiel-hero verwijderen.
+   - Geen invisible spacer meer in de DOM; positie blijft behouden via padding.
+   - Hero, hamburger, content, bottomnav, ORS en Maps onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  padding-top:24px !important;
+}
+body[data-active-screen="profile"] .profile-hero-kicker-spacer-v39930{
+  display:none !important;
+}
+body[data-active-screen="profile"] .profile-hero-component-v39930 .inner-top,
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-title,
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-title,
+body[data-active-screen="profile"] .profile-hero-component-v39930 .page-title{
+  display:none !important;
+}
