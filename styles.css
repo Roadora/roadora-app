@@ -14481,16 +14481,37 @@ body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-
    - Layout, hamburger, hero, cards, bottomnav, JS, ORS en Maps onaangeraakt.
    ========================================================= */
 body[data-active-screen="profile"] .hero-page-label-v39934{
-  color:#E8D9C6 !important;
+  color:#DCC9B1 !important;
   text-shadow:0 2px 14px rgba(0,0,0,.34) !important;
 }
 
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
-  color:#F7EFE3 !important;
+  color:#E7D7C2 !important;
   text-shadow:0 2px 18px rgba(0,0,0,.34) !important;
 }
 
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 p{
   color:rgba(247,239,227,.86) !important;
   text-shadow:0 2px 14px rgba(0,0,0,.30) !important;
+}
+
+
+/* =========================================================
+   Roadora v39.9.41 — Profile Hero Champagne Variant A.2
+   Alleen kleurtest Profiel hero. Geen layout/positie wijzigingen.
+   ========================================================= */
+.screen-profile .profile-hero-label,
+.screen-profile .hero-profile-label,
+.screen-profile [data-profile-hero-label]{
+  color:#DCC9B1 !important;
+}
+.screen-profile .profile-hero h1,
+.screen-profile .profile-hero-title,
+.screen-profile [data-profile-hero-title]{
+  color:#E7D7C2 !important;
+}
+.screen-profile .profile-hero p,
+.screen-profile .profile-hero-subtitle,
+.screen-profile [data-profile-hero-subtitle]{
+  color:rgba(231,215,194,.80) !important;
 }
