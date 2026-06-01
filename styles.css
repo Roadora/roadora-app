@@ -14335,3 +14335,47 @@ body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924
   padding-bottom:0 !important;
   text-overflow:clip !important;
 }
+
+/* =========================================================
+   Roadora v39.9.28 — Profile Hero Header Component v1
+   Basis: v39.9.27 Dagboek Baseline Locked.
+   Doel:
+   - Profiel naar dezelfde header-familie brengen zonder hero te verwijderen.
+   - Hamburger blijft volledig gelockt.
+   - Alleen de Profiel-label in de hero wordt naast de hamburger gezet.
+   - Profiel hero/content/rows blijven inhoudelijk intact.
+   - Geen JS, ORS, Maps, route-state of bottom nav wijzigingen.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero{
+  padding:0 22px 24px !important;
+}
+
+body[data-active-screen="profile"] .profile-hero > div:not(.shade){
+  position:absolute !important;
+  left:22px !important;
+  right:22px !important;
+  bottom:calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index:2 !important;
+  text-shadow:0 2px 18px rgba(0,0,0,.35) !important;
+}
+
+body[data-active-screen="profile"] .profile-hero > div:not(.shade) > b{
+  position:absolute !important;
+  top:calc((22px + env(safe-area-inset-top, 0px)) - 1px) !important;
+  left:76px !important;
+  margin:0 !important;
+  padding:0 !important;
+  height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  color:rgba(255,252,246,.98) !important;
+  font-size:15px !important;
+  line-height:1 !important;
+  font-weight:850 !important;
+  letter-spacing:-.02em !important;
+  text-shadow:0 1px 2px rgba(38,25,15,.48),0 4px 14px rgba(38,25,15,.28) !important;
+}
+
+body[data-active-screen="profile"] .profile-hero h1{
+  margin:0 0 4px !important;
+}
