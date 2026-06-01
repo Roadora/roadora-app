@@ -14537,3 +14537,23 @@ body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-
 .screen-profile [data-profile-hero-title]{
   color:#BFA17F !important;
 }
+
+/* =========================================================
+   Roadora v39.9.44 — Profile Hero Ivory Isolated Override
+   Basis: v39.9.43 Profile Hero Color Test.
+   Doel:
+   - Alleen 'Jouw Roadora' isoleren met één finale profiel-title kleurregel.
+   - Oude kleurtestregels blijven historisch staan, maar deze override wint bewust.
+   - Geen hoogte, positie, font-size, spacing, hamburger, content, bottomnav, JS, ORS of Maps aangepast.
+   ========================================================= */
+:root{
+  --profile-hero-title-color-v39944:#F3ECE3;
+  --profile-hero-title-shadow-v39944:0 2px 10px rgba(0,0,0,.22);
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
+.screen-profile .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
+.screen-profile .profile-hero h1{
+  color:var(--profile-hero-title-color-v39944) !important;
+  text-shadow:var(--profile-hero-title-shadow-v39944) !important;
+}
