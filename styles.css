@@ -14360,3 +14360,34 @@ body[data-active-screen="profile"] .profile-hero-kicker-spacer-v39930{
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
   margin:8px 0 4px !important;
 }
+
+
+/* =========================================================
+   Roadora v39.9.31 — Mijn Roadtrip Hero Component v1
+   Basis: v39.9.30 Profile Hero Clean Locked.
+   Doel:
+   - Mijn Roadtrip naar dezelfde hero-componentfamilie als Profiel brengen.
+   - Kleine vaste toptekst naast hamburger verbergen; hamburger blijft gelockt.
+   - Hero-foto, contentkaarten, bottomnav, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-title-v39734{
+  display:none !important;
+}
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931{
+  position:absolute !important;
+  left:24px !important;
+  right:24px !important;
+  bottom:26px !important;
+  color:#fff !important;
+  text-shadow:0 3px 22px rgba(0,0,0,.35) !important;
+}
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-kicker-spacer-v39931{
+  display:block !important;
+  height:24px !important;
+  margin:0 !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1{
+  margin:7px 0 7px !important;
+}
