@@ -14407,3 +14407,26 @@ body[data-active-screen="profile"] .hero-page-label-v39934{
     left:98px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.35 — Profile Hero Header Typography Sync
+   Basis: v39.9.34 Profile Hero Header Label v1.
+   Doel:
+   - Profiel-label dezelfde typografie geven als de gelockte Hotels-header.
+   - Alleen font-family, grootte, gewicht, line-height en letter-spacing syncen.
+   - Positie, hamburger, hero-copy, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:34px !important;
+  font-weight:600 !important;
+  line-height:.96 !important;
+  letter-spacing:-.045em !important;
+  transform:translateY(-2px) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="profile"] .hero-page-label-v39934{
+    font-size:34px !important;
+  }
+}
