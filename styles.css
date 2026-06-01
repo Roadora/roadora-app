@@ -14371,20 +14371,39 @@ body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-he
 }
 
 
-/* Roadora v39.9.33b — Roadtrip hero close-only action row
-   De oude toptekst is uit de DOM. Alleen de terugknop blijft beschikbaar in saved-stops state. */
-body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-actions-v39933{
-  left:auto !important;
-  right:20px !important;
-  top:calc(env(safe-area-inset-top, 0px) + 16px) !important;
-  min-height:40px !important;
+/* =========================================================
+   Roadora v39.9.34 — Profile Hero Header Label v1
+   Basis: v39.9.33 Hero Component Cleanup v1.
+   Doel:
+   - Profiel krijgt een echte zichtbare hero-header label binnen dezelfde hero-componentfamilie.
+   - Jouw Roadora hero-copy blijft op zijn plek.
+   - Hamburger, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   - Oude README-buildsporen verwijderd uit zip; alleen actuele README blijft over.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930.hero-component-v39934{
+  position:relative !important;
+}
+
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  position:absolute !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:98px !important;
+  min-height:34px !important;
   display:flex !important;
   align-items:center !important;
-  justify-content:flex-end !important;
+  color:rgba(255,252,246,.96) !important;
+  font-size:15px !important;
+  font-weight:850 !important;
+  letter-spacing:-.02em !important;
+  line-height:1 !important;
+  text-shadow:0 2px 14px rgba(0,0,0,.38) !important;
+  z-index:3 !important;
   pointer-events:none !important;
 }
-@media(max-width:380px){
-  body[data-active-screen="roadtrip"] .screen-roadtrip .roadtrip-hero-actions-v39933{
-    right:18px !important;
+
+@media (max-width:390px){
+  body[data-active-screen="profile"] .hero-page-label-v39934{
+    top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+    left:98px !important;
   }
 }
