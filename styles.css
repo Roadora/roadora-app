@@ -14515,3 +14515,14 @@ body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-
 .screen-profile [data-profile-hero-subtitle]{
   color:rgba(231,215,194,.80) !important;
 }
+
+/* =========================================================
+   Roadora v39.9.42 — Profile Hero Color Test #D8C1A5
+   Alleen kleurtest voor 'Jouw Roadora'. Geen layout/hoogte/spacing/shadow/JS/ORS/Maps wijzigingen.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
+.screen-profile .profile-hero h1,
+.screen-profile .profile-hero-title,
+.screen-profile [data-profile-hero-title]{
+  color:#D8C1A5 !important;
+}
