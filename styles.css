@@ -14012,3 +14012,135 @@ body[data-active-screen="roadtrip"][data-roadtrip-view="saved-food"] .saved-hote
 body[data-active-screen="roadtrip"][data-roadtrip-view="saved-discover"] .saved-hotels-title-v39756 h2{
   transform:translateY(-2px) !important;
 }
+
+/* =========================================================
+   Roadora v39.9.24 — Trajecten Phase 2 Saved Header Source
+   Basis: v39.9.23 Saved Content Header Locked.
+   Doel:
+   - Trajecten migreren naar dezelfde header-geometrie als Hotels.
+   - Hamburger blijft volledig gelockt en onaangeraakt.
+   - Alleen de Trajecten-header/shell visueel in dezelfde familie zetten.
+   - Geen JS, ORS, Maps, route-state of timeline-logica aangepast.
+   ========================================================= */
+body[data-active-screen="routes"] .screen-routes.routes-v39767{
+  background:linear-gradient(180deg,#f1e7db 0%,#eadcc9 100%) !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+
+body[data-active-screen="routes"] .routes-native-head-v39767.rd-list-header-v39924{
+  position:absolute !important;
+  left:18px !important;
+  right:18px !important;
+  top:calc(env(safe-area-inset-top, 0px) + 18px) !important;
+  height:auto !important;
+  min-height:54px !important;
+  z-index:24 !important;
+  margin:0 !important;
+  padding:0 0 0 64px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 48px !important;
+  align-items:center !important;
+  justify-content:normal !important;
+  gap:10px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:translateY(-8px) !important;
+  pointer-events:auto !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924{
+  grid-column:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  min-height:54px !important;
+  transform:translateX(12px) !important;
+  margin:0 !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924 small,
+body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924 h1{
+  display:none !important;
+}
+
+body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924 h2{
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:31px !important;
+  line-height:1 !important;
+  font-weight:600 !important;
+  letter-spacing:-.04em !important;
+  margin:0 !important;
+  transform:translateY(-2px) !important;
+  color:#241b15 !important;
+  display:block !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body[data-active-screen="routes"] .routes-close-v39767.rd-list-header-close-v39924{
+  grid-column:auto !important;
+  justify-self:end !important;
+  align-self:center !important;
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  border-radius:16px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 0 4px !important;
+  margin:0 !important;
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  color:#2b2119 !important;
+  text-shadow:0 .35px 0 rgba(43,33,25,.22) !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+  font-size:27px !important;
+  line-height:1 !important;
+  z-index:25 !important;
+  transform:none !important;
+}
+
+body[data-active-screen="routes"] .routes-scroll-v39767{
+  top:calc(82px + env(safe-area-inset-top, 0px)) !important;
+  padding-left:18px !important;
+  padding-right:18px !important;
+  padding-bottom:calc(138px + env(safe-area-inset-bottom,0px)) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="routes"] .routes-native-head-v39767.rd-list-header-v39924{
+    left:18px !important;
+    right:18px !important;
+    top:calc(env(safe-area-inset-top, 0px) + 18px) !important;
+    min-height:54px !important;
+    padding-left:64px !important;
+    grid-template-columns:minmax(0,1fr) 48px !important;
+    transform:translateY(-8px) !important;
+  }
+
+  body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924{
+    min-height:54px !important;
+    transform:translateX(12px) !important;
+  }
+
+  body[data-active-screen="routes"] .routes-title-v39767.rd-list-header-title-v39924 h2{
+    font-size:31px !important;
+    transform:translateY(-2px) !important;
+  }
+
+  body[data-active-screen="routes"] .routes-close-v39767.rd-list-header-close-v39924{
+    width:44px !important;
+    height:44px !important;
+  }
+
+  body[data-active-screen="routes"] .routes-scroll-v39767{
+    top:calc(82px + env(safe-area-inset-top, 0px)) !important;
+    padding-left:18px !important;
+    padding-right:18px !important;
+  }
+}
