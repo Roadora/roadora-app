@@ -14314,3 +14314,24 @@ body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924
   text-overflow:clip !important;
   padding-bottom:3px !important;
 }
+
+/* =========================================================
+   Roadora v39.9.27 — Dagboek Descender Position Restore
+   Basis: v39.9.26 Dagboek G Descender Fix.
+   Doel:
+   - Dagboek titel exact terug op dezelfde component-baseline houden.
+   - Geen line-height/padding wijziging die de titel optisch hoger/lager trekt.
+   - Alleen clipping oplossen via overflow:visible.
+   - Hamburger, close-button, cards, JS, ORS en Maps onaangeraakt.
+   ========================================================= */
+body[data-active-screen="diary"] .diary-native-head-v39925.rd-diary-header-v39925,
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924,
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924 h2{
+  overflow:visible !important;
+}
+
+body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924 h2{
+  line-height:1 !important;
+  padding-bottom:0 !important;
+  text-overflow:clip !important;
+}
