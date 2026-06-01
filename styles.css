@@ -1,4 +1,6 @@
 :root{
+  --profile-hero-title:#F3ECE3;
+  --profile-hero-title-shadow:0 2px 10px rgba(0,0,0,.22);
   --bg:#f4eadf; --bg2:#eadbcc; --text:#18120f; --muted:#7a6b5e; --brown:#995719; --brown2:#7f4512;
   --card:rgba(255,250,244,.82); --line:rgba(83,53,31,.10); --shadow:0 18px 46px rgba(50,31,16,.16);
   --r:30px; --ease:cubic-bezier(.2,.9,.2,1);
@@ -14459,101 +14461,16 @@ body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-
 }
 
 /* =========================================================
-   Roadora v39.9.38 — Profile Hero Title Color Sync
-   Basis: v39.9.37 Profile Hero Final Polish.
+   Roadora v39.9.45 — Profile Hero Typography Cleanup v1
    Doel:
-   - 'Jouw Roadora' in de Profiel-hero dezelfde donkere Roadora-kleur geven
-     als de gelockte contentheaders/Overzicht-hero richting.
-   - Alleen hero-titelkleur aanpassen.
-   - Hamburger, Profiel-label, subtitel, heropositie, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
-   ========================================================= */
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
-  color:#2d2118 !important;
-  text-shadow:0 1px 0 rgba(255,255,255,.22) !important;
-}
-
-/* =========================================================
-   Roadora v39.9.40 — Profile Warm Cream Variant A Targeted
-   Basis: v39.9.38 Profile Hero Structure Locked.
-   Doel:
-   - Alleen Profiel-hero tekstkleuren testen.
-   - Geen globale kleur-replace.
-   - Layout, hamburger, hero, cards, bottomnav, JS, ORS en Maps onaangeraakt.
-   ========================================================= */
-body[data-active-screen="profile"] .hero-page-label-v39934{
-  color:#DCC9B1 !important;
-  text-shadow:0 2px 14px rgba(0,0,0,.34) !important;
-}
-
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
-  color:#E7D7C2 !important;
-  text-shadow:0 2px 18px rgba(0,0,0,.34) !important;
-}
-
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 p{
-  color:rgba(247,239,227,.86) !important;
-  text-shadow:0 2px 14px rgba(0,0,0,.30) !important;
-}
-
-
-/* =========================================================
-   Roadora v39.9.41 — Profile Hero Champagne Variant A.2
-   Alleen kleurtest Profiel hero. Geen layout/positie wijzigingen.
-   ========================================================= */
-.screen-profile .profile-hero-label,
-.screen-profile .hero-profile-label,
-.screen-profile [data-profile-hero-label]{
-  color:#DCC9B1 !important;
-}
-.screen-profile .profile-hero h1,
-.screen-profile .profile-hero-title,
-.screen-profile [data-profile-hero-title]{
-  color:#E7D7C2 !important;
-}
-.screen-profile .profile-hero p,
-.screen-profile .profile-hero-subtitle,
-.screen-profile [data-profile-hero-subtitle]{
-  color:rgba(231,215,194,.80) !important;
-}
-
-/* =========================================================
-   Roadora v39.9.42 — Profile Hero Color Test #D8C1A5
-   Alleen kleurtest voor 'Jouw Roadora'. Geen layout/hoogte/spacing/shadow/JS/ORS/Maps wijzigingen.
+   - Eén bron voor de kleur van 'Jouw Roadora'.
+   - Oude kleurtest-overrides verwijderd.
+   - Geen hoogte, positie, spacing, content, bottomnav, JS, ORS of Maps aangepast.
    ========================================================= */
 body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
 .screen-profile .profile-hero h1,
 .screen-profile .profile-hero-title,
 .screen-profile [data-profile-hero-title]{
-  color:#D8C1A5 !important;
-}
-
-/* =========================================================
-   Roadora v39.9.43 — Profile Hero Color Test #BFA17F
-   Alleen kleurtest voor 'Jouw Roadora'. Geen layout/hoogte/spacing/shadow/JS/ORS/Maps wijzigingen.
-   ========================================================= */
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
-.screen-profile .profile-hero h1,
-.screen-profile .profile-hero-title,
-.screen-profile [data-profile-hero-title]{
-  color:#BFA17F !important;
-}
-
-/* =========================================================
-   Roadora v39.9.44 — Profile Hero Ivory Isolated Override
-   Basis: v39.9.43 Profile Hero Color Test.
-   Doel:
-   - Alleen 'Jouw Roadora' isoleren met één finale profiel-title kleurregel.
-   - Oude kleurtestregels blijven historisch staan, maar deze override wint bewust.
-   - Geen hoogte, positie, font-size, spacing, hamburger, content, bottomnav, JS, ORS of Maps aangepast.
-   ========================================================= */
-:root{
-  --profile-hero-title-color-v39944:#F3ECE3;
-  --profile-hero-title-shadow-v39944:0 2px 10px rgba(0,0,0,.22);
-}
-
-body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
-.screen-profile .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
-.screen-profile .profile-hero h1{
-  color:var(--profile-hero-title-color-v39944) !important;
-  text-shadow:var(--profile-hero-title-shadow-v39944) !important;
+  color:var(--profile-hero-title) !important;
+  text-shadow:var(--profile-hero-title-shadow) !important;
 }
