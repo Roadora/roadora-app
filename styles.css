@@ -14335,3 +14335,28 @@ body[data-active-screen="diary"] .diary-title-v39925.rd-list-header-title-v39924
   padding-bottom:0 !important;
   text-overflow:clip !important;
 }
+
+
+/* =========================================================
+   Roadora v39.9.30 — Profile Hero Component v1
+   Basis: v39.9.27 Dagboek Baseline Locked + v39.9.29 profile rollback.
+   Doel:
+   - Alleen de vaste tekst "Profiel" uit de profiel-hero verwijderen.
+   - Hero-compositie en Jouw Roadora positie behouden via een invisible spacer.
+   - Hamburger, bottomnav, contentkaarten, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  position:relative !important;
+  z-index:2 !important;
+  text-shadow:0 2px 18px rgba(0,0,0,.35) !important;
+}
+body[data-active-screen="profile"] .profile-hero-kicker-spacer-v39930{
+  display:block !important;
+  height:24px !important;
+  margin:0 0 0 !important;
+  pointer-events:none !important;
+  opacity:0 !important;
+}
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
+  margin:8px 0 4px !important;
+}
