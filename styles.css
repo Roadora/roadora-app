@@ -14430,3 +14430,17 @@ body[data-active-screen="profile"] .hero-page-label-v39934{
     font-size:34px !important;
   }
 }
+
+/* =========================================================
+   Roadora v39.9.36 — Profile Header Color + Kerning Polish
+   Basis: v39.9.35 Profile Typography Sync.
+   Doel:
+   - Profiel-label dezelfde Roadora-donkere kleur geven als Hotels.
+   - f/i overlap oplossen door tracking iets rustiger te maken.
+   - Geen positie, hamburger, hero-copy, content, bottomnav, JS, ORS of Maps aangepast.
+   ========================================================= */
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  color:#2d2118 !important;
+  letter-spacing:-.018em !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.28) !important;
+}
