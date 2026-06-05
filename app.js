@@ -1,3 +1,16 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* =========================================================
+   ROADORA APP.JS STRUCTURE
+   v39.9.119 Section Headers v1
+   Alleen sectiekoppen toegevoegd; geen functionele wijzigingen.
+   ========================================================= */
+
+
 /* Roadora v39.3 clean sheet DOM - map/ORS/Maps untouched */
 const STORAGE_KEY = 'roadora_phase1_state_v44_clean';
 const DEMO_TRIP_ENABLED = false;
@@ -21,6 +34,12 @@ const defaultState = {
     meta: '12 dagen · 6 stops · 16 – 27 mei 2025'
   } : null
 };
+
+/* =========================================================
+   ROADORA STATE + LOCAL STORAGE
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
 
 function loadState(){
   try{
@@ -64,6 +83,12 @@ function saveState(){
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(RoadoraState)); } catch(e) {}
 }
 
+/* =========================================================
+   ROADORA APP CORE / GENERAL HELPERS
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
+
 function showToast(message){
   if(!toast) return;
   toast.textContent = message;
@@ -71,6 +96,12 @@ function showToast(message){
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove('show'), 1700);
 }
+
+/* =========================================================
+   ROADORA ROUTE / ORS / ROADTRIP
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
 
 function renderTripState(){
   if(app) app.dataset.trip = RoadoraState.activeTrip || RoadoraState.route.planned ? 'planned' : 'empty';
@@ -95,6 +126,72 @@ function fmtTime(value){
   const min = Math.round((sec % 3600) / 60);
   return h ? `${h}u ${String(min).padStart(2,'0')}m` : `${min} min`;
 }
+
+
+/* Roadora v39.9.92 — Trajecten Stats Stable Resolver
+   Eén centrale bron voor route-afstand/reistijd, zodat late Trajecten renders
+   geldige ORS-stats niet meer overschrijven met lege waarden. */
+const ROUTE_SUMMARY_CACHE_KEY_V39992 = 'roadora_route_summary_v39992';
+
+function normalizeRouteSummaryV39992(summary){
+  const distance = Number(summary && summary.distance);
+  const duration = Number(summary && summary.duration);
+  if(!distance && !duration) return null;
+  return {
+    distance: distance || 0,
+    duration: duration || 0,
+    updatedAt: (summary && summary.updatedAt) || new Date().toISOString(),
+    source: (summary && summary.source) || 'ors'
+  };
+}
+
+function persistRouteSummaryV39992(summary){
+  const stable = normalizeRouteSummaryV39992(summary);
+  if(!stable) return null;
+  try{ localStorage.setItem(ROUTE_SUMMARY_CACHE_KEY_V39992, JSON.stringify(stable)); }catch(_){ }
+  try{
+    window.dispatchEvent(new CustomEvent('roadora:route-summary-updated', { detail: stable }));
+  }catch(_){ }
+  return stable;
+}
+
+function getStableRouteSummaryV39992(){
+  const live = normalizeRouteSummaryV39992(RoadoraState && RoadoraState.route && RoadoraState.route.summary);
+  if(live) return live;
+
+  try{
+    const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const saved = normalizeRouteSummaryV39992(savedState && savedState.route && savedState.route.summary);
+    if(saved) return saved;
+  }catch(_){ }
+
+  try{
+    const cached = normalizeRouteSummaryV39992(JSON.parse(localStorage.getItem(ROUTE_SUMMARY_CACHE_KEY_V39992) || 'null'));
+    if(cached) return cached;
+  }catch(_){ }
+
+  return null;
+}
+
+function applyRouteStatsDomV39992(summary, stopsCount){
+  const stable = normalizeRouteSummaryV39992(summary) || getStableRouteSummaryV39992();
+  const kmEl = document.getElementById('routesStatsKmV39772');
+  const timeEl = document.getElementById('routesStatsTimeV39772');
+  const stopsEl = document.getElementById('routesStatsStopsV39772');
+  if(stable){
+    if(kmEl) kmEl.textContent = fmtKm(stable.distance);
+    if(timeEl) timeEl.textContent = fmtTime(stable.duration);
+  }
+  if(stopsEl && stopsCount !== undefined && stopsCount !== null) stopsEl.textContent = String(stopsCount);
+  return stable;
+}
+
+window.RoadoraRouteSummaryV39992 = {
+  get: getStableRouteSummaryV39992,
+  persist: persistRouteSummaryV39992,
+  applyDom: applyRouteStatsDomV39992,
+  normalize: normalizeRouteSummaryV39992
+};
 
 function isRouteReady(){
   return RoadoraState.route.start.trim().length > 1 && RoadoraState.route.end.trim().length > 1;
@@ -136,6 +233,12 @@ function renderRoutePlan(){
   }
 }
 
+/* =========================================================
+   ROADORA MAP / PINS / POPOVERS
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
+
 function renderMapState(){
   if(!mapRouteTitle || !mapRouteText || !mapRouteAction) return;
   const planned = !!RoadoraState.route.planned;
@@ -162,6 +265,12 @@ function renderMapState(){
     mapRouteChipSub && (mapRouteChipSub.textContent = 'Plan een route om de kaart te activeren');
   }
 }
+
+/* =========================================================
+   ROADORA RENDER HELPERS
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
 
 function renderAll(){
   renderTripState();
@@ -426,24 +535,70 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     });
   }
 
+  /* Roadora v39.9.94 — Map Topbar Stats Resolver
+     De kaart-topbar gebruikt nu dezelfde stabiele route-summary resolver als Trajecten.
+     Daardoor blijven km/tijd zichtbaar wanneer een late fallback/lege render geen ORS summary meestuurt
+     (bijvoorbeeld tijdens testen via VS Code/Live Server zonder /api/route). */
+  function resolveMapTopbarSummaryV39994(summary){
+    const api = window.RoadoraRouteSummaryV39992;
+    if(api && typeof api.normalize === 'function'){
+      const direct = api.normalize(summary);
+      if(direct) return direct;
+    }
+    if(api && typeof api.get === 'function'){
+      const stable = api.get();
+      if(stable) return stable;
+    }
+
+    /* Roadora v39.9.95 — Map Topbar Preview Fallback
+       Trajecten toont al preview km/tijd wanneer VS Code/Live Server geen /api/route
+       kan leveren. De kaart-topbar mag dan niet leeg blijven. Als er geen ORS-summary
+       is, gebruiken we de huidige kaartlijn als veilige previewbron. */
+    try{
+      const routeKm = (typeof getRouteDistanceKmV39686 === 'function') ? getRouteDistanceKmV39686() : 0;
+      if(routeKm && isFinite(routeKm)){
+        const distance = Math.round(routeKm * 1000);
+        const duration = Math.round((routeKm / 82) * 3600);
+        return { distance, duration, source:'map-preview' };
+      }
+    }catch(_){ }
+
+    try{
+      const stopsApi = window.RoadoraRouteStopsV39766;
+      const stops = stopsApi && typeof stopsApi.all === 'function' ? stopsApi.all().filter(function(stop){ return stop && stop.status === 'in_route'; }) : [];
+      const count = Math.max(1, stops.length + 1);
+      return { distance: count * 145000, duration: count * 5400, source:'preview' };
+    }catch(_){ }
+
+    return summary || null;
+  }
+
   function updateLabels(summary){
+    const stableSummary = resolveMapTopbarSummaryV39994(summary);
     const r=activeRoute();
     const routeName = `${r.start} → ${r.end}`;
     const veh = vLabel(r.vehicle);
+    const distanceText = fmtKm(stableSummary?.distance);
+    const timeText = fmtTime(stableSummary?.duration);
+    const hasStats = !!(stableSummary && (Number(stableSummary.distance) || Number(stableSummary.duration)));
     setText('#mapStatusTitle', routeName);
     setText('#mapStatusBadge', r.planned ? '🟢 Rustige route' : 'Preview');
-    setText('#mapStatusSub', `${veh} route · ${fmtTime(summary?.duration).replace('ETA ','') || 'route laden'} · ${fmtKm(summary?.distance)}`);
-    setText('#mapStatusEta', fmtTime(summary?.duration));
-    setText('#mapStatusDistance', fmtKm(summary?.distance));
+    setText('#mapStatusSub', hasStats ? `${veh} route · ${timeText} · ${distanceText}` : `${veh} route · route laden · — km`);
+    setText('#mapStatusEta', timeText);
+    setText('#mapStatusDistance', distanceText);
     setText('#mapStatusNext', r.vehicle === 'ev' ? 'Volgende: laadstop' : 'Pauze over 45 min');
     setText('#mapPointStart', r.start);
     setText('#mapPointEnd', r.end);
-    setText('#mapStatKm', fmtKm(summary?.distance));
+    setText('#mapStatKm', distanceText);
     setText('#stopTitle', r.end.includes(',') ? r.end : `${r.end}`);
-    setText('#stopMeta', `${fmtKm(summary?.distance)} · ${fmtTime(summary?.duration).replace('ETA ','')} · ${veh}`);
-    setText('#stopDesc', 'Je echte ORS-route is geladen. Onderweg kun je hotels, laadstops en eten als stops toevoegen.');
+    setText('#stopMeta', `${distanceText} · ${timeText} · ${veh}`);
+    setText('#stopDesc', hasStats ? 'Je routegegevens zijn geladen. Onderweg kun je hotels, laadstops en eten als stops toevoegen.' : 'Route wordt geladen. Onderweg kun je hotels, laadstops en eten als stops toevoegen.');
     updateVehicleButtons();
   }
+
+  window.addEventListener('roadora:route-summary-updated', function(e){
+    updateLabels(e && e.detail ? e.detail : null);
+  });
 
   function ensureBase(){
     if(initialized || !$('#routeLeafletMap') || !window.L) return;
@@ -498,7 +653,19 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   function endpointIcon(){ return L.divIcon({ className:'endpointMarker', iconSize:[30,30], iconAnchor:[15,15] }); }
   function labelIcon(text){ return L.divIcon({ className:'mapLabel', html:String(text||''), iconSize:[120,18], iconAnchor:[14,-2] }); }
 
+/* =========================================================
+   ROADORA STOPS FLOW
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
+
   function stopIcon(kind='hotel'){ return L.divIcon({ className:`roadoraStopMarker ${kind}`, html: kind==='assist' ? '⚡' : '🏨', iconSize:[34,34], iconAnchor:[17,17] }); }
+/* =========================================================
+   ROADORA MAP DRAWER / PANEL STATE
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
+
   function setRoadtripSheetMode(mode='live'){
     const sheet=$('#mapDrawer'); if(!sheet) return;
     sheet.dataset.mode=mode;
@@ -1234,6 +1401,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     routeLayer.clearLayers(); markerLayer.clearLayers(); labelLayer.clearLayers(); if(categoryLayer) categoryLayer.clearLayers(); if(routeStopLayer) routeStopLayer.clearLayers(); if(routeStopLayer) routeStopLayer.clearLayers();
     L.polyline([latLng(startCoord), latLng(endCoord)], { color:'#b87932', weight:5, opacity:.95, lineCap:'round', lineJoin:'round' }).addTo(routeLayer);
     addEndpoints(startCoord,endCoord);
+    updateLabels(resolveMapTopbarSummaryV39994(null));
     renderRouteStopPinsV39775();
     fitRoute();
   }
@@ -1248,12 +1416,14 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     const summary = data?.features?.[0]?.properties?.summary || {};
     updateLabels(summary);
     if(summary && (Number(summary.distance) || Number(summary.duration))){
-      RoadoraState.route.summary = {
+      RoadoraState.route.summary = persistRouteSummaryV39992({
         distance: Number(summary.distance || 0),
-        duration: Number(summary.duration || 0)
-      };
+        duration: Number(summary.duration || 0),
+        source: 'ors'
+      });
       saveState();
       renderRoutePlan();
+      applyRouteStatsDomV39992(RoadoraState.route.summary);
     }
     fitRoute();
   }
@@ -2173,6 +2343,12 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   // v39.7.04 — oude Nu Nodig assist-data verwijderd. Nu Nodig gebruikt dezelfde stop/card/popover-flow als Stops.
 
+/* =========================================================
+   ROADORA NU NODIG FLOW
+   Added in v39.9.119 Section Headers v1.
+   No logic changed.
+   ========================================================= */
+
   function updateNowGpsStatusV39656(){
     const status = document.querySelector('#mapDrawer .rd-now-gps-status-v39656');
     if(!status) return;
@@ -2772,15 +2948,38 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     getRoadoraPreviewMountV39707(drawer).appendChild(pop);
   }
 
+  function renderMoreEmptyPanelV39965(){
+    const drawer = document.querySelector('#mapDrawer');
+    if(!drawer) return;
+    const title = drawer.querySelector('#stopTitle, .rd-sheet-title-v28');
+    const heading = drawer.querySelector('#stopHeading, .rd-sheet-heading-v28');
+    const meta = drawer.querySelector('#stopMeta, .rd-sheet-meta-v28');
+    const desc = drawer.querySelector('#stopDesc, .rd-sheet-desc-v28');
+    const chips = drawer.querySelector('.rd-sheet-chips-v39');
+    const cards = drawer.querySelector('.rd-sheet-cards-v39');
+    const actions = drawer.querySelector('.rd-sheet-actions-v392');
+
+    if(title) title.textContent = 'Meer';
+    if(heading) heading.textContent = 'Meer';
+    if(meta) meta.textContent = 'Extra opties komen later';
+    if(desc) desc.textContent = 'Deze knop is nu alleen een rustige open/dicht-knop, zonder acties of pins.';
+    if(chips){ chips.innerHTML = ''; chips.classList.add('rd-sheet-is-empty-v396'); }
+    if(cards){ cards.innerHTML = ''; cards.classList.add('rd-sheet-is-empty-v396'); }
+    if(actions){ actions.innerHTML = ''; actions.classList.add('rd-sheet-is-empty-v396'); }
+  }
+
   function openPanel(panel){
+    panel = panel || 'stops';
     document.body.setAttribute("data-map-drawer", "open");
     document.body.setAttribute("data-sheet-state", "half");
     document.body.setAttribute("data-instant-map-panel", panel);
+    document.body.setAttribute("data-map-panel", panel);
     document.body.classList.add("rd-instant-panel-open-v3968");
     setNavActive(panel);
     if(panel === "stops"){
       document.body.removeAttribute('data-now-needed');
       document.body.removeAttribute('data-now-assist');
+      document.body.removeAttribute('data-now-help-sub');
       closeHotelPreview();
       clearStopMapPinsV39697('Kies stop');
       renderStops();
@@ -2790,18 +2989,25 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
       clearStopMapPinsV39697('');
       renderNowNeeded();
       setTimeout(renderNowNeeded, 50);
-    } else {
+    } else if(panel === "more"){
       document.body.removeAttribute('data-now-needed');
       document.body.removeAttribute('data-now-assist');
+      document.body.removeAttribute('data-now-help-sub');
+      document.body.removeAttribute('data-now-gps');
+      document.body.removeAttribute('data-food-filter');
+      document.body.removeAttribute('data-discover-filter');
       document.body.removeAttribute('data-stop-subpanel');
       closeHotelPreview();
       clearStopMapPinsV39697('');
+      renderMoreEmptyPanelV39965();
+      setTimeout(renderMoreEmptyPanelV39965, 50);
     }
   }
 
   function closePanel(){
     document.body.removeAttribute("data-map-drawer");
     document.body.removeAttribute("data-instant-map-panel");
+    document.body.removeAttribute("data-map-panel");
     document.body.removeAttribute('data-now-needed');
     document.body.removeAttribute('data-now-assist');
     document.body.removeAttribute('data-now-help-sub');
@@ -2813,6 +3019,7 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     clearStopMapPinsV39697('');
     document.body.classList.remove("rd-instant-panel-open-v3968");
     setNavActive("");
+    try{ window.RoadoraMapNavSyncV39751 && window.RoadoraMapNavSyncV39751(''); }catch(_){ }
   }
 
   window.addEventListener("click", function(e){
@@ -3898,6 +4105,10 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
   }
 
   function totals(stops){
+    var stable = window.RoadoraRouteSummaryV39992 && window.RoadoraRouteSummaryV39992.get ? window.RoadoraRouteSummaryV39992.get() : null;
+    if(stable && (Number(stable.distance) || Number(stable.duration))){
+      return { distance:Number(stable.distance || 0), duration:Number(stable.duration || 0), source:'ors' };
+    }
     var summary = routeState().summary || null;
     if(summary && (Number(summary.distance) || Number(summary.duration))){
       return { distance:Number(summary.distance || 0), duration:Number(summary.duration || 0), source:'ors' };
@@ -3953,9 +4164,13 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     var kmEl = document.getElementById('routesStatsKmV39772');
     var timeEl = document.getElementById('routesStatsTimeV39772');
     var stopsEl = document.getElementById('routesStatsStopsV39772');
-    if(kmEl) kmEl.textContent = fmtKmMeters(total.distance);
-    if(timeEl) timeEl.textContent = fmtDuration(total.duration);
-    if(stopsEl) stopsEl.textContent = String(stops.length);
+    if(total && total.source === 'ors' && window.RoadoraRouteSummaryV39992 && window.RoadoraRouteSummaryV39992.applyDom){
+      window.RoadoraRouteSummaryV39992.applyDom(total, stops.length);
+    }else{
+      if(kmEl) kmEl.textContent = fmtKmMeters(total.distance);
+      if(timeEl) timeEl.textContent = fmtDuration(total.duration);
+      if(stopsEl) stopsEl.textContent = String(stops.length);
+    }
     if(stats) stats.hidden = stops.length === 0;
 
     empty.hidden = stops.length > 0;
@@ -3986,7 +4201,8 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   document.addEventListener('DOMContentLoaded', schedule);
   window.addEventListener('roadora:route-stops-updated', schedule);
-  window.addEventListener('storage', function(e){ if(e && e.key === 'roadora_route_stops_v39766') schedule(); });
+  window.addEventListener('roadora:route-summary-updated', schedule);
+  window.addEventListener('storage', function(e){ if(e && (e.key === 'roadora_route_stops_v39766' || e.key === 'roadora_route_summary_v39992')) schedule(); });
   document.addEventListener('click', function(event){
     if(event.target.closest && event.target.closest('[data-screen-target="routes"]')) schedule();
     if(event.target.closest && event.target.closest('[data-route-stop-view]')){
@@ -4324,14 +4540,25 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     timeline.hidden = !shouldShowTimeline;
 
     var stats = ensureStatsCard(list);
-    var summary = route.summary || {};
+    var summary = (window.RoadoraRouteSummaryV39992 && window.RoadoraRouteSummaryV39992.get) ? window.RoadoraRouteSummaryV39992.get() : (route.summary || null);
     var kmEl = document.getElementById('routesStatsKmV39772');
     var timeEl = document.getElementById('routesStatsTimeV39772');
     var stopsEl = document.getElementById('routesStatsStopsV39772');
     if(stats) stats.hidden = !shouldShowTimeline;
-    if(kmEl) kmEl.textContent = fmtKm(summary.distance || 0);
-    if(timeEl) timeEl.textContent = fmtDuration(summary.duration || 0);
-    if(stopsEl) stopsEl.textContent = String(stops.length);
+    if(summary && (Number(summary.distance) || Number(summary.duration))){
+      if(window.RoadoraRouteSummaryV39992 && window.RoadoraRouteSummaryV39992.applyDom){
+        window.RoadoraRouteSummaryV39992.applyDom(summary, stops.length);
+      }else{
+        if(kmEl) kmEl.textContent = fmtKm(summary.distance || 0);
+        if(timeEl) timeEl.textContent = fmtDuration(summary.duration || 0);
+        if(stopsEl) stopsEl.textContent = String(stops.length);
+      }
+    }else{
+      // Guard: lege route-render mag bestaande geldige Trajecten stats niet wissen.
+      if(stopsEl) stopsEl.textContent = String(stops.length);
+      if(kmEl && !kmEl.textContent.trim()) kmEl.textContent = '— km';
+      if(timeEl && !timeEl.textContent.trim()) timeEl.textContent = '—';
+    }
 
     list.classList.toggle('has-planned-route-v39778', planned);
     list.classList.toggle('has-empty-route-v39778', planned && stops.length === 0);
@@ -4345,8 +4572,9 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
 
   document.addEventListener('DOMContentLoaded', schedule);
   window.addEventListener('roadora:route-stops-updated', schedule);
+  window.addEventListener('roadora:route-summary-updated', schedule);
   window.addEventListener('storage', function(e){
-    if(e && (e.key === 'roadora_route_stops_v39766' || e.key === 'roadora_phase1_state_v44_clean')) schedule();
+    if(e && (e.key === 'roadora_route_stops_v39766' || e.key === 'roadora_phase1_state_v44_clean' || e.key === 'roadora_route_summary_v39992')) schedule();
   });
   document.addEventListener('click', function(event){
     if(event.target.closest && (event.target.closest('[data-screen-target="routes"]') || event.target.closest('#planRouteBtn'))){
@@ -4461,4 +4689,78 @@ window.RoadoraRouter = { open: openScreen, render: renderAll, planRoute };
     next: function(){ return readActiveStops()[0] || null; },
     open: openNextStopOrDestination
   };
+})();
+
+/* =========================================================
+   ROADORA v39.9.124 — Disable Legacy Sheet-State Expand
+   Doel:
+   - Oude data-sheet-state="collapsed|half|expanded" laag mag de
+     huidige map drawer niet meer naar groot/expanded trekken.
+   - Huidige data-map-drawer/data-map-panel flow blijft leidend.
+   ========================================================= */
+(function roadoraDisableLegacySheetStateExpandV399124(){
+  if (window.__roadoraDisableLegacySheetStateExpandV399124) return;
+  window.__roadoraDisableLegacySheetStateExpandV399124 = true;
+
+  function normalizeLegacySheetState(){
+    var body = document.body;
+    if (!body) return;
+
+    var activeScreen = body.getAttribute('data-active-screen');
+    if (activeScreen !== 'map') return;
+
+    var state = body.getAttribute('data-sheet-state');
+    if (state === 'expanded' || state === 'half' || state === 'collapsed') {
+      body.removeAttribute('data-sheet-state');
+    }
+
+    var sheet = document.querySelector('#mapRouteSheet, .rd-map-sheet-v28');
+    if (sheet) {
+      sheet.classList.remove(
+        'is-expanded',
+        'expanded',
+        'is-half',
+        'half',
+        'is-collapsed',
+        'collapsed',
+        'rd-sheet-expanded',
+        'rd-sheet-half',
+        'rd-sheet-collapsed'
+      );
+      if (sheet.dataset) {
+        delete sheet.dataset.sheetState;
+        delete sheet.dataset.state;
+      }
+    }
+  }
+
+  // Corrigeer direct na oude handlers die data-sheet-state zetten.
+  ['click','pointerup','touchend','mouseup'].forEach(function(type){
+    document.addEventListener(type, function(){
+      requestAnimationFrame(normalizeLegacySheetState);
+      setTimeout(normalizeLegacySheetState, 0);
+      setTimeout(normalizeLegacySheetState, 80);
+    }, true);
+  });
+
+  // Corrigeer ook bij scherm/panel changes.
+  var observer = new MutationObserver(function(mutations){
+    for (var i=0; i<mutations.length; i++){
+      if (mutations[i].attributeName === 'data-sheet-state') {
+        normalizeLegacySheetState();
+        break;
+      }
+    }
+  });
+
+  if (document.body) {
+    observer.observe(document.body, { attributes:true, attributeFilter:['data-sheet-state'] });
+  } else {
+    document.addEventListener('DOMContentLoaded', function(){
+      if (document.body) observer.observe(document.body, { attributes:true, attributeFilter:['data-sheet-state'] });
+      normalizeLegacySheetState();
+    });
+  }
+
+  normalizeLegacySheetState();
 })();

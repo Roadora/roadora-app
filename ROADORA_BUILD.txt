@@ -1,0 +1,139 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.81 — Roadtrip CSS Split v1
+
+Gebouwd vanaf: v39.9.80 Components Split v1
+
+Wijzigingen:
+- css/roadtrip.css toegevoegd en gekoppeld in index.html.
+- Alleen Mijn Roadtrip/Roadtrip-specifieke cleanup/content-CSS uit styles.css gehaald.
+- styles.css verder verkleind zonder JS-wijzigingen.
+
+Bewust niet aangepast:
+- app.js
+- api/route.js
+- ORS
+- Leaflet/kaart
+- Stops
+- Nu Nodig
+- Meer
+- mapDrawer/sheets/popovers
+- rd-map-nav-v28 kaartnavigatie
+
+Status: test in browser vereist.
+
+
+v39.9.82 Routeplan Restore v1
+- Rollback van foutieve Routeplan hero/panel overrides uit css/navigation.css.
+- Routeplan layout wordt weer bepaald door styles.css v39.7.39 Fit Screen regels.
+- Geen wijzigingen aan JS, ORS, kaart, Stops, Nu Nodig, Meer of rd-map-nav-v28.
+
+
+v39.9.84 Components/Navigation Hardening v1
+- Geen nieuwe CSS-extractie.
+- navigation.css scope guard toegevoegd/verduidelijkt.
+- Routeplan layout blijft beschermd in styles.css; navigation.css mag alleen bottom-nav regels bevatten.
+- Geen wijzigingen aan JS, ORS, kaart, Stops, Nu Nodig, Meer of rd-map-nav-v28.
+
+
+Roadora v39.9.85 Profile CSS Split v1
+- css/profile.css toegevoegd en gekoppeld.
+- Alleen profile-scroll-menu en profile-row content styling verplaatst.
+- Profile hero, hero copy, Routeplan, navigation scope, kaart, ORS, Stops, Nu Nodig en Meer onaangeraakt.
+
+Roadora v39.9.87 Map CSS Experiment v1
+- Built from v39.9.85 Profile CSS Split v1
+- Added css/map.css
+- Moved only low-risk Leaflet/base map selectors: #routeLeafletMap, #mapScreen .leaflet-control-container, base Leaflet tile filter, #routeLeafletMap::after
+- Did NOT move rd-map-nav-v28, mapDrawer, sheet, Stops, Nu Nodig, popovers, or any JS/ORS code
+- Experimental version: test before saving as fallback
+
+
+v39.9.92 Trajecten Stats Stable Resolver v1
+- app.js: centrale route-summary resolver toegevoegd.
+- Trajecten km/tijd beschermd tegen late lege renders.
+- Geen CSS/ORS/kaart/Stops/Nu Nodig/Meer wijzigingen.
+
+Roadora v39.9.94 — Map Topbar Stats Resolver v1
+- Kaart-topbar gebruikt nu dezelfde stabiele route-summary resolver als Trajecten.
+- Late fallback/lege map renders mogen km/tijd niet meer wissen.
+- Geen CSS/ORS/kaart/sheets/Stops/Nu Nodig/Meer gewijzigd.
+
+---
+v39.9.96 Map Core Layer Split v1
+- Built from v39.9.95 Map Topbar Preview Fallback v1.
+- Moved only the v39.7.43 Leaflet pane visibility/z-index foundation block from styles.css to css/map.css.
+- Did not touch rd-map-nav-v28 layout, mapDrawer, sheets, Stops, Nu Nodig, popovers, ORS, or JS.
+- Experimental risky map split; keep v39.9.95 as rollback until tested.
+
+v39.9.98 Hotel Preview Layout Restore v1
+- Local map-only hotel-preview card restore.
+- Restores two-column actions for the three hotel preview buttons.
+- Keeps route add/nav/save flow intact.
+- Does not touch map core, ORS, Stops, Nu Nodig, Meer, drawer height or rd-map-nav-v28.
+
+
+v39.9.99 — Nu Nodig Slapen Preview Restore v1
+- Lokale fix alleen voor Nu Nodig -> Slapen hotel-preview op #mapScreen.
+- Geen JS/ORS/kaart-core/Stops/andere Nu Nodig categorieën aangepast.
+
+
+v39.9.100 Hamburger Copyright Footer v1
+- Added fixed copyright footer at the true bottom of the opened hamburger menu.
+- Scope limited to hero-menu markup/CSS.
+- No JS/ORS/map/Stops/Nu Nodig/Meer changes.
+
+v39.9.104 Map Nav Split v1
+- css/map-nav.css toegevoegd en gekoppeld.
+- rd-map-nav-v28 / rd-nav-btn-v28 / centrale Navigeer-knop CSS uit styles.css gehaald.
+- Drawer, sheet, popovers, Stops, Nu Nodig, ORS en JS bewust niet aangepast.
+
+v39.9.106 Popover Split v1
+- css/map-popovers.css toegevoegd en gekoppeld.
+- Alleen directe popover/preview componentregels uit styles.css gehaald.
+- Sheet/drawer/Stops/Nu Nodig cards, JS, ORS, kaart-core en map-nav bewust niet aangepast.
+
+v39.9.109 Map UI State Foundation Split v1
+- css/map-ui-state.css toegevoegd en gekoppeld.
+- Alleen body[data-active-screen="map"] CSS custom properties / state foundation uit styles.css gehaald.
+- Concrete sheet/drawer layout, Stops, Nu Nodig, popovers, map-nav, JS en ORS bewust niet aangepast.
+
+v39.9.111 Map Sheet Shell Split v1
+- css/map-sheet-shell.css toegevoegd en gekoppeld.
+- Alleen pure #mapRouteSheet / .rd-map-sheet-v28 shell-regels uit styles.css gehaald.
+- Stops, Nu Nodig, categorieën, cards, Slapen, popovers, JS en ORS bewust niet aangepast.
+
+v39.9.113 Map Stops Split v1
+- css/map-stops.css toegevoegd en gekoppeld.
+- Alleen veilige Stops-content selectors uit styles.css gehaald.
+- Nu Nodig, Slapen, assist-flow, popovers, sheet shell, Trajecten timeline, JS en ORS bewust niet aangepast.
+
+v39.9.115 Map Now Needed Split v1
+- css/map-now-needed.css toegevoegd en gekoppeld.
+- Alleen veilige Nu Nodig-content selectors uit styles.css gehaald.
+- Sheet shell, drawer, popovers, Stops, Trajecten, map-nav, JS en ORS bewust niet aangepast.
+
+v39.9.117 Final Cleanup v1
+- Alleen oude comment/documentatieblokken uit styles.css verwijderd.
+- Geen CSS-selectors, CSS-declarations, JS, ORS, kaartlogica of app-state verwijderd.
+- Doel: styles.css leesbaarder maken zonder functioneel risico.
+
+v39.9.119 App.js Section Headers v1
+- Alleen sectiekoppen/comment headers toegevoegd in app.js.
+- Geen functies verplaatst.
+- Geen functienamen gewijzigd.
+- Geen JS-logica, ORS, kaart, Stops, Nu Nodig of state aangepast.
+
+v39.9.124 Disable Legacy Sheet-State Expand v1
+- Oude data-sheet-state collapsed/half/expanded laag geneutraliseerd op map-screen.
+- Huidige data-map-drawer/data-map-panel flow blijft leidend.
+- Mislukte v39.9.121/122/123 guards niet meegenomen.
+- Geen CSS/ORS/kaart/Stops/Nu Nodig renderlogica aangepast.
+
+v39.9.126 JS Helpers Scaffold v1
+- js/helpers.js toegevoegd en gekoppeld vóór app.js.
+- window.RoadoraHelpers namespace voorbereid.
+- Geen bestaande functies verplaatst.
+- Geen JS-logica, ORS, kaart, Stops, Nu Nodig, drawer-state of CSS aangepast.
