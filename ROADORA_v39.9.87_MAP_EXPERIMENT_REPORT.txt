@@ -1,0 +1,54 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+ROADORA v39.9.87 MAP CSS EXPERIMENT v1
+
+Basis:
+- v39.9.85 Profile CSS Split v1
+
+Doel:
+- Voorzichtig experiment met de volgende CSS-split richting map.css.
+- Niet agressief opschonen.
+- Eerst alleen het minst gekoppelde Leaflet/base-map stukje isoleren.
+
+Aangepast:
+- Nieuw bestand: css/map.css
+- index.html gekoppeld aan css/map.css
+- styles.css bevat nu comments op de plekken waar deze kleine map-basisregels stonden.
+
+Verplaatst naar css/map.css:
+- #routeLeafletMap
+- #mapScreen .leaflet-control-container
+- #mapScreen .leaflet-tile, #mapScreen .leaflet-pane.leaflet-tile-pane
+- #routeLeafletMap::after
+
+Bewust NIET verplaatst:
+- rd-map-nav-v28
+- mapDrawer
+- rd-map-sheet-v28
+- sheet states
+- Stops categories/cards
+- Nu Nodig assist/cards
+- hotel/stop popovers
+- Leaflet route/path overrides uit latere fixes
+- JS/ORS/route.js/app.js
+
+Waarom deze scope:
+Deze selectors zijn basaal voor de kaartcontainer en worden later door sterkere, gescopete map-fixes beschermd. Daardoor is dit de minst risicovolle eerste map.css stap.
+
+Testadvies:
+1. Routeplan openen
+2. Plan route
+3. Check echte ORS-route
+4. Check fullscreen kaart zonder beige waas
+5. Stops openen/sluiten
+6. Nu Nodig openen/sluiten
+7. Meer toggle testen
+8. Pin/card/popover kort testen
+
+Als alles werkt:
+- Deze versie kan als experimentele map-split basis worden bewaard.
+
+Als iets verschuift:
+- Terug naar v39.9.85 Profile CSS Split v1.

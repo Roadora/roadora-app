@@ -1,0 +1,35 @@
+Roadora v39.9.106 Popover Split v1
+
+Basis:
+- v39.9.104 Map Nav Split v1
+
+Uitgevoerd:
+- Nieuw bestand: css/map-popovers.css
+- index.html gekoppeld aan css/map-popovers.css
+- Alleen directe popover/preview selectors verplaatst.
+
+Bewust niet verplaatst:
+- #mapRouteSheet
+- .rd-map-sheet-v28
+- drawer/data-map-drawer regels
+- sheet layout
+- Stops cards
+- Nu Nodig cards
+- route timeline cards
+- app.js / api / ORS
+
+Controle:
+- Verplaatste CSS-blokken: 63
+- Verplaatste CSS karakters: 20304
+- styles.css voor: 377807
+- styles.css na: 357627
+- map-popovers.css grootte: 20703
+
+Testadvies:
+1. Routeplan → Plan route.
+2. Stops → Hotels/Eten/Uitjes → card openen.
+3. Popover controleren: titel, foto, knoppen.
+4. Nu Nodig → Slapen controleren.
+5. Nu Nodig overige categorieën controleren.
+6. Meer openen/sluiten.
+7. Trajecten km/tijd controleren.

@@ -1,0 +1,42 @@
+Roadora v39.9.111 Map Sheet Shell Split v1
+
+Basis:
+- roadora-v39.9.109-map-ui-state-foundation-split-v1.zip
+
+Uitgevoerd:
+- Nieuw bestand: css/map-sheet-shell.css
+- index.html gekoppeld aan css/map-sheet-shell.css
+- Pure sheet-shell regels verplaatst:
+  - #mapRouteSheet
+  - .rd-map-sheet-v28
+  - shell-only positioning/visibility/transform/opacity/z-index/bottom
+
+Bewust niet verplaatst:
+- Stops
+- Nu Nodig
+- categorieën
+- cards
+- Slapen
+- popovers/previews
+- map-nav
+- app.js / api / ORS
+
+Controle:
+- Verplaatste CSS-blokken: 40
+- Verplaatste CSS karakters: 13639
+- styles.css voor: 351554
+- styles.css na: 337993
+- map-sheet-shell.css grootte: 14150
+
+Testadvies:
+1. Routeplan → Plan route.
+2. Kaart opent fullscreen.
+3. Stops openen/sluiten.
+4. Stops categories → cards → popover.
+5. Nu Nodig openen/sluiten.
+6. Nu Nodig → Slapen controleren.
+7. Meer openen/sluiten.
+8. Trajecten/topbar km-tijd controleren.
+
+Rollback:
+- Bij sheethoogte, Slapen, Stops of popover-regressie terug naar v39.9.109 of v39.9.106.

@@ -1,0 +1,27 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.100 Hamburger Copyright Footer v1
+
+Base: v39.9.99 Nu Nodig Slapen Preview Restore v1 / current experimental line after v39.9.95 fallback.
+
+Changes:
+- Added .hero-menu-footer inside the existing hamburger menu panel, after the nav.
+- Footer text:
+  Roadora v1.0
+  © 2026 Roadora
+  Alle rechten voorbehouden.
+- Added scoped CSS so the footer stays at the bottom of the opened menu using flex column + margin-top:auto.
+- Safe-area padding included for mobile devices.
+
+Not changed:
+- app.js
+- api/route.js
+- ORS
+- Leaflet/map core
+- Stops
+- Nu Nodig
+- Meer
+- Roadtrip/Trajecten stats
+- Map topbar stats

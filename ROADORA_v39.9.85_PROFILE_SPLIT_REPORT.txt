@@ -1,0 +1,31 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.85 Profile CSS Split v1
+
+Basis: v39.9.84 Components Hardening v1.
+
+Uitgevoerd:
+- css/profile.css toegevoegd.
+- index.html gekoppeld aan css/profile.css.
+- Alleen profiel-content regels verplaatst:
+  - .profile-scroll-menu
+  - .profile-row
+  - .profile-row-icon
+  - .profile-row tekstregels
+  - bijbehorende max-width:420px row/menu regels
+
+Bewust NIET verplaatst:
+- .screen-profile
+- .screen-profile .profile-hero
+- .profile-hero
+- .hero-copy
+- .hero-title
+- Routeplan/Fit Screen regels
+- navigation.css scope regels
+- rd-map-nav-v28
+- map/drawer/sheet/popover/stops/assist regels
+
+Doel:
+Een veilige profiel-content split zonder de eerdere profiel-hero of Routeplan regressie opnieuw te introduceren.

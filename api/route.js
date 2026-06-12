@@ -1,3 +1,9 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
 // Roadora v6.9.0 — Future proof ORS route API
 // Doel:
 // - echte ORS route blijven laden, ook als een tussenstop lastig te snappen is

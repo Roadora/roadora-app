@@ -1,3 +1,9 @@
+<!--
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+-->
+
 <!doctype html>
 <html lang="nl">
 <head>
@@ -8,7 +14,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@650;750;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/map.css" />
+  <link rel="stylesheet" href="css/map-ui-state.css" />
+  <link rel="stylesheet" href="css/map-sheet-shell.css" />
+  <link rel="stylesheet" href="css/map-stops.css" />
+  <link rel="stylesheet" href="css/map-now-needed.css" />
+  <link rel="stylesheet" href="css/map-nav.css" />
+  <link rel="stylesheet" href="css/map-popovers.css" />
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/navigation.css" />
+  <link rel="stylesheet" href="css/roadtrip.css" />
+  <link rel="stylesheet" href="css/profile.css" />
 </head>
 <body class="hero-nav-integrated">
 
@@ -52,6 +72,12 @@
         <strong>Instellingen & voorkeuren</strong>
       </button>
     </nav>
+
+    <div class="hero-menu-footer" aria-label="Roadora copyright">
+      <div class="hero-menu-footer-brand">Roadora v1.0</div>
+      <div>© 2026 Roadora</div>
+      <div>Alle rechten voorbehouden.</div>
+    </div>
   </div>
 </div>
 
@@ -513,7 +539,8 @@
   <div class="toast" id="toast">Roadtrip gepland</div>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="app.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="app.js"></script>
 
 
   <!-- Roadora Map Bottom Navigation v28 - clean only -->

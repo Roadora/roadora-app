@@ -1,0 +1,42 @@
+Roadora v39.9.124 Disable Legacy Sheet-State Expand v1
+
+Basis:
+- v39.9.119 App.js Section Headers v1
+
+Probleem:
+- v39.9.121/122/123 werkten niet.
+- De audit wees op oude regels rond:
+  - drawerStates = ["collapsed", "half", "expanded"]
+  - data-sheet-state
+- Dat is waarschijnlijk een oudere sheet-state laag naast de huidige data-map-drawer/data-map-panel flow.
+
+Uitgevoerd:
+- Oude data-sheet-state collapsed/half/expanded wordt op map-screen verwijderd.
+- Expanded/half/collapsed classes op #mapRouteSheet worden verwijderd.
+- De huidige map drawer/panel flow blijft leidend.
+- Mislukte guards van v39.9.121/122/123 zijn niet meegenomen.
+
+Niet aangepast:
+- Geen CSS.
+- Geen ORS.
+- Geen kaartlogica.
+- Geen Stops/Nu Nodig renderlogica.
+- Geen drawer rewrite.
+
+Test:
+1. Nu Nodig openen.
+2. Tik onder/rond handle.
+3. Sheet mag niet meer groot springen.
+4. Slapen/Hulp testen.
+5. Stops/cards/popovers testen.
+6. Meer openen/sluiten.
+
+Verdachte oude state regels:
+- L1830: var drawerStates = ["collapsed", "half", "expanded"];
+- L1831: var currentDrawerState = "half";
+- L1834: currentDrawerState = state || "half";
+- L1835: document.body.setAttribute("data-sheet-state", currentDrawerState);
+- L1867: var currentIndex = drawerStates.indexOf(currentDrawerState);
+- L1868: var nextState = drawerStates[(currentIndex + 1) % drawerStates.length];
+- L2044: document.body.setAttribute("data-sheet-state", "half");
+- L2974: document.body.setAttribute("data-sheet-state", "half");

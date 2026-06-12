@@ -1,0 +1,171 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* =========================================================
+   Roadora v39.9.109 — Map UI State Foundation Split v1
+   Scope:
+   - gedeelde map/sheet/drawer CSS custom properties
+   - body[data-active-screen="map"] state foundation
+   Niet aangeraakt:
+   - concrete sheet/drawer layout
+   - Stops
+   - Nu Nodig
+   - popovers
+   - map-nav
+   - ORS/JS
+   ========================================================= */
+
+/* =========================================================
+   ROADORA v28 — CLEANED SHEET/NAV ONLY
+   Productie-cleanup:
+   - oude sheet/nav CSS verwijderd
+   - Google Maps / ORS / Leaflet JS niet aangeraakt
+   - nieuwe sheet en nav gebruiken geïsoleerde v28 classes
+   ========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-v28-nav-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  --rd-v28-nav-height: 56px;
+  --rd-v28-gap: 18px;
+  --rd-v28-sheet-bottom: calc(var(--rd-v28-nav-bottom) + var(--rd-v28-nav-height) + var(--rd-v28-gap));
+}
+
+/* =========================================================
+   ROADORA v38 — MAP SHEET DRAWER v1
+   Nieuwe kaart-flow:
+   - standaard alleen bottom nav zichtbaar
+   - sheet schuift omhoog vanuit bottom nav bij klik
+   - kaart blijft maximaal zichtbaar
+   - Maps/ORS/Leaflet niet aangepast
+   ========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-v38-nav-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  --rd-v38-nav-height: 56px;
+  --rd-v38-gap: 12px;
+  --rd-v38-sheet-bottom: calc(var(--rd-v38-nav-bottom) + var(--rd-v38-nav-height) + var(--rd-v38-gap));
+}
+
+/* =========================================================
+   ROADORA v39 — CONNECTED SHEET DRAWER
+   Sheet voelt als onderdeel van de bottom navigation:
+   - geen tussenruimte
+   - sheet sluit visueel aan op nav
+   - drawer blijft soepel
+   - Maps/ORS/Leaflet onaangeraakt
+   ========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-v39-nav-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  --rd-v39-nav-height: 56px;
+  --rd-v39-sheet-bottom: calc(var(--rd-v39-nav-bottom) + var(--rd-v39-nav-height) - 1px);
+}
+
+/* Architectuurwijziging zonder Maps/ORS:
+   - bottom nav blijft locked
+   - sheet is een direct zichtbaar panel boven nav
+   - geen translate/slide vanuit schermonderkant
+*/
+
+body[data-active-screen="map"]{
+  --rd-v3968-x: 14px;
+  --rd-v3968-nav-h: 58px;
+  --rd-v3968-nav-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+
+/* =========================================================
+   Roadora v39.6.32 — Sheet/Nav Color + Category Clip Fix
+   ---------------------------------------------------------
+   Fixes only the isolated map drawer system.
+   - Same warm surface token for map sheet and map bottom nav.
+   - Stops categories no longer clip at the top.
+   - Home/Overzicht bottom nav remains untouched.
+   - Leaflet / Maps / ORS / pins-core untouched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-surface-top:#fcf6ee;
+  --rd-map-surface-bottom:#f6ebdd;
+  --rd-map-surface-border:rgba(255,255,255,.56);
+}
+
+/* =========================================================
+   Roadora v39.6.34 — Responsive Map Nav Width Fix
+   ---------------------------------------------------------
+   Fixes Android Chrome width mismatch/right-side gap.
+   Only affects isolated map nav + map drawer.
+   Home/Overzicht bottom nav remains untouched.
+   Leaflet / Maps / ORS / pins-core untouched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-shell-max:430px;
+  --rd-map-edge: max(14px, calc((100dvw - var(--rd-map-shell-max)) / 2 + 14px));
+  --rd-map-nav-bottom-responsive: calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+/* =========================================================
+   Roadora v39.6.35 — Exact Sheet/Nav Surface Match
+   ---------------------------------------------------------
+   Fixes the visible color mismatch between the isolated map
+   drawer and the isolated map bottom nav on real Android.
+   Only map-specific selectors are touched.
+========================================================= */
+
+body[data-active-screen="map"]{
+  --rd-map-unified-surface:#f7ecde;
+  --rd-map-unified-surface-soft:#fbf4eb;
+  --rd-map-unified-border:rgba(255,255,255,.58);
+}
+
+/* Shared map edge already follows the isolated map nav width. Reuse it for popovers. */
+body[data-active-screen="map"]{
+  --rd-popover-edge-v39726: var(--rd-map-edge, max(14px, calc((100dvw - 430px) / 2 + 14px)));
+}
+
+/* =========================================================
+   Roadora v39.7.28 — Nu Nodig Popover Nav Connect
+   ---------------------------------------------------------
+   Doel:
+   - Alleen Nu Nodig action-popover laten aansluiten op de kaart-bottomnav.
+   - Stops blijft exact zoals v39.7.27.
+   - Geen Maps, ORS, pins, cards, filters of Stops-popover aangepast.
+========================================================= */
+
+body[data-active-screen="map"][data-instant-map-panel="now"]{
+  --rd-now-popover-nav-connect-v39728: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+/* =========================================================
+   Roadora v39.7.46 — No Pre-Fallback + Connected Sheet/Nav
+   - Fallback wordt alleen nog getekend bij ORS-fout (JS).
+   - Sheet en kaart-bottomnav vormen visueel één surface.
+   - Alleen map-specifieke selectors; Home/Overzicht blijft ongemoeid.
+   ========================================================= */
+body[data-active-screen="map"]{
+  --rd-v39746-edge:22px;
+  --rd-v39746-nav-bottom:calc(14px + env(safe-area-inset-bottom, 0px));
+  --rd-v39746-nav-height:72px;
+  --rd-v39746-surface-top:rgba(255,250,242,.97);
+  --rd-v39746-surface-bottom:rgba(246,234,218,.95);
+  --rd-v39746-border:rgba(255,255,255,.62);
+}
+
+/* =========================================================
+   Roadora v39.7.49 — Sheet/Nav Geometry Polish
+   - CSS-only bovenop v39.7.48.
+   - Sheet + kaartnav iets breder en lager.
+   - Geen wijzigingen aan JS, ORS, route-load, Maps of sheet-content.
+   ========================================================= */
+body[data-active-screen="map"]{
+  --rd-v39746-edge:14px !important;
+  --rd-v39746-nav-bottom:calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+  --rd-v39746-nav-height:70px !important;
+}
+
+body[data-active-screen="map"]{
+  --rd-route-stop-popover-edge-v39781: var(--rd-map-edge, max(14px, calc((100dvw - 430px) / 2 + 14px)));
+}

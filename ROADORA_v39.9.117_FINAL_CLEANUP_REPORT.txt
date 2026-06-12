@@ -1,0 +1,43 @@
+Roadora v39.9.117 Final Cleanup v1
+
+Basis:
+- v39.9.115 Map Now Needed Split v1
+
+Uitgevoerd:
+- Alleen comment/documentatie cleanup in styles.css.
+- Oude verbose versie/fix/cleanup/debug/fallback comments verwijderd.
+- Functionele CSS-regels NIET verwijderd.
+- CSS-selectors NIET verwijderd.
+- JS NIET aangepast.
+- ORS NIET aangepast.
+- Kaart/Stops/Nu Nodig/Meer NIET functioneel aangepast.
+
+Controle:
+- styles.css karakters voor: 324930
+- styles.css karakters na: 292200
+- styles.css regels voor: 11067
+- styles.css regels na: 10169
+- verwijderde commentblokken: 85
+- behouden commentblokken: 217
+
+Wat bewust NIET is gedaan:
+- Geen drawer/sheet state-restanten verwijderd.
+- Geen unknown/legacy selectors verwijderd.
+- Geen duplicate selector cleanup.
+- Geen app.js cleanup.
+- Geen module-herordening.
+
+Testadvies:
+1. Overzicht openen.
+2. Routeplan → Plan route.
+3. ORS/kaart/topbar km-tijd controleren.
+4. Stops alle categorieën kort testen.
+5. Nu Nodig, Slapen en Hulp testen.
+6. Meer openen/sluiten.
+7. Popovers controleren.
+8. Trajecten km/tijd controleren.
+
+Eindoordeel:
+- Dit is een lage-risico schoonmaakstap.
+- Als alles werkt, kan v39.9.117 als post-cleanup kandidaat worden bewaard.
+- Volgende stap zou v39.9.118 Final Move Audit v1 kunnen zijn, maar alleen als we nog verder willen minimaliseren.

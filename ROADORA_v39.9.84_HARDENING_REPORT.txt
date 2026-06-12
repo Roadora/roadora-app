@@ -1,0 +1,49 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.84 — Components/Navigation Hardening v1
+
+Basis:
+- v39.9.82 Routeplan Restore v1
+
+Doel:
+- Geen nieuwe functionele split.
+- De oorzaak van de Routeplan-regressie structureel vastleggen en beveiligen.
+- navigation.css mag Routeplan alleen via .bottom-nav beïnvloeden.
+
+Uitgevoerd:
+- css/navigation.css header bijgewerkt naar v39.9.84 scope guard.
+- --rd-nav-split-version bijgewerkt naar 39.9.84.
+- Misleidende oude comment over "Routeplan Fixed Hero + Unified Nav + Flat Route Card" vervangen.
+- Expliciete guard toegevoegd: Routeplan hero/panel/card/layout selectors horen niet in navigation.css.
+
+Bewust niet aangepast:
+- app.js
+- api/route.js
+- ORS
+- Leaflet/kaart
+- Stops
+- Nu Nodig
+- Meer
+- rd-map-nav-v28 kaartnavigatie
+- Routeplan layoutregels in styles.css
+- Profiel layoutregels
+
+Controle:
+- In css/navigation.css blijven Routeplan-regels beperkt tot:
+  body[data-active-screen="plan"] .bottom-nav
+  body[data-active-screen="plan"] .bottom-nav button
+  body[data-active-screen="plan"] .bottom-nav button span/b/active
+
+Niet toegestaan in navigation.css vanaf nu:
+- .routeplan-hero
+- .routeplan-panel
+- .routeplan-title
+- .luxury-route-card
+- .luxury-route-row
+- .routeplan-main-cta
+
+Status:
+- Browser-test vereist.
+- Als Routeplan/Profiel/Kaart nog goed zijn, kan deze versie als v39.9.84 fallback worden opgeslagen.

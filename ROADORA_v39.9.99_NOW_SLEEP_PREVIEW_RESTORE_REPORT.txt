@@ -1,0 +1,29 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.99 — Nu Nodig Slapen Preview Restore v1
+
+Basis: v39.9.98 Hotel Preview Layout Restore v1
+
+Aanleiding:
+- De cards in Nu Nodig -> Slapen waren goed.
+- Alleen de detail/preview-sheet van Slapen bleef visueel krap/gebroken.
+- Stops en de overige Nu Nodig-categorieën werkten goed.
+
+Wijziging:
+- Alleen CSS toegevoegd voor:
+  body[data-active-screen="map"][data-instant-map-panel="now"][data-stop-subpanel="hotels"][data-hotel-preview="open"]
+- De fix raakt dus alleen Nu Nodig -> Slapen wanneer de hotel-preview open is.
+- Stops hotel preview blijft onaangeraakt.
+- Fuel/Charge/Food/Discover/WC blijven onaangeraakt.
+
+Niet aangepast:
+- app.js
+- ORS
+- kaart-core
+- map.css split
+- rd-map-nav-v28
+- Stops-flow
+- Nu Nodig hoofdflow
+- Trajecten/topbar stats

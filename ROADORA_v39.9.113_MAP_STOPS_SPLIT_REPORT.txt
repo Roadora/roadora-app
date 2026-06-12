@@ -1,0 +1,44 @@
+Roadora v39.9.113 Map Stops Split v1
+
+Basis:
+- v39.9.111 Map Sheet Shell Split v1
+
+Uitgevoerd:
+- Nieuw bestand: css/map-stops.css
+- index.html gekoppeld aan css/map-stops.css
+- Veilige Stops-content CSS verplaatst:
+  - categorieën
+  - stop/category buttons
+  - horizontale stop cards
+  - category pins/styles
+  - Stops filters/subfilters
+
+Bewust niet verplaatst:
+- Nu Nodig
+- Slapen
+- assist-flow
+- popovers/previews
+- sheet shell
+- map-nav
+- Trajecten / route-stop timeline
+- app.js / api / ORS
+
+Controle:
+- Verplaatste CSS-blokken: 68
+- Verplaatste CSS karakters: 11701
+- styles.css voor: 337993
+- styles.css na: 326434
+- map-stops.css grootte: 12244
+
+Testadvies:
+1. Routeplan → Plan route.
+2. Stops openen/sluiten.
+3. Alle Stops-categorieën testen: Hotels, Tanken, Laden, Eten, Uitjes, WC.
+4. Eten/Uitjes subfilters testen.
+5. Cards openen → popover checken.
+6. Toevoegen aan route checken.
+7. Nu Nodig checken, vooral Slapen.
+8. Trajecten/topbar km-tijd controleren.
+
+Rollback:
+- Bij afwijking in Stops-cards/categorieën of Nu Nodig terug naar v39.9.111 of v39.9.106.

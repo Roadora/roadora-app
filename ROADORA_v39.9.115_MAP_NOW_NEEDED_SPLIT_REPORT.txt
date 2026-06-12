@@ -1,0 +1,46 @@
+Roadora v39.9.115 Map Now Needed Split v1
+
+Basis:
+- v39.9.113 Map Stops Split v1
+
+Uitgevoerd:
+- Nieuw bestand: css/map-now-needed.css
+- index.html gekoppeld aan css/map-now-needed.css
+- Veilige Nu Nodig-content CSS verplaatst:
+  - Nu Nodig categorieën
+  - assist-state content
+  - Slapen content
+  - Hulp subfilters/content
+  - alternatieven/promote-flow
+  - Nu Nodig cards
+
+Bewust niet verplaatst:
+- sheet shell
+- drawer
+- popovers/previews
+- Stops
+- Trajecten / route-stop timeline
+- map-nav
+- app.js / api / ORS
+
+Controle:
+- Verplaatste CSS-blokken: 10
+- Verplaatste CSS karakters: 1522
+- styles.css voor: 326434
+- styles.css na: 324930
+- map-now-needed.css grootte: 2060
+
+Testadvies:
+1. Routeplan → Plan route.
+2. Nu Nodig openen/sluiten.
+3. Tanken, Laden, WC, Eten testen.
+4. Slapen testen.
+5. Hulp + subfilters testen.
+6. Alternatieven/promote-flow testen.
+7. Stops controleren om regressie uit te sluiten.
+8. Popovers controleren.
+9. Meer openen/sluiten.
+10. Trajecten/topbar km-tijd controleren.
+
+Rollback:
+- Bij afwijking in Slapen, Hulp, assist-state of Stops terug naar v39.9.113.

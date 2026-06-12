@@ -1,0 +1,36 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+Roadora v39.9.98 — Hotel Preview Layout Restore v1
+
+Basis:
+- v39.9.96 Map Core Layer Split v1
+
+Aanleiding:
+- De hotel-preview popover verscheen, maar de contentkolom oogde krap/gebroken.
+- De oorzaak zat lokaal in de combinatie van de oude hotel preview popover en de latere drieknoppen-flow: Opslaan, Toevoegen, Navigeer.
+
+Wijziging:
+- Alleen map-only hotel-preview selectors aangepast.
+- De drie preview-knoppen staan weer in een rustige 2-koloms flow.
+- De preview-body krijgt stabielere hoogte.
+- De copytekst wordt in deze compacte map-preview verborgen zodat titel/meta/chips/acties niet meer knellen.
+
+Niet aangepast:
+- Geen JS.
+- Geen ORS.
+- Geen map core.
+- Geen Leaflet panes.
+- Geen drawer/sheet hoogte.
+- Geen Stops/Nu Nodig/Meer.
+- Geen rd-map-nav-v28.
+
+Testadvies:
+1. Routeplan -> Plan route.
+2. Open kaart.
+3. Stops -> Hotels.
+4. Open hotel preview.
+5. Check titel/meta/chips/knoppen.
+6. Test Opslaan, Toevoegen, Navigeer.
+7. Test daarna Stops/Nu Nodig/Meer en Trajecten stats.

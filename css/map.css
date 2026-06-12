@@ -1,0 +1,90 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* =========================================================
+   Roadora v39.9.87 — Map CSS Experiment v1
+   ---------------------------------------------------------
+   Scope bewust klein:
+   - alleen Leaflet map foundation/base canvas selectors
+   - geen sheet/drawer/popover
+   - geen Stops/Nu Nodig
+   - geen rd-map-nav-v28
+   - geen JS/ORS wijzigingen
+
+   Dit is een experimentele split, géén fallback totdat getest.
+   ========================================================= */
+
+#routeLeafletMap{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  width:100%;
+  height:100%;
+  background:#d7d0bf;
+}
+
+#mapScreen .leaflet-control-container{display:none !important;}
+
+#mapScreen .leaflet-tile,
+#mapScreen .leaflet-pane.leaflet-tile-pane{
+  filter:saturate(.58) contrast(.90) brightness(.86) sepia(.28) hue-rotate(6deg);
+}
+
+#routeLeafletMap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:450;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(247,239,228,.18),rgba(247,239,228,.04) 32%,rgba(30,28,22,.14) 100%),
+    radial-gradient(circle at 48% 56%,rgba(237,201,132,.055),rgba(28,27,22,.14) 86%);
+}
+
+/* =========================================================
+   Roadora v39.9.96 — Map Core Layer Split v1
+   ---------------------------------------------------------
+   Verplaatst uit styles.css:
+   - v39.7.43 map canvas render repair
+   - Leaflet panes visibility/z-index foundation
+   - map UI/nav z-index guard
+
+   Bewust NIET verplaatst:
+   - rd-map-nav-v28 layout/styling
+   - mapDrawer/sheets
+   - Stops/Nu Nodig/popovers
+   - ORS/JS
+   ========================================================= */
+/* =========================================================
+   Roadora v39.7.43 — map canvas render repair
+   Fix voor leeg blauw kaartvlak na Plan route:
+   - Leaflet panes expliciet zichtbaar boven de fallback background.
+   - Roadora overlay/topbar/nav blijven erboven.
+   - Geen ORS/Maps/sheet-logica aangepast.
+   ========================================================= */
+body[data-active-screen="map"] #routeLeafletMap{
+  background:#d8d0bf !important;
+  z-index:1 !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap .leaflet-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-map-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-tile-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-marker-pane,
+body[data-active-screen="map"] #routeLeafletMap .leaflet-shadow-pane{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+body[data-active-screen="map"] #routeLeafletMap .leaflet-tile-pane{ z-index:200 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-overlay-pane{ z-index:400 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-marker-pane{ z-index:600 !important; }
+body[data-active-screen="map"] #routeLeafletMap .leaflet-shadow-pane{ z-index:500 !important; }
+
+body[data-active-screen="map"] #mapScreen .ui{ z-index:900 !important; }
+body[data-active-screen="map"] > nav.rd-map-nav-v28{ z-index:1400 !important; }

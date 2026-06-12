@@ -1,0 +1,110 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* =========================================================
+   ROADORA v39.9.81 — ROADTRIP CSS SPLIT v1
+   Extracted from styles.css after v39.9.80.
+   Scope: Mijn Roadtrip screen cleanup/content only.
+   Not touched: map, ORS, Stops, Nu Nodig, rd-map-nav-v28, sheets.
+   ========================================================= */
+
+/* 1. Verwijder oude Roadtrip CTA-waas/backdrop, maar laat de echte content staan */
+.roadtrip-hero::before,
+.roadtrip-hero::after,
+.my-roadtrip-hero::before,
+.my-roadtrip-hero::after,
+.mijn-roadtrip-hero::before,
+.mijn-roadtrip-hero::after,
+[data-screen="roadtrip"]::before,
+[data-screen="roadtrip"]::after,
+.screen-roadtrip::before,
+.screen-roadtrip::after,
+.roadtrip-screen::before,
+.roadtrip-screen::after,
+#roadtripScreen::before,
+#roadtripScreen::after,
+#myRoadtripScreen::before,
+#myRoadtripScreen::after{
+  content:none !important;
+  display:none !important;
+  opacity:0 !important;
+  background:none !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  pointer-events:none !important;
+}
+
+/* =========================================================
+   ROADORA v37 — MIJN ROADTRIP BLACK SCREEN FIX
+   Alleen Mijn Roadtrip aangepast:
+   - zwart vlak weg
+   - Roadora beige contentvlak terug
+   - geen kaart / Maps / ORS wijzigingen
+   ========================================================= */
+
+[data-screen="roadtrip"],
+.screen-roadtrip,
+.roadtrip-screen,
+#roadtripScreen,
+#myRoadtripScreen,
+.my-roadtrip-screen,
+.mijn-roadtrip-screen{
+  background:#efe1cf !important;
+  background-image:none !important;
+}
+
+/* Contentgebied onder de hero ook Roadora beige */
+[data-screen="roadtrip"] main,
+[data-screen="roadtrip"] .content,
+[data-screen="roadtrip"] .page-content,
+[data-screen="roadtrip"] .roadtrip-content,
+.screen-roadtrip main,
+.screen-roadtrip .content,
+.screen-roadtrip .page-content,
+.screen-roadtrip .roadtrip-content,
+.roadtrip-screen main,
+.roadtrip-screen .content,
+.roadtrip-screen .page-content,
+.roadtrip-screen .roadtrip-content{
+  background:#efe1cf !important;
+  background-image:none !important;
+}
+
+/* Oude donkere overlays op Mijn Roadtrip uit */
+[data-screen="roadtrip"]::before,
+[data-screen="roadtrip"]::after,
+.screen-roadtrip::before,
+.screen-roadtrip::after,
+.roadtrip-screen::before,
+.roadtrip-screen::after,
+#roadtripScreen::before,
+#roadtripScreen::after,
+#myRoadtripScreen::before,
+#myRoadtripScreen::after{
+  content:none !important;
+  display:none !important;
+  opacity:0 !important;
+  background:none !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+
+/* Cards blijven rustig premium op beige */
+[data-screen="roadtrip"] .roadtrip-card,
+[data-screen="roadtrip"] .menu-card,
+[data-screen="roadtrip"] .option-card,
+.screen-roadtrip .roadtrip-card,
+.screen-roadtrip .menu-card,
+.screen-roadtrip .option-card,
+.roadtrip-screen .roadtrip-card,
+.roadtrip-screen .menu-card,
+.roadtrip-screen .option-card{
+  background:#f7efe5 !important;
+  border-color:rgba(154,126,98,.14) !important;
+}

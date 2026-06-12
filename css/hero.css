@@ -1,0 +1,212 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* Roadora v39.9.76 — Hero CSS Split v1
+   Verplaatst uit styles.css: actieve Profiel/Mijn Roadtrip hero component layer.
+   Geen selector-, kleur-, spacing- of functionaliteitswijzigingen. */
+
+/* =========================================================
+   Roadora v39.9.33 — Hero Component Cleanup v1
+   Basis: v39.9.32 Profile legacy title DOM cleanup.
+   Doel:
+   - Geen verborgen hero-titels of display:none header-hacks meer voor Profiel/Mijn Roadtrip.
+   - Profiel hero gebruikt alleen: hamburger + Jouw Roadora + subtitel.
+   - Mijn Roadtrip hero gebruikt alleen: hamburger + hero titel + subtitel.
+   - Hamburger, contentkaarten, bottomnav, ORS, Maps en JS blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  position:relative !important;
+  z-index:2 !important;
+  padding-top:24px !important;
+  text-shadow:0 2px 18px rgba(0,0,0,.35) !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
+  margin:8px 0 4px !important;
+}
+
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931{
+  position:absolute !important;
+  left:24px !important;
+  right:24px !important;
+  bottom:26px !important;
+  color:#fff !important;
+  text-shadow:0 3px 22px rgba(0,0,0,.35) !important;
+}
+
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1{
+  margin:7px 0 7px !important;
+}
+
+
+/* =========================================================
+   Roadora v39.9.34 — Profile Hero Header Label v1
+   Basis: v39.9.33 Hero Component Cleanup v1.
+   Doel:
+   - Profiel krijgt een echte zichtbare hero-header label binnen dezelfde hero-componentfamilie.
+   - Jouw Roadora hero-copy blijft op zijn plek.
+   - Hamburger, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   - Oude README-buildsporen verwijderd uit zip; alleen actuele README blijft over.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930.hero-component-v39934{
+  position:relative !important;
+}
+
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  position:absolute !important;
+  top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+  left:98px !important;
+  min-height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  color:rgba(255,252,246,.96) !important;
+  font-size:15px !important;
+  font-weight:850 !important;
+  letter-spacing:-.02em !important;
+  line-height:1 !important;
+  text-shadow:0 2px 14px rgba(0,0,0,.38) !important;
+  z-index:3 !important;
+  pointer-events:none !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="profile"] .hero-page-label-v39934{
+    top:calc(22px + env(safe-area-inset-top, 0px)) !important;
+    left:98px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.9.35 — Profile Hero Header Typography Sync
+   Basis: v39.9.34 Profile Hero Header Label v1.
+   Doel:
+   - Profiel-label dezelfde typografie geven als de gelockte Hotels-header.
+   - Alleen font-family, grootte, gewicht, line-height en letter-spacing syncen.
+   - Positie, hamburger, hero-copy, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-size:34px !important;
+  font-weight:600 !important;
+  line-height:.96 !important;
+  letter-spacing:-.045em !important;
+  transform:translateY(-2px) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="profile"] .hero-page-label-v39934{
+    font-size:34px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.9.36 — Profile Header Color + Kerning Polish
+   Basis: v39.9.35 Profile Typography Sync.
+   Doel:
+   - Profiel-label dezelfde Roadora-donkere kleur geven als Hotels.
+   - f/i overlap oplossen door tracking iets rustiger te maken.
+   - Geen positie, hamburger, hero-copy, content, bottomnav, JS, ORS of Maps aangepast.
+   ========================================================= */
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  color:#2d2118 !important;
+  letter-spacing:-.018em !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+
+/* =========================================================
+   Roadora v39.9.37 — Profile Hero Final Polish
+   Basis: v39.9.36 Profile Header Color + Kerning Polish.
+   Doel:
+   - Puntje op de i in Profiel visueel verwijderen via dotless-i in markup.
+   - Jouw Roadora hero-copy subtiel lager plaatsen.
+   - Hamburger, labelpositie, content, bottomnav, JS, ORS en Maps blijven onaangeraakt.
+   ========================================================= */
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  padding-top:36px !important;
+}
+
+/* =========================================================
+   Roadora v39.9.50 — Shared Hero CSS Cleanup v1
+   Basis: v39.9.48 Profile Title Spacing Polish + v39.9.49 Roadtrip Hero Title Sync.
+   Doel:
+   - Eén gedeelde kleur- en schaduwbron voor Profiel en Mijn Roadtrip hero-tekst.
+   - Oude profiel-kleurtestblokken v39.9.45 t/m v39.9.48 gecentraliseerd.
+   - Profiel-spacing uit v39.9.48 behouden.
+   - Mijn Roadtrip hero-tekst gelijkgetrokken met het profiel-systeem.
+   - Geen herohoogte, foto's, contentkaarten, bottomnav, JS, ORS of Maps aangepast.
+   ========================================================= */
+:root{
+  --hero-title-color:#F3ECE3;
+  --hero-title-shadow:0 2px 10px rgba(0,0,0,.22);
+  --hero-subtitle-color:rgba(243,236,227,.94);
+  --profile-hero-title:var(--hero-title-color);
+  --profile-hero-title-shadow:var(--hero-title-shadow);
+}
+
+/* Profiel: gelockte v39.9.48 compositie behouden */
+body[data-active-screen="profile"] .hero-page-label-v39934,
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1,
+.screen-profile .profile-hero h1,
+.screen-profile .profile-hero-title,
+.screen-profile [data-profile-hero-title]{
+  color:var(--hero-title-color) !important;
+  text-shadow:var(--hero-title-shadow) !important;
+}
+
+body[data-active-screen="profile"] .hero-page-label-v39934{
+  font-size:31px !important;
+  font-weight:600 !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+  padding-top:52px !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 h1{
+  font-weight:600 !important;
+}
+
+body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930 p{
+  color:var(--hero-subtitle-color) !important;
+  text-shadow:var(--hero-title-shadow) !important;
+}
+
+/* Mijn Roadtrip: alleen typografie/kleur sync, geen hoogte/foto/layout wijziging */
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931,
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1,
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 p{
+  color:var(--hero-title-color) !important;
+  text-shadow:var(--hero-title-shadow) !important;
+}
+
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 h1{
+  font-weight:650 !important;
+}
+
+body[data-active-screen="roadtrip"] .roadtrip-hero-component-v39931 .roadtrip-hero-copy-v39931 p{
+  color:var(--hero-subtitle-color) !important;
+}
+
+@media (max-width:390px){
+  body[data-active-screen="profile"] .hero-page-label-v39934{
+    font-size:31px !important;
+    font-weight:600 !important;
+  }
+
+  body[data-active-screen="profile"] .profile-hero-component-v39930 .profile-hero-copy-v39930{
+    padding-top:52px !important;
+  }
+}
+
+/* =========================================================
+   Roadora v39.9.53 — Hero Copy Legacy Cleanup v1
+   Basis: v39.9.52 Mini Photo Legacy Cleanup v1.
+   Doel:
+   - Oude ongebruikte hero-copy/overview-copy experimenten verwijderd.
+   - Actieve Overzicht hero-copy v1 behouden.
+   - Profiel, Mijn Roadtrip, Routeplan, kaart, ORS, Stops en Nu Nodig onaangeraakt.
+   ========================================================= */

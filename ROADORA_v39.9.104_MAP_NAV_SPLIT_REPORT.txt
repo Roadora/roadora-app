@@ -1,0 +1,43 @@
+Roadora v39.9.104 Map Nav Split v1
+
+Basis:
+- v39.9.102 Full Repository Copyright Headers v1 / werkende lijn na v39.9.99 + copyright.
+
+Uitgevoerd:
+- Nieuw bestand: css/map-nav.css
+- index.html gekoppeld aan css/map-nav.css direct na css/map.css
+- Directe kaartnavigatie CSS verplaatst:
+  - rd-map-nav-v28
+  - rd-nav-btn-v28
+  - rd-nav-route-v39773 / centrale Navigeer-knop
+- styles.css opgeschoond met dezelfde regels verwijderd.
+
+Niet aangeraakt:
+- app.js
+- api/route.js
+- ORS
+- Leaflet routing logic
+- mapDrawer
+- sheets
+- popovers
+- Stops
+- Nu Nodig
+- Meer
+- Trajecten/topbar stats
+
+Controle:
+- Verplaatste CSS karakters: 21510
+- styles.css voor: 399199
+- styles.css na: 377807
+- rd-map-nav referenties over in styles.css: 3 (alleen comments/variabelen, geen layoutregels)
+- rd-map-nav referenties in map-nav.css: 80
+
+Testadvies:
+1. Routeplan openen.
+2. Plan route.
+3. Kaart-bottomnav controleren.
+4. Stops openen/sluiten.
+5. Nu Nodig openen/sluiten.
+6. Meer openen/sluiten.
+7. Centrale Navigeer-knop controleren.
+8. Mijn Roadtrip / Trajecten km-tijd controleren.

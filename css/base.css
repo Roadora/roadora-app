@@ -1,0 +1,12 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* Roadora v39.9.75 — base app shell split.
+   Veilige stap: alleen globale reset + app/screen shell uit styles.css gehaald. */
+
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Inter,system-ui,sans-serif;color:var(--text);background:#cdbdad} button{font:inherit;border:0;background:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent} img{display:block;max-width:100%}
+.app{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:linear-gradient(180deg,#f8f0e7,#efe2d4);position:relative;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.04)}
+.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transform:translateX(18px) scale(.995);transition:opacity .36s var(--ease),transform .36s var(--ease);overflow:hidden;padding-bottom:112px}.screen.is-active{opacity:1;pointer-events:auto;transform:none;z-index:2}.content{padding:16px 20px 130px;overflow:auto;height:calc(100dvh - 170px)}

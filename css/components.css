@@ -1,0 +1,25 @@
+/*
+ * Roadora
+ * Copyright (c) 2026 Stephan Kerkhof
+ * Alle rechten voorbehouden.
+ */
+
+/* Roadora v39.9.80 Components Split v1
+   Extracted from styles.css: small reusable UI primitives.
+   No JS, ORS, Leaflet, map-nav, Stops or Nu Nodig changes.
+*/
+:root{
+  --rd-components-split-version:"39.9.80";
+}
+
+/* Buttons: circle buttons */
+.circle-btn{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.20);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff;font-size:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);transition:transform .16s var(--ease),background .2s}.circle-btn:active,.primary:active,.hero-cta:active{transform:scale(.96)}.circle-btn.light{background:rgba(255,255,255,.72);color:#2a211b;box-shadow:0 10px 24px rgba(53,31,16,.08)}
+
+/* Cards: soft/progress/next/stats */
+.soft-card{background:var(--card);border:1px solid rgba(255,255,255,.55);border-radius:24px;box-shadow:0 12px 28px rgba(52,31,17,.09);padding:18px;margin-bottom:12px}.soft-card h3{margin:0 0 9px;font-size:19px}.soft-card p{margin:0;color:#51443b}.progress-card{display:grid;grid-template-columns:1fr 58px;gap:12px}.ring{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;border:6px solid rgba(153,87,25,.18);border-top-color:var(--brown);font-size:14px}.bar{grid-column:1/-1;height:8px;border-radius:99px;background:#eee2d7;overflow:hidden}.bar span{display:block;height:100%;border-radius:99px;background:var(--brown)}.next-card button{display:grid;grid-template-columns:86px 1fr auto;align-items:center;gap:14px;width:100%;text-align:left}.next-card img{width:86px;height:62px;border-radius:14px;object-fit:cover}.next-card strong{display:block}.next-card small{color:var(--muted)}.stats-card div{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:0}.stats-card span+span{border-left:1px solid var(--line)}.stats-card strong,.stats-card small{display:block}.stats-card small{margin-top:4px;color:var(--muted);font-size:11px}
+
+/* Primary CTA button */
+.primary{height:50px;border-radius:999px;background:linear-gradient(135deg,var(--brown),var(--brown2));color:#fffaf4;font-weight:900;box-shadow:0 16px 32px rgba(125,68,18,.22)}.primary.wide{width:100%;margin-top:4px}
+
+/* Hub/input/profile rows */
+.hub-row,.input-list button,.profile-list button{width:100%;min-height:76px;border-radius:22px;background:rgba(255,250,244,.72);box-shadow:0 10px 22px rgba(67,42,25,.055);display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;text-align:left;padding:14px 17px;margin-bottom:12px;border:1px solid rgba(255,255,255,.55)}.hub-row b,.input-list b{font-size:26px;color:var(--brown);font-weight:500}.hub-row strong,.input-list strong{display:block}.hub-row small,.input-list small{display:block;color:var(--muted);margin-top:4px}.hub-row i,.input-list i{font-style:normal;color:#765a42;font-size:24px}

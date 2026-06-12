@@ -1,0 +1,53 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+ROADORA v39.9.96 — MAP CORE LAYER SPLIT v1
+
+Basis:
+- v39.9.95 Map Topbar Preview Fallback v1
+
+Doel:
+- Voorzichtig experiment met het meest risicovolle gebied: map/Leaflet CSS verder modulariseren.
+
+Uitgevoerd:
+- css/map.css uitgebreid.
+- De v39.7.43 map canvas render repair block is uit styles.css gehaald en naar css/map.css verplaatst.
+- Dit blok bevat alleen foundation-regels voor:
+  - #routeLeafletMap achtergrond/z-index
+  - Leaflet panes zichtbaar houden
+  - Leaflet pane z-index lagen
+  - map UI/nav z-index guard
+
+Bewust NIET aangeraakt:
+- rd-map-nav-v28 layout/styling
+- mapDrawer
+- rd-map-sheet-v28
+- sheet/drawer states
+- Stops
+- Nu Nodig
+- popovers
+- route rendering JS
+- ORS/API
+- Trajecten stats resolver
+- topbar stats fallback
+
+Waarom deze stap relatief veilig is:
+- Dit is een map-core foundation block, geen interactie- of state-CSS.
+- De regels waren al sterk map-gescoped via body[data-active-screen="map"].
+- Functionele selectors voor sheets/stops/now/popover blijven in styles.css.
+
+Testadvies:
+1. Overzicht openen.
+2. Routeplan openen.
+3. Plan route.
+4. Check of Leaflet echt zichtbaar is en geen blauw/beige leeg vlak toont.
+5. Check route-lijn/ORS.
+6. Check kaart-topbar km/tijd.
+7. Check Stops.
+8. Check Nu Nodig.
+9. Check Meer open/dicht.
+10. Check Trajecten km/tijd.
+
+Rollback:
+- Als kaart, panes, pins, route-lijn of nav-lagen visueel fout gaan: terug naar v39.9.95.

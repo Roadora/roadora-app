@@ -1,0 +1,38 @@
+Roadora v39.9.126 JS Helpers Scaffold v1
+
+Basis:
+- v39.9.124 Disable Legacy Sheet-State Expand v1
+
+Uitgevoerd:
+- Nieuwe map toegevoegd: js/
+- Nieuw bestand toegevoegd: js/helpers.js
+- index.html gekoppeld aan js/helpers.js vóór app.js
+- window.RoadoraHelpers namespace voorbereid
+
+Belangrijk:
+- Geen bestaande functies uit app.js verplaatst.
+- Geen imports/exports toegevoegd.
+- Geen app-state gewijzigd.
+- Geen DOM-renderlogica gewijzigd.
+- Geen ORS gewijzigd.
+- Geen kaartlogica gewijzigd.
+- Geen Stops gewijzigd.
+- Geen Nu Nodig gewijzigd.
+- Geen drawer-state gewijzigd.
+- Geen CSS gewijzigd.
+
+Doel:
+- Veilige structuur voorbereiden zodat later pure helpers in kleine stappen kunnen worden verplaatst.
+
+Testadvies:
+1. Overzicht openen.
+2. Routeplan → Plan route.
+3. ORS/kaart/topbar km-tijd controleren.
+4. Stops openen en categorieën kort testen.
+5. Nu Nodig, Slapen en Hulp testen.
+6. Meer openen/sluiten.
+7. Trajecten km/tijd controleren.
+
+Volgende veilige stap:
+- v39.9.127 Pure Helper Extraction v1
+- Alleen 3-5 bewezen pure helpers verplaatsen.

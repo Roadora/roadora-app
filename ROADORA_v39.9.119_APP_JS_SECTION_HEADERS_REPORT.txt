@@ -1,0 +1,49 @@
+Roadora v39.9.119 App.js Section Headers v1
+
+Basis:
+- v39.9.117 Final Cleanup v1
+
+Uitgevoerd:
+- Sectiekoppen toegevoegd aan app.js.
+- De koppen volgen de bestaande functievolgorde.
+- Geen functies verplaatst.
+- Geen functies hernoemd.
+- Geen codegedrag aangepast.
+
+Toegevoegde sectietypen:
+- App core / general helpers
+- State + localStorage
+- Route / ORS / Roadtrip
+- Map / pins / popovers
+- Map drawer / panel state
+- Stops flow
+- Nu Nodig flow
+- Render helpers
+
+Controle:
+- app.js regels voor: 4637
+- app.js regels na: 4692
+- toegevoegde sectiekoppen: 9
+- functionele wijzigingen: 0
+
+Niet aangeraakt:
+- CSS
+- ORS
+- kaartlogica
+- route state
+- drawer state
+- Stops logic
+- Nu Nodig logic
+- Trajecten/topbar stats
+
+Testadvies:
+1. Routeplan → Plan route.
+2. Kaart/ORS/topbar km-tijd checken.
+3. Stops openen + categorieën testen.
+4. Nu Nodig + Slapen + Hulp testen.
+5. Meer openen/sluiten.
+6. Trajecten km/tijd checken.
+
+Volgende veilige stap:
+- v39.9.120 Pure Helper Extraction Audit v1
+- Nog steeds geen JS-bestanden splitsen zonder helper-audit.

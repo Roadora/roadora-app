@@ -1,0 +1,41 @@
+Roadora
+Copyright (c) 2026 Stephan Kerkhof
+Alle rechten voorbehouden.
+
+ROADORA v39.9.92 — Trajecten Stats Stable Resolver v1
+Datum: 2026-06-01
+Basis: v39.9.87 Map CSS Experiment v1
+
+Scope:
+- Alleen app.js aangepast.
+- Geen CSS gewijzigd.
+- Geen ORS routeberekening gewijzigd.
+- Geen Maps export gewijzigd.
+- Geen Stops/Nu Nodig/Meer gewijzigd.
+
+Probleem:
+Trajecten afstand/tijd konden kort zichtbaar zijn en daarna verdwijnen doordat meerdere Trajecten-renderers dezelfde DOM opnieuw invulden met lege route-summary waarden.
+
+Fix:
+- Centrale route-summary resolver toegevoegd: RoadoraRouteSummaryV39992.
+- Geldige ORS summary wordt opgeslagen in localStorage key: roadora_route_summary_v39992.
+- Bij ORS succes wordt event roadora:route-summary-updated verstuurd.
+- Premium Trajecten en Route Creates Traject luisteren nu ook naar route-summary-updated.
+- Lege late renders mogen bestaande geldige km/tijd niet meer overschrijven.
+
+Bewust niet aangepast:
+- rd-map-nav-v28
+- mapDrawer
+- sheets
+- popovers
+- category/stop pins
+- ORS fetch/api/route.js
+- Google Maps export
+
+Testadvies:
+1. Routeplan: plan route.
+2. Wacht tot ORS geladen is.
+3. Open Mijn Roadtrip / Trajecten.
+4. Controleer dat km/tijd blijven staan.
+5. Voeg stop toe en verwijder stop.
+6. Wissel tabs en keer terug naar Trajecten.
